@@ -1,0 +1,38 @@
+@import "../../scss/theme";
+@import "../../scss/mixins";
+
+.container {
+  max-width: 1100px;
+  padding: 10px;
+}
+
+.containerTitle {
+  padding: 120px 0 0;
+  @include b('mobile') {
+    padding: 60px 0 0;
+  }
+  h1 {
+    max-width: 800px;
+    text-align: center;
+    margin: 16px auto 40px;
+  }
+}
+
+.containerLists {
+  @include flex(row,center,space-around);
+  margin: 50px 0 0 0;
+}
+
+.card {
+  @include flex(row,center,center);
+  min-width: 200px;
+  margin: 10px;
+  padding: 30px;
+  border: $border-card;
+  border-radius: 20px;
+  font-size: 18px;
+  cursor: pointer;
+  text-decoration: none;
+  color: $color-text-primary;
+}
+

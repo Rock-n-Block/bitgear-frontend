@@ -1,0 +1,63 @@
+$font: 'Roboto', normal;
+
+// ============================================
+// colors
+
+// background
+$color-bg: #07092A;
+$color-bg-header: #07092A;
+$color-bg-footer: #07092A;
+$color-bg-error: #c88a38;
+$color-bg-input: #07092A;
+//$color-bg-input: #141848;
+// text
+$color-text-primary: #fff;
+$color-text-secondary: rgba(255, 255, 255, 0.5);
+$color-text-bright: #fff;
+$color-text-link: #0197E2;
+$color-text-header: #fff;
+$color-text-footer: #fff;
+$color-text-input: #fff;
+$color-text-input-placeholder: rgba(255, 255, 255, 0.5);
+// scrollbar
+$color-scrollbar: rgba(133, 133, 133, 0.3);
+$color-scrollbar-bg: rgba(208, 208, 208, 0.2);
+// gradient
+$color-gradient-button-start: rgba(208, 208, 208, 1);
+$color-gradient-button-end: rgba(208, 208, 208, 1);
+$color-gradient-button: linear-gradient(
+    90deg,
+    $color-gradient-button-start 0px,
+    $color-gradient-button-start 7px,
+    $color-gradient-button-end 7px,
+    $color-gradient-button-end 100%
+);
+$color-gradient-header-start: rgba(208, 208, 208, 1);
+$color-gradient-header-end: rgba(208, 208, 208, 1);
+$color-gradient-header: linear-gradient(
+    0deg,
+    $color-gradient-header-start 0%,
+    $color-gradient-header-end 100%
+);
+// border
+$color-border-header: #0197E2;
+$color-border-input: #0197E2;
+$color-border-card: #0197E2;
+// others
+$color-cursor-input: #fff;
+
+// ============================================
+// borders
+
+$border-header: 1px solid $color-border-header;
+$border-input: 2px solid $color-border-input;
+$border-card: 1px solid $color-border-card;
+
+// ============================================
+// shadows
+
+$color-shadow-menu: #0197E2;
+$shadow-container: 0px 4px 60px rgba(0, 0, 0, 0.05);
+$shadow-dropdown: 0px 8px 15px rgba(0, 0, 0, 0.15);
+$shadow-menu: 0 4px 40px $color-shadow-menu;
+$shadow-border: 0 0 0 1px lightgrey inset;

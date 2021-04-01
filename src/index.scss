@@ -1,0 +1,48 @@
+@import "./scss/theme.scss";
+@import "./scss/mixins.scss";
+
+$height-header: 83px;
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  font-family: $font;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeSpeed;
+}
+
+img, svg {
+  box-sizing: content-box;
+}
+
+h1 {
+  font-size: 64px;
+  font-weight: 700;
+  line-height: 101%;
+  letter-spacing: 2px;
+  @include b('mobile') {
+    font-size: 36px;
+  }
+}
+
+a {
+  text-decoration: none;
+  color: $color-text-link;
+}
+
+.container-App {
+  @include flex(column,center,normal,nowrap);
+  padding: $height-header 0 0 0;
+  height: 100%;
+  background: $color-bg;
+  color: $color-text-bright;
+}
