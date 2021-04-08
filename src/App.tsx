@@ -28,6 +28,15 @@ export const App: React.FC = () => {
           <Route path="/markets">
             <Pages.PageMarkets />
           </Route>
+          <Route path="/settings">
+            <Pages.PageSettings />
+          </Route>
+          <Route path="/login">
+            <Pages.PageLogin />
+          </Route>
+          <Route path="/account">
+            <Pages.PageAccount />
+          </Route>
           <Route path="*">
             <Pages.Page404 />
           </Route>
