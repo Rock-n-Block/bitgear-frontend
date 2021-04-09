@@ -7,6 +7,19 @@ $height-header: 83px;
   box-sizing: border-box;
 }
 
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+*::-webkit-scrollbar-track {
+  background-color: $color-scrollbar-bg;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: $color-scrollbar;
+}
+
 html,
 body,
 #root {
@@ -20,6 +33,14 @@ body,
   text-rendering: optimizeSpeed;
 }
 
+input,
+textarea {
+  font-family: $font2;
+  font-size: 22px;
+  font-weight: 400;
+  line-height: 26px;
+}
+
 img, svg {
   box-sizing: content-box;
 }
@@ -28,7 +49,6 @@ h1 {
   font-size: 64px;
   font-weight: 700;
   line-height: 101%;
-  letter-spacing: 2px;
   @include b('mobile') {
     font-size: 36px;
   }
@@ -42,7 +62,7 @@ a {
 .container-App {
   @include flex(column,center,normal,nowrap);
   padding: $height-header 0 0 0;
-  height: 100%;
+  //height: 100%;
   background: $color-bg;
   color: $color-text-bright;
 }

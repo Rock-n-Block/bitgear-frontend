@@ -6,35 +6,41 @@ import s from './style.module.scss';
 type InputProps = {
   type?: string;
   disabled?: boolean;
+  open?: boolean;
   error?: boolean;
-  label?: any;
-  labelInner?: any;
+  label?: React.ReactElement;
+  labelInner?: React.ReactElement;
+  dropdown?: React.ReactElement;
   placeholder?: string;
   styleCustom?: any;
-  big?: boolean;
-  medium?: boolean;
   focused?: boolean;
+  classContainer?: string;
+  classInput?: string;
   value?: string;
   onChange?: (e: string) => void;
   onFocus?: (e: React.FormEvent<HTMLInputElement>) => void;
+  onBlur?: (e: React.FormEvent<HTMLInputElement>) => void;
 };
 
 export const Input: React.FC<InputProps> = ({
   type = 'text',
   disabled = false,
   error = false,
-  label = null,
-  labelInner = null,
+  label = undefined,
+  labelInner = undefined,
+  dropdown = undefined,
   placeholder = '',
   styleCustom = {},
-  big = false,
-  medium = false,
   focused = false,
+  classContainer = undefined,
+  classInput = undefined,
   value = '',
   onChange = () => {},
   onFocus = () => {},
+  onBlur = () => {},
 }) => {
   const [newPlaceholder, setNewPlaceholder] = React.useState<string>(placeholder);
+  const [newOpen, setNewOpen] = React.useState<boolean>(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onChange(e.target.value);
@@ -45,19 +51,27 @@ export const Input: React.FC<InputProps> = ({
     onFocus(e);
   };
 
-  const handleBlur = () => setNewPlaceholder(placeholder);
+  const handleBlur = (e: React.FormEvent<HTMLInputElement>) => {
+    setNewPlaceholder(placeholder);
+    onBlur(e);
+  };
 
   const classNameError = error && s.error;
-  const classNameInput = big
-    ? cns(s.inputBig, classNameError)
-    : medium
-    ? cns(s.inputMedium, classNameError)
-    : cns(s.input, classNameError);
+  const classNameContainer = newOpen ? s.containerInputOpen : s.containerInput;
+
+  React.useEffect(() => {
+    console.log('Input useEffect:', value);
+    if (value?.length > 0) {
+      setNewOpen(true);
+    } else {
+      setNewOpen(false);
+    }
+  }, [value]);
 
   return (
-    <div className={cns(s.containerInput, classNameError)}>
+    <div className={cns(classNameContainer, classNameError, classContainer)}>
       {label && (
-        <label htmlFor="input" className={cns(big ? s.inputLabelBig : s.inputLabel)}>
+        <label htmlFor="input" className={cns(s.label)}>
           {label}
         </label>
       )}
@@ -67,7 +81,7 @@ export const Input: React.FC<InputProps> = ({
             id="input"
             disabled={disabled}
             ref={(r) => r && focused && r.focus()}
-            className={classNameInput}
+            className={cns(s.input, classNameError, classInput)}
             style={{ ...styleCustom }}
             type={type}
             placeholder={newPlaceholder}
@@ -77,7 +91,8 @@ export const Input: React.FC<InputProps> = ({
             onBlur={handleBlur}
           />
         </div>
-        {labelInner && <div className={s.inputLabelInner}>{labelInner}</div>}
+        {labelInner && <div className={s.labelInner}>{labelInner}</div>}
+        {newOpen && dropdown && <div className={s.dropdown}>{dropdown}</div>}
       </div>
     </div>
   );

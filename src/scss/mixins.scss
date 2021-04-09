@@ -6,6 +6,12 @@
   flex-wrap: $wrap;
 }
 
+@mixin grid($columns: repeat(2, 1fr), $gap: 10px) {
+  display: grid;
+  grid-template-columns: $columns;
+  gap: $gap;
+}
+
 @mixin b($point) {
   @if $point==desktop {
     @media (max-width: 1366px) and (min-width: 1024px) {

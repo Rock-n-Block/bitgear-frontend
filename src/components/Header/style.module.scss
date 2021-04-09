@@ -21,7 +21,10 @@ $height: 83px;
   font-weight: 500;
   letter-spacing: 1px;
   font-size: $fs;
-  border-bottom: $border-header;
+  border-bottom-width: 2px;
+  border-bottom-style: solid;
+  border-image-slice: 1;
+  border-image-source: $color-border-header;
   &Container {
     @include flex(row,center,space-between,nowrap);
     height: $height;

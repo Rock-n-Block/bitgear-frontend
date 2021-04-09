@@ -43,15 +43,21 @@ export const Header: React.FC = () => {
           }
         >
           <div className={s.headerItem}>
-            <Link to="/">Home</Link>
+            <Link to="/" onClick={() => setOpenMenu(false)}>
+              Home
+            </Link>
           </div>
 
           <div className={s.headerItem}>
-            <Link to="/explore">Explore</Link>
+            <Link to="/explore" onClick={() => setOpenMenu(false)}>
+              Explore
+            </Link>
           </div>
 
           <div className={s.headerItem}>
-            <Link to="/farm">Farm</Link>
+            <Link to="/farm" onClick={() => setOpenMenu(false)}>
+              Farm
+            </Link>
           </div>
 
           {isMobile && (
