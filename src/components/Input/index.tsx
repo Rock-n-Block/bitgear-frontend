@@ -13,7 +13,6 @@ type InputProps = {
   dropdown?: React.ReactElement;
   placeholder?: string;
   styleCustom?: any;
-  focused?: boolean;
   classContainer?: string;
   classInput?: string;
   value?: string;
@@ -31,7 +30,6 @@ export const Input: React.FC<InputProps> = ({
   dropdown = undefined,
   placeholder = '',
   styleCustom = {},
-  focused = false,
   classContainer = undefined,
   classInput = undefined,
   value = '',
@@ -42,11 +40,19 @@ export const Input: React.FC<InputProps> = ({
   const [newPlaceholder, setNewPlaceholder] = React.useState<string>(placeholder);
   const [newOpen, setNewOpen] = React.useState<boolean>(false);
 
+  const refContainer = React.useRef<HTMLDivElement>(null);
+  const refLabel = React.useRef<HTMLLabelElement>(null);
+  const refInput = React.useRef<HTMLInputElement>(null);
+  const refInputInner = React.useRef<HTMLDivElement>(null);
+  const refLabelInner = React.useRef<HTMLDivElement>(null);
+  const refDropdown = React.useRef<HTMLDivElement>(null);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onChange(e.target.value);
   };
 
   const handleFocus = (e: React.FormEvent<HTMLInputElement>) => {
+    setNewOpen(true);
     setNewPlaceholder('');
     onFocus(e);
   };
@@ -56,8 +62,28 @@ export const Input: React.FC<InputProps> = ({
     onBlur(e);
   };
 
+  const handleClickOutside = (e: any) => {
+    if (
+      !refContainer?.current?.contains(e.target) &&
+      !refLabel?.current?.contains(e.target) &&
+      !refInput?.current?.contains(e.target) &&
+      !refInputInner?.current?.contains(e.target) &&
+      !refLabelInner?.current?.contains(e.target) &&
+      !refDropdown?.current?.contains(e.target)
+    ) {
+      setNewOpen(false);
+    }
+  };
+
   const classNameError = error && s.error;
   const classNameContainer = newOpen ? s.containerInputOpen : s.containerInput;
+
+  React.useEffect(() => {
+    document.addEventListener('click', handleClickOutside);
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, []);
 
   React.useEffect(() => {
     console.log('Input useEffect:', value);
@@ -69,18 +95,18 @@ export const Input: React.FC<InputProps> = ({
   }, [value]);
 
   return (
-    <div className={cns(classNameContainer, classNameError, classContainer)}>
+    <div ref={refContainer} className={cns(classNameContainer, classNameError, classContainer)}>
       {label && (
-        <label htmlFor="input" className={cns(s.label)}>
+        <label ref={refLabel} htmlFor="input" className={cns(s.label)}>
           {label}
         </label>
       )}
-      <div className={s.containerInputInner}>
+      <div ref={refInputInner} className={s.containerInputInner}>
         <div className={s.containerInputInput}>
           <input
+            ref={refInput}
             id="input"
             disabled={disabled}
-            ref={(r) => r && focused && r.focus()}
             className={cns(s.input, classNameError, classInput)}
             style={{ ...styleCustom }}
             type={type}
@@ -91,8 +117,16 @@ export const Input: React.FC<InputProps> = ({
             onBlur={handleBlur}
           />
         </div>
-        {labelInner && <div className={s.labelInner}>{labelInner}</div>}
-        {newOpen && dropdown && <div className={s.dropdown}>{dropdown}</div>}
+        {labelInner && (
+          <div ref={refLabelInner} className={s.labelInner}>
+            {labelInner}
+          </div>
+        )}
+        {newOpen && dropdown && (
+          <div ref={refDropdown} className={s.dropdown}>
+            {dropdown}
+          </div>
+        )}
       </div>
     </div>
   );
