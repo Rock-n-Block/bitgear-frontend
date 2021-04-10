@@ -10,9 +10,11 @@ $color-bg-header: #07092A;
 $color-bg-footer: #07092A;
 $color-bg-error: #c88a38;
 $color-bg-input: #07092A;
+$color-bg-input-small: #212443;
 $color-bg-dropdown-item: #212443;
 $color-bg-button: #0197E2;
 $color-bg-card: rgba(1, 151, 226, 0.3);
+$color-bg-button-primary: linear-gradient(322.71deg, #007FEF 16.86%, #00E3B6 95.37%), #0197E2;
 // text
 $color-text-primary: #fff;
 $color-text-secondary: rgba(255, 255, 255, 0.5);
@@ -53,8 +55,6 @@ $color-border-header: linear-gradient(
     $color-border-header-start 0%,
     $color-border-header-end 100%
 );
-$color-border-input: rgba(1, 151, 226, 0.5);
-$color-border-card: #203054;
 // others
 $color-cursor-input: #fff;
 
@@ -62,9 +62,11 @@ $color-cursor-input: #fff;
 // borders
 
 $border-header: 1px solid $color-border-header;
-$border-input: 2px solid $color-border-input;
-$border-input-dropdown: 1px solid $color-border-input;
-$border-card: 2px solid $color-border-card;
+$border-input: 2px solid rgba(1, 151, 226, 0.5);
+$border-input-dropdown: 1px solid rgba(1, 151, 226, 0.5);
+$border-card: 2px solid #203054;
+$border-tab: 2px solid #203054;
+$border-form: 3px solid rgba(1, 151, 226, 0.5);
 
 // ============================================
 // shadows
@@ -80,3 +82,5 @@ $shadow-border: 0 0 0 1px lightgrey inset;
 // dimentions
 
 $height-input: 70px;
+$height-input-small: 55px;
+$height-header: 83px;

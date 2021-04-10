@@ -1,0 +1,16 @@
+@import '../../scss/theme.scss';
+@import '../../scss/mixins.scss';
+
+.button {
+  @include flex(row, center, center);
+  padding: 16px 60px;
+  background: $color-bg-button-primary;
+  border-radius: 12px;
+  text-transform: uppercase;
+  color: $color-text-primary;
+  outline: none;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 26px;
+}

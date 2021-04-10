@@ -2,7 +2,6 @@
 @import "../../scss/mixins.scss";
 
 $fs: 16px;
-$height: 83px;
 
 .header {
   @include flex(row,center,center,nowrap);
@@ -10,7 +9,7 @@ $height: 83px;
   position: fixed;
   left: 0;
   width: 100%;
-  height: $height;
+  height: $height-header;
   background-color: $color-bg-header;
   z-index: 999;
   user-select: none;
@@ -27,13 +26,13 @@ $height: 83px;
   border-image-source: $color-border-header;
   &Container {
     @include flex(row,center,space-between,nowrap);
-    height: $height;
+    height: $height-header;
     width: 100%;
     max-width: 1270px;
   }
   &LeftGroup {
     @include flex(row,center,center,nowrap);
-    height: $height;
+    height: $height-header;
     padding: 0 20px;
     @include b('mobile') {
       padding: 0 2vw;
@@ -41,7 +40,7 @@ $height: 83px;
   }
   &RightGroup {
     @include flex(row,center,center,nowrap);
-    height: $height;
+    height: $height-header;
     padding: 0 2vw;
     @include b('mobile') {
       display:none;
@@ -57,6 +56,7 @@ $height: 83px;
       font-size: $fs;
       text-decoration: none;
       color: $color-text-header;
+      transition: color 200ms ease;
     }
   }
   &Item:hover {
@@ -65,15 +65,17 @@ $height: 83px;
     padding: 20px 25px;
     font-size: $fs;
     border-radius: 5px;
-    color: $color-text-header;
-    text-decoration: underline;
+    a {
+      color: $color-text-link;
+      transition: color 200ms ease;
+    }
   }
   &ItemArrow {
     margin-left: 6px;
     opacity: 0.4;
   }
   &Logo {
-    height: $height - 40px;
+    height: $height-header - 40px;
   }
   &MenuMobileClosed {
     display:none;
@@ -85,7 +87,7 @@ $height: 83px;
     height: 100vh;
     width: 100vw;
     left: 0;
-    top: $height;
+    top: $height-header;
     padding: 0 30px 120px 30px;
     flex-grow: 0;
     background-color: $color-bg-header;

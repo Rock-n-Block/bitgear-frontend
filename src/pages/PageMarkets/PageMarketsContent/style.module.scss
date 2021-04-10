@@ -2,19 +2,253 @@
 @import "../../../scss/mixins";
 
 .container {
-  max-width: 1100px;
-  padding: 10px;
+  width: 100%;
+  padding: 40px 30px 30px 30px;
+
+  @include b('mobile') {
+    padding: 40px 10px 30px 10px;
+  }
 }
 
 .containerTitle {
-  padding: 120px 0 0;
+  @include flex(row, normal, space-between);
+  width: 100%;
+
   @include b('mobile') {
-    padding: 60px 0 0;
+    @include flex(column);
+    padding: 0 10px;
   }
-  h1 {
-    max-width: 800px;
-    text-align: center;
-    margin: 16px auto 40px;
+
+  &First {
+    @include flex(column);
+  }
+
+  &Second {
+    @include flex(column, normal, flex-end);
+
+    &Inner {
+      @include flex(row, normal, space-between);
+      margin: 24px 0 0 0;
+      border-bottom: $border-tab;
+
+      @include b('mobile') {
+        display: block;
+      }
+
+      div:first-child {
+        padding: 10px 13px 10px 0px;
+      }
+
+      div {
+        padding: 10px 13px 10px 13px;
+
+        @include b('mobile') {
+          float: left;
+        }
+      }
+
+      div:last-child {
+        padding: 10px 0px 10px 13px;
+
+        @include b('mobile') {
+          float: right;
+        }
+      }
+    }
+
+    &Item {
+      font-size: 16px;
+      line-height: 25px;
+      font-weight: 400;
+      color: $color-text-secondary;
+      cursor: pointer;
+      transition: color 200ms ease;
+
+      &:hover {
+        color: $color-text-link;
+        transition: color 200ms ease;
+      }
+    }
+
+    &ItemActive {
+      font-size: 16px;
+      line-height: 25px;
+      font-weight: 700;
+      color: $color-text-link;
+      padding: 10px 26px 10px 0px;
+      cursor: pointer;
+    }
+  }
+
+  &Name {
+    color: $color-text-link;
+    font-size: 20px;
+    line-height: 31px;
+    font-weight: 400;
+  }
+
+  &Price {
+    margin: -7px 0 0 0;
+    font-size: 50px;
+    line-height: 78px;
+    font-weight: 400;
+  }
+
+  &PriceChange {
+    margin: -13px 0 0 0;
+    font-size: 20px;
+    line-height: 31px;
+    font-weight: 400;
+
+    &Plus {
+      margin: -13px 0 0 0;
+      color: $color-text-green;
+      font-size: 20px;
+      line-height: 31px;
+      font-weight: 400;
+    }
+
+    &Minus {
+      margin: -13px 0 0 0;
+      color: $color-text-red;
+      font-size: 20px;
+      line-height: 31px;
+      font-weight: 400;
+    }
   }
 }
 
+.containerTrading {
+  @include grid(1fr 44px 1fr, 1fr 58px, 28px);
+  width: 100%;
+  margin: 47px 0 0 0;
+
+  @include b('870') {
+    @include grid(repeat(1, 1fr), auto, 0px);
+  }
+
+  &Card {
+    @include flex(row, normal, normal, nowrap);
+    position: relative;
+    flex-basis: 450px;
+    padding: 40px 25px 20px 25px;
+    border: $border-form;
+    border-radius: 20px;
+
+    &Label {
+      position: absolute;
+      padding: 0 5px;
+      top: -14px;
+      left: 20px;
+      font-size: 16px;
+      line-height: 25px;
+      font-weight: 500;
+      background: $color-bg;
+      color: $color-text-link;
+    }
+
+    &Image {
+      img {
+        width: 58px;
+        height: 58px;
+        border-radius: 50%;
+      }
+    }
+
+    &Container {
+      flex-grow: 1;
+      flex-shrink: 1;
+      margin: 6px 0 0 20px;
+    }
+
+    &ContainerInner {
+      @include flex(row, center, space-between);
+      width: 100%;
+    }
+
+    &Name {
+      font-size: 20px;
+      line-height: 31px;
+      font-weight: 500;
+      color: $color-text-link;
+      cursor: pointer;
+    }
+
+    &ArrowDown {
+      margin: 0 0 0 10px;
+    }
+
+    &Symbol {
+      font-size: 16px;
+      line-height: 25px;
+      font-weight: 400;
+      color: $color-text-secondary;
+    }
+
+    &Input {
+      margin: 6px 0 0 0;
+      input {
+        height: $height-input-small;
+        outline: none;
+        background-color: $color-bg-input-small;
+        padding: 10px 20px;
+        font-size: 30px;
+        line-height: 47px;
+        border: none;
+        border-radius: 4px;
+        caret-color: $color-cursor-input;
+        color: $color-text-input;
+        width: 100%;
+        &::placeholder {
+          color: $color-text-input-placeholder;
+        }
+      }
+    }
+
+    &Balance {
+      margin: 11px 0 0 0;
+      text-align: right;
+      font-size: 16px;
+      line-height: 25px;
+      font-weight: 400;
+      color: $color-text-secondary;
+
+      span {
+        margin: 0 0 0 11px;
+        font-weight: 600;
+        color: $color-text-link;
+      }
+    }
+  }
+
+  &Divider {
+    @include flex(row, center, center);
+
+    @include b('870') {
+      @include flex(row, center, flex-end);
+      margin: -12px 0;
+    }
+
+    &Inner {
+      @include flex(row, center, center);
+      width: 44px;
+      height: 44px;
+      border: $border-form;
+      border-radius: 50%;
+      background: $color-bg;
+      z-index: 2;
+    }
+  }
+
+  &Button {
+    @include flex(row, center, center);
+    grid-column: 1 / 4;
+    grid-row: 2;
+
+    @include b('870') {
+      margin: 30px 0 0 0;
+      grid-column: auto;
+      grid-row: auto;
+    }
+  }
+}

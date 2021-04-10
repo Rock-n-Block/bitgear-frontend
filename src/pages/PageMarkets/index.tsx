@@ -19,7 +19,10 @@ export const PageMarkets: React.FC = () => {
         <Route path={path} exact>
           <Redirect to="/explore" />
         </Route>
-        <Route path={`${path}/:pairOne/:pairTwo`} exact>
+        <Route path={`${path}/:symbolOne/:symbolTwo`}>
+          <PageMarketsContent />
+        </Route>
+        <Route path={`${path}/:symbolOne`}>
           <PageMarketsContent />
         </Route>
       </Switch>

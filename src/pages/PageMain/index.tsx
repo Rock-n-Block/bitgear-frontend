@@ -194,7 +194,7 @@ export const PageMain: React.FC = () => {
               <div className={s.cardContainerFirst}>
                 <div className={s.cardSymbol}>{symbol}</div>
                 <div className={s.cardPrice}>${price}</div>
-                <div className={classPriceChange}>{priceChange}</div>
+                <div className={classPriceChange}>{priceChange}%</div>
               </div>
               <div className={s.cardContainerSecond}>
                 <img src={image} alt="" className={s.cardImage} />
