@@ -166,16 +166,82 @@
       width: 100%;
     }
 
-    &Name {
-      font-size: 20px;
-      line-height: 31px;
-      font-weight: 500;
-      color: $color-text-link;
-      cursor: pointer;
+    &Label {
+      @include flex(row, center, normal);
     }
 
-    &ArrowDown {
-      margin: 0 0 0 10px;
+    &Search {
+      @include flex(row, center, normal);
+
+      &Name {
+        font-size: 20px;
+        line-height: 31px;
+        font-weight: 500;
+        color: $color-text-link;
+        cursor: pointer;
+      }
+
+      &ArrowDown {
+        margin: 0 0 0 10px;
+      }
+    }
+
+    &SearchInput {
+      padding: 0 10px;
+    }
+
+    &SearchItems {
+      height: 280px;
+      overflow: auto;
+      margin: 10px 0 0 0;
+      padding: 0px 10px;
+    }
+
+    &SearchItem {
+      @include grid(36px 150px 1fr, 36px, 0);
+      padding: 14px 10px;
+      border-radius: 12px;
+      cursor: pointer;
+      width: 100%;
+      background: $color-bg-dropdown-item;
+      margin: 1px 0;
+
+      &:hover {
+        background: $color-bg-dropdown;
+      }
+
+      &Image {
+        width: 36px;
+        height: 36px;
+      }
+
+      &First {
+        @include flex(column, normal, center, nowrap);
+        margin: 0px 13px 0 13px;
+      }
+
+      &Name {
+        font-weight: 500;
+        font-size: 20px;
+        line-height: 31px;
+        color: $color-text-link;
+      }
+
+      &Price {
+        font-weight: 400;
+        font-size: 16px;
+        line-height: 25px;
+        color: $color-text-secondary;
+        margin: -5px 0 0 0;
+      }
+
+      &Symbol {
+        @include flex(row, center, flex-end);
+        font-weight: 400;
+        font-size: 16px;
+        line-height: 25px;
+        color: $color-text-secondary;
+      }
     }
 
     &Symbol {

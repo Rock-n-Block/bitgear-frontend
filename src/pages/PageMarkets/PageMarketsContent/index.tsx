@@ -1,11 +1,13 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
+import { v1 as uuid } from 'uuid';
 
 import { ReactComponent as IconArrowDownWhite } from '../../../assets/icons/arrow-down-white.svg';
 import { ReactComponent as IconExchange } from '../../../assets/icons/exchange.svg';
 import { ReactComponent as IconGear } from '../../../assets/icons/gear.svg';
+import { ReactComponent as IconSearchWhite } from '../../../assets/icons/search-white.svg';
 import imageTokenPay from '../../../assets/images/token.png';
-import { LineChart } from '../../../components';
+import { Dropdown, Input, LineChart } from '../../../components';
 import Button from '../../../components/Button';
 import { CryptoCompareService } from '../../../services/CryptoCompareService';
 
@@ -28,6 +30,65 @@ type TypeToken = {
   image?: string;
 };
 
+const tokens: TypeToken[] = [
+  {
+    symbol: 'WETH',
+    name: 'Ethereum',
+    price: 1813.04,
+    priceChange: 0,
+    image: undefined,
+  },
+  {
+    symbol: 'WBTC',
+    name: 'Bitcoin',
+    price: 1813.04,
+    priceChange: 5.96,
+    image: undefined,
+  },
+  {
+    symbol: 'GEAR',
+    name: 'Gear',
+    price: 1813.04,
+    priceChange: -1.4,
+    image: undefined,
+  },
+  {
+    symbol: 'GEAR',
+    name: 'Ethereum',
+    price: 1813.04,
+    priceChange: -1.4,
+    image: undefined,
+  },
+  {
+    symbol: 'WETH',
+    name: 'Ethereum',
+    price: 1813.04,
+    priceChange: 5.96,
+    image: undefined,
+  },
+  {
+    symbol: 'WBTC',
+    name: 'Ethereum',
+    price: 1813.04,
+    priceChange: 5.96,
+    image: undefined,
+  },
+  {
+    symbol: 'GEAR',
+    name: 'Ethereum',
+    price: 1813.04,
+    priceChange: -1.4,
+    image: undefined,
+  },
+  {
+    symbol: 'GEAR',
+    name: 'Ethereum',
+    price: 1813.04,
+    priceChange: -1.4,
+    image: undefined,
+  },
+];
+
 export const PageMarketsContent: React.FC = () => {
   const { symbolOne, symbolTwo } = useParams<TypeUseParams>();
 
@@ -35,6 +96,7 @@ export const PageMarketsContent: React.FC = () => {
   const [history, setHistory] = React.useState<any[]>([]);
   const [points, setPoints] = React.useState<number[]>([]);
   const [period, setPeriod] = React.useState<number>(1);
+  const [searchValue, setSearchValue] = React.useState<string>('');
 
   const data: TypeToken = {
     symbol: 'ETH',
@@ -48,6 +110,10 @@ export const PageMarketsContent: React.FC = () => {
   const classPriceChange = s.containerTitlePriceChange;
   const isPriceChangePositive = +priceChange > 0;
   const isPriceChangeNegative = +priceChange < 0;
+
+  const handleChangeSearch = (newSearchValue: string) => {
+    setSearchValue(newSearchValue);
+  };
 
   const handleSetPeriod = (newPeriod: number) => {
     setPeriod(newPeriod);
@@ -112,6 +178,43 @@ export const PageMarketsContent: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [period]);
 
+  const DropdownLabel = (
+    <div className={s.containerTradingCardSearch}>
+      <div className={s.containerTradingCardSearchName}>{name}</div>
+      <IconArrowDownWhite className={s.containerTradingCardSearchArrowDown} />
+    </div>
+  );
+
+  const DropdownItems = (
+    <div>
+      <div className={s.containerTradingCardSearchInput}>
+        <Input
+          placeholder="Search"
+          label={<IconSearchWhite />}
+          value={searchValue}
+          onChange={handleChangeSearch}
+        />
+      </div>
+      <div className={s.containerTradingCardSearchItems}>
+        {tokens.map((item) => {
+          const { name: tokenName, symbol, price: tokenPrice, image = imageTokenPay } = item;
+          return (
+            <div key={uuid()} className={s.containerTradingCardSearchItem}>
+              <img src={image} alt="" className={s.containerTradingCardSearchItemImage} />
+              <div className={s.containerTradingCardSearchItemFirst}>
+                <div className={s.containerTradingCardSearchItemName}>{tokenName}</div>
+                <div className={s.containerTradingCardSearchItemPrice}>{tokenPrice}</div>
+              </div>
+              <div className={s.containerTradingCardSearchItemSymbol}>
+                <div>{symbol}</div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+
   return (
     <div className={s.container}>
       <section className={s.containerTitle}>
@@ -150,10 +253,7 @@ export const PageMarketsContent: React.FC = () => {
           </div>
           <div className={s.containerTradingCardContainer}>
             <div className={s.containerTradingCardContainerInner}>
-              <div className={s.containerTradingCardName}>
-                Bitcoin
-                <IconArrowDownWhite className={s.containerTradingCardArrowDown} />
-              </div>
+              <Dropdown label={DropdownLabel}>{DropdownItems}</Dropdown>
               <div className={s.containerTradingCardSymbol}>BTC</div>
             </div>
             <div className={s.containerTradingCardInput}>

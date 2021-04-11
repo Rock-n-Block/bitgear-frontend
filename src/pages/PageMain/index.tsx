@@ -5,7 +5,7 @@ import { v1 as uuid } from 'uuid';
 import { ReactComponent as IconSearch } from '../../assets/icons/search.svg';
 import imageCoin from '../../assets/images/coin.png';
 import imageRocket from '../../assets/images/rocket.png';
-import * as Components from '../../components';
+import { InputWithDropdown } from '../../components';
 import { CryptoCompareService } from '../../services/CryptoCompareService';
 
 import s from './style.module.scss';
@@ -203,7 +203,7 @@ export const PageMain: React.FC = () => {
           Find the <span>best prices</span> across exchange networks
         </h1>
         <div>
-          <Components.Input
+          <InputWithDropdown
             // open
             classContainer={s.containerInput}
             onChange={handleSearch}

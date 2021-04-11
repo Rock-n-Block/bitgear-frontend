@@ -1,3 +1,5 @@
 export { Header } from './Header';
-export { Input } from './Input';
+export { InputWithDropdown } from './InputWithDropdown';
 export { LineChart } from './LineChart';
+export { Dropdown } from './Dropdown';
+export { Input } from './Input';
