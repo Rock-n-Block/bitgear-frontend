@@ -21,6 +21,24 @@ export class CryptoCompareService {
     axios.defaults.baseURL = config.apis.cryptoCompare;
   }
 
+  getAllCoins = async () => {
+    try {
+      const url = `/data/all/coinlist`;
+      const result = await axios.get(url);
+      console.log('CryptoCompareService getAllCoins:', result);
+      if (result.data.Response === 'Error') {
+        return { status: 'ERROR', data: undefined };
+      }
+      return {
+        status: 'SUCCESS',
+        data: result.data.Data,
+      };
+    } catch (e) {
+      console.error(e);
+      return { status: 'ERROR', data: undefined };
+    }
+  };
+
   getMarketData = async ({ symbolOne, symbolTwo }: TypeGetPriceProps) => {
     try {
       const url = `/data/pricemultifull?fsyms=${symbolOne.toUpperCase()}&tsyms=${symbolTwo.toUpperCase()}`;

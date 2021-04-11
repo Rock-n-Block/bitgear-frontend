@@ -6,15 +6,24 @@ import { ReactComponent as IconSearch } from '../../assets/icons/search.svg';
 import imageCoin from '../../assets/images/coin.png';
 import imageRocket from '../../assets/images/rocket.png';
 import * as Components from '../../components';
+import { CryptoCompareService } from '../../services/CryptoCompareService';
 
 import s from './style.module.scss';
+
+const CryptoCompare = new CryptoCompareService();
 
 type TypeToken = {
   symbol?: string;
   name?: string;
   price?: number;
-  priceChange?: number | string;
+  priceChange: string | number;
   image?: string;
+};
+
+type TypeCoin = {
+  Name?: string;
+  CoinName?: string;
+  ImageUrl?: string;
 };
 
 const tokens: TypeToken[] = [
@@ -115,7 +124,7 @@ export const SearchLabel: React.FC = () => {
 };
 
 type TypeSearchDropdownProps = {
-  items?: TypeToken[];
+  items?: TypeCoin[];
   search?: string;
 };
 
@@ -123,17 +132,14 @@ export const SearchDropdown: React.FC<TypeSearchDropdownProps> = ({ items = [], 
   return (
     <div className={s.dropdownSearch}>
       {items && items.length > 0 ? (
-        tokens.map((token: TypeToken) => {
-          const { symbol, name, image = imageCoin } = token;
+        items.map((item) => {
+          const { CoinName, Name, ImageUrl } = item;
+          const image = ImageUrl ? `https://cryptocompare.com${ImageUrl}` : imageCoin;
           return (
-            <Link
-              to={`/markets/${symbol}`}
-              key={`token-${uuid()}`}
-              className={s.dropdownSearchItem}
-            >
+            <Link to={`/markets/${Name}`} key={`token-${uuid()}`} className={s.dropdownSearchItem}>
               <img src={image} alt="" className={s.dropdownSearchItemImage} />
-              <div className={s.dropdownSearchItemName}>{name}</div>
-              <div className={s.dropdownSearchItemSymbol}>{symbol}</div>
+              <div className={s.dropdownSearchItemName}>{CoinName}</div>
+              <div className={s.dropdownSearchItemSymbol}>{Name}</div>
             </Link>
           );
         })
@@ -149,11 +155,46 @@ export const SearchDropdown: React.FC<TypeSearchDropdownProps> = ({ items = [], 
 
 export const PageMain: React.FC = () => {
   const [searchValue, setSearchValue] = React.useState<string>('');
-  // const [openSearchDropdown, setOpenSearchDropdown] = React.useState<boolean>(false);
+  const [searchResult, setSearchResult] = React.useState<any[]>([]);
+  const [coins, setCoins] = React.useState<any[]>([]);
+
+  const getAllCoins = async () => {
+    try {
+      const result = await CryptoCompare.getAllCoins();
+      console.log(result);
+      if (result.status === 'SUCCESS') {
+        const newCoins = Object.values(result.data);
+        setCoins(newCoins);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const matchSearch = (value: string) => {
+    try {
+      let result = coins.filter((coin) => {
+        const includesInCoinName = coin.CoinName.toLowerCase().includes(value.toLowerCase());
+        const includesInName = coin.Name.toLowerCase().includes(value.toLowerCase());
+        if (includesInCoinName || includesInName) return true;
+        return false;
+      });
+      result = result.slice(0, 5);
+      console.log('matchSearch:', result);
+      setSearchResult(result);
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   const handleSearch = (e: string) => {
     setSearchValue(e);
+    matchSearch(e);
   };
+
+  React.useEffect(() => {
+    getAllCoins();
+  }, []);
 
   return (
     <div className={s.container}>
@@ -171,7 +212,7 @@ export const PageMain: React.FC = () => {
             value={searchValue}
             label={<Label />}
             labelInner={<SearchLabel />}
-            dropdown={<SearchDropdown items={tokens} />}
+            dropdown={<SearchDropdown items={searchResult} />}
             placeholder="Search token or input token address..."
           />
         </div>
