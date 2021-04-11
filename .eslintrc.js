@@ -49,6 +49,7 @@ module.exports = {
     },
   ],
   rules: {
+    // 'react-hooks/exhaustive-deps': 'off',
     '@typescript-eslint/no-unused-vars': 'error',
     'prettier/prettier': ['error', prettierConfig],
     'quote-props': ['error', 'consistent-as-needed'],

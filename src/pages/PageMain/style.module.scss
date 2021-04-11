@@ -243,15 +243,15 @@
 }
 
 .containerCards {
-  @include grid(repeat(3, 1fr), 20px);
+  @include grid(repeat(3, 1fr), 1fr, 20px);
   margin: 40px 0px 0 0px;
 
   @include b('tablet') {
-    @include grid(repeat(2, 1fr), 20px);
+    @include grid(repeat(2, 1fr), 1fr, 20px);
   }
 
   @include b('mobile') {
-    @include grid(repeat(1, 1fr));
+    @include grid(repeat(1, 1fr), 1fr);
   }
 }
 

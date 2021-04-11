@@ -1,0 +1,56 @@
+@import '../../scss/theme.scss';
+@import '../../scss/mixins.scss';
+
+.chartContainer {
+  width: 100%;
+  height: 100%;
+  background-color: $color-bg-chart;
+}
+
+.chart {
+  width: 100%;
+  height: 100%;
+  background-color: $color-bg-chart;
+}
+
+.path {
+  fill: transparent;
+  stroke: $color-chart-line;
+  stroke-width: 3px;
+}
+
+.verticalLine {
+  path {
+    fill: transparent;
+    stroke: transparent;
+    stroke-width: 1px;
+    stroke-dasharray: 7;
+  }
+
+  rect,
+  text,
+  circle {
+    fill: transparent;
+  }
+
+  &:hover {
+    path {
+      fill: transparent;
+      stroke: $color-chart-line-vertical;
+      stroke-width: 1px;
+      stroke-dasharray: 7;
+    }
+
+    circle {
+      fill: #fff;
+      stroke: $color-chart-line;
+      stroke-width: 3px;
+    }
+
+    text {
+      fill: #fff;
+      stroke: transparent;
+      stroke-width: 1px;
+    }
+  }
+}

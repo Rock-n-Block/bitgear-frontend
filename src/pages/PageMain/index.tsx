@@ -186,8 +186,6 @@ export const PageMain: React.FC = () => {
             classPriceChange = s.cardPriceChangePlus;
           } else if (priceChange && priceChange < 0) {
             classPriceChange = s.cardPriceChangeMinus;
-          } else {
-            priceChange = '';
           }
           return (
             <Card key={`token-${uuid()}`} to={`/markets/${symbol}`}>

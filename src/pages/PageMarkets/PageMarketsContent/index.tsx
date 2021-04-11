@@ -5,6 +5,7 @@ import { ReactComponent as IconArrowDownWhite } from '../../../assets/icons/arro
 import { ReactComponent as IconExchange } from '../../../assets/icons/exchange.svg';
 import { ReactComponent as IconGear } from '../../../assets/icons/gear.svg';
 import imageTokenPay from '../../../assets/images/token.png';
+import { LineChart } from '../../../components';
 import Button from '../../../components/Button';
 import { CryptoCompareService } from '../../../services/CryptoCompareService';
 
@@ -15,7 +16,7 @@ const imageTokenReceive = 'https://www.cryptocompare.com/media/37746238/eth.png'
 const CryptoCompare = new CryptoCompareService();
 
 type TypeUseParams = {
-  symbolOne?: string;
+  symbolOne: string;
   symbolTwo?: string;
 };
 
@@ -23,55 +24,113 @@ type TypeToken = {
   symbol?: string;
   name?: string;
   price?: number;
-  priceChange?: number | string;
+  priceChange: number | string;
   image?: string;
 };
 
 export const PageMarketsContent: React.FC = () => {
   const { symbolOne, symbolTwo } = useParams<TypeUseParams>();
 
+  const [price, setPrice] = React.useState(0);
+  const [history, setHistory] = React.useState<any[]>([]);
+  const [points, setPoints] = React.useState<number[]>([]);
+  const [period, setPeriod] = React.useState<number>(1);
+
   const data: TypeToken = {
     symbol: 'ETH',
-    name: 'Ethereum',
-    price: 1813.04,
+    name: 'Currency',
     priceChange: 3.04,
   };
 
-  let { priceChange } = data;
-  const { symbol, name, price } = data;
+  const { priceChange } = data;
+  const { name } = data;
 
-  let classPriceChange = s.containerTitlePriceChange;
+  const classPriceChange = s.containerTitlePriceChange;
+  const isPriceChangePositive = +priceChange > 0;
+  const isPriceChangeNegative = +priceChange < 0;
 
-  if (priceChange && priceChange > 0) {
-    priceChange = `+${priceChange}`;
-    classPriceChange = s.containerTitlePriceChangePlus;
-  } else if (priceChange && priceChange < 0) {
-    classPriceChange = s.containerTitlePriceChangeMinus;
-  } else {
-    priceChange = '';
-  }
+  const handleSetPeriod = (newPeriod: number) => {
+    setPeriod(newPeriod);
+  };
 
   const getPrice = React.useCallback(async () => {
-    const result = await CryptoCompare.getPrice({
-      symbolOne,
-      symbolTwo: symbolTwo || 'USD',
-    });
-    console.log('getPrice:', result);
+    try {
+      const result = await CryptoCompare.getMarketData({
+        symbolOne,
+        symbolTwo: symbolTwo || 'USD',
+      });
+      setPrice(result.data.PRICE);
+      console.log('getPrice:', result);
+    } catch (e) {
+      console.error(e);
+    }
   }, [symbolOne, symbolTwo]);
+
+  const getHistory = React.useCallback(async () => {
+    try {
+      const result = await CryptoCompare.getHistory({
+        symbolOne,
+        symbolTwo: symbolTwo || 'USD',
+        limit: 100,
+        aggregate: period,
+        exchange: 'Kraken',
+      });
+      console.log('getHistory:', result);
+      setHistory(result.data);
+    } catch (e) {
+      console.error(e);
+    }
+  }, [symbolOne, symbolTwo, period]);
+
+  const getPoints = React.useCallback(() => {
+    try {
+      const newPoints = history.map((item: any) => {
+        return item.close;
+      });
+      setPoints(newPoints);
+      console.log('getPoints:', history);
+    } catch (e) {
+      console.error(e);
+    }
+  }, [history]);
 
   React.useEffect(() => {
     getPrice();
-  }, [getPrice]);
+    getHistory();
+    getPoints();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  React.useEffect(() => {
+    getPoints();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [history]);
+
+  React.useEffect(() => {
+    getHistory();
+    getPoints();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [period]);
 
   return (
     <div className={s.container}>
       <section className={s.containerTitle}>
         <div className={s.containerTitleFirst}>
           <div className={s.containerTitleName}>
-            {name} ({symbol})
+            {name} ({symbolOne})
           </div>
-          <div className={s.containerTitlePrice}>${price}</div>
-          <div className={classPriceChange}>{priceChange}%</div>
+          <div className={s.containerTitlePrice}>
+            {!symbolTwo && '$'}
+            {price.toString().slice(0, 8)} {symbolTwo}
+          </div>
+          <div
+            className={classPriceChange}
+            data-positive={isPriceChangePositive}
+            data-negative={isPriceChangeNegative}
+          >
+            {isPriceChangePositive && '+'}
+            {priceChange}%
+          </div>
         </div>
         <div className={s.containerTitleSecond}>
           <div className={s.containerTitleSecondInner}>
@@ -113,7 +172,7 @@ export const PageMarketsContent: React.FC = () => {
           </div>
         </div>
         <div className={s.containerTradingCard}>
-          <div className={s.containerTradingCardLabel}>You Pay</div>
+          <div className={s.containerTradingCardLabel}>You Receive</div>
           <div className={s.containerTradingCardImage}>
             <img src={imageTokenReceive} alt="" />
           </div>
@@ -123,7 +182,7 @@ export const PageMarketsContent: React.FC = () => {
                 Ethereum
                 <IconArrowDownWhite className={s.containerTradingCardArrowDown} />
               </div>
-              <div className={s.containerTradingCardSymbol}>BTC</div>
+              <div className={s.containerTradingCardSymbol}>ETH</div>
             </div>
             <div className={s.containerTradingCardInput}>
               {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
@@ -131,12 +190,64 @@ export const PageMarketsContent: React.FC = () => {
               <input id="inputPay" type="number" />
             </div>
             <div className={s.containerTradingCardBalance}>
-              Current balance (BTC)<span>32,424</span>
+              Current balance (ETH)<span>24</span>
             </div>
           </div>
         </div>
         <div className={s.containerTradingButton}>
           <Button>Trade</Button>
+        </div>
+      </section>
+      <section className={s.containerChart}>
+        <div className={s.chart}>
+          <LineChart data={points} />
+        </div>
+        <div className={s.chartData}>
+          <div className={s.chartDataFirst}>
+            <div className={s.chartDataPriceName}>Current price</div>
+            <div className={s.chartDataPrice}>
+              {!symbolTwo && '$'}
+              {price.toString().slice(0, 8)} {symbolTwo}
+            </div>
+          </div>
+          <div className={s.chartDataSecond}>
+            <div className={s.chartDataPeriod}>
+              <div
+                role="button"
+                tabIndex={0}
+                data-active={period === 1}
+                onClick={() => handleSetPeriod(1)}
+                onKeyDown={() => {}}
+              >
+                24H
+              </div>
+              <div
+                role="button"
+                tabIndex={0}
+                data-active={period === 7}
+                onClick={() => handleSetPeriod(7)}
+                onKeyDown={() => {}}
+              >
+                1W
+              </div>
+              <div
+                role="button"
+                tabIndex={0}
+                data-active={period === 30}
+                onClick={() => handleSetPeriod(30)}
+                onKeyDown={() => {}}
+              >
+                1M
+              </div>
+            </div>
+            <div
+              className={s.chartDataPriceChange}
+              data-positive={isPriceChangePositive}
+              data-negative={isPriceChangeNegative}
+            >
+              {priceChange}%
+            </div>
+          </div>
         </div>
       </section>
     </div>
