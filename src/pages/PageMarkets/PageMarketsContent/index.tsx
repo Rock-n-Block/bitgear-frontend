@@ -92,11 +92,15 @@ const tokens: TypeToken[] = [
 export const PageMarketsContent: React.FC = () => {
   const { symbolOne, symbolTwo } = useParams<TypeUseParams>();
 
+  const refDropdown = React.useRef<HTMLDivElement>(null);
+  const refDropdownLabel = React.useRef<HTMLDivElement>(null);
+
   const [price, setPrice] = React.useState(0);
   const [history, setHistory] = React.useState<any[]>([]);
   const [points, setPoints] = React.useState<number[]>([]);
   const [period, setPeriod] = React.useState<number>(1);
   const [searchValue, setSearchValue] = React.useState<string>('');
+  const [openDropdown, setOpenDropdown] = React.useState<boolean>(false);
 
   const data: TypeToken = {
     symbol: 'ETH',
@@ -110,6 +114,10 @@ export const PageMarketsContent: React.FC = () => {
   const classPriceChange = s.containerTitlePriceChange;
   const isPriceChangePositive = +priceChange > 0;
   const isPriceChangeNegative = +priceChange < 0;
+
+  const handleOpenDropdown = () => {
+    setOpenDropdown(!openDropdown);
+  };
 
   const handleChangeSearch = (newSearchValue: string) => {
     setSearchValue(newSearchValue);
@@ -160,6 +168,22 @@ export const PageMarketsContent: React.FC = () => {
     }
   }, [history]);
 
+  const handleClickOutsideDropdown = (e: any) => {
+    if (
+      !refDropdown?.current?.contains(e.target) &&
+      !refDropdownLabel?.current?.contains(e.target)
+    ) {
+      setOpenDropdown(false);
+    }
+  };
+
+  React.useEffect(() => {
+    document.addEventListener('click', handleClickOutsideDropdown);
+    return () => {
+      document.removeEventListener('click', handleClickOutsideDropdown);
+    };
+  }, []);
+
   React.useEffect(() => {
     getPrice();
     getHistory();
@@ -179,14 +203,21 @@ export const PageMarketsContent: React.FC = () => {
   }, [period]);
 
   const DropdownLabel = (
-    <div className={s.containerTradingCardSearch}>
+    <div
+      ref={refDropdownLabel}
+      className={s.containerTradingCardSearch}
+      onClick={handleOpenDropdown}
+      role="button"
+      tabIndex={0}
+      onKeyDown={() => {}}
+    >
       <div className={s.containerTradingCardSearchName}>{name}</div>
       <IconArrowDownWhite className={s.containerTradingCardSearchArrowDown} />
     </div>
   );
 
   const DropdownItems = (
-    <div>
+    <div ref={refDropdown}>
       <div className={s.containerTradingCardSearchInput}>
         <Input
           placeholder="Search"
@@ -253,7 +284,9 @@ export const PageMarketsContent: React.FC = () => {
           </div>
           <div className={s.containerTradingCardContainer}>
             <div className={s.containerTradingCardContainerInner}>
-              <Dropdown label={DropdownLabel}>{DropdownItems}</Dropdown>
+              <Dropdown open={openDropdown} label={DropdownLabel}>
+                {DropdownItems}
+              </Dropdown>
               <div className={s.containerTradingCardSymbol}>BTC</div>
             </div>
             <div className={s.containerTradingCardInput}>
