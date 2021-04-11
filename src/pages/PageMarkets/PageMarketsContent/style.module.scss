@@ -399,3 +399,71 @@
     }
   }
 }
+
+.containerSettings {
+  background: $color-bg-section;
+  margin: 21px 0 0 0;
+  padding: 20px;
+
+  h1 {
+    font-weight: 400;
+    font-size: 24px;
+    line-height: 37px;
+    margin: 0;
+  }
+
+  h2 {
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 25px;
+    color: $color-text-link;
+  }
+
+  &Inner {
+    @include grid(1fr 2fr 1fr, 2fr 1fr, 20px);
+
+    @include b('mobile') {
+      @include grid(1fr, 1fr 3fr 2fr 1fr, 10px);
+    }
+  }
+
+  &Slippage {
+    grid-column: 1;
+    grid-row: 1;
+
+    @include b('mobile') {
+      grid-column: 1;
+      grid-row: 1;
+    }
+  }
+
+  &Exchanges {
+    grid-column: 2;
+    grid-row: 1 / 3;
+
+    @include b('mobile') {
+      grid-column: 1;
+      grid-row: 2;
+    }
+  }
+
+  &Gas {
+    grid-column: 3;
+    grid-row: 1 / 3;
+
+    @include b('mobile') {
+      grid-column: 1;
+      grid-row: 3;
+    }
+  }
+
+  &Buttons {
+    grid-column: 1;
+    grid-row: 2;
+
+    @include b('mobile') {
+      grid-column: 1;
+      grid-row: 4;
+    }
+  }
+}

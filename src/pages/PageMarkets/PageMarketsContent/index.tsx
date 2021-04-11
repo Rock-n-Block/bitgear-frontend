@@ -7,7 +7,7 @@ import { ReactComponent as IconExchange } from '../../../assets/icons/exchange.s
 import { ReactComponent as IconGear } from '../../../assets/icons/gear.svg';
 import { ReactComponent as IconSearchWhite } from '../../../assets/icons/search-white.svg';
 import imageTokenPay from '../../../assets/images/token.png';
-import { Dropdown, Input, LineChart } from '../../../components';
+import { Dropdown, Input, LineChart, Select } from '../../../components';
 import Button from '../../../components/Button';
 import { CryptoCompareService } from '../../../services/CryptoCompareService';
 
@@ -94,6 +94,8 @@ export const PageMarketsContent: React.FC = () => {
 
   const refDropdown = React.useRef<HTMLDivElement>(null);
   const refDropdownLabel = React.useRef<HTMLDivElement>(null);
+  const refSelect = React.useRef<HTMLDivElement>(null);
+  const refSelectLabel = React.useRef<HTMLDivElement>(null);
 
   const [price, setPrice] = React.useState(0);
   const [history, setHistory] = React.useState<any[]>([]);
@@ -101,6 +103,8 @@ export const PageMarketsContent: React.FC = () => {
   const [period, setPeriod] = React.useState<number>(1);
   const [searchValue, setSearchValue] = React.useState<string>('');
   const [openDropdown, setOpenDropdown] = React.useState<boolean>(false);
+  const [openSelect, setOpenSelect] = React.useState<boolean>(false);
+  const [openSettings, setOpenSettings] = React.useState<boolean>(false);
 
   const data: TypeToken = {
     symbol: 'ETH',
@@ -115,8 +119,16 @@ export const PageMarketsContent: React.FC = () => {
   const isPriceChangePositive = +priceChange > 0;
   const isPriceChangeNegative = +priceChange < 0;
 
+  const handleOpenSettings = () => {
+    setOpenSettings(!openSettings);
+  };
+
   const handleOpenDropdown = () => {
     setOpenDropdown(!openDropdown);
+  };
+
+  const handleOpenSelect = () => {
+    setOpenSelect(!openSelect);
   };
 
   const handleChangeSearch = (newSearchValue: string) => {
@@ -177,10 +189,22 @@ export const PageMarketsContent: React.FC = () => {
     }
   };
 
+  const handleClickOutsideSelect = (e: any) => {
+    if (!refSelect?.current?.contains(e.target) && !refSelectLabel?.current?.contains(e.target)) {
+      setOpenSelect(false);
+    }
+  };
+
   React.useEffect(() => {
-    document.addEventListener('click', handleClickOutsideDropdown);
+    document.addEventListener('click', (e) => {
+      handleClickOutsideDropdown(e);
+      handleClickOutsideSelect(e);
+    });
     return () => {
-      document.removeEventListener('click', handleClickOutsideDropdown);
+      document.removeEventListener('click', (e) => {
+        handleClickOutsideDropdown(e);
+        handleClickOutsideSelect(e);
+      });
     };
   }, []);
 
@@ -201,6 +225,18 @@ export const PageMarketsContent: React.FC = () => {
     getPoints();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [period]);
+
+  const SelectLabel = (
+    <div
+      ref={refSelectLabel}
+      role="button"
+      tabIndex={0}
+      onKeyDown={() => {}}
+      onClick={handleOpenSelect}
+    >
+      Select
+    </div>
+  );
 
   const DropdownLabel = (
     <div
@@ -270,12 +306,44 @@ export const PageMarketsContent: React.FC = () => {
           <div className={s.containerTitleSecondInner}>
             <div className={s.containerTitleSecondItemActive}>Market</div>
             <div className={s.containerTitleSecondItem}>Limit</div>
-            <div className={s.containerTitleSecondItem}>
+            <div
+              className={s.containerTitleSecondItem}
+              onClick={handleOpenSettings}
+              role="button"
+              tabIndex={0}
+              onKeyDown={() => {}}
+            >
               <IconGear />
             </div>
           </div>
         </div>
       </section>
+      {openSettings && (
+        <section className={s.containerSettings}>
+          <h1>Settings</h1>
+          <div className={s.containerSettingsInner}>
+            <div className={s.containerSettingsSlippage}>
+              <h2>Max Slippage</h2>
+              <Select open={openSelect} label={SelectLabel}>
+                <div ref={refSelect}>
+                  <div>Item 1</div>
+                  <div>Item 2</div>
+                </div>
+              </Select>
+            </div>
+            <div className={s.containerSettingsExchanges}>
+              <h2>Exchanges</h2>
+            </div>
+            <div className={s.containerSettingsGas}>
+              <h2>Gas Price</h2>
+            </div>
+            <div className={s.containerSettingsButtons}>
+              <Button>Save</Button>
+              <Button>Reset</Button>
+            </div>
+          </div>
+        </section>
+      )}
       <section className={s.containerTrading}>
         <div className={s.containerTradingCard}>
           <div className={s.containerTradingCardLabel}>You Pay</div>
