@@ -1,10 +1,10 @@
-@import "../../scss/theme.scss";
-@import "../../scss/mixins.scss";
+@import '../../scss/theme.scss';
+@import '../../scss/mixins.scss';
 
 $fs: 16px;
 
 .header {
-  @include flex(row,center,center,nowrap);
+  @include flex(row, center, center, nowrap);
   font-family: $font;
   position: fixed;
   left: 0;
@@ -25,13 +25,13 @@ $fs: 16px;
   border-image-slice: 1;
   border-image-source: $color-border-header;
   &Container {
-    @include flex(row,center,space-between,nowrap);
+    @include flex(row, center, space-between, nowrap);
     height: $height-header;
     width: 100%;
     max-width: 1270px;
   }
   &LeftGroup {
-    @include flex(row,center,center,nowrap);
+    @include flex(row, center, center, nowrap);
     height: $height-header;
     padding: 0 20px;
     @include b('mobile') {
@@ -39,15 +39,15 @@ $fs: 16px;
     }
   }
   &RightGroup {
-    @include flex(row,center,center,nowrap);
+    @include flex(row, center, center, nowrap);
     height: $height-header;
     padding: 0 2vw;
     @include b('mobile') {
-      display:none;
+      display: none;
     }
   }
   &Item {
-    @include flex(row,center,center);
+    @include flex(row, center, center);
     cursor: pointer;
     padding: 20px 25px;
     font-size: $fs;
@@ -58,9 +58,20 @@ $fs: 16px;
       color: $color-text-header;
       transition: color 200ms ease;
     }
+
+    &Btn {
+      a {
+        background-color: $color-text-link;
+        padding: 10px;
+        border-radius: 10px;
+        color: #fff;
+        font-weight: 500;
+        font-size: 14px;
+      }
+    }
   }
   &Item:hover {
-    @include flex(row,center,center);
+    @include flex(row, center, center);
     cursor: pointer;
     padding: 20px 25px;
     font-size: $fs;
@@ -78,10 +89,10 @@ $fs: 16px;
     height: $height-header - 40px;
   }
   &MenuMobileClosed {
-    display:none;
+    display: none;
   }
   &MenuMobileOpen {
-    @include flex(column,center,flex-start);
+    @include flex(column, center, flex-start);
     box-sizing: border-box;
     position: fixed;
     height: 100vh;
@@ -98,7 +109,7 @@ $fs: 16px;
   cursor: pointer;
   z-index: 1000;
   &Wrapper {
-    @include flex(column,center,center);
+    @include flex(column, center, center);
     padding: 0 28px;
     height: 60px;
     cursor: pointer;
@@ -113,7 +124,7 @@ $fs: 16px;
 
 .headerMenu {
   &Footer {
-    @include flex(column,center,space-around);
+    @include flex(column, center, space-around);
     box-sizing: border-box;
     position: absolute;
     left: 0;
@@ -126,7 +137,7 @@ $fs: 16px;
     font-size: 15px;
     user-select: none;
     &LogoGroup {
-      @include flex(row,center,center);
+      @include flex(row, center, center);
     }
     &Logo {
       cursor: pointer;
@@ -143,4 +154,3 @@ $fs: 16px;
     }
   }
 }
-

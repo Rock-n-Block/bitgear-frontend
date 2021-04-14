@@ -1,20 +1,230 @@
-@import "../../scss/theme";
-@import "../../scss/mixins";
+@import '../../scss/theme';
+@import '../../scss/mixins';
 
 .container {
   max-width: 1100px;
+  width: 100%;
   padding: 10px;
 }
 
 .containerTitle {
-  padding: 120px 0 0;
+  padding: 55px 0 0;
+  @include flex(row, center, space-between, wrap);
+
   @include b('mobile') {
-    padding: 60px 0 0;
+    padding: 30px 0 0;
   }
-  h1 {
-    max-width: 800px;
-    text-align: center;
-    margin: 16px auto 40px;
+
+  &Block {
+    cursor: default;
+    width: max-content;
+
+    h1 {
+      margin: 0 0 15px 0;
+      font-size: 45px;
+      font-weight: normal;
+    }
+
+    span {
+      font-weight: normal;
+      font-size: 24px;
+      color: $color-text-span;
+    }
   }
 }
 
+.account {
+  &Menu {
+    @include flex(row, center, space-between, nowrap);
+    font-size: 16px;
+    max-width: 200px;
+    width: 100%;
+
+    span {
+      padding-bottom: 15px;
+      border-bottom: 2px solid $color-border-account-menu-item;
+      width: 50%;
+
+      &:first-child {
+        text-align: left;
+      }
+
+      &:last-child {
+        text-align: right;
+      }
+    }
+
+    &Item {
+      color: $color-text-primary;
+      opacity: 0.5;
+      cursor: pointer;
+      transition: 0.4s ease;
+
+      &:hover {
+        opacity: 0.8;
+        border-bottom-color: #4a519d;
+      }
+    }
+
+    &Active {
+      color: $color-text-span;
+      font-weight: bold;
+      cursor: default;
+      border-bottom-color: $color-border-bottom-span !important;
+    }
+  }
+
+  &Funds {
+    margin-top: 50px;
+
+    &Item {
+      @include flex(row, normal, space-between, wrap);
+    }
+
+    &Card {
+      background-color: #0197e241;
+      border-radius: 10px;
+      min-height: 200px;
+      max-width: 500px;
+      width: 100%;
+      padding: 30px 20px;
+      position: relative;
+      cursor: default;
+      margin-bottom: 10px;
+
+      h3 {
+        font-weight: normal;
+        font-size: 20px;
+        color: $color-text-primary;
+        margin: 0;
+        opacity: 0.5;
+      }
+
+      span {
+        font-weight: bold;
+        font-size: 40px;
+        color: $color-text-primary;
+      }
+
+      img {
+        position: absolute;
+        bottom: 30px;
+        right: 20px;
+      }
+    }
+
+    &Deposit {
+      @include flex(column, normal, normal, nowrap);
+      cursor: default;
+
+      h3 {
+        font-weight: normal;
+        font-size: 20px;
+        color: $color-text-primary;
+        margin: 0;
+        opacity: 0.3;
+      }
+
+      &Copy {
+        margin-top: 5px;
+        @include flex(row, center, normal, nowrap);
+
+        span {
+          background-color: #0197e2;
+          padding: 10px;
+          border-radius: 12px;
+          font-weight: bold;
+          font-size: 14px;
+          letter-spacing: 0.04em;
+          text-transform: uppercase;
+          color: $color-text-primary;
+          cursor: default;
+        }
+
+        img {
+          margin-left: 10px;
+          cursor: pointer;
+          transition: 0.4s ease;
+
+          &:hover {
+            opacity: 0.7;
+          }
+
+          &:active,
+          &:focus {
+            transform: scale(0.9);
+          }
+        }
+      }
+    }
+  }
+
+  &Trade {
+    &History {
+      width: 100%;
+    }
+
+    table {
+      border-collapse: collapse;
+
+      thead {
+        th {
+          font-weight: normal;
+          padding-left: 10px;
+          text-align: left;
+          text-transform: uppercase;
+        }
+      }
+
+      tbody {
+        tr {
+          &:nth-child(odd) {
+            td {
+              background: #30335533;
+            }
+          }
+
+          td {
+            color: $color-text-primary;
+            padding-left: 10px;
+            padding: 12px 0 12px 10px;
+
+            &:first-child {
+              border-top-left-radius: 10px;
+              border-bottom-left-radius: 10px;
+            }
+
+            &:last-child {
+              border-top-right-radius: 10px;
+              border-bottom-right-radius: 10px;
+              color: #01c9c5;
+
+              img {
+                margin-right: 10px;
+                width: 14px;
+                height: 15px;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    &Table {
+      width: 100%;
+
+      &Active {
+        color: $color-text-link;
+        font-weight: bold !important;
+      }
+
+      &Down {
+        color: red !important;
+
+        img {
+          transform: rotate(180deg);
+        }
+      }
+    }
+  }
+}

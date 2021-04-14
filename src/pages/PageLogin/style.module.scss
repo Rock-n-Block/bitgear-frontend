@@ -1,20 +1,76 @@
-@import "../../scss/theme";
-@import "../../scss/mixins";
+@import '../../scss/theme';
+@import '../../scss/mixins';
 
 .container {
   max-width: 1100px;
+  width: 100%;
   padding: 10px;
 }
 
 .containerTitle {
-  padding: 120px 0 0;
+  padding: 55px 0 0;
+
   @include b('mobile') {
-    padding: 60px 0 0;
+    padding: 30px 0 0;
   }
+
   h1 {
-    max-width: 800px;
-    text-align: center;
-    margin: 16px auto 40px;
+    margin: 0 0 15px 0;
+    font-size: 45px;
+    font-weight: normal;
+  }
+
+  span {
+    font-weight: normal;
+    font-size: 22px;
+    color: $color-text-primary;
+    opacity: 0.5;
   }
 }
 
+.login {
+  &_methods {
+    @include flex(row, normal, space-between, wrap);
+    margin: 50px -10px 0 -10px;
+
+    &_item {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      align-items: center;
+      box-sizing: border-box;
+      max-width: 320px;
+      width: 100%;
+      margin: 10px;
+      min-height: 150px;
+      border: 2px solid $color-border-login-item;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.4s ease;
+
+      @include b('mobile') {
+        max-width: 100%;
+        min-height: 100px;
+      }
+
+      &:hover {
+        background-color: $color-bg-login-item-hover;
+      }
+
+      &:active,
+      &:focus {
+        transform: scale(0.98);
+      }
+
+      img {
+        max-width: 75px;
+        margin: 0 auto;
+      }
+
+      span {
+        font-weight: normal;
+        font-size: 20px;
+        color: $color-text-primary;
+      }
+    }
+  }
+}

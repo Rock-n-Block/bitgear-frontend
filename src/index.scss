@@ -1,5 +1,5 @@
-@import "./scss/theme.scss";
-@import "./scss/mixins.scss";
+@import './scss/theme.scss';
+@import './scss/mixins.scss';
 
 $height-header: 83px;
 
@@ -28,7 +28,7 @@ body,
   margin: 0;
   padding: 0;
   width: 100%;
-  //height: 100%;
+  height: 100%;
   font-family: $font;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -43,18 +43,19 @@ textarea {
   line-height: 26px;
 }
 
-input[type="number"]::-webkit-inner-spin-button,
-input[type="number"]::-webkit-outer-spin-button {
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
   margin: 0;
 }
-input[type="number"] {
+input[type='number'] {
   -moz-appearance: textfield;
 }
 
-img, svg {
+img,
+svg {
   box-sizing: content-box;
 }
 
@@ -73,9 +74,9 @@ a {
 }
 
 .container-App {
-  @include flex(column,center,normal,nowrap);
+  @include flex(column, center, normal, nowrap);
   padding: $height-header 0 0 0;
-  //height: 100%;
+  height: 100%;
   background: $color-bg;
   color: $color-text-bright;
 }

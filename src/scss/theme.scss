@@ -5,63 +5,67 @@ $font2: 'Baloo 2', normal;
 // colors
 
 // background
-$color-bg: #07092A;
+$color-bg: #07092a;
 $color-bg-section: #212443;
-$color-bg-header: #07092A;
-$color-bg-footer: #07092A;
+$color-bg-header: #07092a;
+$color-bg-footer: #07092a;
 $color-bg-error: #c88a38;
-$color-bg-input: #07092A;
+$color-bg-input: #07092a;
 $color-bg-input-small: #212443;
 $color-bg-select: #2c2d4b;
 $color-bg-chart: #212443;
-$color-bg-dropdown: #07092A;
+$color-bg-dropdown: #07092a;
 $color-bg-dropdown-item: #212443;
-$color-bg-button: #0197E2;
+$color-bg-button: #0197e2;
 $color-bg-card: rgba(1, 151, 226, 0.3);
-$color-bg-button-primary: linear-gradient(322.71deg, #007FEF 16.86%, #00E3B6 95.37%), #0197E2;
+$color-bg-button-primary: linear-gradient(322.71deg, #007fef 16.86%, #00e3b6 95.37%), #0197e2;
+$color-bg-login-item-hover: #0197e23d;
 // text
 $color-text-primary: #fff;
 $color-text-secondary: rgba(255, 255, 255, 0.5);
 $color-text-bright: #fff;
-$color-text-link: #0197E2;
-$color-text-span: #0197E2;
+$color-text-link: #0197e2;
+$color-text-span: #0197e2;
 $color-text-header: #fff;
 $color-text-footer: #fff;
 $color-text-input: #fff;
 $color-text-input-placeholder: rgba(255, 255, 255, 0.5);
-$color-text-green: #01C6C7;
-$color-text-red: #B94825;
+$color-text-green: #01c6c7;
+$color-text-red: #b94825;
 // scrollbar
 $color-scrollbar: rgba(1, 151, 226, 0.3);
-$color-scrollbar-bg: #07092A;
+$color-scrollbar-bg: #07092a;
 //
 $color-gradient-button-start: rgba(208, 208, 208, 1);
 $color-gradient-button-end: rgba(208, 208, 208, 1);
 $color-gradient-button: linear-gradient(
-    90deg,
-    $color-gradient-button-start 0px,
-    $color-gradient-button-start 7px,
-    $color-gradient-button-end 7px,
-    $color-gradient-button-end 100%
+  90deg,
+  $color-gradient-button-start 0px,
+  $color-gradient-button-start 7px,
+  $color-gradient-button-end 7px,
+  $color-gradient-button-end 100%
 );
 $color-gradient-header-start: rgba(255, 255, 255, 0);
 $color-gradient-header-end: rgba(255, 255, 255, 1);
 $color-gradient-header: linear-gradient(
-    0deg,
-    $color-gradient-header-start 0%,
-    $color-gradient-header-end 100%
+  0deg,
+  $color-gradient-header-start 0%,
+  $color-gradient-header-end 100%
 );
 // border
 $color-border-header-start: rgba(255, 255, 255, 0);
 $color-border-header-end: rgba(255, 255, 255, 0.25);
 $color-border-header: linear-gradient(
-    90deg,
-    $color-border-header-start 0%,
-    $color-border-header-end 100%
+  90deg,
+  $color-border-header-start 0%,
+  $color-border-header-end 100%
 );
+$color-border-login-item: #0197e238;
+$color-border-account-menu-item: #303355;
+$color-border-bottom-span: #0197e2;
 // others
 $color-cursor-input: #fff;
-$color-chart-line: #01C9C5;
+$color-chart-line: #01c9c5;
 $color-chart-line-vertical: rgba(255, 255, 255, 0.3);
 
 // ============================================
@@ -77,12 +81,11 @@ $border-form: 3px solid rgba(1, 151, 226, 0.5);
 // ============================================
 // shadows
 
-$color-shadow-menu: #0197E2;
+$color-shadow-menu: #0197e2;
 $shadow-container: 0px 4px 60px rgba(0, 0, 0, 0.05);
 $shadow-dropdown: 0px 8px 15px rgba(0, 0, 0, 0.15);
 $shadow-menu: 0 4px 40px $color-shadow-menu;
 $shadow-border: 0 0 0 1px lightgrey inset;
-
 
 // ============================================
 // dimentions

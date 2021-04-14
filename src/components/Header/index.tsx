@@ -60,6 +60,12 @@ export const Header: React.FC = () => {
             </Link>
           </div>
 
+          <div className={s.headerItemBtn}>
+            <Link to="/login" onClick={() => setOpenMenu(false)}>
+              Connect Wallet
+            </Link>
+          </div>
+
           {isMobile && (
             <div className={s.headerMenuFooter}>
               <div className={s.headerMenuFooterLogoGroup}>
