@@ -45,7 +45,7 @@
       border: 2px solid $color-border-login-item;
       border-radius: 10px;
       cursor: pointer;
-      transition: 0.4s ease;
+      transition: transform 0.5s cubic-bezier(0.2, 3, 0.4, 1) 0s, background-color 0.4s ease;
 
       @include b('mobile') {
         max-width: 100%;

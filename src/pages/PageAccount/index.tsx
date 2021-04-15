@@ -7,6 +7,58 @@ import EthGlassIcon from '../../assets/images/logo/eth-glass-icon.svg';
 
 import s from './style.module.scss';
 
+type TableType = {
+  symbol?: string;
+  name?: string;
+  price?: number;
+  priceChange: number;
+};
+
+const tableData: TableType[] = [
+  {
+    symbol: 'Aave',
+    name: 'AAVE',
+    price: 394.36,
+    priceChange: 1.89,
+  },
+  {
+    symbol: 'Aave',
+    name: 'AAVE',
+    price: 394.36,
+    priceChange: 1.89,
+  },
+  {
+    symbol: 'Aave',
+    name: 'AAVE',
+    price: 394.36,
+    priceChange: 1.89,
+  },
+  {
+    symbol: 'Aave',
+    name: 'AAVE',
+    price: 394.36,
+    priceChange: -1.89,
+  },
+  {
+    symbol: 'Aave',
+    name: 'AAVE',
+    price: 394.36,
+    priceChange: 1.89,
+  },
+  {
+    symbol: 'Aave',
+    name: 'AAVE',
+    price: 394.36,
+    priceChange: -1.89,
+  },
+  {
+    symbol: 'Aave',
+    name: 'AAVE',
+    price: 394.36,
+    priceChange: 1.89,
+  },
+];
+
 export const PageAccount: React.FC = () => {
   return (
     <div className={s.container}>
@@ -44,61 +96,39 @@ export const PageAccount: React.FC = () => {
         <div className={s.accountTradeHistory}>
           <table className={s.accountTradeTable}>
             <thead>
-              <th className={s.accountTradeTableActive}>Head</th>
-              <th>Head</th>
-              <th>Head</th>
-              <th>Head</th>
+              <th className={s.accountTradeTableActive}>Token</th>
+              <th>Symbol</th>
+              <th>Price</th>
+              <th>Last 24h</th>
             </thead>
             <tbody>
-              <tr>
-                <td>Aave</td>
-                <td>AAVE</td>
-                <td>$394.36</td>
-                <td>
-                  <img src={ArrowUpIcon} alt="arrow up" /> 1.89%
-                </td>
-              </tr>
-              <tr>
-                <td>Aave</td>
-                <td>AAVE</td>
-                <td>$394.36</td>
-                <td>
-                  <img src={ArrowUpIcon} alt="arrow up" /> 1.89%
-                </td>
-              </tr>
-              <tr>
-                <td>Aave</td>
-                <td>AAVE</td>
-                <td>$394.36</td>
-                <td className={s.accountTradeTableDown}>
-                  <img src={ArrowDownIcon} alt="arrow down" />
-                  1.89%
-                </td>
-              </tr>
-              <tr>
-                <td>Aave</td>
-                <td>AAVE</td>
-                <td>$394.36</td>
-                <td>
-                  <img src={ArrowUpIcon} alt="arrow up" /> 1.89%
-                </td>
-              </tr>
-              <tr>
-                <td>Aave</td>
-                <td>AAVE</td>
-                <td>$394.36</td>
-                <td>
-                  <img src={ArrowUpIcon} alt="arrow up" /> 1.89%
-                </td>
-              </tr>
-              <tr>
-                <td>Aave</td>
-                <td>AAVE</td>
-                <td>$394.36</td>
-                <td>
-                  <img src={ArrowUpIcon} alt="arrow up" /> 1.89%
-                </td>
-              </tr>
+              {tableData.map((token: TableType) => {
+                const { symbol, name, price, priceChange } = token;
+
+                let priceChangeModel = (
+                  <td>
+                    <img src={ArrowUpIcon} alt="arrow up" /> {`${priceChange}`}%
+                  </td>
+                );
+
+                if (priceChange < 0) {
+                  priceChangeModel = (
+                    <td className={`${s.accountTradeTableDown}`}>
+                      <img src={ArrowDownIcon} alt="arrow down" />
+                      {priceChange}%
+                    </td>
+                  );
+                }
+
+                return (
+                  <tr>
+                    <td>{name}</td>
+                    <td>{symbol}</td>
+                    <td>{price}$</td>
+                    {priceChangeModel}
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>

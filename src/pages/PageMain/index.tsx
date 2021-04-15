@@ -26,7 +26,7 @@ type TypeCoin = {
   ImageUrl?: string;
 };
 
-const tokens: TypeToken[] = [
+export const tokens: TypeToken[] = [
   {
     symbol: 'WETH',
     name: 'Ethereum',
