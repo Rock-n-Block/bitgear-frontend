@@ -7,9 +7,10 @@ import { ReactComponent as IconExchange } from '../../../assets/icons/exchange.s
 import { ReactComponent as IconGear } from '../../../assets/icons/gear.svg';
 import { ReactComponent as IconSearchWhite } from '../../../assets/icons/search-white.svg';
 import imageTokenPay from '../../../assets/images/token.png';
-import { Dropdown, Input, LineChart, Select } from '../../../components';
+import { Checkbox, Dropdown, Input, LineChart, Radio, Select } from '../../../components';
 import Button from '../../../components/Button';
 import { CryptoCompareService } from '../../../services/CryptoCompareService';
+import { getFromStorage, setToStorage } from '../../../utils/localStorage';
 
 import s from './style.module.scss';
 
@@ -17,10 +18,25 @@ const imageTokenReceive = 'https://www.cryptocompare.com/media/37746238/eth.png'
 
 const CryptoCompare = new CryptoCompareService();
 
-type TypeUseParams = {
-  symbolOne: string;
-  symbolTwo?: string;
-};
+const exchangesList: string[] = [
+  '0x',
+  'Balancer',
+  'Bancor',
+  'CREAM',
+  'CryptoCom',
+  'Linkswap',
+  'Mooniswap',
+  'Curve',
+  'DODO',
+  'Kyber',
+  'Shell',
+  'SnowSwap',
+  'mStable',
+  'Oasis',
+  'SushiSwap',
+  'Swerve',
+  'Uniswap',
+];
 
 type TypeToken = {
   symbol?: string;
@@ -89,8 +105,13 @@ const tokens: TypeToken[] = [
   },
 ];
 
+type TypeUseParams = {
+  symbolOne: string;
+  symbolTwo?: string;
+};
+
 export const PageMarketsContent: React.FC = () => {
-  const periodDefault = Number(localStorage.getItem('chartPeriod'));
+  const periodDefault = Number(getFromStorage('chartPeriod'));
   // console.log('PageMarketsContent periodDefault:', periodDefault, periodDefault > 0);
 
   const { symbolOne, symbolTwo } = useParams<TypeUseParams>();
@@ -105,6 +126,7 @@ export const PageMarketsContent: React.FC = () => {
   const [points, setPoints] = React.useState<number[]>([]);
   const [period, setPeriod] = React.useState<number>(periodDefault > 0 ? periodDefault : 1);
   const [searchValue, setSearchValue] = React.useState<string>('');
+  const [exchanges, setExchanges] = React.useState<any>([]);
   const [openDropdown, setOpenDropdown] = React.useState<boolean>(false);
   const [openSelect, setOpenSelect] = React.useState<boolean>(false);
   const [openSettings, setOpenSettings] = React.useState<boolean>(true);
@@ -134,13 +156,25 @@ export const PageMarketsContent: React.FC = () => {
     setOpenSelect(!openSelect);
   };
 
+  const handleChangeExchanges = (e: boolean, exchange: string) => {
+    console.log('handleChangeExchanges:', exchanges);
+    const newExchanges = exchanges;
+    if (exchanges.includes(exchange)) {
+      const index = exchanges.indexOf(exchange);
+      newExchanges.splice(index, 1);
+    } else {
+      newExchanges.push(exchange);
+    }
+    setExchanges(newExchanges);
+  };
+
   const handleChangeSearch = (newSearchValue: string) => {
     setSearchValue(newSearchValue);
   };
 
   const handleSetPeriod = (newPeriod: number) => {
     setPeriod(newPeriod);
-    localStorage.setItem('chartPeriod', JSON.stringify(newPeriod));
+    setToStorage('chartPeriod', newPeriod);
   };
 
   const getPrice = React.useCallback(async () => {
@@ -214,10 +248,8 @@ export const PageMarketsContent: React.FC = () => {
 
   React.useEffect(() => {
     getPrice();
-    setInterval(() => {
-      getPrice();
-      getHistory();
-    }, 5000);
+    getPrice();
+    getHistory();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -231,6 +263,34 @@ export const PageMarketsContent: React.FC = () => {
     getPoints();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [period]);
+
+  const RadioLabelFast = (
+    <div className={s.radioLabelGas}>
+      <div>Fast</div>
+      <div>161 WETH</div>
+    </div>
+  );
+
+  const RadioLabelVeryFast = (
+    <div className={s.radioLabelGas}>
+      <div>Very Fast</div>
+      <div>161 WETH</div>
+    </div>
+  );
+
+  const RadioLabelCustom = (
+    <div className={s.radioLabelGas}>
+      <div>Custom</div>
+      <div className={s.radioLabelGasInner}>
+        <div className={s.radioLabelGasInput}>
+          {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+          <label htmlFor="inputGas" />
+          <input id="inputGas" type="number" />
+        </div>
+        <div>WETH</div>
+      </div>
+    </div>
+  );
 
   const SelectLabel = (
     <div
@@ -341,13 +401,33 @@ export const PageMarketsContent: React.FC = () => {
             </div>
             <div className={s.containerSettingsExchanges}>
               <h2>Exchanges</h2>
+              <div className={s.containerSettingsExchangesInner}>
+                {exchangesList?.map((exchange) => {
+                  return (
+                    <Checkbox
+                      key={uuid()}
+                      text={exchange}
+                      onChange={(e: boolean) => handleChangeExchanges(e, exchange)}
+                    />
+                  );
+                })}
+              </div>
             </div>
             <div className={s.containerSettingsGas}>
               <h2>Gas Price</h2>
+              <div className={s.containerSettingsGasInner}>
+                <Radio name="gas" text={RadioLabelFast} />
+                <Radio name="gas" text={RadioLabelVeryFast} />
+                <Radio name="gas" text={RadioLabelCustom} />
+              </div>
             </div>
             <div className={s.containerSettingsButtons}>
-              <Button>Save</Button>
-              <Button>Reset</Button>
+              <Button secondary classNameCustom={s.containerSettingsButtonsButton}>
+                Save
+              </Button>
+              <Button normal classNameCustom={s.containerSettingsButtonsButton}>
+                Reset
+              </Button>
             </div>
           </div>
         </section>

@@ -15,12 +15,17 @@ $color-bg-input-small: #212443;
 $color-bg-select: #2c2d4b;
 $color-bg-select-item: #2c2d4b;
 $color-bg-select-item-hover: #212443;
+$color-bg-checkbox: #0197E2;
+$color-bg-radio: #2c2d4b;
+$color-bg-radio-point: #0197E2;
 $color-bg-chart: #212443;
 $color-bg-dropdown: #07092a;
 $color-bg-dropdown-item: #212443;
 $color-bg-button: #0197e2;
 $color-bg-card: rgba(1, 151, 226, 0.3);
 $color-bg-button-primary: linear-gradient(322.71deg, #007fef 16.86%, #00e3b6 95.37%), #0197e2;
+$color-bg-button-secondary: #0197E2;
+$color-bg-button-normal: transparent;
 $color-bg-login-item-hover: #0197e23d;
 // text
 $color-text-primary: #fff;
@@ -34,6 +39,7 @@ $color-text-input: #fff;
 $color-text-input-placeholder: rgba(255, 255, 255, 0.5);
 $color-text-green: #01c6c7;
 $color-text-red: #b94825;
+$color-text-button-normal: rgba(255, 255, 255, 0.5);
 // scrollbar
 $color-scrollbar: rgba(1, 151, 226, 0.3);
 $color-scrollbar-bg: #07092a;

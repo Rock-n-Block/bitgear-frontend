@@ -420,10 +420,10 @@
   }
 
   &Inner {
-    @include grid(1fr 2fr 1fr, 2fr 1fr, 20px);
+    @include grid(1fr 2fr 1.5fr, 200px 150px, 50px);
 
     @include b('mobile') {
-      @include grid(1fr, 1fr 3fr 2fr 1fr, 10px);
+      @include grid(1fr, 100px 420px 200px 100px, 10px);
     }
   }
 
@@ -445,6 +445,15 @@
       grid-column: 1;
       grid-row: 2;
     }
+
+    &Inner {
+      @include flex(column, normal, normal, wrap);
+      height: calc(100% - 40px);
+
+      div {
+        margin: 8px 0;
+      }
+    }
   }
 
   &Gas {
@@ -455,15 +464,31 @@
       grid-column: 1;
       grid-row: 3;
     }
+
+    &Inner {
+      > div {
+        margin: 3px 0;
+      }
+    }
   }
 
   &Buttons {
+    @include flex(row, flex-end);
     grid-column: 1;
     grid-row: 2;
 
     @include b('mobile') {
       grid-column: 1;
       grid-row: 4;
+    }
+
+    &Button {
+      width: 60px;
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 26px;
+      padding: 8px 12px;
+      margin: 5px 15px 5px 0;
     }
   }
 }
@@ -492,6 +517,36 @@
 
       &:hover {
         background-color: $color-bg-select-item-hover;
+      }
+    }
+  }
+}
+
+.radioLabelGas {
+  @include flex(row, center, space-between, nowrap);
+  width: calc(100% - 50px);
+
+  &Inner {
+    @include flex(row, center);
+  }
+
+  &Input {
+    margin: 0 10px;
+    input {
+      text-align: right;
+      outline: none;
+      background-color: #40425D;
+      padding: 5px 10px;
+      font-weight: 500;
+      font-size: 17px;
+      line-height: 26px;
+      border: none;
+      border-radius: 4px;
+      caret-color: $color-cursor-input;
+      color: $color-text-input;
+      width: 60px;
+      &::placeholder {
+        color: $color-text-input-placeholder;
       }
     }
   }

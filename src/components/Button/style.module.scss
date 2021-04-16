@@ -14,3 +14,16 @@
   font-size: 20px;
   line-height: 26px;
 }
+
+.primary {
+  background: $color-bg-button-primary !important;
+}
+
+.secondary {
+  background: $color-bg-button-secondary !important;
+}
+
+.normal {
+  background: $color-bg-button-normal !important;
+  color: $color-text-button-normal !important;
+}
