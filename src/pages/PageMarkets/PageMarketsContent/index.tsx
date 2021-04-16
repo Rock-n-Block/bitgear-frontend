@@ -401,7 +401,7 @@ export const PageMarketsContent: React.FC = () => {
       </section>
       <section className={s.containerChart}>
         <div className={s.chart}>
-          <LineChart data={points} />
+          <LineChart interactive data={points} />
         </div>
         <div className={s.chartData}>
           <div className={s.chartDataFirst}>

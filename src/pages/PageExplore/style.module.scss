@@ -80,6 +80,8 @@ table {
 
   tbody {
     tr {
+      max-height: 60px;
+
       &:nth-child(odd) {
         td {
           background: #30335533;
@@ -87,6 +89,7 @@ table {
       }
 
       td {
+        max-height: 60px;
         color: $color-text-primary;
         padding-left: 10px;
         padding: 12px 0 12px 10px;
@@ -127,5 +130,16 @@ table {
     img {
       transform: rotate(180deg);
     }
+  }
+}
+
+.chart {
+  &Container {
+    max-height: 50px;
+    background-color: transparent;
+  }
+
+  &Svg {
+    background-color: transparent;
   }
 }

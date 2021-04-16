@@ -5,12 +5,12 @@
   width: 100%;
   height: 100%;
   background-color: $color-bg-chart;
+  cursor: pointer;
 }
 
 .chart {
   width: 100%;
   height: 100%;
-  background-color: $color-bg-chart;
 }
 
 .path {
@@ -31,6 +31,7 @@
   text,
   circle {
     fill: transparent;
+    cursor: pointer;
   }
 
   &:hover {

@@ -176,7 +176,11 @@ export const PageExplore: React.FC = () => {
                   <td>{market}</td>
                   <td>{volume}</td>
                   <td>
-                    <LineChart data={points} />
+                    <LineChart
+                      containerStyle={s.chartContainer}
+                      svgStyle={s.chartSvg}
+                      data={points.map((point) => point.close)}
+                    />
                   </td>
                 </tr>
               );
@@ -184,8 +188,6 @@ export const PageExplore: React.FC = () => {
           </tbody>
         </table>
       </section>
-
-      {/* <LineChart data={points} /> */}
     </div>
   );
 };
