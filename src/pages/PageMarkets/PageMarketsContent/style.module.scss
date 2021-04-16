@@ -467,3 +467,32 @@
     }
   }
 }
+
+.containerSettingsSelect {
+  &Label {
+    @include flex(row, center, space-between);
+    cursor: pointer;
+    height: 100%;
+    width: 100%;
+    font-weight: 500;
+    font-size: 22px;
+    line-height: 34px;
+  }
+
+  &Items {
+    div {
+      @include flex(row, center, space-between);
+      height: 55px;
+      cursor: pointer;
+      background-color: $color-bg-select-item;
+      padding: 10px;
+      font-weight: 500;
+      font-size: 22px;
+      line-height: 34px;
+
+      &:hover {
+        background-color: $color-bg-select-item-hover;
+      }
+    }
+  }
+}

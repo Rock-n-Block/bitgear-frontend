@@ -90,6 +90,9 @@ const tokens: TypeToken[] = [
 ];
 
 export const PageMarketsContent: React.FC = () => {
+  const periodDefault = Number(localStorage.getItem('chartPeriod'));
+  // console.log('PageMarketsContent periodDefault:', periodDefault, periodDefault > 0);
+
   const { symbolOne, symbolTwo } = useParams<TypeUseParams>();
 
   const refDropdown = React.useRef<HTMLDivElement>(null);
@@ -100,11 +103,11 @@ export const PageMarketsContent: React.FC = () => {
   const [price, setPrice] = React.useState(0);
   const [history, setHistory] = React.useState<any[]>([]);
   const [points, setPoints] = React.useState<number[]>([]);
-  const [period, setPeriod] = React.useState<number>(1);
+  const [period, setPeriod] = React.useState<number>(periodDefault > 0 ? periodDefault : 1);
   const [searchValue, setSearchValue] = React.useState<string>('');
   const [openDropdown, setOpenDropdown] = React.useState<boolean>(false);
   const [openSelect, setOpenSelect] = React.useState<boolean>(false);
-  const [openSettings, setOpenSettings] = React.useState<boolean>(false);
+  const [openSettings, setOpenSettings] = React.useState<boolean>(true);
 
   const data: TypeToken = {
     symbol: 'ETH',
@@ -137,6 +140,7 @@ export const PageMarketsContent: React.FC = () => {
 
   const handleSetPeriod = (newPeriod: number) => {
     setPeriod(newPeriod);
+    localStorage.setItem('chartPeriod', JSON.stringify(newPeriod));
   };
 
   const getPrice = React.useCallback(async () => {
@@ -158,7 +162,7 @@ export const PageMarketsContent: React.FC = () => {
         symbolOne,
         symbolTwo: symbolTwo || 'USD',
         limit: 100,
-        aggregate: period,
+        aggregate: periodDefault,
         exchange: 'Kraken',
       });
       console.log('getHistory:', result);
@@ -166,7 +170,7 @@ export const PageMarketsContent: React.FC = () => {
     } catch (e) {
       console.error(e);
     }
-  }, [symbolOne, symbolTwo, period]);
+  }, [symbolOne, symbolTwo, periodDefault]);
 
   const getPoints = React.useCallback(() => {
     try {
@@ -210,8 +214,10 @@ export const PageMarketsContent: React.FC = () => {
 
   React.useEffect(() => {
     getPrice();
-    getHistory();
-    getPoints();
+    setInterval(() => {
+      getPrice();
+      getHistory();
+    }, 5000);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -229,12 +235,14 @@ export const PageMarketsContent: React.FC = () => {
   const SelectLabel = (
     <div
       ref={refSelectLabel}
+      className={s.containerSettingsSelectLabel}
       role="button"
       tabIndex={0}
       onKeyDown={() => {}}
       onClick={handleOpenSelect}
     >
-      Select
+      <div>1%</div>
+      <IconArrowDownWhite />
     </div>
   );
 
@@ -320,14 +328,14 @@ export const PageMarketsContent: React.FC = () => {
       </section>
       {openSettings && (
         <section className={s.containerSettings}>
-          <h1>Settings</h1>
+          <h1>Advanced Settings</h1>
           <div className={s.containerSettingsInner}>
             <div className={s.containerSettingsSlippage}>
               <h2>Max Slippage</h2>
               <Select open={openSelect} label={SelectLabel}>
-                <div ref={refSelect}>
-                  <div>Item 1</div>
-                  <div>Item 2</div>
+                <div ref={refSelect} className={s.containerSettingsSelectItems}>
+                  <div>2%</div>
+                  <div>3%</div>
                 </div>
               </Select>
             </div>
