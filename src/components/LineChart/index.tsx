@@ -27,12 +27,6 @@ export const LineChart: React.FC<TypeButtonProps> = React.memo(({ data = [] }) =
     return newPath;
   }, []);
 
-  const handleResize = () => {
-    if (!refContainer.current) return;
-    setWidth(refContainer.current.offsetWidth);
-    setHeight(refContainer.current.offsetHeight);
-  };
-
   const drawVerticalLines = React.useCallback(() => {
     // console.log('drawVerticalLines:', data);
     const array = resizePath(data, height);
@@ -74,11 +68,17 @@ export const LineChart: React.FC<TypeButtonProps> = React.memo(({ data = [] }) =
     setPoints(path.toString());
   }, [data, height, width, resizePath]);
 
+  const handleResize = () => {
+    if (!refContainer.current) return;
+    setWidth(refContainer.current.offsetWidth);
+    setHeight(refContainer.current.offsetHeight);
+  };
+
   React.useEffect(() => {
     handleResize();
-    document.addEventListener('resize', handleResize);
+    window.addEventListener('resize', handleResize);
     return () => {
-      document.removeEventListener('resize', handleResize);
+      window.removeEventListener('resize', handleResize);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
