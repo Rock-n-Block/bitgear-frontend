@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 import CoinbaseWalletLogo from '../../assets/images/logo/coinbase-logo.svg';
 import FortmaticLogo from '../../assets/images/logo/fortmatic-logo.svg';
@@ -14,18 +15,18 @@ export const PageLogin: React.FC = () => {
         <span>Connect with one of available wallet providers or create a new wallet.</span>
       </section>
       <div className={s.login_methods}>
-        <div className={s.login_methods_item}>
+        <Link className={s.login_methods_item} to="/account">
           <img src={FortmaticLogo} alt="Fortmatic logo" />
           <span>Fortmatic</span>
-        </div>
-        <div className={s.login_methods_item}>
+        </Link>
+        <Link className={s.login_methods_item} to="/account">
           <img src={WalletConnectLogo} alt="WalletConnect logo" />
           <span>WalletConnect</span>
-        </div>
-        <div className={s.login_methods_item}>
+        </Link>
+        <Link className={s.login_methods_item} to="/account">
           <img src={CoinbaseWalletLogo} alt="Coinbase Wallet logo" />
           <span>Coinbase Wallet</span>
-        </div>
+        </Link>
       </div>
     </div>
   );
