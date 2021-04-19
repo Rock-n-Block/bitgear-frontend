@@ -1,5 +1,6 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
+import cns from 'classnames';
 import { v1 as uuid } from 'uuid';
 
 import { ReactComponent as IconArrowDownWhite } from '../../../assets/icons/arrow-down-white.svg';
@@ -112,7 +113,7 @@ type TypeUseParams = {
 
 export const PageMarketsContent: React.FC = () => {
   const periodDefault = Number(getFromStorage('chartPeriod'));
-  // console.log('PageMarketsContent periodDefault:', periodDefault, periodDefault > 0);
+  console.log('PageMarketsContent periodDefault:', periodDefault, periodDefault > 0);
 
   const { symbolOne, symbolTwo } = useParams<TypeUseParams>();
 
@@ -129,7 +130,8 @@ export const PageMarketsContent: React.FC = () => {
   const [exchanges, setExchanges] = React.useState<any>([]);
   const [openDropdown, setOpenDropdown] = React.useState<boolean>(false);
   const [openSelect, setOpenSelect] = React.useState<boolean>(false);
-  const [openSettings, setOpenSettings] = React.useState<boolean>(true);
+  const [openSettings, setOpenSettings] = React.useState<boolean>(false);
+  const [mode, setMode] = React.useState<string>('market');
 
   const data: TypeToken = {
     symbol: 'ETH',
@@ -139,6 +141,8 @@ export const PageMarketsContent: React.FC = () => {
 
   const { priceChange } = data;
   const { name } = data;
+  const isModeMarket = mode === 'market';
+  const isModeLimit = mode === 'limit';
 
   const classPriceChange = s.containerTitlePriceChange;
   const isPriceChangePositive = +priceChange > 0;
@@ -177,6 +181,10 @@ export const PageMarketsContent: React.FC = () => {
     setToStorage('chartPeriod', newPeriod);
   };
 
+  const handleSetMode = (newMode: string) => {
+    setMode(newMode);
+  };
+
   const getPrice = React.useCallback(async () => {
     try {
       const result = await CryptoCompare.getMarketData({
@@ -196,7 +204,7 @@ export const PageMarketsContent: React.FC = () => {
         symbolOne,
         symbolTwo: symbolTwo || 'USD',
         limit: 100,
-        aggregate: periodDefault,
+        aggregate: period,
         exchange: 'Kraken',
       });
       console.log('getHistory:', result);
@@ -204,7 +212,7 @@ export const PageMarketsContent: React.FC = () => {
     } catch (e) {
       console.error(e);
     }
-  }, [symbolOne, symbolTwo, periodDefault]);
+  }, [symbolOne, symbolTwo, period]);
 
   const getPoints = React.useCallback(() => {
     try {
@@ -372,8 +380,28 @@ export const PageMarketsContent: React.FC = () => {
         </div>
         <div className={s.containerTitleSecond}>
           <div className={s.containerTitleSecondInner}>
-            <div className={s.containerTitleSecondItemActive}>Market</div>
-            <div className={s.containerTitleSecondItem}>Limit</div>
+            <div
+              role="button"
+              tabIndex={0}
+              className={
+                isModeMarket ? s.containerTitleSecondItemActive : s.containerTitleSecondItem
+              }
+              onClick={() => handleSetMode('market')}
+              onKeyDown={() => {}}
+            >
+              Market
+            </div>
+            <div
+              role="button"
+              tabIndex={0}
+              className={
+                isModeLimit ? s.containerTitleSecondItemActive : s.containerTitleSecondItem
+              }
+              onClick={() => handleSetMode('limit')}
+              onKeyDown={() => {}}
+            >
+              Limit
+            </div>
             <div
               className={s.containerTitleSecondItem}
               onClick={handleOpenSettings}
@@ -386,6 +414,7 @@ export const PageMarketsContent: React.FC = () => {
           </div>
         </div>
       </section>
+
       {openSettings && (
         <section className={s.containerSettings}>
           <h1>Advanced Settings</h1>
@@ -432,54 +461,85 @@ export const PageMarketsContent: React.FC = () => {
           </div>
         </section>
       )}
+
       <section className={s.containerTrading}>
         <div className={s.containerTradingCard}>
           <div className={s.containerTradingCardLabel}>You Pay</div>
-          <div className={s.containerTradingCardImage}>
-            <img src={imageTokenPay} alt="" />
+          <div className={s.containerTradingCardInner}>
+            <div className={s.containerTradingCardImage}>
+              <img src={imageTokenPay} alt="" />
+            </div>
+            <div className={s.containerTradingCardContainer}>
+              <div className={s.containerTradingCardContainerInner}>
+                <Dropdown open={openDropdown} label={DropdownLabel}>
+                  {DropdownItems}
+                </Dropdown>
+                <div className={s.containerTradingCardSymbol}>BTC</div>
+              </div>
+              <div className={s.containerTradingCardInput}>
+                {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+                <label htmlFor="inputPay" />
+                <input id="inputPay" type="number" />
+              </div>
+              <div className={s.containerTradingCardBalance}>
+                Current balance (BTC)<span>32,424</span>
+              </div>
+            </div>
           </div>
-          <div className={s.containerTradingCardContainer}>
-            <div className={s.containerTradingCardContainerInner}>
-              <Dropdown open={openDropdown} label={DropdownLabel}>
-                {DropdownItems}
-              </Dropdown>
-              <div className={s.containerTradingCardSymbol}>BTC</div>
+          {isModeLimit && (
+            <div className={s.containerTradingCardLimit}>
+              <div className={s.containerTradingCardLimitInner}>
+                <div className={s.containerTradingCardLimitLabel}>
+                  <div>ETH Price</div>
+                </div>
+                <div className={s.containerTradingCardLimitInput}>
+                  {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+                  <label htmlFor="inputPay">
+                    <div>USD</div>
+                  </label>
+                  <input id="inputPay" type="number" />
+                </div>
+              </div>
+              <div className={s.containerTradingCardLimitInner}>
+                <div className={s.containerTradingCardLimitLabel}>
+                  <div>Expires in</div>
+                </div>
+                <Select open={openSelect} label={SelectLabel}>
+                  <div ref={refSelect} className={s.containerSettingsSelectItems}>
+                    <div>30min</div>
+                    <div>60min</div>
+                  </div>
+                </Select>
+              </div>
             </div>
-            <div className={s.containerTradingCardInput}>
-              {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-              <label htmlFor="inputPay" />
-              <input id="inputPay" type="number" />
-            </div>
-            <div className={s.containerTradingCardBalance}>
-              Current balance (BTC)<span>32,424</span>
-            </div>
-          </div>
+          )}
         </div>
-        <div className={s.containerTradingDivider}>
+        <div className={cns(s.containerTradingDivider, s.containerTradingCardLimitOpen)}>
           <div className={s.containerTradingDividerInner}>
             <IconExchange />
           </div>
         </div>
-        <div className={s.containerTradingCard}>
+        <div className={cns(s.containerTradingCard, s.containerTradingCardLimitOpen)}>
           <div className={s.containerTradingCardLabel}>You Receive</div>
-          <div className={s.containerTradingCardImage}>
-            <img src={imageTokenReceive} alt="" />
-          </div>
-          <div className={s.containerTradingCardContainer}>
-            <div className={s.containerTradingCardContainerInner}>
-              <div className={s.containerTradingCardName}>
-                Ethereum
-                <IconArrowDownWhite className={s.containerTradingCardArrowDown} />
+          <div className={s.containerTradingCardInner}>
+            <div className={s.containerTradingCardImage}>
+              <img src={imageTokenReceive} alt="" />
+            </div>
+            <div className={s.containerTradingCardContainer}>
+              <div className={s.containerTradingCardContainerInner}>
+                <Dropdown open={openDropdown} label={DropdownLabel}>
+                  {DropdownItems}
+                </Dropdown>
+                <div className={s.containerTradingCardSymbol}>ETH</div>
               </div>
-              <div className={s.containerTradingCardSymbol}>ETH</div>
-            </div>
-            <div className={s.containerTradingCardInput}>
-              {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-              <label htmlFor="inputPay" />
-              <input id="inputPay" type="number" />
-            </div>
-            <div className={s.containerTradingCardBalance}>
-              Current balance (ETH)<span>24</span>
+              <div className={s.containerTradingCardInput}>
+                {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+                <label htmlFor="inputPay" />
+                <input id="inputPay" type="number" />
+              </div>
+              <div className={s.containerTradingCardBalance}>
+                Current balance (ETH)<span>24</span>
+              </div>
             </div>
           </div>
         </div>
@@ -487,6 +547,7 @@ export const PageMarketsContent: React.FC = () => {
           <Button>Trade</Button>
         </div>
       </section>
+
       <section className={s.containerChart}>
         <div className={s.chart}>
           <LineChart interactive data={points} />
