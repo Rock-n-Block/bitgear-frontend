@@ -60,13 +60,15 @@ $fs: 16px;
     }
 
     &Btn {
+      cursor: pointer;
+      background-color: $color-text-link;
+      padding: 10px;
+      border-radius: 10px;
+      color: #fff;
+      font-weight: 500;
+      font-size: 14px;
       a {
-        background-color: $color-text-link;
-        padding: 10px;
-        border-radius: 10px;
         color: #fff;
-        font-weight: 500;
-        font-size: 14px;
       }
     }
   }
@@ -152,5 +154,18 @@ $fs: 16px;
         text-decoration: none;
       }
     }
+  }
+}
+
+.headerDropdown {
+  width: 350px;
+
+  &Inner {
+    padding: 0px 20px;
+  }
+
+  &Item {
+    cursor: pointer;
+    padding: 10px 0px;
   }
 }

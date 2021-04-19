@@ -5,7 +5,7 @@ import s from './style.module.scss';
 
 type TypeButtonProps = {
   children?: React.ReactElement | string;
-  handleClick?: () => void;
+  onClick?: () => void;
   primary?: boolean;
   secondary?: boolean;
   normal?: boolean;
@@ -14,7 +14,7 @@ type TypeButtonProps = {
 
 const Button: React.FC<TypeButtonProps> = ({
   children,
-  handleClick,
+  onClick,
   primary = false,
   secondary = false,
   normal = false,
@@ -26,7 +26,7 @@ const Button: React.FC<TypeButtonProps> = ({
     <div
       role="button"
       tabIndex={0}
-      onClick={handleClick}
+      onClick={onClick}
       onKeyDown={() => {}}
       className={cns(s.button, classNameCustom, className)}
     >
