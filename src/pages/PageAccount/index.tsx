@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 
 import ArrowDownIcon from '../../assets/icons/arrow-down-icon.svg';
 import ArrowUpIcon from '../../assets/icons/arrow-up-icon.svg';
@@ -60,12 +61,16 @@ const tableData: TableType[] = [
 ];
 
 export const PageAccount: React.FC = () => {
+  const { address: userAddress = 'Address', balance: userBalance = 0 } = useSelector(
+    ({ user }: any) => user,
+  );
+
   return (
     <div className={s.container}>
       <section className={s.containerTitle}>
         <div className={s.containerTitleBlock}>
           <h1>Your Account</h1>
-          <span>0x9C3f...404d</span>
+          <span>{userAddress === '' ? '0xca807vad7fv...' : userAddress}</span>
         </div>
         <div className={s.accountMenu}>
           <span className={s.accountMenuActive}>Balance</span>
@@ -77,7 +82,7 @@ export const PageAccount: React.FC = () => {
         <div className={s.accountFundsItem}>
           <div className={s.accountFundsCard}>
             <h3>Your balance:</h3>
-            <span>0 ETH</span>
+            <span>{userBalance} ETH</span>
             <img src={EthGlassIcon} alt="ehereum logo" />
           </div>
           <div className={s.accountFundsDeposit}>

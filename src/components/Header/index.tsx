@@ -32,7 +32,7 @@ export const Header: React.FC = () => {
 
   const handleDisconnect = () => {
     web3Provider.disconnect();
-    setUserData({ address: undefined });
+    setUserData({ address: undefined, balance: 0 });
   };
 
   const DropdownLabel = (
