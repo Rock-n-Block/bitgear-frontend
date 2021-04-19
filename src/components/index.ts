@@ -1,4 +1,5 @@
 export { Header } from './Header';
+export { Footer } from './Footer';
 export { InputWithDropdown } from './InputWithDropdown';
 export { LineChart } from './LineChart';
 export { Dropdown } from './Dropdown';

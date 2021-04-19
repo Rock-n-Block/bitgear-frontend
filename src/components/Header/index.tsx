@@ -3,6 +3,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import useMedia from 'use-media';
 
+import { ReactComponent as IconMedium } from '../../assets/icons/social/medium.svg';
+import { ReactComponent as IconTelegram } from '../../assets/icons/social/telegram.svg';
+import { ReactComponent as IconTwitter } from '../../assets/icons/social/twitter.svg';
 import IconLogo from '../../assets/images/logo/HQ2.png';
 import config from '../../config';
 import { userActions } from '../../redux/actions';
@@ -111,9 +114,9 @@ export const Header: React.FC = () => {
           </div>
 
           <div className={s.headerItem}>
-            <Link to="/farm" onClick={() => setOpenMenu(false)}>
+            <a href="https://farm.bitgear.io" target="_blank" rel="noreferrer">
               Farm
-            </Link>
+            </a>
           </div>
 
           {userAddress ? (
@@ -156,39 +159,17 @@ export const Header: React.FC = () => {
           {isMobile && (
             <div className={s.headerMenuFooter}>
               <div className={s.headerMenuFooterLogoGroup}>
-                {/* <a href={config.links.telegram} target="_blank" rel="noreferrer noopener"> */}
-                {/*  <IconTelegram className="header-menu-footer-logo" /> */}
-                {/* </a> */}
-                {/* <a href={`mailto:${config.links.email}`} target="_blank" rel="noreferrer noopener"> */}
-                {/*  <IconEmail className="header-menu-footer-logo" /> */}
-                {/* </a> */}
-                {/* <a href={config.links.twitter} target="_blank" rel="noreferrer noopener"> */}
-                {/*  <IconTwitter className="header-menu-footer-logo" /> */}
-                {/* </a> */}
-                {/* <a href={config.links.github} target="_blank" rel="noreferrer noopener"> */}
-                {/*  <IconGithub className="header-menu-footer-logo" /> */}
-                {/* </a> */}
-                {/* <a href={config.links.medium} target="_blank" rel="noreferrer noopener"> */}
-                {/*  <IconMedium className="header-menu-footer-logo" /> */}
-                {/* </a> */}
-                {/* <a href={config.links.reddit} target="_blank" rel="noreferrer noopener"> */}
-                {/*  <IconReddit className="header-menu-footer-logo" /> */}
-                {/* </a> */}
-                {/* <a href={config.links.discord} target="_blank" rel="noreferrer noopener"> */}
-                {/*  <IconDiscord className="header-menu-footer-logo" /> */}
-                {/* </a> */}
-              </div>
-              <div className={s.headerMenuFooterCopyright}>
-                © Copyright Bitgear 2021,{' '}
-                <a
-                  className="link"
-                  href={config.links.policy}
-                  target="_blank"
-                  rel="noreferrer noopener"
-                >
-                  Privacy policy
+                <a href={config.links.medium} target="_blank" rel="noreferrer noopener">
+                  <IconMedium className={s.headerMenuFooterLogo} />
+                </a>
+                <a href={config.links.twitter} target="_blank" rel="noreferrer noopener">
+                  <IconTwitter className={s.headerMenuFooterLogo} />
+                </a>
+                <a href={config.links.telegram} target="_blank" rel="noreferrer noopener">
+                  <IconTelegram className={s.headerMenuFooterLogo} />
                 </a>
               </div>
+              <div className={s.headerMenuFooterCopyright}>© 2021 Bitgear. All Rights Reserved</div>
             </div>
           )}
         </nav>

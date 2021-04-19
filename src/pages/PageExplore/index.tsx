@@ -5,11 +5,14 @@ import ArrowUpIcon from '../../assets/icons/arrow-up-icon.svg';
 import CoinIcon from '../../assets/images/coin.png';
 import RocketIcon from '../../assets/images/rocket.png';
 import { InputWithDropdown, LineChart } from '../../components';
+import { CryptoCompareService } from '../../services/CryptoCompareService';
 import { Label, SearchDropdown, SearchLabel } from '../PageMain';
 
 import points from './points.json';
 
 import s from './style.module.scss';
+
+const CryptoCompare = new CryptoCompareService();
 
 type TableType = {
   symbol?: string;
@@ -90,7 +93,20 @@ const tableData: TableType[] = [
 export const PageExplore: React.FC = () => {
   const [searchValue, setSearchValue] = React.useState<string>('');
   const [searchResult, setSearchResult] = React.useState<any[]>([]);
-  const [coins] = React.useState<any[]>([]);
+  const [coins, setCoins] = React.useState<any[]>([]);
+
+  const getAllCoins = async () => {
+    try {
+      const result = await CryptoCompare.getAllCoins();
+      console.log(result);
+      if (result.status === 'SUCCESS') {
+        const newCoins = Object.values(result.data);
+        setCoins(newCoins);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   const matchSearch = (value: string) => {
     try {
@@ -112,6 +128,10 @@ export const PageExplore: React.FC = () => {
     setSearchValue(e);
     matchSearch(e);
   };
+
+  React.useEffect(() => {
+    getAllCoins();
+  }, []);
 
   return (
     <div className={s.container}>

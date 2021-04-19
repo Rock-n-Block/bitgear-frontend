@@ -7,41 +7,44 @@ import * as Pages from './pages';
 export const App: React.FC = () => {
   return (
     <Router>
-      <Components.Header />
-      <main className="container-App">
-        <Switch>
-          <Route path="/" exact>
-            <Pages.PageMain />
-          </Route>
-          <Route path="/explore">
-            <Pages.PageExplore />
-          </Route>
-          <Route path="/lists" exact>
-            <Redirect to="/explore" />
-          </Route>
-          <Route path="/lists/recently-added">
-            <Pages.PageListsRecentlyAdded />
-          </Route>
-          <Route path="/lists/top-gainers">
-            <Pages.PageListsTopGainers />
-          </Route>
-          <Route path="/markets">
-            <Pages.PageMarkets />
-          </Route>
-          <Route path="/settings">
-            <Pages.PageSettings />
-          </Route>
-          <Route path="/login">
-            <Pages.PageLogin />
-          </Route>
-          <Route path="/account">
-            <Pages.PageAccount />
-          </Route>
-          <Route path="*">
-            <Pages.Page404 />
-          </Route>
-        </Switch>
-      </main>
+      <div className="App">
+        <Components.Header />
+        <main className="container-App">
+          <Switch>
+            <Route path="/" exact>
+              <Pages.PageMain />
+            </Route>
+            <Route path="/explore">
+              <Pages.PageExplore />
+            </Route>
+            <Route path="/lists" exact>
+              <Redirect to="/explore" />
+            </Route>
+            <Route path="/lists/recently-added">
+              <Pages.PageListsRecentlyAdded />
+            </Route>
+            <Route path="/lists/top-gainers">
+              <Pages.PageListsTopGainers />
+            </Route>
+            <Route path="/markets">
+              <Pages.PageMarkets />
+            </Route>
+            <Route path="/settings">
+              <Pages.PageSettings />
+            </Route>
+            <Route path="/login">
+              <Pages.PageLogin />
+            </Route>
+            <Route path="/account">
+              <Pages.PageAccount />
+            </Route>
+            <Route path="*">
+              <Pages.Page404 />
+            </Route>
+          </Switch>
+        </main>
+        <Components.Footer />
+      </div>
     </Router>
   );
 };

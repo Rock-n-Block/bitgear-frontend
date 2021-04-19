@@ -73,6 +73,10 @@ a {
   color: $color-text-link;
 }
 
+.App {
+  position: relative;
+}
+
 .container-App {
   @include flex(column, center, normal, nowrap);
   padding: $height-header 0 0 0;
