@@ -41,7 +41,7 @@ export default class Web3Provider {
           resolve(res);
         })
         .catch((err: any) => {
-          window.location.reload();
+          // window.location.reload();
           reject(err);
         });
     });

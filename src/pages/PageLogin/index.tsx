@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import CoinbaseWalletLogo from '../../assets/images/logo/coinbase-logo.svg';
 import FortmaticLogo from '../../assets/images/logo/fortmatic-logo.svg';
 import WalletConnectLogo from '../../assets/images/logo/wallet-connect-logo.svg';
-import { userActions } from '../../redux/actions';
+import { userActions, walletActions } from '../../redux/actions';
 import { useWalletConnectorContext } from '../../services/WalletConnect';
 
 import s from './style.module.scss';
@@ -13,9 +13,10 @@ import s from './style.module.scss';
 export const PageLogin: React.FC = () => {
   const { web3Provider } = useWalletConnectorContext();
 
-  const dispatch = useDispatch();
   const { address: userAddress } = useSelector(({ user }: any) => user);
+  const dispatch = useDispatch();
   const setUserData = (props: any) => dispatch(userActions.setUserData(props));
+  const walletInit = () => dispatch(walletActions.walletInit());
 
   const handleWalletConnectLogin = async () => {
     try {
@@ -26,6 +27,7 @@ export const PageLogin: React.FC = () => {
       setUserData({ address: addresses[0], balance });
     } catch (e) {
       console.error('handleWalletConnectLogin:', e);
+      walletInit();
     }
   };
 

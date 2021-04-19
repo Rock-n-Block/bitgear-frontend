@@ -1,4 +1,5 @@
 import React, { createContext, useContext } from 'react';
+import { useSelector } from 'react-redux';
 
 import Web3Provider from './Web3Provider';
 
@@ -9,10 +10,12 @@ const walletConnectorContext = createContext<any>({
 const Connector: React.FC = ({ children }) => {
   const [provider, setProvider] = React.useState<any>(null);
 
+  const { counter } = useSelector(({ wallet }: any) => wallet);
+
   React.useEffect(() => {
     const web3 = new Web3Provider();
     setProvider(web3);
-  }, []);
+  }, [counter]);
 
   return (
     <walletConnectorContext.Provider value={{ web3Provider: provider }}>
