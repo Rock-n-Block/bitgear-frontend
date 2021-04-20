@@ -116,7 +116,7 @@ export const PageExplore: React.FC = () => {
         if (includesInCoinName || includesInName) return true;
         return false;
       });
-      result = result.slice(0, 5);
+      result = result.slice(0, 50);
       console.log('matchSearch:', result);
       setSearchResult(result);
     } catch (e) {
@@ -126,6 +126,7 @@ export const PageExplore: React.FC = () => {
 
   const handleSearch = (e: string) => {
     setSearchValue(e);
+    if (e.length < 2) return;
     matchSearch(e);
   };
 
