@@ -124,7 +124,7 @@ export const InputWithDropdown: React.FC<InputWithDropdownProps> = ({
         )}
         {newOpen && dropdown && (
           <div ref={refDropdown} className={s.dropdown}>
-            {dropdown}
+            <div className={s.dropdownInner}>{dropdown}</div>
           </div>
         )}
       </div>

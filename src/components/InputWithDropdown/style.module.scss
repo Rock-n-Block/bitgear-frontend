@@ -132,6 +132,10 @@
   border-left: $border-input;
   border-radius: 0 0 20px 20px;
   z-index: 2;
+}
+
+.dropdownInner {
+  margin: 0 0 15px 0;
   max-height: 380px;
   overflow: auto;
 }
