@@ -159,14 +159,34 @@ $fs: 16px;
 }
 
 .headerDropdown {
-  width: 350px;
+  width: 370px;
+  padding: 0;
 
   &Inner {
-    padding: 0px 20px;
+    height: 400px;
+    padding: 18px 30px 40px 30px;
   }
 
   &Item {
+    @include flex(row, center);
     cursor: pointer;
     padding: 10px 0px;
+
+    span {
+      cursor: auto;
+    }
+
+    svg {
+      margin: 0 10px 0 0;
+    }
+  }
+
+  &ItemTokens {
+    @include flex(row, center, center);
+    margin: 10px 0;
+    padding: 20px;
+    background: $color-bg-input-small;
+    border-radius: 4px;
+    min-height: 100px;
   }
 }

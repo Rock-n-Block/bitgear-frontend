@@ -1,8 +1,12 @@
 import React from 'react';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import useMedia from 'use-media';
 
+import { ReactComponent as IconCopy } from '../../assets/icons/copy-icon.svg';
+import { ReactComponent as IconExit } from '../../assets/icons/exit.svg';
+import { ReactComponent as IconInfo } from '../../assets/icons/info.svg';
 import { ReactComponent as IconMedium } from '../../assets/icons/social/medium.svg';
 import { ReactComponent as IconTelegram } from '../../assets/icons/social/telegram.svg';
 import { ReactComponent as IconTwitter } from '../../assets/icons/social/twitter.svg';
@@ -28,6 +32,7 @@ export const Header: React.FC = () => {
 
   const [openMenu, setOpenMenu] = React.useState<boolean>(false);
   const [openDropdown, setOpenDropdown] = React.useState<boolean>(false);
+  const [isAddressCopied, setIsAddressCopied] = React.useState<boolean>(false);
 
   const handleOpenDropdown = () => {
     setOpenDropdown(!openDropdown);
@@ -50,6 +55,13 @@ export const Header: React.FC = () => {
       {`${userAddress?.slice(0, 12)}...`}
     </div>
   );
+
+  const handleCopyAddress = () => {
+    setIsAddressCopied(true);
+    setTimeout(() => {
+      setIsAddressCopied(false);
+    }, 2000);
+  };
 
   const handleClickOutsideDropdown = (e: any) => {
     if (
@@ -125,17 +137,40 @@ export const Header: React.FC = () => {
               open={openDropdown}
               label={DropdownLabel}
               classNameDropdown={s.headerDropdown}
+              classNameDropdownInner={s.headerDropdownInner}
             >
-              <div ref={refDropdown} className={s.headerDropdownInner}>
+              <div ref={refDropdown}>
                 <div className={s.headerDropdownItem}>
+                  <span>
+                    {userBalance?.toString().slice(0, 8)} ETH ({`${userAddress.slice(0, 8)}...`})
+                  </span>
                   <Link to="/account" onClick={() => setOpenMenu(false)}>
-                    Your account ({`${userAddress.slice(0, 8)}...`})
+                    Your account
                   </Link>
                 </div>
-                <div className={s.headerDropdownItem}>
-                  <Link to="/account" onClick={() => setOpenMenu(false)}>
-                    Balance: {userBalance} ETH
-                  </Link>
+                <div className={s.headerDropdownItemTokens}>You do not have any tokens</div>
+
+                <CopyToClipboard text={userAddress} onCopy={handleCopyAddress}>
+                  <div
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={() => {}}
+                    className={s.headerDropdownItem}
+                    onClick={() => {}}
+                  >
+                    <IconCopy />
+                    {isAddressCopied ? 'Copied!' : 'Copy address'}
+                  </div>
+                </CopyToClipboard>
+                <div
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={() => {}}
+                  className={s.headerDropdownItem}
+                  onClick={() => {}}
+                >
+                  <IconInfo />
+                  Help center
                 </div>
                 <div
                   role="button"
@@ -144,6 +179,7 @@ export const Header: React.FC = () => {
                   className={s.headerDropdownItem}
                   onClick={handleDisconnect}
                 >
+                  <IconExit />
                   Disconnect
                 </div>
               </div>

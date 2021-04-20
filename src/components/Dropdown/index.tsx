@@ -11,6 +11,7 @@ type TypeDropdownProps = {
   children?: Element | React.ReactChildren | React.ReactElement | React.ReactChild;
   handleClick?: () => void;
   classNameDropdown?: any;
+  classNameDropdownInner?: any;
 };
 
 export const Dropdown: React.FC<TypeDropdownProps> = React.memo(
@@ -21,6 +22,7 @@ export const Dropdown: React.FC<TypeDropdownProps> = React.memo(
     left = false,
     right = false,
     classNameDropdown,
+    classNameDropdownInner,
   }) => {
     const classNameSide = right ? s.right : left ? s.left : null;
 
@@ -28,7 +30,7 @@ export const Dropdown: React.FC<TypeDropdownProps> = React.memo(
       <div className={s.container}>
         {label}
         <div className={cns(s.dropdown, !open && s.hidden, classNameSide, classNameDropdown)}>
-          <div className={s.dropdownInner}>{children}</div>
+          <div className={cns(s.dropdownInner, classNameDropdownInner)}>{children}</div>
         </div>
       </div>
     );
