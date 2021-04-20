@@ -126,9 +126,12 @@
   width: calc(100% + 4px);
   top: $height-input;
   background: $color-bg-input;
+  border-top: $border-input-dropdown;
   border-right: $border-input;
   border-bottom: $border-input;
   border-left: $border-input;
   border-radius: 0 0 20px 20px;
   z-index: 2;
+  max-height: 380px;
+  overflow: auto;
 }

@@ -179,7 +179,7 @@ export const PageMain: React.FC = () => {
         if (includesInCoinName || includesInName) return true;
         return false;
       });
-      result = result.slice(0, 5);
+      result = result.slice(0, 50);
       console.log('matchSearch:', result);
       setSearchResult(result);
     } catch (e) {
