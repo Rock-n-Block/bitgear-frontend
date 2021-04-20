@@ -117,8 +117,10 @@ export const PageMarketsContent: React.FC = () => {
 
   const { symbolOne, symbolTwo } = useParams<TypeUseParams>();
 
-  const refDropdown = React.useRef<HTMLDivElement>(null);
-  const refDropdownLabel = React.useRef<HTMLDivElement>(null);
+  const refDropdownPay = React.useRef<HTMLDivElement>(null);
+  const refDropdownReceive = React.useRef<HTMLDivElement>(null);
+  const refDropdownLabelPay = React.useRef<HTMLDivElement>(null);
+  const refDropdownLabelReceive = React.useRef<HTMLDivElement>(null);
   const refSelect = React.useRef<HTMLDivElement>(null);
   const refSelectLabel = React.useRef<HTMLDivElement>(null);
 
@@ -128,7 +130,8 @@ export const PageMarketsContent: React.FC = () => {
   const [period, setPeriod] = React.useState<number>(periodDefault > 0 ? periodDefault : 1);
   const [searchValue, setSearchValue] = React.useState<string>('');
   const [exchanges, setExchanges] = React.useState<any>([]);
-  const [openDropdown, setOpenDropdown] = React.useState<boolean>(false);
+  const [openDropdownPay, setOpenDropdownPay] = React.useState<boolean>(false);
+  const [openDropdownReceive, setOpenDropdownReceive] = React.useState<boolean>(false);
   const [openSelect, setOpenSelect] = React.useState<boolean>(false);
   const [openSettings, setOpenSettings] = React.useState<boolean>(false);
   const [mode, setMode] = React.useState<string>('market');
@@ -152,8 +155,12 @@ export const PageMarketsContent: React.FC = () => {
     setOpenSettings(!openSettings);
   };
 
-  const handleOpenDropdown = () => {
-    setOpenDropdown(!openDropdown);
+  const handleOpenDropdownPay = () => {
+    setOpenDropdownPay(!openDropdownPay);
+  };
+
+  const handleOpenDropdownReceive = () => {
+    setOpenDropdownReceive(!openDropdownReceive);
   };
 
   const handleOpenSelect = () => {
@@ -226,12 +233,21 @@ export const PageMarketsContent: React.FC = () => {
     }
   }, [history]);
 
-  const handleClickOutsideDropdown = (e: any) => {
+  const handleClickOutsideDropdownPay = (e: any) => {
     if (
-      !refDropdown?.current?.contains(e.target) &&
-      !refDropdownLabel?.current?.contains(e.target)
+      !refDropdownPay?.current?.contains(e.target) &&
+      !refDropdownLabelPay?.current?.contains(e.target)
     ) {
-      setOpenDropdown(false);
+      setOpenDropdownPay(false);
+    }
+  };
+
+  const handleClickOutsideDropdownReceive = (e: any) => {
+    if (
+      !refDropdownReceive?.current?.contains(e.target) &&
+      !refDropdownLabelReceive?.current?.contains(e.target)
+    ) {
+      setOpenDropdownReceive(false);
     }
   };
 
@@ -243,12 +259,14 @@ export const PageMarketsContent: React.FC = () => {
 
   React.useEffect(() => {
     document.addEventListener('click', (e) => {
-      handleClickOutsideDropdown(e);
+      handleClickOutsideDropdownPay(e);
+      handleClickOutsideDropdownReceive(e);
       handleClickOutsideSelect(e);
     });
     return () => {
       document.removeEventListener('click', (e) => {
-        handleClickOutsideDropdown(e);
+        handleClickOutsideDropdownPay(e);
+        handleClickOutsideDropdownReceive(e);
         handleClickOutsideSelect(e);
       });
     };
@@ -314,11 +332,11 @@ export const PageMarketsContent: React.FC = () => {
     </div>
   );
 
-  const DropdownLabel = (
+  const DropdownLabelPay = (
     <div
-      ref={refDropdownLabel}
+      ref={refDropdownLabelPay}
       className={s.containerTradingCardSearch}
-      onClick={handleOpenDropdown}
+      onClick={handleOpenDropdownPay}
       role="button"
       tabIndex={0}
       onKeyDown={() => {}}
@@ -328,8 +346,52 @@ export const PageMarketsContent: React.FC = () => {
     </div>
   );
 
-  const DropdownItems = (
-    <div ref={refDropdown}>
+  const DropdownLabelReceive = (
+    <div
+      ref={refDropdownLabelReceive}
+      className={s.containerTradingCardSearch}
+      onClick={handleOpenDropdownReceive}
+      role="button"
+      tabIndex={0}
+      onKeyDown={() => {}}
+    >
+      <div className={s.containerTradingCardSearchName}>{name}</div>
+      <IconArrowDownWhite className={s.containerTradingCardSearchArrowDown} />
+    </div>
+  );
+
+  const DropdownItemsPay = (
+    <div ref={refDropdownPay}>
+      <div className={s.containerTradingCardSearchInput}>
+        <Input
+          placeholder="Search"
+          label={<IconSearchWhite />}
+          value={searchValue}
+          onChange={handleChangeSearch}
+        />
+      </div>
+      <div className={s.containerTradingCardSearchItems}>
+        {tokens.map((item) => {
+          const { name: tokenName, symbol, price: tokenPrice, image = imageTokenPay } = item;
+          return (
+            <div key={uuid()} className={s.containerTradingCardSearchItem}>
+              <img src={image} alt="" className={s.containerTradingCardSearchItemImage} />
+              <div className={s.containerTradingCardSearchItemFirst}>
+                <div className={s.containerTradingCardSearchItemName}>{tokenName}</div>
+                <div className={s.containerTradingCardSearchItemPrice}>{tokenPrice}</div>
+              </div>
+              <div className={s.containerTradingCardSearchItemSymbol}>
+                <div>{symbol}</div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+
+  const DropdownItemsReceive = (
+    <div ref={refDropdownReceive}>
       <div className={s.containerTradingCardSearchInput}>
         <Input
           placeholder="Search"
@@ -471,8 +533,8 @@ export const PageMarketsContent: React.FC = () => {
             </div>
             <div className={s.containerTradingCardContainer}>
               <div className={s.containerTradingCardContainerInner}>
-                <Dropdown open={openDropdown} label={DropdownLabel}>
-                  {DropdownItems}
+                <Dropdown open={openDropdownPay} label={DropdownLabelPay}>
+                  {DropdownItemsPay}
                 </Dropdown>
                 <div className={s.containerTradingCardSymbol}>BTC</div>
               </div>
@@ -527,8 +589,8 @@ export const PageMarketsContent: React.FC = () => {
             </div>
             <div className={s.containerTradingCardContainer}>
               <div className={s.containerTradingCardContainerInner}>
-                <Dropdown open={openDropdown} label={DropdownLabel}>
-                  {DropdownItems}
+                <Dropdown open={openDropdownReceive} label={DropdownLabelReceive}>
+                  {DropdownItemsReceive}
                 </Dropdown>
                 <div className={s.containerTradingCardSymbol}>ETH</div>
               </div>
