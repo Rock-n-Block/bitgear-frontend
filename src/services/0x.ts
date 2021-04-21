@@ -35,6 +35,8 @@ export class Service0x {
 
   getQuote = async (props: TypeGetQuoteProps) => {
     try {
+      // eslint-disable-next-line no-param-reassign
+      props.buyAmount = `${+props.buyAmount * 10e17}`; // todo
       const url = `/swap/v1/quote?${qs.stringify(props)}`;
       const result = await this.axios.get(url);
       // console.log('Service0x getQuote:', result);

@@ -110,6 +110,7 @@ export const App: React.FC = () => {
           </Switch>
         </main>
         <Components.Footer />
+        <Components.Modal />
       </div>
     </Router>
   );

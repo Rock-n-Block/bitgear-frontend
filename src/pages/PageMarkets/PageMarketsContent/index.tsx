@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import cns from 'classnames';
 import { v1 as uuid } from 'uuid';
@@ -11,6 +11,7 @@ import { ReactComponent as IconSearchWhite } from '../../../assets/icons/search-
 import imageTokenPay from '../../../assets/images/token.png';
 import { Checkbox, Dropdown, Input, LineChart, Radio, Select } from '../../../components';
 import Button from '../../../components/Button';
+import { modalActions } from '../../../redux/actions';
 import { Service0x } from '../../../services/0x';
 import { CryptoCompareService } from '../../../services/CryptoCompareService';
 import { getFromStorage, setToStorage } from '../../../utils/localStorage';
@@ -56,6 +57,11 @@ type TypeUseParams = {
 export const PageMarketsContent: React.FC = () => {
   const periodDefault = Number(getFromStorage('chartPeriod'));
   // console.log('PageMarketsContent periodDefault:', periodDefault, periodDefault > 0);
+
+  const dispatch = useDispatch();
+  const toggleModal = React.useCallback((props: any) => dispatch(modalActions.toggleModal(props)), [
+    dispatch,
+  ]);
 
   const { tokens } = useSelector(({ zx }: any) => zx);
 
@@ -226,6 +232,25 @@ export const PageMarketsContent: React.FC = () => {
     }
   }, [history]);
 
+  const validateTradeErrors = React.useCallback(
+    (error) => {
+      const { code } = error.validationErrors[0];
+      let text: string | React.ReactElement = 'Something gone wrong';
+      if (code === 1001) {
+        text = 'Please, enter amount to pay or select token to receive';
+      } else if (code === 1004) {
+        text = (
+          <div>
+            <p>Insufficicent liquidity.</p>
+            <p>Please, decrease amount.</p>
+          </div>
+        );
+      }
+      toggleModal({ open: true, text });
+    },
+    [toggleModal],
+  );
+
   const trade = React.useCallback(async () => {
     try {
       const result = await Zx.getQuote({
@@ -233,11 +258,12 @@ export const PageMarketsContent: React.FC = () => {
         sellToken: symbolReceive,
         buyAmount: amountPay,
       });
+      if (result.status === 'ERROR') validateTradeErrors(result.error);
       console.log('trade:', result);
     } catch (e) {
       console.error(e);
     }
-  }, [symbolPay, symbolReceive, amountPay]);
+  }, [symbolPay, symbolReceive, amountPay, validateTradeErrors]);
 
   const handleSelectSymbolPay = (symbol: string) => {
     console.log(symbol);
