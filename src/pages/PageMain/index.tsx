@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { v1 as uuid } from 'uuid';
 
@@ -6,88 +7,25 @@ import { ReactComponent as IconSearch } from '../../assets/icons/search.svg';
 import imageCoin from '../../assets/images/coin.png';
 import imageRocket from '../../assets/images/rocket.png';
 import { InputWithDropdown } from '../../components';
-import { CryptoCompareService } from '../../services/CryptoCompareService';
 
 import s from './style.module.scss';
 
-const CryptoCompare = new CryptoCompareService();
-
 type TypeToken = {
-  symbol?: string;
-  name?: string;
+  symbol: string;
+  name: string;
   price?: number;
-  priceChange: string | number;
+  priceChange?: string | number;
   image?: string;
 };
-
-type TypeCoin = {
-  Name?: string;
-  CoinName?: string;
-  ImageUrl?: string;
-};
-
-export const tokens: TypeToken[] = [
-  {
-    symbol: 'WETH',
-    name: 'Ethereum',
-    price: 1813.04,
-    priceChange: 0,
-    image: undefined,
-  },
-  {
-    symbol: 'WBTC',
-    name: 'Bitcoin',
-    price: 1813.04,
-    priceChange: 5.96,
-    image: undefined,
-  },
-  {
-    symbol: 'GEAR',
-    name: 'Gear',
-    price: 1813.04,
-    priceChange: -1.4,
-    image: undefined,
-  },
-  {
-    symbol: 'GEAR',
-    name: 'Ethereum',
-    price: 1813.04,
-    priceChange: -1.4,
-    image: undefined,
-  },
-  {
-    symbol: 'WETH',
-    name: 'Ethereum',
-    price: 1813.04,
-    priceChange: 5.96,
-    image: undefined,
-  },
-  {
-    symbol: 'WBTC',
-    name: 'Ethereum',
-    price: 1813.04,
-    priceChange: 5.96,
-    image: undefined,
-  },
-  {
-    symbol: 'GEAR',
-    name: 'Ethereum',
-    price: 1813.04,
-    priceChange: -1.4,
-    image: undefined,
-  },
-  {
-    symbol: 'GEAR',
-    name: 'Ethereum',
-    price: 1813.04,
-    priceChange: -1.4,
-    image: undefined,
-  },
-];
 
 type TypeCardProps = {
   children: React.ReactElement[];
   to: string;
+};
+
+type TypeSearchDropdownProps = {
+  items?: TypeToken[];
+  search?: string;
 };
 
 export const Card: React.FC<TypeCardProps> = ({ children = [], to = '/' }) => {
@@ -123,23 +61,17 @@ export const SearchLabel: React.FC = () => {
   );
 };
 
-type TypeSearchDropdownProps = {
-  items?: TypeCoin[];
-  search?: string;
-};
-
 export const SearchDropdown: React.FC<TypeSearchDropdownProps> = ({ items = [], search = '' }) => {
   return (
     <div className={s.dropdownSearch}>
       {items && items.length > 0 ? (
-        items.map((item) => {
-          const { CoinName, Name, ImageUrl } = item;
-          const image = ImageUrl ? `https://cryptocompare.com${ImageUrl}` : imageCoin;
+        items.map((item: TypeToken) => {
+          const { symbol, name, image } = item;
           return (
-            <Link to={`/markets/${Name}`} key={`token-${uuid()}`} className={s.dropdownSearchItem}>
+            <Link to={`/markets/${symbol}`} key={uuid()} className={s.dropdownSearchItem}>
               <img src={image} alt="" className={s.dropdownSearchItemImage} />
-              <div className={s.dropdownSearchItemName}>{CoinName}</div>
-              <div className={s.dropdownSearchItemSymbol}>{Name}</div>
+              <div className={s.dropdownSearchItemName}>{name}</div>
+              <div className={s.dropdownSearchItemSymbol}>{symbol}</div>
             </Link>
           );
         })
@@ -156,27 +88,16 @@ export const SearchDropdown: React.FC<TypeSearchDropdownProps> = ({ items = [], 
 export const PageMain: React.FC = () => {
   const [searchValue, setSearchValue] = React.useState<string>('');
   const [searchResult, setSearchResult] = React.useState<any[]>([]);
-  const [coins, setCoins] = React.useState<any[]>([]);
 
-  const getAllCoins = async () => {
-    try {
-      const result = await CryptoCompare.getAllCoins();
-      console.log(result);
-      if (result.status === 'SUCCESS') {
-        const newCoins = Object.values(result.data);
-        setCoins(newCoins);
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  };
+  let { tokens } = useSelector(({ zx }: any) => zx);
+  tokens = tokens.slice(0, 3);
 
   const matchSearch = (value: string) => {
     try {
-      let result = coins.filter((coin) => {
-        const includesInCoinName = coin.CoinName.toLowerCase().includes(value.toLowerCase());
-        const includesInName = coin.Name.toLowerCase().includes(value.toLowerCase());
-        if (includesInCoinName || includesInName) return true;
+      let result = tokens.filter((token: TypeToken) => {
+        const includesInSymbol = token.symbol.toLowerCase().includes(value.toLowerCase());
+        const includesInName = token.name.toLowerCase().includes(value.toLowerCase());
+        if (includesInSymbol || includesInName) return true;
         return false;
       });
       result = result.slice(0, 50);
@@ -193,10 +114,6 @@ export const PageMain: React.FC = () => {
     matchSearch(e);
   };
 
-  React.useEffect(() => {
-    getAllCoins();
-  }, []);
-
   return (
     <div className={s.container}>
       <section className={s.containerTitle}>
@@ -205,11 +122,8 @@ export const PageMain: React.FC = () => {
         </h1>
         <div>
           <InputWithDropdown
-            // open
             classContainer={s.containerInput}
             onChange={handleSearch}
-            // onFocus={() => setOpenSearchDropdown(true)}
-            // onBlur={() => setOpenSearchDropdown(false)}
             value={searchValue}
             label={<Label />}
             labelInner={<SearchLabel />}

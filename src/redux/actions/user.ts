@@ -1,6 +1,6 @@
 export default {
-  setUserData: (data: any) => ({
+  setUserData: (payload: any) => ({
     type: 'USER:SET_DATA',
-    payload: data,
+    payload,
   }),
 };

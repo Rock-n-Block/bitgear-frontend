@@ -274,6 +274,7 @@
       &Image {
         width: 36px;
         height: 36px;
+        border-radius: 50%;
       }
 
       &First {
@@ -283,8 +284,8 @@
 
       &Name {
         font-weight: 500;
-        font-size: 20px;
-        line-height: 31px;
+        font-size: 16px;
+        line-height: 18px;
         color: $color-text-link;
       }
 

@@ -17,15 +17,19 @@ type TypeGetHistoryProps = {
 };
 
 export class CryptoCompareService {
+  private axios: any;
+
   constructor() {
-    axios.defaults.baseURL = config.apis.cryptoCompare;
+    this.axios = axios.create({
+      baseURL: config.apis.cryptoCompare,
+    });
   }
 
   getAllCoins = async () => {
     try {
       const url = `/data/all/coinlist`;
-      const result = await axios.get(url);
-      console.log('CryptoCompareService getAllCoins:', result);
+      const result = await this.axios.get(url);
+      // console.log('CryptoCompareService getAllCoins:', result);
       if (result.data.Response === 'Error') {
         return { status: 'ERROR', data: undefined };
       }
@@ -42,8 +46,8 @@ export class CryptoCompareService {
   getMarketData = async ({ symbolOne, symbolTwo }: TypeGetPriceProps) => {
     try {
       const url = `/data/pricemultifull?fsyms=${symbolOne.toUpperCase()}&tsyms=${symbolTwo.toUpperCase()}`;
-      const result = await axios.get(url);
-      console.log('CryptoCompareService getMarketData:', result);
+      const result = await this.axios.get(url);
+      // console.log('CryptoCompareService getMarketData:', result);
       if (result.data.Response === 'Error') {
         return { status: 'ERROR', data: undefined };
       }
@@ -72,8 +76,8 @@ export class CryptoCompareService {
         aggregate,
         exchange,
       });
-      const result = await axios.get(`/data/v2/histoday?${query}`);
-      console.log('CryptoCompareService getHistory:', result);
+      const result = await this.axios.get(`/data/v2/histoday?${query}`);
+      // console.log('CryptoCompareService getHistory:', result);
       if (result.data.Response === 'Error') {
         return { status: 'ERROR', data: undefined };
       }

@@ -1,10 +1,77 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
 import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom';
 
+import imageTokenPay from './assets/images/token.png';
+import { zxActions } from './redux/actions';
+import { Service0x } from './services/0x';
+import { CryptoCompareService } from './services/CryptoCompareService';
 import * as Components from './components';
 import * as Pages from './pages';
 
+const Zx = new Service0x();
+const CryptoCompare = new CryptoCompareService();
+
 export const App: React.FC = () => {
+  const dispatch = useDispatch();
+  const setTokens = React.useCallback((props: any) => dispatch(zxActions.setTokens(props)), [
+    dispatch,
+  ]);
+
+  const [tokensCryptoCompare, setTokensCryptoCompare] = React.useState<any[]>([]);
+
+  const getTokensFromCryptoCompare = async () => {
+    try {
+      const result = await CryptoCompare.getAllCoins();
+      if (result.status === 'SUCCESS') {
+        const newTokens = result.data;
+        console.log('PageMain getTokensFromCryptoCompare:', newTokens);
+        setTokensCryptoCompare(newTokens);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const changeTokensInfo = React.useCallback(
+    (data) => {
+      const newData = data;
+      data.map((token: any, it: number) => {
+        const { symbol } = token;
+        if (!tokensCryptoCompare[symbol]) return null;
+        const imageUrl =
+          `https://www.cryptocompare.com/media${tokensCryptoCompare[symbol].ImageUrl}` ||
+          imageTokenPay;
+        newData[it].image = imageUrl;
+        return null;
+      });
+      return newData;
+    },
+    [tokensCryptoCompare],
+  );
+
+  const getTokens = React.useCallback(async () => {
+    try {
+      const result = await Zx.getTokens();
+      console.log('getTokens:', result.data.records);
+      const tokens = changeTokensInfo(result.data.records);
+      setTokens({ tokens });
+    } catch (e) {
+      console.error('getTokens:', e);
+    }
+  }, [setTokens, changeTokensInfo]);
+
+  React.useEffect(() => {
+    getTokensFromCryptoCompare();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  React.useEffect(() => {
+    if (!tokensCryptoCompare || tokensCryptoCompare?.length === 0) return;
+    getTokens();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tokensCryptoCompare]);
+
   return (
     <Router>
       <div className="App">

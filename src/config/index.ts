@@ -1,5 +1,7 @@
+const IS_PRODUCTION = false;
+
 export default {
-  IS_PRODUCTION: false,
+  IS_PRODUCTION,
   links: {
     twitter: 'https://twitter.com/',
     telegram: 'https://t.me/',
@@ -11,6 +13,7 @@ export default {
     policy: '',
   },
   apis: {
-    cryptoCompare: 'https://min-api.cryptocompare.com',
+    'cryptoCompare': 'https://min-api.cryptocompare.com',
+    '0x': IS_PRODUCTION ? 'https://api.0x.org' : 'https://kovan.api.0x.org/',
   },
 };

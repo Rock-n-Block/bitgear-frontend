@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import cns from 'classnames';
 import { v1 as uuid } from 'uuid';
@@ -10,6 +11,7 @@ import { ReactComponent as IconSearchWhite } from '../../../assets/icons/search-
 import imageTokenPay from '../../../assets/images/token.png';
 import { Checkbox, Dropdown, Input, LineChart, Radio, Select } from '../../../components';
 import Button from '../../../components/Button';
+import { Service0x } from '../../../services/0x';
 import { CryptoCompareService } from '../../../services/CryptoCompareService';
 import { getFromStorage, setToStorage } from '../../../utils/localStorage';
 
@@ -18,6 +20,7 @@ import s from './style.module.scss';
 const imageTokenReceive = 'https://www.cryptocompare.com/media/37746238/eth.png';
 
 const CryptoCompare = new CryptoCompareService();
+const Zx = new Service0x();
 
 const exchangesList: string[] = [
   '0x',
@@ -40,71 +43,12 @@ const exchangesList: string[] = [
 ];
 
 type TypeToken = {
-  symbol?: string;
-  name?: string;
+  symbol: string;
+  name: string;
   price?: number;
   priceChange: number | string;
   image?: string;
 };
-
-const tokens: TypeToken[] = [
-  {
-    symbol: 'WETH',
-    name: 'Ethereum',
-    price: 1813.04,
-    priceChange: 0,
-    image: undefined,
-  },
-  {
-    symbol: 'WBTC',
-    name: 'Bitcoin',
-    price: 1813.04,
-    priceChange: 5.96,
-    image: undefined,
-  },
-  {
-    symbol: 'GEAR',
-    name: 'Gear',
-    price: 1813.04,
-    priceChange: -1.4,
-    image: undefined,
-  },
-  {
-    symbol: 'GEAR',
-    name: 'Ethereum',
-    price: 1813.04,
-    priceChange: -1.4,
-    image: undefined,
-  },
-  {
-    symbol: 'WETH',
-    name: 'Ethereum',
-    price: 1813.04,
-    priceChange: 5.96,
-    image: undefined,
-  },
-  {
-    symbol: 'WBTC',
-    name: 'Ethereum',
-    price: 1813.04,
-    priceChange: 5.96,
-    image: undefined,
-  },
-  {
-    symbol: 'GEAR',
-    name: 'Ethereum',
-    price: 1813.04,
-    priceChange: -1.4,
-    image: undefined,
-  },
-  {
-    symbol: 'GEAR',
-    name: 'Ethereum',
-    price: 1813.04,
-    priceChange: -1.4,
-    image: undefined,
-  },
-];
 
 type TypeUseParams = {
   symbolOne: string;
@@ -113,7 +57,9 @@ type TypeUseParams = {
 
 export const PageMarketsContent: React.FC = () => {
   const periodDefault = Number(getFromStorage('chartPeriod'));
-  console.log('PageMarketsContent periodDefault:', periodDefault, periodDefault > 0);
+  // console.log('PageMarketsContent periodDefault:', periodDefault, periodDefault > 0);
+
+  const { tokens } = useSelector(({ zx }: any) => zx);
 
   const { symbolOne, symbolTwo } = useParams<TypeUseParams>();
 
@@ -128,13 +74,18 @@ export const PageMarketsContent: React.FC = () => {
   const [history, setHistory] = React.useState<any[]>([]);
   const [points, setPoints] = React.useState<number[]>([]);
   const [period, setPeriod] = React.useState<number>(periodDefault > 0 ? periodDefault : 1);
-  const [searchValue, setSearchValue] = React.useState<string>('');
+  const [searchValuePay, setSearchValuePay] = React.useState<string>('');
+  const [searchValueReceive, setSearchValueReceive] = React.useState<string>('');
   const [exchanges, setExchanges] = React.useState<any>([]);
   const [openDropdownPay, setOpenDropdownPay] = React.useState<boolean>(false);
   const [openDropdownReceive, setOpenDropdownReceive] = React.useState<boolean>(false);
   const [openSelect, setOpenSelect] = React.useState<boolean>(false);
   const [openSettings, setOpenSettings] = React.useState<boolean>(false);
   const [mode, setMode] = React.useState<string>('market');
+  const [searchTokensResultPay, setSearchTokensResultPay] = React.useState<TypeToken[]>(tokens);
+  const [searchTokensResultReceive, setSearchTokensResultReceive] = React.useState<TypeToken[]>(
+    tokens,
+  );
 
   const data: TypeToken = {
     symbol: 'ETH',
@@ -179,8 +130,36 @@ export const PageMarketsContent: React.FC = () => {
     setExchanges(newExchanges);
   };
 
-  const handleChangeSearch = (newSearchValue: string) => {
-    setSearchValue(newSearchValue);
+  const handleChangeSearchPay = (value: string) => {
+    try {
+      setSearchValuePay(value);
+      const result = tokens.filter((token: TypeToken) => {
+        const includesInSymbol = token.symbol.toLowerCase().includes(value.toLowerCase());
+        const includesInName = token.name.toLowerCase().includes(value.toLowerCase());
+        if (includesInSymbol || includesInName) return true;
+        return false;
+      });
+      console.log('matchSearch:', result);
+      setSearchTokensResultPay(result);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const handleChangeSearchReceive = (value: string) => {
+    try {
+      setSearchValueReceive(value);
+      const result = tokens.filter((token: TypeToken) => {
+        const includesInSymbol = token.symbol.toLowerCase().includes(value.toLowerCase());
+        const includesInName = token.name.toLowerCase().includes(value.toLowerCase());
+        if (includesInSymbol || includesInName) return true;
+        return false;
+      });
+      console.log('matchSearch:', result);
+      setSearchTokensResultReceive(result);
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   const handleSetPeriod = (newPeriod: number) => {
@@ -199,7 +178,7 @@ export const PageMarketsContent: React.FC = () => {
         symbolTwo: symbolTwo || 'USD',
       });
       setPrice(result.data.PRICE);
-      console.log('getPrice:', result);
+      // console.log('getPrice:', result);
     } catch (e) {
       console.error(e);
     }
@@ -214,7 +193,7 @@ export const PageMarketsContent: React.FC = () => {
         aggregate: period,
         exchange: 'Kraken',
       });
-      console.log('getHistory:', result);
+      // console.log('getHistory:', result);
       setHistory(result.data);
     } catch (e) {
       console.error(e);
@@ -227,11 +206,24 @@ export const PageMarketsContent: React.FC = () => {
         return item.close;
       });
       setPoints(newPoints);
-      console.log('getPoints:', history);
+      // console.log('getPoints:', history);
     } catch (e) {
       console.error(e);
     }
   }, [history]);
+
+  const getQuote = React.useCallback(async () => {
+    try {
+      const result = await Zx.getQuote({
+        buyToken: symbolOne,
+        sellToken: symbolTwo || '',
+        buyAmount: '100',
+      });
+      console.log('getQuote:', result);
+    } catch (e) {
+      console.error(e);
+    }
+  }, [symbolOne, symbolTwo]);
 
   const handleClickOutsideDropdownPay = (e: any) => {
     if (
@@ -274,8 +266,8 @@ export const PageMarketsContent: React.FC = () => {
 
   React.useEffect(() => {
     getPrice();
-    getPrice();
     getHistory();
+    getQuote();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -289,6 +281,14 @@ export const PageMarketsContent: React.FC = () => {
     getPoints();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [period]);
+
+  React.useEffect(() => {
+    if (!tokens || tokens?.length === 0) return;
+    console.log('PageMarketsContent useEffect tokens:', tokens);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    setSearchTokensResultPay(tokens);
+    setSearchTokensResultReceive(tokens);
+  }, [tokens]);
 
   const RadioLabelFast = (
     <div className={s.radioLabelGas}>
@@ -366,13 +366,13 @@ export const PageMarketsContent: React.FC = () => {
         <Input
           placeholder="Search"
           label={<IconSearchWhite />}
-          value={searchValue}
-          onChange={handleChangeSearch}
+          value={searchValuePay}
+          onChange={handleChangeSearchPay}
         />
       </div>
       <div className={s.containerTradingCardSearchItems}>
-        {tokens.map((item) => {
-          const { name: tokenName, symbol, price: tokenPrice, image = imageTokenPay } = item;
+        {searchTokensResultPay.map((token: any) => {
+          const { name: tokenName, symbol, price: tokenPrice = 0, image = imageTokenPay } = token;
           return (
             <div key={uuid()} className={s.containerTradingCardSearchItem}>
               <img src={image} alt="" className={s.containerTradingCardSearchItemImage} />
@@ -396,13 +396,13 @@ export const PageMarketsContent: React.FC = () => {
         <Input
           placeholder="Search"
           label={<IconSearchWhite />}
-          value={searchValue}
-          onChange={handleChangeSearch}
+          value={searchValueReceive}
+          onChange={handleChangeSearchReceive}
         />
       </div>
       <div className={s.containerTradingCardSearchItems}>
-        {tokens.map((item) => {
-          const { name: tokenName, symbol, price: tokenPrice, image = imageTokenPay } = item;
+        {searchTokensResultReceive.map((item: any) => {
+          const { name: tokenName, symbol, price: tokenPrice = '0', image = imageTokenPay } = item;
           return (
             <div key={uuid()} className={s.containerTradingCardSearchItem}>
               <img src={image} alt="" className={s.containerTradingCardSearchItemImage} />
