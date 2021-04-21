@@ -38,11 +38,10 @@ export const App: React.FC = () => {
       const newData = data;
       data.map((token: any, it: number) => {
         const { symbol } = token;
-        if (!tokensCryptoCompare[symbol]) return null;
-        const imageUrl =
-          `https://www.cryptocompare.com/media${tokensCryptoCompare[symbol].ImageUrl}` ||
-          imageTokenPay;
-        newData[it].image = imageUrl;
+        const isImage = tokensCryptoCompare[symbol] && tokensCryptoCompare[symbol].ImageUrl;
+        newData[it].image = isImage
+          ? `https://www.cryptocompare.com/media${tokensCryptoCompare[symbol].ImageUrl}`
+          : imageTokenPay;
         return null;
       });
       return newData;

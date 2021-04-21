@@ -213,6 +213,7 @@
         width: 58px;
         height: 58px;
         border-radius: 50%;
+        background: $color-bg-image;
       }
     }
 
@@ -275,6 +276,7 @@
         width: 36px;
         height: 36px;
         border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2);
       }
 
       &First {
@@ -359,12 +361,14 @@
 
     &Inner {
       @include flex(row, center, center);
+      cursor: pointer;
       width: 44px;
       height: 44px;
       border: $border-form;
       border-radius: 50%;
       background: $color-bg;
       z-index: 2;
+      user-select: none;
     }
   }
 

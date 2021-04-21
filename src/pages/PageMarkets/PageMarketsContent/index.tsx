@@ -17,8 +17,6 @@ import { getFromStorage, setToStorage } from '../../../utils/localStorage';
 
 import s from './style.module.scss';
 
-const imageTokenReceive = 'https://www.cryptocompare.com/media/37746238/eth.png';
-
 const CryptoCompare = new CryptoCompareService();
 const Zx = new Service0x();
 
@@ -61,7 +59,7 @@ export const PageMarketsContent: React.FC = () => {
 
   const { tokens } = useSelector(({ zx }: any) => zx);
 
-  const { symbolOne, symbolTwo } = useParams<TypeUseParams>();
+  const { symbolOne, symbolTwo = 'USDT' } = useParams<TypeUseParams>();
 
   const refDropdownPay = React.useRef<HTMLDivElement>(null);
   const refDropdownReceive = React.useRef<HTMLDivElement>(null);
@@ -86,6 +84,10 @@ export const PageMarketsContent: React.FC = () => {
   const [searchTokensResultReceive, setSearchTokensResultReceive] = React.useState<TypeToken[]>(
     tokens,
   );
+  const [symbolPay, setSymbolPay] = React.useState<string>(symbolOne);
+  const [symbolReceive, setSymbolReceive] = React.useState<string>(symbolTwo);
+  const [amountPay, setAmountPay] = React.useState<string>('');
+  const [amountReceive, setAmountReceive] = React.useState<string>('');
 
   const data: TypeToken = {
     symbol: 'ETH',
@@ -116,6 +118,18 @@ export const PageMarketsContent: React.FC = () => {
 
   const handleOpenSelect = () => {
     setOpenSelect(!openSelect);
+  };
+
+  const handleChangeAmountPay = (e: any) => {
+    let { value } = e.target;
+    if (Number(value) < 0) value = '0';
+    setAmountPay(value);
+  };
+
+  const handleChangeAmountReceive = (e: any) => {
+    let { value } = e.target;
+    if (Number(value) < 0) value = '0';
+    setAmountReceive(value);
   };
 
   const handleChangeExchanges = (e: boolean, exchange: string) => {
@@ -212,18 +226,46 @@ export const PageMarketsContent: React.FC = () => {
     }
   }, [history]);
 
-  const getQuote = React.useCallback(async () => {
+  const trade = React.useCallback(async () => {
     try {
       const result = await Zx.getQuote({
-        buyToken: symbolOne,
-        sellToken: symbolTwo || '',
-        buyAmount: '100',
+        buyToken: symbolPay,
+        sellToken: symbolReceive,
+        buyAmount: amountPay,
       });
-      console.log('getQuote:', result);
+      console.log('trade:', result);
     } catch (e) {
       console.error(e);
     }
-  }, [symbolOne, symbolTwo]);
+  }, [symbolPay, symbolReceive, amountPay]);
+
+  const handleSelectSymbolPay = (symbol: string) => {
+    console.log(symbol);
+    setSymbolPay(symbol);
+    setOpenDropdownPay(false);
+  };
+
+  const handleSelectSymbolReceive = (symbol: string) => {
+    console.log(symbol);
+    setSymbolReceive(symbol);
+    setOpenDropdownReceive(false);
+  };
+
+  const getTokenBySymbol = (symbol: string) => {
+    const tokenEmpty = { name: 'Currency', symbol: null, image: imageTokenPay };
+    try {
+      const token = tokens.filter((item: any) => item.symbol === symbol);
+      return token.length > 0 ? token[0] : tokenEmpty;
+    } catch (e) {
+      console.error(e);
+      return tokenEmpty;
+    }
+  };
+
+  const switchPayAndReceive = () => {
+    setSymbolPay(symbolReceive);
+    setSymbolReceive(symbolPay);
+  };
 
   const handleClickOutsideDropdownPay = (e: any) => {
     if (
@@ -267,7 +309,6 @@ export const PageMarketsContent: React.FC = () => {
   React.useEffect(() => {
     getPrice();
     getHistory();
-    getQuote();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -341,7 +382,7 @@ export const PageMarketsContent: React.FC = () => {
       tabIndex={0}
       onKeyDown={() => {}}
     >
-      <div className={s.containerTradingCardSearchName}>{name}</div>
+      <div className={s.containerTradingCardSearchName}>{getTokenBySymbol(symbolPay).name}</div>
       <IconArrowDownWhite className={s.containerTradingCardSearchArrowDown} />
     </div>
   );
@@ -355,7 +396,7 @@ export const PageMarketsContent: React.FC = () => {
       tabIndex={0}
       onKeyDown={() => {}}
     >
-      <div className={s.containerTradingCardSearchName}>{name}</div>
+      <div className={s.containerTradingCardSearchName}>{getTokenBySymbol(symbolReceive).name}</div>
       <IconArrowDownWhite className={s.containerTradingCardSearchArrowDown} />
     </div>
   );
@@ -374,7 +415,14 @@ export const PageMarketsContent: React.FC = () => {
         {searchTokensResultPay.map((token: any) => {
           const { name: tokenName, symbol, price: tokenPrice = 0, image = imageTokenPay } = token;
           return (
-            <div key={uuid()} className={s.containerTradingCardSearchItem}>
+            <div
+              role="button"
+              key={uuid()}
+              tabIndex={0}
+              className={s.containerTradingCardSearchItem}
+              onClick={() => handleSelectSymbolPay(symbol)}
+              onKeyDown={() => {}}
+            >
               <img src={image} alt="" className={s.containerTradingCardSearchItemImage} />
               <div className={s.containerTradingCardSearchItemFirst}>
                 <div className={s.containerTradingCardSearchItemName}>{tokenName}</div>
@@ -404,7 +452,14 @@ export const PageMarketsContent: React.FC = () => {
         {searchTokensResultReceive.map((item: any) => {
           const { name: tokenName, symbol, price: tokenPrice = '0', image = imageTokenPay } = item;
           return (
-            <div key={uuid()} className={s.containerTradingCardSearchItem}>
+            <div
+              role="button"
+              key={uuid()}
+              tabIndex={0}
+              className={s.containerTradingCardSearchItem}
+              onClick={() => handleSelectSymbolReceive(symbol)}
+              onKeyDown={() => {}}
+            >
               <img src={image} alt="" className={s.containerTradingCardSearchItemImage} />
               <div className={s.containerTradingCardSearchItemFirst}>
                 <div className={s.containerTradingCardSearchItemName}>{tokenName}</div>
@@ -529,22 +584,29 @@ export const PageMarketsContent: React.FC = () => {
           <div className={s.containerTradingCardLabel}>You Pay</div>
           <div className={s.containerTradingCardInner}>
             <div className={s.containerTradingCardImage}>
-              <img src={imageTokenPay} alt="" />
+              <img src={getTokenBySymbol(symbolPay).image} alt="" />
             </div>
             <div className={s.containerTradingCardContainer}>
               <div className={s.containerTradingCardContainerInner}>
                 <Dropdown open={openDropdownPay} label={DropdownLabelPay}>
                   {DropdownItemsPay}
                 </Dropdown>
-                <div className={s.containerTradingCardSymbol}>BTC</div>
+                <div className={s.containerTradingCardSymbol}>
+                  {getTokenBySymbol(symbolPay).symbol}
+                </div>
               </div>
               <div className={s.containerTradingCardInput}>
                 {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
                 <label htmlFor="inputPay" />
-                <input id="inputPay" type="number" />
+                <input
+                  id="inputPay"
+                  type="number"
+                  value={amountPay}
+                  onChange={handleChangeAmountPay}
+                />
               </div>
               <div className={s.containerTradingCardBalance}>
-                Current balance (BTC)<span>32,424</span>
+                Current balance ({getTokenBySymbol(symbolPay).symbol})<span>32,424</span>
               </div>
             </div>
           </div>
@@ -576,37 +638,52 @@ export const PageMarketsContent: React.FC = () => {
             </div>
           )}
         </div>
+
         <div className={cns(s.containerTradingDivider, s.containerTradingCardLimitOpen)}>
-          <div className={s.containerTradingDividerInner}>
+          <div
+            role="button"
+            tabIndex={0}
+            className={s.containerTradingDividerInner}
+            onClick={switchPayAndReceive}
+            onKeyDown={() => {}}
+          >
             <IconExchange />
           </div>
         </div>
+
         <div className={cns(s.containerTradingCard, s.containerTradingCardLimitOpen)}>
           <div className={s.containerTradingCardLabel}>You Receive</div>
           <div className={s.containerTradingCardInner}>
             <div className={s.containerTradingCardImage}>
-              <img src={imageTokenReceive} alt="" />
+              <img src={getTokenBySymbol(symbolReceive).image} alt="" />
             </div>
             <div className={s.containerTradingCardContainer}>
               <div className={s.containerTradingCardContainerInner}>
                 <Dropdown open={openDropdownReceive} label={DropdownLabelReceive}>
                   {DropdownItemsReceive}
                 </Dropdown>
-                <div className={s.containerTradingCardSymbol}>ETH</div>
+                <div className={s.containerTradingCardSymbol}>
+                  {getTokenBySymbol(symbolReceive).symbol}
+                </div>
               </div>
               <div className={s.containerTradingCardInput}>
                 {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
                 <label htmlFor="inputPay" />
-                <input id="inputPay" type="number" />
+                <input
+                  id="inputPay"
+                  type="number"
+                  value={amountReceive}
+                  onChange={handleChangeAmountReceive}
+                />
               </div>
               <div className={s.containerTradingCardBalance}>
-                Current balance (ETH)<span>24</span>
+                Current balance ({getTokenBySymbol(symbolReceive).symbol})<span>24</span>
               </div>
             </div>
           </div>
         </div>
         <div className={s.containerTradingButton}>
-          <Button>Trade</Button>
+          <Button onClick={trade}>Trade</Button>
         </div>
       </section>
 
