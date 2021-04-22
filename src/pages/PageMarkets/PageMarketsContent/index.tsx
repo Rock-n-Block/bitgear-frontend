@@ -80,7 +80,7 @@ export const PageMarketsContent: React.FC = () => {
   const { address: userAddress } = useSelector(({ user }: any) => user);
   const { tokens } = useSelector(({ zx }: any) => zx);
 
-  const { symbolOne, symbolTwo = 'USDT' } = useParams<TypeUseParams>();
+  const { symbolOne, symbolTwo = 'ETH' } = useParams<TypeUseParams>();
 
   const refDropdownPay = React.useRef<HTMLDivElement>(null);
   const refDropdownReceive = React.useRef<HTMLDivElement>(null);
@@ -106,7 +106,7 @@ export const PageMarketsContent: React.FC = () => {
     tokens,
   );
   const [symbolPay, setSymbolPay] = React.useState<string>(symbolOne);
-  const [symbolReceive, setSymbolReceive] = React.useState<string>(symbolTwo);
+  const [symbolReceive, setSymbolReceive] = React.useState<string>(symbolTwo || 'ETH');
   const [amountPay, setAmountPay] = React.useState<string>('');
   const [amountReceive, setAmountReceive] = React.useState<string>('');
   const [waiting, setWaiting] = React.useState<boolean>(false);
@@ -316,12 +316,12 @@ export const PageMarketsContent: React.FC = () => {
         sellToken: symbolReceive,
         buyAmount: amountPay,
       });
-      console.log('trade:', result);
+      console.log('trade getQuote:', result);
       if (result.status === 'ERROR') return validateTradeErrors(result.error);
       result.data.from = userAddress;
       const resultGetAbi = await Etherscan.getAbi(result.data.sellTokenAddress);
       const contractAbi = resultGetAbi.data;
-      console.log('trade resultGetAbi:', resultGetAbi);
+      // console.log('trade resultGetAbi:', resultGetAbi);
       const resultApprove = await web3Provider.approve({ data: result.data, contractAbi });
       console.log('trade resultApprove:', resultApprove);
       // const resultSendTx = await web3Provider.sendTx(result.data);
