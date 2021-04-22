@@ -14,6 +14,7 @@ import Button from '../../../components/Button';
 import { modalActions, userActions, walletActions } from '../../../redux/actions';
 import { Service0x } from '../../../services/0x';
 import { CryptoCompareService } from '../../../services/CryptoCompareService';
+import { EtherscanService } from '../../../services/Etherscan';
 import { useWalletConnectorContext } from '../../../services/WalletConnect';
 import { getFromStorage, setToStorage } from '../../../utils/localStorage';
 
@@ -21,25 +22,26 @@ import s from './style.module.scss';
 
 const CryptoCompare = new CryptoCompareService();
 const Zx = new Service0x();
+const Etherscan = new EtherscanService();
 
 const exchangesList: string[] = [
   '0x',
+  'Uniswap',
+  'UniswapV2',
+  'Eth2Dai',
+  'Kyber',
+  'Curve',
+  'LiquidityProvider',
+  'MultiBridge',
   'Balancer',
   'Bancor',
-  'CREAM',
-  'CryptoCom',
-  'Linkswap',
+  'MStable',
   'Mooniswap',
-  'Curve',
-  'DODO',
-  'Kyber',
+  'MultiHop',
   'Shell',
-  'SnowSwap',
-  'mStable',
-  'Oasis',
-  'SushiSwap',
   'Swerve',
-  'Uniswap',
+  'SushiSwap',
+  'Dodo',
 ];
 
 type TypeToken = {
@@ -203,11 +205,12 @@ export const PageMarketsContent: React.FC = () => {
       const balance = await web3Provider.getBalance(addresses[0]);
       console.log('handleWalletConnectLogin balance:', balance);
       setUserData({ address: addresses[0], balance });
+      toggleModal({ open: false });
     } catch (e) {
       console.error('handleWalletConnectLogin:', e);
       walletInit();
     }
-  }, [setUserData, walletInit, web3Provider]);
+  }, [setUserData, walletInit, web3Provider, toggleModal]);
 
   const handleSetPeriod = (newPeriod: number) => {
     setPeriod(newPeriod);
@@ -259,6 +262,18 @@ export const PageMarketsContent: React.FC = () => {
     }
   }, [history]);
 
+  // const getBalanceOfTokenPay = React.useCallback(async () => {
+  //   try {
+  //     // const contractAddress = tokenPay;
+  //     const resultGetAbi = await Etherscan.getAbi(contractAddress);
+  //     const contractAbi = resultGetAbi.data.result;
+  //     const resultBalanceOf = await web3Provider.balanceOf({ contractAddress, contractAbi });
+  //     setBalanceOfTokenPay(resultBalanceOf.data);
+  //   } catch (e) {
+  //     console.error(e);
+  //   }
+  // }, [history]);
+
   const validateTradeErrors = React.useCallback(
     (error) => {
       const { code } = error.validationErrors[0];
@@ -304,12 +319,18 @@ export const PageMarketsContent: React.FC = () => {
       console.log('trade:', result);
       if (result.status === 'ERROR') return validateTradeErrors(result.error);
       result.data.from = userAddress;
-      const resultSendTx = await web3Provider.sendTx(result.data);
-      console.log('trade resultSendTx:', resultSendTx);
+      const resultGetAbi = await Etherscan.getAbi(result.data.sellTokenAddress);
+      const contractAbi = resultGetAbi.data;
+      console.log('trade resultGetAbi:', resultGetAbi);
+      const resultApprove = await web3Provider.approve({ data: result.data, contractAbi });
+      console.log('trade resultApprove:', resultApprove);
+      // const resultSendTx = await web3Provider.sendTx(result.data);
+      // console.log('trade resultSendTx:', resultSendTx);
       setWaiting(false);
       return null;
     } catch (e) {
       console.error(e);
+      setWaiting(false);
       return null;
     }
   }, [

@@ -59,4 +59,22 @@ export default class Web3Provider {
   public sendTx = async (data: any) => {
     return this.web3Provider.eth.sendTransaction(data);
   };
+
+  public balanceOf = async ({ contractAddress, contractAbi }: any) => {
+    const contract = new this.web3Provider.eth.Contract(contractAbi, contractAddress);
+    return contract.balanceOf(contractAddress).call();
+  };
+
+  public approve = async ({ data, contractAbi }: any) => {
+    try {
+      console.log('Web3Provider approve data:', data);
+      const contractAddress = data.sellTokenAddress;
+      console.log('Web3Provider approve contractAbi:', contractAbi);
+      const contract = new this.web3Provider.eth.Contract(JSON.parse(contractAbi), contractAddress);
+      return contract.methods.approve(data.allowanceTarget, data.sellAmount).send();
+    } catch (e) {
+      console.error(e);
+      return null;
+    }
+  };
 }
