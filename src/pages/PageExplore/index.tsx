@@ -126,7 +126,6 @@ export const PageExplore: React.FC = () => {
 
   const handleSearch = (e: string) => {
     setSearchValue(e);
-    if (e.length < 2) return;
     matchSearch(e);
   };
 

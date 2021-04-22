@@ -7,8 +7,11 @@ import { ReactComponent as IconSearch } from '../../assets/icons/search.svg';
 import imageCoin from '../../assets/images/coin.png';
 import imageRocket from '../../assets/images/rocket.png';
 import { InputWithDropdown } from '../../components';
+import { CryptoCompareService } from '../../services/CryptoCompareService';
 
 import s from './style.module.scss';
+
+const CryptoCompare = new CryptoCompareService();
 
 type TypeToken = {
   symbol: string;
@@ -88,16 +91,29 @@ export const SearchDropdown: React.FC<TypeSearchDropdownProps> = ({ items = [], 
 export const PageMain: React.FC = () => {
   const [searchValue, setSearchValue] = React.useState<string>('');
   const [searchResult, setSearchResult] = React.useState<any[]>([]);
+  const [coins, setCoins] = React.useState<any[]>([]);
+  const getAllCoins = async () => {
+    try {
+      const result = await CryptoCompare.getAllCoins();
+      console.log(result);
+      if (result.status === 'SUCCESS') {
+        const newCoins = Object.values(result.data);
+        setCoins(newCoins);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   let { tokens } = useSelector(({ zx }: any) => zx);
   tokens = tokens.slice(0, 3);
 
   const matchSearch = (value: string) => {
     try {
-      let result = tokens.filter((token: TypeToken) => {
-        const includesInSymbol = token.symbol.toLowerCase().includes(value.toLowerCase());
-        const includesInName = token.name.toLowerCase().includes(value.toLowerCase());
-        if (includesInSymbol || includesInName) return true;
+      let result = coins.filter((coin) => {
+        const includesInCoinName = coin.CoinName.toLowerCase().includes(value.toLowerCase());
+        const includesInName = coin.Name.toLowerCase().includes(value.toLowerCase());
+        if (includesInCoinName || includesInName) return true;
         return false;
       });
       result = result.slice(0, 50);
@@ -110,9 +126,12 @@ export const PageMain: React.FC = () => {
 
   const handleSearch = (e: string) => {
     setSearchValue(e);
-    if (e.length < 2) return;
     matchSearch(e);
   };
+
+  React.useEffect(() => {
+    getAllCoins();
+  }, []);
 
   return (
     <div className={s.container}>
