@@ -11,9 +11,10 @@ import { ReactComponent as IconSearchWhite } from '../../../assets/icons/search-
 import imageTokenPay from '../../../assets/images/token.png';
 import { Checkbox, Dropdown, Input, LineChart, Radio, Select } from '../../../components';
 import Button from '../../../components/Button';
-import { modalActions } from '../../../redux/actions';
+import { modalActions, userActions, walletActions } from '../../../redux/actions';
 import { Service0x } from '../../../services/0x';
 import { CryptoCompareService } from '../../../services/CryptoCompareService';
+import { useWalletConnectorContext } from '../../../services/WalletConnect';
 import { getFromStorage, setToStorage } from '../../../utils/localStorage';
 
 import s from './style.module.scss';
@@ -54,15 +55,27 @@ type TypeUseParams = {
   symbolTwo?: string;
 };
 
+type TypeModalParams = {
+  open: boolean;
+  text?: string | React.ReactElement;
+  header?: string | React.ReactElement;
+  delay?: number;
+};
+
 export const PageMarketsContent: React.FC = () => {
   const periodDefault = Number(getFromStorage('chartPeriod'));
   // console.log('PageMarketsContent periodDefault:', periodDefault, periodDefault > 0);
+  const { web3Provider } = useWalletConnectorContext();
 
   const dispatch = useDispatch();
-  const toggleModal = React.useCallback((props: any) => dispatch(modalActions.toggleModal(props)), [
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const toggleModal = (props: TypeModalParams) => dispatch(modalActions.toggleModal(props));
+  const setUserData = React.useCallback((props: any) => dispatch(userActions.setUserData(props)), [
     dispatch,
   ]);
+  const walletInit = React.useCallback(() => dispatch(walletActions.walletInit()), [dispatch]);
 
+  const { address: userAddress } = useSelector(({ user }: any) => user);
   const { tokens } = useSelector(({ zx }: any) => zx);
 
   const { symbolOne, symbolTwo = 'USDT' } = useParams<TypeUseParams>();
@@ -94,6 +107,7 @@ export const PageMarketsContent: React.FC = () => {
   const [symbolReceive, setSymbolReceive] = React.useState<string>(symbolTwo);
   const [amountPay, setAmountPay] = React.useState<string>('');
   const [amountReceive, setAmountReceive] = React.useState<string>('');
+  const [waiting, setWaiting] = React.useState<boolean>(false);
 
   const data: TypeToken = {
     symbol: 'ETH',
@@ -182,6 +196,19 @@ export const PageMarketsContent: React.FC = () => {
     }
   };
 
+  const handleWalletConnectLogin = React.useCallback(async () => {
+    try {
+      const addresses = await web3Provider.connect();
+      console.log('handleWalletConnectLogin addresses:', addresses);
+      const balance = await web3Provider.getBalance(addresses[0]);
+      console.log('handleWalletConnectLogin balance:', balance);
+      setUserData({ address: addresses[0], balance });
+    } catch (e) {
+      console.error('handleWalletConnectLogin:', e);
+      walletInit();
+    }
+  }, [setUserData, walletInit, web3Provider]);
+
   const handleSetPeriod = (newPeriod: number) => {
     setPeriod(newPeriod);
     setToStorage('chartPeriod', newPeriod);
@@ -247,23 +274,54 @@ export const PageMarketsContent: React.FC = () => {
         );
       }
       toggleModal({ open: true, text });
+      setWaiting(false);
     },
     [toggleModal],
   );
 
   const trade = React.useCallback(async () => {
     try {
+      setWaiting(true);
+      if (!userAddress) {
+        setWaiting(false);
+        return toggleModal({
+          open: true,
+          text: (
+            <div>
+              <p>Please, connect wallet</p>
+              <Button secondary onClick={handleWalletConnectLogin}>
+                WalletConnect
+              </Button>
+            </div>
+          ),
+        });
+      }
       const result = await Zx.getQuote({
         buyToken: symbolPay,
         sellToken: symbolReceive,
         buyAmount: amountPay,
       });
-      if (result.status === 'ERROR') validateTradeErrors(result.error);
       console.log('trade:', result);
+      if (result.status === 'ERROR') return validateTradeErrors(result.error);
+      result.data.from = userAddress;
+      const resultSendTx = await web3Provider.sendTx(result.data);
+      console.log('trade resultSendTx:', resultSendTx);
+      setWaiting(false);
+      return null;
     } catch (e) {
       console.error(e);
+      return null;
     }
-  }, [symbolPay, symbolReceive, amountPay, validateTradeErrors]);
+  }, [
+    handleWalletConnectLogin,
+    symbolPay,
+    symbolReceive,
+    amountPay,
+    validateTradeErrors,
+    web3Provider,
+    toggleModal,
+    userAddress,
+  ]);
 
   const handleSelectSymbolPay = (symbol: string) => {
     console.log(symbol);
@@ -356,6 +414,11 @@ export const PageMarketsContent: React.FC = () => {
     setSearchTokensResultPay(tokens);
     setSearchTokensResultReceive(tokens);
   }, [tokens]);
+
+  React.useEffect(() => {
+    if (!web3Provider) return;
+    console.log('PageMarketsContent useEffect web3provider:', web3Provider);
+  }, [web3Provider]);
 
   const RadioLabelFast = (
     <div className={s.radioLabelGas}>
@@ -709,7 +772,7 @@ export const PageMarketsContent: React.FC = () => {
           </div>
         </div>
         <div className={s.containerTradingButton}>
-          <Button onClick={trade}>Trade</Button>
+          <Button onClick={trade}>{waiting ? 'Waiting...' : 'Trade'}</Button>
         </div>
       </section>
 

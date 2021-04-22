@@ -5,17 +5,13 @@ const initialState = {
   delay: null,
 };
 
-export default (state = initialState, params: any) => {
-  switch (params.type) {
+export default (state = initialState, { type, payload }: any) => {
+  switch (type) {
     case 'MODAL:TOGGLE':
-      // eslint-disable-next-line no-case-declarations
-      const newState = JSON.parse(
-        JSON.stringify({
-          ...state,
-          ...params.payload,
-        }),
-      );
-      return newState;
+      return {
+        ...state,
+        ...payload,
+      };
     default:
       return state;
   }

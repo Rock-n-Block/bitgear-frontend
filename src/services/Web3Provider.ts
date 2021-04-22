@@ -55,4 +55,8 @@ export default class Web3Provider {
     // return +new BigNumber(balance).dividedBy(new BigNumber(10).pow(18)).toFixed()
     return balance / 10e17;
   };
+
+  public sendTx = async (data: any) => {
+    return this.web3Provider.eth.sendTransaction(data);
+  };
 }

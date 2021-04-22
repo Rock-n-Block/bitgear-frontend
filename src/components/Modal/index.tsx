@@ -6,13 +6,21 @@ import { modalActions } from '../../redux/actions';
 
 import s from './style.module.scss';
 
-export const Modal: React.FC = React.memo(() => {
-  const dispatch = useDispatch();
+type TypeModalParams = {
+  modal: {
+    open: boolean;
+    text?: React.ReactChild;
+    header?: string | React.ReactChild;
+    delay?: number;
+  };
+};
 
+export const Modal: React.FC = React.memo(() => {
   const ref = React.useRef<HTMLDivElement>(null);
 
-  const { open, text, header, delay } = useSelector(({ modal }: any) => modal);
+  const { open, text, header, delay } = useSelector(({ modal }: TypeModalParams) => modal);
 
+  const dispatch = useDispatch();
   const handleClose = React.useCallback(() => dispatch(modalActions.toggleModal({ open: false })), [
     dispatch,
   ]);
