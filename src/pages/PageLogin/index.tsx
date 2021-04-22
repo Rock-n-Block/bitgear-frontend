@@ -15,10 +15,21 @@ export const PageLogin: React.FC = () => {
 
   const { address: userAddress } = useSelector(({ user }: any) => user);
   const dispatch = useDispatch();
-  const setUserData = (props: any) => dispatch(userActions.setUserData(props));
-  const walletInit = () => dispatch(walletActions.walletInit());
+  const setUserData = React.useCallback((props: any) => dispatch(userActions.setUserData(props)), [
+    dispatch,
+  ]);
+  const walletInit = React.useCallback(() => dispatch(walletActions.walletInit()), [dispatch]);
+  const setWalletType = (props: string) => dispatch(walletActions.setWalletType(props));
+
+  const handleMetamaskLogin = async () => {
+    setWalletType('metamask');
+  };
 
   const handleWalletConnectLogin = async () => {
+    setWalletType('walletConnect');
+  };
+
+  const login = React.useCallback(async () => {
     try {
       const addresses = await web3Provider.connect();
       console.log('handleWalletConnectLogin addresses:', addresses);
@@ -29,12 +40,13 @@ export const PageLogin: React.FC = () => {
       console.error('handleWalletConnectLogin:', e);
       walletInit();
     }
-  };
+  }, [web3Provider, setUserData, walletInit]);
 
   React.useEffect(() => {
     if (!web3Provider) return;
     console.log('PageLogin useEffect web3Provider:', web3Provider);
-  }, [web3Provider]);
+    login();
+  }, [web3Provider, login]);
 
   React.useEffect(() => {
     console.log('PageLogin useEffect userAddress:', userAddress);
@@ -65,6 +77,16 @@ export const PageLogin: React.FC = () => {
           <img src={CoinbaseWalletLogo} alt="Coinbase Wallet logo" />
           <span>Coinbase Wallet</span>
         </Link>
+        <div
+          role="button"
+          tabIndex={0}
+          className={s.login_methods_item}
+          onClick={handleMetamaskLogin}
+          onKeyDown={() => {}}
+        >
+          <img src={WalletConnectLogo} alt="WalletConnect logo" />
+          <span>Metamask Wallet</span>
+        </div>
       </div>
     </div>
   );

@@ -1,5 +1,6 @@
 const initialState = {
   counter: 0,
+  type: '',
 };
 
 export default (state = initialState, params: any) => {
@@ -13,6 +14,11 @@ export default (state = initialState, params: any) => {
         }),
       );
       return newState;
+    case 'WALLET:SET_TYPE':
+      return {
+        ...state,
+        ...{ type: params.payload },
+      };
     default:
       return state;
   }

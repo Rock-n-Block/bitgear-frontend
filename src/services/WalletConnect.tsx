@@ -1,6 +1,7 @@
 import React, { createContext, useContext } from 'react';
 import { useSelector } from 'react-redux';
 
+import MetamaskProvider from './Metamask';
 import Web3Provider from './Web3Provider';
 
 const walletConnectorContext = createContext<any>({
@@ -10,15 +11,20 @@ const walletConnectorContext = createContext<any>({
 const Connector: React.FC = ({ children }) => {
   const [provider, setProvider] = React.useState<any>(null);
 
-  const { counter } = useSelector(({ wallet }: any) => wallet);
+  const { counter, type } = useSelector(({ wallet }: any) => wallet);
 
   React.useEffect(() => {
-    const web3 = new Web3Provider();
+    let web3;
+    if (type === 'walletConnect') {
+      web3 = new Web3Provider();
+    } else if (type === 'metamask') {
+      web3 = new MetamaskProvider();
+    }
     setProvider(web3);
-  }, [counter]);
+  }, [counter, type]);
 
   return (
-    <walletConnectorContext.Provider value={{ web3Provider: provider }}>
+    <walletConnectorContext.Provider value={{ web3Provider: provider, MetamaskProvider }}>
       {children}
     </walletConnectorContext.Provider>
   );

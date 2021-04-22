@@ -22,4 +22,26 @@ export default {
   keys: {
     etherscan: 'VI2S1A8EBH54NNDH3Q4H2IFYJ4E85YDQEF',
   },
+  chainIds: {
+    mainnet: {
+      'Ethereum': {
+        name: 'Mainnet',
+        id: [1, '0x1', '0x01'],
+      },
+      'Binance-Smart-Chain': {
+        name: 'Binance smart chain',
+        id: [56, '0x38'],
+      },
+    },
+    testnet: {
+      'Ethereum': {
+        name: 'Kovan testnet',
+        id: [42, '0x2a'],
+      },
+      'Binance-Smart-Chain': {
+        name: 'Binance smart chain testnet',
+        id: [97, '0x61'],
+      },
+    },
+  },
 };
