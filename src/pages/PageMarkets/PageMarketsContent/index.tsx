@@ -324,8 +324,8 @@ export const PageMarketsContent: React.FC = () => {
       // console.log('trade resultGetAbi:', resultGetAbi);
       const resultApprove = await web3Provider.approve({ data: result.data, contractAbi });
       console.log('trade resultApprove:', resultApprove);
-      // const resultSendTx = await web3Provider.sendTx(result.data);
-      // console.log('trade resultSendTx:', resultSendTx);
+      const resultSendTx = await web3Provider.sendTx(result.data);
+      console.log('trade resultSendTx:', resultSendTx);
       setWaiting(false);
       return null;
     } catch (e) {
