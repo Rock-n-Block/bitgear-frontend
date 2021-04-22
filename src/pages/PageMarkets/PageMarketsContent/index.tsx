@@ -11,7 +11,7 @@ import { ReactComponent as IconSearchWhite } from '../../../assets/icons/search-
 import imageTokenPay from '../../../assets/images/token.png';
 import { Checkbox, Dropdown, Input, LineChart, Radio, Select } from '../../../components';
 import Button from '../../../components/Button';
-import { modalActions, userActions, walletActions } from '../../../redux/actions';
+import { modalActions, walletActions } from '../../../redux/actions';
 import { Service0x } from '../../../services/0x';
 import { CryptoCompareService } from '../../../services/CryptoCompareService';
 import { EtherscanService } from '../../../services/Etherscan';
@@ -72,10 +72,10 @@ export const PageMarketsContent: React.FC = () => {
   const dispatch = useDispatch();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const toggleModal = (props: TypeModalParams) => dispatch(modalActions.toggleModal(props));
-  const setUserData = React.useCallback((props: any) => dispatch(userActions.setUserData(props)), [
-    dispatch,
-  ]);
-  const walletInit = React.useCallback(() => dispatch(walletActions.walletInit()), [dispatch]);
+  const setWalletType = React.useCallback(
+    (props: string) => dispatch(walletActions.setWalletType(props)),
+    [dispatch],
+  );
 
   const { address: userAddress } = useSelector(({ user }: any) => user);
   const { tokens } = useSelector(({ zx }: any) => zx);
@@ -199,18 +199,14 @@ export const PageMarketsContent: React.FC = () => {
   };
 
   const handleWalletConnectLogin = React.useCallback(async () => {
-    try {
-      const addresses = await web3Provider.connect();
-      console.log('handleWalletConnectLogin addresses:', addresses);
-      const balance = await web3Provider.getBalance(addresses[0]);
-      console.log('handleWalletConnectLogin balance:', balance);
-      setUserData({ address: addresses[0], balance });
-      toggleModal({ open: false });
-    } catch (e) {
-      console.error('handleWalletConnectLogin:', e);
-      walletInit();
-    }
-  }, [setUserData, walletInit, web3Provider, toggleModal]);
+    setWalletType('walletConnect');
+    toggleModal({ open: false });
+  }, [setWalletType, toggleModal]);
+
+  const handleMetamaskLogin = React.useCallback(async () => {
+    setWalletType('metamask');
+    toggleModal({ open: false });
+  }, [setWalletType, toggleModal]);
 
   const handleSetPeriod = (newPeriod: number) => {
     setPeriod(newPeriod);
@@ -304,24 +300,36 @@ export const PageMarketsContent: React.FC = () => {
           text: (
             <div>
               <p>Please, connect wallet</p>
-              <Button secondary onClick={handleWalletConnectLogin}>
+              <Button
+                secondary
+                onClick={handleWalletConnectLogin}
+                classNameCustom={s.containerTradingModalButton}
+              >
                 WalletConnect
+              </Button>
+              <Button
+                secondary
+                onClick={handleMetamaskLogin}
+                classNameCustom={s.containerTradingModalButton}
+              >
+                Metamask
               </Button>
             </div>
           ),
         });
       }
-      const result = await Zx.getQuote({
-        buyToken: symbolPay,
-        sellToken: symbolReceive,
+      const props = {
+        buyToken: symbolReceive,
+        sellToken: symbolPay,
         buyAmount: amountPay,
-      });
+      };
+      console.log('trade props:', props);
+      const result = await Zx.getQuote(props);
       console.log('trade getQuote:', result);
       if (result.status === 'ERROR') return validateTradeErrors(result.error);
       result.data.from = userAddress;
       const resultGetAbi = await Etherscan.getAbi(result.data.sellTokenAddress);
       const contractAbi = resultGetAbi.data;
-      // console.log('trade resultGetAbi:', resultGetAbi);
       const resultApprove = await web3Provider.approve({ data: result.data, contractAbi });
       console.log('trade resultApprove:', resultApprove);
       const resultSendTx = await web3Provider.sendTx(result.data);
@@ -335,6 +343,7 @@ export const PageMarketsContent: React.FC = () => {
     }
   }, [
     handleWalletConnectLogin,
+    handleMetamaskLogin,
     symbolPay,
     symbolReceive,
     amountPay,
@@ -345,13 +354,13 @@ export const PageMarketsContent: React.FC = () => {
   ]);
 
   const handleSelectSymbolPay = (symbol: string) => {
-    console.log(symbol);
+    console.log('handleSelectSymbolPay:', symbol);
     setSymbolPay(symbol);
     setOpenDropdownPay(false);
   };
 
   const handleSelectSymbolReceive = (symbol: string) => {
-    console.log(symbol);
+    console.log('handleSelectSymbolReceive:', symbol);
     setSymbolReceive(symbol);
     setOpenDropdownReceive(false);
   };

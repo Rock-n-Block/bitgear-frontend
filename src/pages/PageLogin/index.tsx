@@ -4,21 +4,15 @@ import { Link } from 'react-router-dom';
 
 import CoinbaseWalletLogo from '../../assets/images/logo/coinbase-logo.svg';
 import FortmaticLogo from '../../assets/images/logo/fortmatic-logo.svg';
+import MetamaskLogo from '../../assets/images/logo/metamask-logo.svg';
 import WalletConnectLogo from '../../assets/images/logo/wallet-connect-logo.svg';
-import { userActions, walletActions } from '../../redux/actions';
-import { useWalletConnectorContext } from '../../services/WalletConnect';
+import { walletActions } from '../../redux/actions';
 
 import s from './style.module.scss';
 
 export const PageLogin: React.FC = () => {
-  const { web3Provider } = useWalletConnectorContext();
-
   const { address: userAddress } = useSelector(({ user }: any) => user);
   const dispatch = useDispatch();
-  const setUserData = React.useCallback((props: any) => dispatch(userActions.setUserData(props)), [
-    dispatch,
-  ]);
-  const walletInit = React.useCallback(() => dispatch(walletActions.walletInit()), [dispatch]);
   const setWalletType = (props: string) => dispatch(walletActions.setWalletType(props));
 
   const handleMetamaskLogin = async () => {
@@ -28,25 +22,6 @@ export const PageLogin: React.FC = () => {
   const handleWalletConnectLogin = async () => {
     setWalletType('walletConnect');
   };
-
-  const login = React.useCallback(async () => {
-    try {
-      const addresses = await web3Provider.connect();
-      console.log('handleWalletConnectLogin addresses:', addresses);
-      const balance = await web3Provider.getBalance(addresses[0]);
-      console.log('handleWalletConnectLogin balance:', balance);
-      setUserData({ address: addresses[0], balance });
-    } catch (e) {
-      console.error('handleWalletConnectLogin:', e);
-      walletInit();
-    }
-  }, [web3Provider, setUserData, walletInit]);
-
-  React.useEffect(() => {
-    if (!web3Provider) return;
-    console.log('PageLogin useEffect web3Provider:', web3Provider);
-    login();
-  }, [web3Provider, login]);
 
   React.useEffect(() => {
     console.log('PageLogin useEffect userAddress:', userAddress);
@@ -84,7 +59,7 @@ export const PageLogin: React.FC = () => {
           onClick={handleMetamaskLogin}
           onKeyDown={() => {}}
         >
-          <img src={WalletConnectLogo} alt="WalletConnect logo" />
+          <img src={MetamaskLogo} alt="Metamask logo" />
           <span>Metamask Wallet</span>
         </div>
       </div>
