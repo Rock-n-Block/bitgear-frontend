@@ -28,24 +28,25 @@ export default class MetamaskService {
   public getBalance = async (address: string) => {
     const balance = await this.web3Provider.eth.getBalance(address);
     // return +new BigNumber(balance).dividedBy(new BigNumber(10).pow(18)).toFixed()
-    return balance / 10e17;
+    return +balance / 10e17;
   };
 
   public sendTx = async (data: any) => {
     return this.web3Provider.eth.sendTransaction(data);
   };
 
-  public balanceOf = async ({ contractAddress, contractAbi }: any) => {
+  public balanceOf = async ({ address, contractAddress, contractAbi }: any) => {
     const contract = new this.web3Provider.eth.Contract(contractAbi, contractAddress);
-    return contract.balanceOf(contractAddress).call();
+    const balance = await contract.methods.balanceOf(address).call();
+    return +balance / 10e17;
   };
 
   public approve = async ({ data, contractAbi }: any) => {
     try {
       const { from, allowanceTarget, sellAmount, sellTokenAddress } = data;
-      console.log('Web3Provider approve data:', data);
+      // console.log('Web3Provider approve data:', data);
       const contractAddress = sellTokenAddress;
-      console.log('Web3Provider approve contractAbi:', contractAbi);
+      // console.log('Web3Provider approve contractAbi:', contractAbi);
       const contract = new this.web3Provider.eth.Contract(JSON.parse(contractAbi), contractAddress);
       return contract.methods.approve(allowanceTarget, sellAmount).send({ from });
     } catch (e) {

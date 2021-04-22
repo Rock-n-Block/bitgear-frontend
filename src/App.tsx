@@ -37,11 +37,13 @@ export const App: React.FC = () => {
     (data) => {
       const newData = data;
       data.map((token: any, it: number) => {
-        const { symbol } = token;
+        const { symbol, address, decimals } = token;
         const isImage = tokensCryptoCompare[symbol] && tokensCryptoCompare[symbol].ImageUrl;
         newData[it].image = isImage
           ? `https://www.cryptocompare.com/media${tokensCryptoCompare[symbol].ImageUrl}`
           : imageTokenPay;
+        newData[it].address = address;
+        newData[it].decimals = decimals;
         return null;
       });
       return newData;
@@ -51,9 +53,10 @@ export const App: React.FC = () => {
 
   const getTokens = React.useCallback(async () => {
     try {
-      const result = await Zx.getTokens();
-      console.log('getTokens:', result.data.records);
-      const tokens = changeTokensInfo(result.data.records);
+      const resultGetTokens = await Zx.getTokens();
+      const newTokens = resultGetTokens.data.records;
+      console.log('getTokens:', newTokens);
+      const tokens = changeTokensInfo(newTokens);
       setTokens({ tokens });
     } catch (e) {
       console.error('getTokens:', e);

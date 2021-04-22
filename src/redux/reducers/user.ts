@@ -1,6 +1,6 @@
 const initialState = {
-  address: '',
-  network: '',
+  address: null,
+  network: null,
   balance: 0,
 };
 

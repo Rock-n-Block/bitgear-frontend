@@ -105,11 +105,15 @@ export const PageMarketsContent: React.FC = () => {
   const [searchTokensResultReceive, setSearchTokensResultReceive] = React.useState<TypeToken[]>(
     tokens,
   );
-  const [symbolPay, setSymbolPay] = React.useState<string>(symbolOne);
-  const [symbolReceive, setSymbolReceive] = React.useState<string>(symbolTwo || 'ETH');
+  const [symbolPay, setSymbolPay] = React.useState<string>(symbolOne.toUpperCase());
+  const [symbolReceive, setSymbolReceive] = React.useState<string>(
+    symbolTwo.toUpperCase() || 'ETH',
+  );
   const [amountPay, setAmountPay] = React.useState<string>('');
   const [amountReceive, setAmountReceive] = React.useState<string>('');
   const [waiting, setWaiting] = React.useState<boolean>(false);
+  const [balanceOfTokenPay, setBalanceOfTokenPay] = React.useState<number>(0);
+  const [balanceOfTokenReceive, setBalanceOfTokenReceive] = React.useState<number>(0);
 
   const data: TypeToken = {
     symbol: 'ETH',
@@ -258,17 +262,65 @@ export const PageMarketsContent: React.FC = () => {
     }
   }, [history]);
 
-  // const getBalanceOfTokenPay = React.useCallback(async () => {
-  //   try {
-  //     // const contractAddress = tokenPay;
-  //     const resultGetAbi = await Etherscan.getAbi(contractAddress);
-  //     const contractAbi = resultGetAbi.data.result;
-  //     const resultBalanceOf = await web3Provider.balanceOf({ contractAddress, contractAbi });
-  //     setBalanceOfTokenPay(resultBalanceOf.data);
-  //   } catch (e) {
-  //     console.error(e);
-  //   }
-  // }, [history]);
+  const getTokenBySymbol = React.useCallback(
+    (symbol: string) => {
+      const tokenEmpty = { name: 'Currency', symbol: null, image: imageTokenPay };
+      try {
+        const token = tokens.filter((item: any) => item.symbol === symbol);
+        return token.length > 0 ? token[0] : tokenEmpty;
+      } catch (e) {
+        console.error(e);
+        return tokenEmpty;
+      }
+    },
+    [tokens],
+  );
+
+  const getBalanceOfTokensPay = React.useCallback(async () => {
+    try {
+      if (!userAddress) return;
+      if (symbolPay === 'ETH') {
+        const balancePay = await web3Provider.getBalance(userAddress);
+        setBalanceOfTokenPay(balancePay);
+        return;
+      }
+      const contractAddressPay = getTokenBySymbol(symbolPay).address;
+      const resultGetAbiPay = await Etherscan.getAbi(contractAddressPay);
+      const contractAbiPay = JSON.parse(resultGetAbiPay.data);
+      const resultBalanceOfPay = await web3Provider.balanceOf({
+        address: userAddress,
+        contractAddress: contractAddressPay,
+        contractAbi: contractAbiPay,
+      });
+      console.log('getBalanceOfTokens resultBalanceOfPay:', resultBalanceOfPay);
+      setBalanceOfTokenPay(resultBalanceOfPay);
+    } catch (e) {
+      console.error(e);
+    }
+  }, [userAddress, web3Provider, symbolPay, getTokenBySymbol]);
+
+  const getBalanceOfTokensReceive = React.useCallback(async () => {
+    try {
+      if (!userAddress) return;
+      if (symbolReceive === 'ETH') {
+        const balanceReceive = await web3Provider.getBalance(userAddress);
+        setBalanceOfTokenReceive(balanceReceive);
+        return;
+      }
+      const contractAddressReceive = getTokenBySymbol(symbolReceive).address;
+      const resultGetAbiReceive = await Etherscan.getAbi(contractAddressReceive);
+      const contractAbiReceive = JSON.parse(resultGetAbiReceive.data);
+      const resultBalanceOfReceive = await web3Provider.balanceOf({
+        address: userAddress,
+        contractAddress: contractAddressReceive,
+        contractAbi: contractAbiReceive,
+      });
+      console.log('getBalanceOfTokens resultBalanceOfReceive:', resultBalanceOfReceive);
+      setBalanceOfTokenReceive(resultBalanceOfReceive);
+    } catch (e) {
+      console.error(e);
+    }
+  }, [userAddress, web3Provider, symbolReceive, getTokenBySymbol]);
 
   const validateTradeErrors = React.useCallback(
     (error) => {
@@ -365,17 +417,6 @@ export const PageMarketsContent: React.FC = () => {
     setOpenDropdownReceive(false);
   };
 
-  const getTokenBySymbol = (symbol: string) => {
-    const tokenEmpty = { name: 'Currency', symbol: null, image: imageTokenPay };
-    try {
-      const token = tokens.filter((item: any) => item.symbol === symbol);
-      return token.length > 0 ? token[0] : tokenEmpty;
-    } catch (e) {
-      console.error(e);
-      return tokenEmpty;
-    }
-  };
-
   const switchPayAndReceive = () => {
     setSymbolPay(symbolReceive);
     setSymbolReceive(symbolPay);
@@ -446,9 +487,11 @@ export const PageMarketsContent: React.FC = () => {
   }, [tokens]);
 
   React.useEffect(() => {
-    if (!web3Provider) return;
+    if (!web3Provider && !userAddress) return;
     console.log('PageMarketsContent useEffect web3provider:', web3Provider);
-  }, [web3Provider]);
+    getBalanceOfTokensPay();
+    getBalanceOfTokensReceive();
+  }, [web3Provider, getBalanceOfTokensPay, getBalanceOfTokensReceive, userAddress]);
 
   const RadioLabelFast = (
     <div className={s.radioLabelGas}>
@@ -725,7 +768,8 @@ export const PageMarketsContent: React.FC = () => {
                 />
               </div>
               <div className={s.containerTradingCardBalance}>
-                Current balance ({getTokenBySymbol(symbolPay).symbol})<span>32,424</span>
+                Current balance ({getTokenBySymbol(symbolPay).symbol})
+                <span>{String(balanceOfTokenPay).slice(0, 10)}</span>
               </div>
             </div>
           </div>
@@ -796,7 +840,8 @@ export const PageMarketsContent: React.FC = () => {
                 />
               </div>
               <div className={s.containerTradingCardBalance}>
-                Current balance ({getTokenBySymbol(symbolReceive).symbol})<span>24</span>
+                Current balance ({getTokenBySymbol(symbolReceive).symbol})
+                <span>{String(balanceOfTokenReceive).slice(0, 10)}</span>
               </div>
             </div>
           </div>
