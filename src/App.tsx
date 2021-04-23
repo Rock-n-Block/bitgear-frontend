@@ -3,9 +3,10 @@ import { useDispatch } from 'react-redux';
 import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom';
 
 import imageTokenPay from './assets/images/token.png';
+import tokensListData from './data/coinlist.json';
 import { zxActions } from './redux/actions';
 import { Service0x } from './services/0x';
-import { CryptoCompareService } from './services/CryptoCompareService';
+// import { CryptoCompareService } from './services/CryptoCompareService';
 import * as Components from './components';
 import * as Pages from './pages';
 
@@ -18,7 +19,7 @@ import * as Pages from './pages';
 // };
 
 const Zx = new Service0x();
-const CryptoCompare = new CryptoCompareService();
+// const CryptoCompare = new CryptoCompareService();
 
 export const App: React.FC = () => {
   const dispatch = useDispatch();
@@ -30,15 +31,15 @@ export const App: React.FC = () => {
 
   const getTokensFromCryptoCompare = async () => {
     try {
-      const result = await CryptoCompare.getAllCoins();
-      console.log('App getTokensFromCryptoCompare:', result.data);
-      if (result.status === 'SUCCESS') {
-        const newTokens = result.data;
-        setTokensCryptoCompare(newTokens);
-      }
-      // const newTokens = tokensList;
-      // console.log('App getTokensFromCryptoCompare:', newTokens);
-      // setTokensCryptoCompare(newTokens);
+      // const result = await CryptoCompare.getAllCoins();
+      // console.log('App getTokensFromCryptoCompare:', result.data);
+      // if (result.status === 'SUCCESS') {
+      //   const newTokens = result.data;
+      //   setTokensCryptoCompare(newTokens);
+      // }
+      const newTokens = (tokensListData as any).Data;
+      console.log('App getTokensFromCryptoCompare:', newTokens);
+      setTokensCryptoCompare(newTokens);
     } catch (e) {
       console.error(e);
     }
