@@ -47,11 +47,14 @@ export const InputWithDropdown: React.FC<InputWithDropdownProps> = ({
   const refLabelInner = React.useRef<HTMLDivElement>(null);
   const refDropdown = React.useRef<HTMLDivElement>(null);
 
+  const isValueLengthOk = value?.length > 1;
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onChange(e.target.value);
   };
 
   const handleFocus = (e: React.FormEvent<HTMLInputElement>) => {
+    if (!isValueLengthOk) return;
     setNewOpen(true);
     setNewPlaceholder('');
     onFocus(e);
@@ -86,13 +89,13 @@ export const InputWithDropdown: React.FC<InputWithDropdownProps> = ({
   }, []);
 
   React.useEffect(() => {
-    console.log('Input useEffect:', value);
-    if (value?.length > 0) {
+    // console.log('Input useEffect:', value);
+    if (isValueLengthOk) {
       setNewOpen(true);
     } else {
       setNewOpen(false);
     }
-  }, [value]);
+  }, [value, isValueLengthOk]);
 
   return (
     <div ref={refContainer} className={cns(classNameContainer, classNameError, classContainer)}>

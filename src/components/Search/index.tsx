@@ -67,8 +67,7 @@ export const Search: React.FC = React.memo(() => {
   const [searchValue, setSearchValue] = React.useState<string>('');
   const [searchResult, setSearchResult] = React.useState<any[]>([]);
 
-  let { tokens } = useSelector(({ zx }: any) => zx);
-  tokens = tokens.slice(0, 3);
+  const { tokens } = useSelector(({ zx }: any) => zx);
 
   const matchSearch = (value: string) => {
     try {
@@ -100,7 +99,7 @@ export const Search: React.FC = React.memo(() => {
         value={searchValue}
         label={<Label />}
         labelInner={<SearchLabel />}
-        dropdown={<SearchDropdown items={searchResult} />}
+        dropdown={<SearchDropdown items={searchResult} search={searchValue} />}
         placeholder="Search token or input token address..."
       />
     </div>
