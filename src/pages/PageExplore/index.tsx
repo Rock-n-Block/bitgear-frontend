@@ -4,15 +4,11 @@ import ArrowDownIcon from '../../assets/icons/arrow-down-icon.svg';
 import ArrowUpIcon from '../../assets/icons/arrow-up-icon.svg';
 import CoinIcon from '../../assets/images/coin.png';
 import RocketIcon from '../../assets/images/rocket.png';
-import { InputWithDropdown, LineChart } from '../../components';
-import { CryptoCompareService } from '../../services/CryptoCompareService';
-import { Label, SearchDropdown, SearchLabel } from '../PageMain';
+import { LineChart, Search } from '../../components';
 
 import points from './points.json';
 
 import s from './style.module.scss';
-
-const CryptoCompare = new CryptoCompareService();
 
 type TableType = {
   symbol?: string;
@@ -91,64 +87,10 @@ const tableData: TableType[] = [
 ];
 
 export const PageExplore: React.FC = () => {
-  const [searchValue, setSearchValue] = React.useState<string>('');
-  const [searchResult, setSearchResult] = React.useState<any[]>([]);
-  const [coins, setCoins] = React.useState<any[]>([]);
-
-  const getAllCoins = async () => {
-    try {
-      const result = await CryptoCompare.getAllCoins();
-      console.log(result);
-      if (result.status === 'SUCCESS') {
-        const newCoins = Object.values(result.data);
-        setCoins(newCoins);
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-  const matchSearch = (value: string) => {
-    try {
-      let result = coins.filter((coin) => {
-        const includesInCoinName = coin.CoinName.toLowerCase().includes(value.toLowerCase());
-        const includesInName = coin.Name.toLowerCase().includes(value.toLowerCase());
-        if (includesInCoinName || includesInName) return true;
-        return false;
-      });
-      result = result.slice(0, 50);
-      console.log('matchSearch:', result);
-      setSearchResult(result);
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-  const handleSearch = (e: string) => {
-    setSearchValue(e);
-    if (e.length < 2) return;
-    matchSearch(e);
-  };
-
-  React.useEffect(() => {
-    getAllCoins();
-  }, []);
-
   return (
     <div className={s.container}>
       <section className={s.containerTitle}>
-        <InputWithDropdown
-          // open
-          classContainer={s.containerInput}
-          onChange={handleSearch}
-          // onFocus={() => setOpenSearchDropdown(true)}
-          // onBlur={() => setOpenSearchDropdown(false)}
-          value={searchValue}
-          label={<Label />}
-          labelInner={<SearchLabel />}
-          dropdown={<SearchDropdown items={searchResult} />}
-          placeholder="Search token or input token address..."
-        />
+        <Search />
       </section>
       <section className={s.containerButtons}>
         <div className={s.containerButtonsItem}>
