@@ -17,7 +17,7 @@ import { Service0x } from '../../../services/0x';
 import { CryptoCompareService } from '../../../services/CryptoCompareService';
 import { EtherscanService } from '../../../services/Etherscan';
 import { getFromStorage, setToStorage } from '../../../utils/localStorage';
-import { prettyAmount } from '../../../utils/prettifiers';
+import { prettyAmount, prettyPrice } from '../../../utils/prettifiers';
 
 import s from './style.module.scss';
 
@@ -167,7 +167,7 @@ export const PageMarketsContent: React.FC = () => {
     if (Number(value) < 0) value = '0';
     setAmountPay(prettyAmount(value));
     const newAmountReceive = price * value;
-    setAmountReceive(String(newAmountReceive).slice(0, 10));
+    setAmountReceive(prettyPrice(String(newAmountReceive)));
   };
 
   const handleChangeAmountReceive = (e: any) => {
@@ -175,7 +175,7 @@ export const PageMarketsContent: React.FC = () => {
     if (Number(value) < 0) value = '0';
     setAmountReceive(value);
     const newAmountPay = value / price;
-    setAmountPay(String(newAmountPay).slice(0, 10));
+    setAmountPay(prettyPrice(String(newAmountPay)));
   };
 
   const handleChangeExchanges = (e: boolean, exchange: string) => {
@@ -723,7 +723,7 @@ export const PageMarketsContent: React.FC = () => {
           </div>
           <div className={s.containerTitlePrice}>
             {!symbolReceive && '$'}
-            {price.toString().slice(0, 8)} {symbolReceive}
+            {prettyPrice(price.toString())} {symbolReceive}
           </div>
           <div
             className={classPriceChange}
@@ -846,7 +846,7 @@ export const PageMarketsContent: React.FC = () => {
               </div>
               <div className={s.containerTradingCardBalance}>
                 Current balance ({getTokenBySymbol(symbolPay).symbol})
-                <span>{String(balanceOfTokenPay).slice(0, 10)}</span>
+                <span>{prettyPrice(String(balanceOfTokenPay))}</span>
               </div>
             </div>
           </div>
@@ -918,7 +918,7 @@ export const PageMarketsContent: React.FC = () => {
               </div>
               <div className={s.containerTradingCardBalance}>
                 Current balance ({getTokenBySymbol(symbolReceive).symbol})
-                <span>{String(balanceOfTokenReceive).slice(0, 10)}</span>
+                <span>{prettyPrice(String(balanceOfTokenReceive))}</span>
               </div>
             </div>
           </div>
@@ -937,7 +937,7 @@ export const PageMarketsContent: React.FC = () => {
             <div className={s.chartDataPriceName}>Current price</div>
             <div className={s.chartDataPrice}>
               {!symbolTwo && '$'}
-              {price.toString().slice(0, 8)} {symbolTwo}
+              {prettyPrice(price.toString())} {symbolTwo}
             </div>
           </div>
           <div className={s.chartDataSecond}>
