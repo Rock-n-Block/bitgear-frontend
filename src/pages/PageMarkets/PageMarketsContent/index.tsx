@@ -17,6 +17,7 @@ import { Service0x } from '../../../services/0x';
 import { CryptoCompareService } from '../../../services/CryptoCompareService';
 import { EtherscanService } from '../../../services/Etherscan';
 import { getFromStorage, setToStorage } from '../../../utils/localStorage';
+import { prettyAmount } from '../../../utils/prettifiers';
 
 import s from './style.module.scss';
 
@@ -106,12 +107,13 @@ export const PageMarketsContent: React.FC = () => {
   const [searchTokensResultReceive, setSearchTokensResultReceive] = React.useState<TypeToken[]>(
     tokensReceive,
   );
+  const [tokenNamePay, setTokenNamePay] = React.useState<string>('');
   const [symbolPay, setSymbolPay] = React.useState<string>(symbolOne.toUpperCase());
   const [symbolReceive, setSymbolReceive] = React.useState<string>(
     symbolTwo.toUpperCase() || 'ETH',
   );
-  const [amountPay, setAmountPay] = React.useState<string>('');
-  const [amountReceive, setAmountReceive] = React.useState<string>('');
+  const [amountPay, setAmountPay] = React.useState<string>('0');
+  const [amountReceive, setAmountReceive] = React.useState<string>('0');
   const [waiting, setWaiting] = React.useState<boolean>(false);
   const [balanceOfTokenPay, setBalanceOfTokenPay] = React.useState<number>(0);
   const [balanceOfTokenReceive, setBalanceOfTokenReceive] = React.useState<number>(0);
@@ -123,13 +125,26 @@ export const PageMarketsContent: React.FC = () => {
   };
 
   const { priceChange } = data;
-  const { name } = data;
   const isModeMarket = mode === 'market';
   const isModeLimit = mode === 'limit';
 
   const classPriceChange = s.containerTitlePriceChange;
   const isPriceChangePositive = +priceChange > 0;
   const isPriceChangeNegative = +priceChange < 0;
+
+  const getTokenBySymbol = React.useCallback(
+    (symbol: string) => {
+      const tokenEmpty = { name: 'Currency', symbol: null, image: imageTokenPay };
+      try {
+        const token = tokens.filter((item: any) => item.symbol === symbol);
+        return token.length > 0 ? token[0] : tokenEmpty;
+      } catch (e) {
+        console.error(e);
+        return tokenEmpty;
+      }
+    },
+    [tokens],
+  );
 
   const handleOpenSettings = () => {
     setOpenSettings(!openSettings);
@@ -150,13 +165,17 @@ export const PageMarketsContent: React.FC = () => {
   const handleChangeAmountPay = (e: any) => {
     let { value } = e.target;
     if (Number(value) < 0) value = '0';
-    setAmountPay(value);
+    setAmountPay(prettyAmount(value));
+    const newAmountReceive = price * value;
+    setAmountReceive(String(newAmountReceive).slice(0, 10));
   };
 
   const handleChangeAmountReceive = (e: any) => {
     let { value } = e.target;
     if (Number(value) < 0) value = '0';
     setAmountReceive(value);
+    const newAmountPay = value / price;
+    setAmountPay(String(newAmountPay).slice(0, 10));
   };
 
   const handleChangeExchanges = (e: boolean, exchange: string) => {
@@ -240,6 +259,16 @@ export const PageMarketsContent: React.FC = () => {
     }
   }, [symbolPay, symbolReceive]);
 
+  const getTokenPay = React.useCallback(async () => {
+    try {
+      const token = getTokenBySymbol(symbolPay);
+      const { name } = token;
+      setTokenNamePay(name);
+    } catch (e) {
+      console.error(e);
+    }
+  }, [getTokenBySymbol, symbolPay]);
+
   const getTokensReceive = React.useCallback(async () => {
     try {
       const result = await Zx.getPrices({
@@ -288,20 +317,6 @@ export const PageMarketsContent: React.FC = () => {
       console.error(e);
     }
   }, [history]);
-
-  const getTokenBySymbol = React.useCallback(
-    (symbol: string) => {
-      const tokenEmpty = { name: 'Currency', symbol: null, image: imageTokenPay };
-      try {
-        const token = tokens.filter((item: any) => item.symbol === symbol);
-        return token.length > 0 ? token[0] : tokenEmpty;
-      } catch (e) {
-        console.error(e);
-        return tokenEmpty;
-      }
-    },
-    [tokens],
-  );
 
   const getBalanceOfTokensPay = React.useCallback(async () => {
     try {
@@ -490,6 +505,7 @@ export const PageMarketsContent: React.FC = () => {
   }, []);
 
   React.useEffect(() => {
+    getTokenPay();
     getPrices();
     getHistory();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -680,11 +696,11 @@ export const PageMarketsContent: React.FC = () => {
       <section className={s.containerTitle}>
         <div className={s.containerTitleFirst}>
           <div className={s.containerTitleName}>
-            {name} ({symbolOne})
+            {tokenNamePay} ({symbolPay})
           </div>
           <div className={s.containerTitlePrice}>
-            {!symbolTwo && '$'}
-            {price.toString().slice(0, 8)} {symbolTwo}
+            {!symbolReceive && '$'}
+            {price.toString().slice(0, 8)} {symbolReceive}
           </div>
           <div
             className={classPriceChange}
