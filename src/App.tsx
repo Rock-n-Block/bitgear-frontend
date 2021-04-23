@@ -18,6 +18,14 @@ import * as Pages from './pages';
 //   },
 // };
 
+const tokenGear = {
+  symbol: 'GEAR',
+  name: 'Bitgear',
+  price: null,
+  decimals: 18,
+  address: '0x1b980e05943dE3dB3a459C72325338d327B6F5a9', // not for kovan
+};
+
 const Zx = new Service0x();
 // const CryptoCompare = new CryptoCompareService();
 
@@ -68,6 +76,7 @@ export const App: React.FC = () => {
       const resultGetTokens = await Zx.getTokens();
       const newTokens = resultGetTokens.data.records;
       console.log('getTokens:', newTokens);
+      newTokens.push(tokenGear);
       const tokens = changeTokensInfo(newTokens);
       setTokens({ tokens });
     } catch (e) {

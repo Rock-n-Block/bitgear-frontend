@@ -24,15 +24,6 @@ type TypeCardProps = {
 
 const firstTokens = ['DAI', 'WETH', 'GEAR'];
 
-const tokenGear = {
-  symbol: 'GEAR',
-  name: 'Bitgear',
-  price: null,
-  image: imageCoin,
-  decimals: 18,
-  address: '0x1b980e05943dE3dB3a459C72325338d327B6F5a9', // not for kovan
-};
-
 export const Card: React.FC<TypeCardProps> = ({ children = [], to = '/' }) => {
   return (
     <Link to={to} className={s.card}>
@@ -49,7 +40,6 @@ export const PageMain: React.FC = () => {
   const changeTokens = React.useCallback(async () => {
     try {
       let newTokens = tokens;
-      newTokens.splice(0, 0, tokenGear);
       newTokens.sort((a: TypeToken, b: TypeToken) => {
         return firstTokens.indexOf(b.symbol) - firstTokens.indexOf(a.symbol);
       });
