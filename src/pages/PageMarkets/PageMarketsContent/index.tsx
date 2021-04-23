@@ -286,12 +286,7 @@ export const PageMarketsContent: React.FC = () => {
 
   const getTokensReceive = React.useCallback(async () => {
     try {
-      const result = await Zx.getPrices({
-        sellToken: symbolPay,
-      });
-      const prices = result.data.records;
-      const newPricesSymbols = prices.map((item: any) => item.symbol);
-      const newTokensReceive = tokens.filter((item: any) => newPricesSymbols.includes(item.symbol));
+      const newTokensReceive = tokens.filter((item: any) => item.symbol !== symbolPay);
       if (newTokensReceive.length === 0) {
         setSymbolReceive('');
         setTokensReceive([]);
@@ -443,6 +438,8 @@ export const PageMarketsContent: React.FC = () => {
       const resultSendTx = await web3Provider.sendTx(result.data);
       console.log('trade resultSendTx:', resultSendTx);
       setWaiting(false);
+      getBalanceOfTokensPay();
+      getBalanceOfTokensReceive();
       return null;
     } catch (e) {
       console.error(e);
@@ -459,6 +456,8 @@ export const PageMarketsContent: React.FC = () => {
     web3Provider,
     toggleModal,
     userAddress,
+    getBalanceOfTokensPay,
+    getBalanceOfTokensReceive,
   ]);
 
   const handleSelectSymbolPay = async (symbol: string) => {
@@ -485,6 +484,7 @@ export const PageMarketsContent: React.FC = () => {
   const switchPayAndReceive = () => {
     setSymbolPay(symbolReceive);
     setSymbolReceive(symbolPay);
+    history.push(`/markets/${symbolReceive}/${symbolPay}`);
   };
 
   const handleClickOutsideDropdownPay = (e: any) => {
