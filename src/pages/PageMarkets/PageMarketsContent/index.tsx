@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import cns from 'classnames';
 import { v1 as uuid } from 'uuid';
 
@@ -66,6 +66,8 @@ type TypeModalParams = {
 };
 
 export const PageMarketsContent: React.FC = () => {
+  const history = useHistory();
+
   const periodDefault = Number(getFromStorage('chartPeriod'));
   // console.log('PageMarketsContent periodDefault:', periodDefault, periodDefault > 0);
   const { web3Provider } = useWalletConnectorContext();
@@ -81,7 +83,7 @@ export const PageMarketsContent: React.FC = () => {
   const { address: userAddress } = useSelector(({ user }: any) => user);
   const { tokens } = useSelector(({ zx }: any) => zx);
 
-  const { symbolOne, symbolTwo = 'ETH' } = useParams<TypeUseParams>();
+  const { symbolOne, symbolTwo } = useParams<TypeUseParams>();
 
   const refDropdownPay = React.useRef<HTMLDivElement>(null);
   const refDropdownReceive = React.useRef<HTMLDivElement>(null);
@@ -91,7 +93,7 @@ export const PageMarketsContent: React.FC = () => {
   const refSelectLabel = React.useRef<HTMLDivElement>(null);
 
   const [price, setPrice] = React.useState(0);
-  const [history, setHistory] = React.useState<any[]>([]);
+  const [marketHistory, setMarketHistory] = React.useState<any[]>([]);
   const [points, setPoints] = React.useState<number[]>([]);
   const [period, setPeriod] = React.useState<number>(periodDefault > 0 ? periodDefault : 1);
   const [searchValuePay, setSearchValuePay] = React.useState<string>('');
@@ -109,9 +111,7 @@ export const PageMarketsContent: React.FC = () => {
   );
   const [tokenNamePay, setTokenNamePay] = React.useState<string>('');
   const [symbolPay, setSymbolPay] = React.useState<string>(symbolOne.toUpperCase());
-  const [symbolReceive, setSymbolReceive] = React.useState<string>(
-    symbolTwo.toUpperCase() || 'ETH',
-  );
+  const [symbolReceive, setSymbolReceive] = React.useState<string>(symbolTwo?.toUpperCase() || '');
   const [amountPay, setAmountPay] = React.useState<string>('0');
   const [amountReceive, setAmountReceive] = React.useState<string>('0');
   const [waiting, setWaiting] = React.useState<boolean>(false);
@@ -269,6 +269,21 @@ export const PageMarketsContent: React.FC = () => {
     }
   }, [getTokenBySymbol, symbolPay]);
 
+  const getTokensSymbolsReceive = async () => {
+    try {
+      const result = await Zx.getPrices({
+        sellToken: symbolPay,
+      });
+      const prices = result.data.records;
+      const newPricesSymbols = prices.map((item: any) => item.symbol);
+      console.log('getTokensSymbolsReceive:', newPricesSymbols);
+      return newPricesSymbols;
+    } catch (e) {
+      console.error('getTokensSymbolsReceive:', e);
+      return [];
+    }
+  };
+
   const getTokensReceive = React.useCallback(async () => {
     try {
       const result = await Zx.getPrices({
@@ -282,7 +297,6 @@ export const PageMarketsContent: React.FC = () => {
         setTokensReceive([]);
         return;
       }
-      setSymbolReceive(newPricesSymbols[0]);
       setTokensReceive(newTokensReceive);
       console.log('getTokensReceive:', newTokensReceive);
     } catch (e) {
@@ -300,7 +314,7 @@ export const PageMarketsContent: React.FC = () => {
         exchange: 'Kraken',
       });
       // console.log('getHistory:', result);
-      setHistory(result.data);
+      setMarketHistory(result.data);
     } catch (e) {
       console.error(e);
     }
@@ -308,15 +322,15 @@ export const PageMarketsContent: React.FC = () => {
 
   const getPoints = React.useCallback(() => {
     try {
-      const newPoints = history.map((item: any) => {
+      const newPoints = marketHistory.map((item: any) => {
         return item.close;
       });
       setPoints(newPoints);
-      console.log('getPoints:', newPoints);
+      // console.log('getPoints:', newPoints);
     } catch (e) {
       console.error(e);
     }
-  }, [history]);
+  }, [marketHistory]);
 
   const getBalanceOfTokensPay = React.useCallback(async () => {
     try {
@@ -447,17 +461,25 @@ export const PageMarketsContent: React.FC = () => {
     userAddress,
   ]);
 
-  const handleSelectSymbolPay = (symbol: string) => {
+  const handleSelectSymbolPay = async (symbol: string) => {
     console.log('handleSelectSymbolPay:', symbol);
+    setAmountPay('0');
+    setAmountReceive('0');
     setSymbolPay(symbol);
     setOpenDropdownPay(false);
-    getTokensReceive();
+    const tokensSymbolsReceive = await getTokensSymbolsReceive();
+    let newSymbolReceive = symbolReceive;
+    if (!tokensSymbolsReceive.includes(symbolReceive)) newSymbolReceive = '';
+    history.push(`/markets/${symbol}/${newSymbolReceive}`);
   };
 
   const handleSelectSymbolReceive = (symbol: string) => {
     console.log('handleSelectSymbolReceive:', symbol);
+    setAmountPay('0');
+    setAmountReceive('0');
     setSymbolReceive(symbol);
     setOpenDropdownReceive(false);
+    history.push(`/markets/${symbolPay}/${symbol}`);
   };
 
   const switchPayAndReceive = () => {
@@ -514,7 +536,7 @@ export const PageMarketsContent: React.FC = () => {
   React.useEffect(() => {
     getPoints();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [history]);
+  }, [marketHistory]);
 
   React.useEffect(() => {
     getHistory();
@@ -544,8 +566,9 @@ export const PageMarketsContent: React.FC = () => {
   }, [web3Provider, getBalanceOfTokensPay, getBalanceOfTokensReceive, userAddress]);
 
   React.useEffect(() => {
+    getTokenPay();
     getPrices();
-  }, [symbolPay, getPrices]);
+  }, [symbolPay, getPrices, getTokenPay]);
 
   const RadioLabelFast = (
     <div className={s.radioLabelGas}>
