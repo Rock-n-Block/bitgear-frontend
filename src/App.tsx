@@ -9,6 +9,14 @@ import { CryptoCompareService } from './services/CryptoCompareService';
 import * as Components from './components';
 import * as Pages from './pages';
 
+// const tokensList: any = {
+//   DAI: {
+//     Name: 'Dai',
+//     CoinName: 'Dai',
+//     ImageUrl: 'Dai',
+//   },
+// };
+
 const Zx = new Service0x();
 const CryptoCompare = new CryptoCompareService();
 
@@ -23,11 +31,14 @@ export const App: React.FC = () => {
   const getTokensFromCryptoCompare = async () => {
     try {
       const result = await CryptoCompare.getAllCoins();
+      console.log('App getTokensFromCryptoCompare:', result.data);
       if (result.status === 'SUCCESS') {
         const newTokens = result.data;
-        console.log('PageMain getTokensFromCryptoCompare:', newTokens);
         setTokensCryptoCompare(newTokens);
       }
+      // const newTokens = tokensList;
+      // console.log('App getTokensFromCryptoCompare:', newTokens);
+      // setTokensCryptoCompare(newTokens);
     } catch (e) {
       console.error(e);
     }

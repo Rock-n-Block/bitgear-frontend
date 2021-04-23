@@ -22,6 +22,7 @@ export class CryptoCompareService {
   constructor() {
     this.axios = axios.create({
       baseURL: config.apis.cryptoCompare,
+      headers: { authorization: config.keys.cryptoCompare },
     });
   }
 
