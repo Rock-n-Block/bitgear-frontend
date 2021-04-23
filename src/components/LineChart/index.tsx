@@ -28,7 +28,10 @@ export const LineChart: React.FC<TypeLineChartProps> = React.memo(
       const min = Math.min(...array);
       const max = Math.max(...array);
       const amplitude = max - min;
-      const newPath = array.map((item) => ((item - min) / amplitude) * h);
+      const newPath = array.map((item) => {
+        if (amplitude === 0) return 0;
+        return ((item - min) / amplitude) * h;
+      });
       return newPath;
     }, []);
 

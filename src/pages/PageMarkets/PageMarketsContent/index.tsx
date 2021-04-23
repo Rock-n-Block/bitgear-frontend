@@ -102,8 +102,9 @@ export const PageMarketsContent: React.FC = () => {
   const [openSettings, setOpenSettings] = React.useState<boolean>(false);
   const [mode, setMode] = React.useState<string>('market');
   const [searchTokensResultPay, setSearchTokensResultPay] = React.useState<TypeToken[]>(tokens);
+  const [tokensReceive, setTokensReceive] = React.useState<TypeToken[]>([]);
   const [searchTokensResultReceive, setSearchTokensResultReceive] = React.useState<TypeToken[]>(
-    tokens,
+    tokensReceive,
   );
   const [symbolPay, setSymbolPay] = React.useState<string>(symbolOne.toUpperCase());
   const [symbolReceive, setSymbolReceive] = React.useState<string>(
@@ -221,18 +222,44 @@ export const PageMarketsContent: React.FC = () => {
     setMode(newMode);
   };
 
-  const getPrice = React.useCallback(async () => {
+  const getPrices = React.useCallback(async () => {
     try {
-      const result = await CryptoCompare.getMarketData({
-        symbolOne,
-        symbolTwo: symbolTwo || 'USD',
+      const result = await Zx.getPrices({
+        sellToken: symbolPay,
       });
-      setPrice(result.data.PRICE);
-      // console.log('getPrice:', result);
+      console.log('getPrices:', result);
+      const prices = result.data.records;
+      const newPrices = prices.filter((item: any) => item.symbol === symbolReceive);
+      if (!newPrices[0]) {
+        setPrice(0);
+        return;
+      }
+      setPrice(newPrices[0].price);
     } catch (e) {
       console.error(e);
     }
-  }, [symbolOne, symbolTwo]);
+  }, [symbolPay, symbolReceive]);
+
+  const getTokensReceive = React.useCallback(async () => {
+    try {
+      const result = await Zx.getPrices({
+        sellToken: symbolPay,
+      });
+      const prices = result.data.records;
+      const newPricesSymbols = prices.map((item: any) => item.symbol);
+      const newTokensReceive = tokens.filter((item: any) => newPricesSymbols.includes(item.symbol));
+      if (newTokensReceive.length === 0) {
+        setSymbolReceive('');
+        setTokensReceive([]);
+        return;
+      }
+      setSymbolReceive(newPricesSymbols[0]);
+      setTokensReceive(newTokensReceive);
+      console.log('getTokensReceive:', newTokensReceive);
+    } catch (e) {
+      console.error(e);
+    }
+  }, [symbolPay, tokens]);
 
   const getHistory = React.useCallback(async () => {
     try {
@@ -256,7 +283,7 @@ export const PageMarketsContent: React.FC = () => {
         return item.close;
       });
       setPoints(newPoints);
-      // console.log('getPoints:', history);
+      console.log('getPoints:', newPoints);
     } catch (e) {
       console.error(e);
     }
@@ -375,7 +402,7 @@ export const PageMarketsContent: React.FC = () => {
         sellToken: symbolPay,
         buyAmount: amountPay,
       };
-      console.log('trade props:', props);
+      // console.log('trade props:', props);
       const result = await Zx.getQuote(props);
       console.log('trade getQuote:', result);
       if (result.status === 'ERROR') return validateTradeErrors(result.error);
@@ -409,6 +436,7 @@ export const PageMarketsContent: React.FC = () => {
     console.log('handleSelectSymbolPay:', symbol);
     setSymbolPay(symbol);
     setOpenDropdownPay(false);
+    getTokensReceive();
   };
 
   const handleSelectSymbolReceive = (symbol: string) => {
@@ -462,7 +490,7 @@ export const PageMarketsContent: React.FC = () => {
   }, []);
 
   React.useEffect(() => {
-    getPrice();
+    getPrices();
     getHistory();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -482,9 +510,15 @@ export const PageMarketsContent: React.FC = () => {
     if (!tokens || tokens?.length === 0) return;
     console.log('PageMarketsContent useEffect tokens:', tokens);
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    getTokensReceive();
+  }, [tokens, getTokensReceive]);
+
+  React.useEffect(() => {
+    if (!tokens || tokens?.length === 0) return;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     setSearchTokensResultPay(tokens);
-    setSearchTokensResultReceive(tokens);
-  }, [tokens]);
+    setSearchTokensResultReceive(tokensReceive);
+  }, [tokens, tokensReceive]);
 
   React.useEffect(() => {
     if (!web3Provider && !userAddress) return;
@@ -492,6 +526,10 @@ export const PageMarketsContent: React.FC = () => {
     getBalanceOfTokensPay();
     getBalanceOfTokensReceive();
   }, [web3Provider, getBalanceOfTokensPay, getBalanceOfTokensReceive, userAddress]);
+
+  React.useEffect(() => {
+    getPrices();
+  }, [symbolPay, getPrices]);
 
   const RadioLabelFast = (
     <div className={s.radioLabelGas}>
@@ -853,7 +891,7 @@ export const PageMarketsContent: React.FC = () => {
 
       <section className={s.containerChart}>
         <div className={s.chart}>
-          <LineChart interactive data={points} />
+          {points.length > 0 && <LineChart interactive data={points} />}
         </div>
         <div className={s.chartData}>
           <div className={s.chartDataFirst}>

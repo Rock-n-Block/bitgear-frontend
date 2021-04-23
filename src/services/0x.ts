@@ -9,6 +9,16 @@ type TypeGetQuoteProps = {
   buyAmount: string;
 };
 
+type TypeGetPriceProps = {
+  buyToken: string;
+  sellToken: string;
+  sellAmount: string;
+};
+
+type TypeGetPricesProps = {
+  sellToken: string;
+};
+
 export class Service0x {
   private axios: any;
 
@@ -38,6 +48,38 @@ export class Service0x {
       // eslint-disable-next-line no-param-reassign
       props.buyAmount = `${+props.buyAmount * 10e17}`; // todo
       const url = `/swap/v1/quote?${qs.stringify(props)}`;
+      const result = await this.axios.get(url);
+      // console.log('Service0x getQuote:', result);
+      return {
+        status: 'SUCCESS',
+        data: result.data,
+      };
+    } catch (e) {
+      // console.error(e);
+      return { status: 'ERROR', data: undefined, error: e.response.data };
+    }
+  };
+
+  getPrice = async (props: TypeGetPriceProps) => {
+    try {
+      // eslint-disable-next-line no-param-reassign
+      props.sellAmount = `${+props.sellAmount * 10e17}`; // todo
+      const url = `/swap/v1/price?${qs.stringify(props)}`;
+      const result = await this.axios.get(url);
+      // console.log('Service0x getQuote:', result);
+      return {
+        status: 'SUCCESS',
+        data: result.data,
+      };
+    } catch (e) {
+      // console.error(e);
+      return { status: 'ERROR', data: undefined, error: e.response.data };
+    }
+  };
+
+  getPrices = async (props: TypeGetPricesProps) => {
+    try {
+      const url = `/swap/v1/prices?${qs.stringify(props)}`;
       const result = await this.axios.get(url);
       // console.log('Service0x getQuote:', result);
       return {
