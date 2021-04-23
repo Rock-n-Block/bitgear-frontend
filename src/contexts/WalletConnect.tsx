@@ -2,9 +2,8 @@ import React, { createContext, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { userActions, walletActions } from '../redux/actions';
-
-import MetamaskProvider from './Metamask';
-import Web3Provider from './Web3Provider';
+import MetamaskProvider from '../services/Metamask';
+import Web3Provider from '../services/Web3Provider';
 
 const walletConnectorContext = createContext<any>({
   web3Provider: {},

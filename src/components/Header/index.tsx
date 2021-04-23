@@ -12,8 +12,8 @@ import { ReactComponent as IconTelegram } from '../../assets/icons/social/telegr
 import { ReactComponent as IconTwitter } from '../../assets/icons/social/twitter.svg';
 import IconLogo from '../../assets/images/logo/HQ2.png';
 import config from '../../config';
+import { useWalletConnectorContext } from '../../contexts/WalletConnect';
 import { userActions } from '../../redux/actions';
-import { useWalletConnectorContext } from '../../services/WalletConnect';
 import { Dropdown } from '../Dropdown';
 
 import s from './style.module.scss';

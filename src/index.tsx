@@ -2,8 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 
+import Connector from './contexts/WalletConnect';
 import store from './redux/store';
-import Connector from './services/WalletConnect';
 import { App } from './App';
 
 import './index.scss';

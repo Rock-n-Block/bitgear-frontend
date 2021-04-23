@@ -11,11 +11,11 @@ import { ReactComponent as IconSearchWhite } from '../../../assets/icons/search-
 import imageTokenPay from '../../../assets/images/token.png';
 import { Checkbox, Dropdown, Input, LineChart, Radio, Select } from '../../../components';
 import Button from '../../../components/Button';
+import { useWalletConnectorContext } from '../../../contexts/WalletConnect';
 import { modalActions, walletActions } from '../../../redux/actions';
 import { Service0x } from '../../../services/0x';
 import { CryptoCompareService } from '../../../services/CryptoCompareService';
 import { EtherscanService } from '../../../services/Etherscan';
-import { useWalletConnectorContext } from '../../../services/WalletConnect';
 import { getFromStorage, setToStorage } from '../../../utils/localStorage';
 
 import s from './style.module.scss';
