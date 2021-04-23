@@ -22,6 +22,17 @@ type TypeCardProps = {
   to: string;
 };
 
+const firstTokens = ['DAI', 'WETH', 'GEAR'];
+
+const tokenGear = {
+  symbol: 'GEAR',
+  name: 'Bitgear',
+  price: null,
+  image: imageCoin,
+  decimals: 18,
+  address: '0x1b980e05943dE3dB3a459C72325338d327B6F5a9', // not for kovan
+};
+
 export const Card: React.FC<TypeCardProps> = ({ children = [], to = '/' }) => {
   return (
     <Link to={to} className={s.card}>
@@ -31,8 +42,29 @@ export const Card: React.FC<TypeCardProps> = ({ children = [], to = '/' }) => {
 };
 
 export const PageMain: React.FC = () => {
-  let { tokens } = useSelector(({ zx }: any) => zx);
-  tokens = tokens.slice(0, 3);
+  const { tokens } = useSelector(({ zx }: any) => zx);
+
+  const [tokensList, setTokensList] = React.useState<TypeToken[]>([]);
+
+  const changeTokens = React.useCallback(async () => {
+    try {
+      let newTokens = tokens;
+      newTokens.splice(0, 0, tokenGear);
+      newTokens.sort((a: TypeToken, b: TypeToken) => {
+        return firstTokens.indexOf(b.symbol) - firstTokens.indexOf(a.symbol);
+      });
+      newTokens = newTokens.slice(0, 3);
+      setTokensList(newTokens);
+    } catch (e) {
+      console.error(e);
+    }
+  }, [tokens]);
+
+  React.useEffect(() => {
+    if (!tokens || tokens.length === 0) return;
+    changeTokens();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [changeTokens]);
 
   return (
     <div className={s.container}>
@@ -43,7 +75,7 @@ export const PageMain: React.FC = () => {
         <Search />
       </section>
       <section className={s.containerCards}>
-        {tokens.map((token: TypeToken) => {
+        {tokensList.map((token: TypeToken) => {
           let { priceChange } = token;
           const { symbol, price, image = imageCoin } = token;
           let classPriceChange = s.cardPriceChange;
