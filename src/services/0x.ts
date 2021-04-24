@@ -13,6 +13,7 @@ type TypeGetPriceProps = {
   buyToken: string;
   sellToken: string;
   sellAmount: string;
+  skipValidation?: boolean;
 };
 
 type TypeGetPricesProps = {
@@ -90,5 +91,10 @@ export class Service0x {
       // console.error(e);
       return { status: 'ERROR', data: undefined, error: e.response.data };
     }
+  };
+
+  getOrders = async () => {
+    // link below works properly
+    // https://api.0x.org/sra/v4/orders?page=1&perPage=1000&makerToken=0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2
   };
 }

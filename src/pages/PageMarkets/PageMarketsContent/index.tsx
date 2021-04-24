@@ -25,6 +25,26 @@ const CryptoCompare = new CryptoCompareService();
 const Zx = new Service0x();
 const Etherscan = new EtherscanService();
 
+// Native = 'Native',
+// Uniswap = 'Uniswap',
+// UniswapV2 = 'Uniswap_V2',
+// Eth2Dai = 'Eth2Dai',
+// Kyber = 'Kyber',
+// Curve = 'Curve',
+// LiquidityProvider = 'LiquidityProvider',
+// MultiBridge = 'MultiBridge',
+// Balancer = 'Balancer',
+// Cream = 'CREAM',
+// Bancor = 'Bancor',
+// MStable = 'mStable',
+// Mooniswap = 'Mooniswap',
+// MultiHop = 'MultiHop',
+// Shell = 'Shell',
+// Swerve = 'Swerve',
+// SnowSwap = 'SnowSwap',
+// SushiSwap = 'SushiSwap',
+// Dodo = 'DODO',
+
 const exchangesList: string[] = [
   '0x',
   'Uniswap',
@@ -146,6 +166,24 @@ export const PageMarketsContent: React.FC = () => {
     [tokens],
   );
 
+  const getPricePay = async () => {
+    try {
+      const result = await Zx.getPrice({
+        buyToken: symbolReceive,
+        sellToken: symbolPay,
+        sellAmount: amountPay,
+      });
+      console.log('getPricePay:', result);
+      if (result.status === 'SUCCESS') {
+        return result.data.price;
+      }
+      return 0;
+    } catch (e) {
+      console.error(e);
+      return 0;
+    }
+  };
+
   const handleOpenSettings = () => {
     setOpenSettings(!openSettings);
   };
@@ -162,20 +200,30 @@ export const PageMarketsContent: React.FC = () => {
     setOpenSelect(!openSelect);
   };
 
-  const handleChangeAmountPay = (e: any) => {
-    let { value } = e.target;
-    if (Number(value) < 0) value = '0';
-    setAmountPay(prettyAmount(value));
-    const newAmountReceive = price * value;
-    setAmountReceive(prettyPrice(String(newAmountReceive)));
+  const handleChangeAmountPay = async (event: any) => {
+    try {
+      let { value } = event.target;
+      if (Number(value) < 0) value = '0';
+      setAmountPay(prettyAmount(value));
+      const pricePay = await getPricePay();
+      const newAmountReceive = pricePay * value;
+      setAmountReceive(prettyPrice(String(newAmountReceive)));
+    } catch (e) {
+      console.error('handleChangeAmountPay:', e);
+    }
   };
 
-  const handleChangeAmountReceive = (e: any) => {
-    let { value } = e.target;
-    if (Number(value) < 0) value = '0';
-    setAmountReceive(value);
-    const newAmountPay = value / price;
-    setAmountPay(prettyPrice(String(newAmountPay)));
+  const handleChangeAmountReceive = async (event: any) => {
+    try {
+      let { value } = event.target;
+      if (Number(value) < 0) value = '0';
+      setAmountReceive(value);
+      const pricePay = await getPricePay();
+      const newAmountPay = value / pricePay;
+      setAmountPay(prettyPrice(String(newAmountPay)));
+    } catch (e) {
+      console.error('handleChangeAmountReceive:', e);
+    }
   };
 
   const handleChangeExchanges = (e: boolean, exchange: string) => {
@@ -243,17 +291,19 @@ export const PageMarketsContent: React.FC = () => {
 
   const getPrices = React.useCallback(async () => {
     try {
-      const result = await Zx.getPrices({
+      const result = await Zx.getPrice({
+        buyToken: symbolReceive,
         sellToken: symbolPay,
+        sellAmount: '1',
+        skipValidation: true,
       });
       console.log('getPrices:', result);
-      const prices = result.data.records;
-      const newPrices = prices.filter((item: any) => item.symbol === symbolReceive);
-      if (!newPrices[0]) {
+      if (result.status === 'SUCCESS') {
+        const newPrice = result.data.price;
+        setPrice(newPrice);
+      } else {
         setPrice(0);
-        return;
       }
-      setPrice(newPrices[0].price);
     } catch (e) {
       console.error(e);
     }
@@ -306,9 +356,9 @@ export const PageMarketsContent: React.FC = () => {
         symbolTwo: symbolTwo || 'USD',
         limit: 100,
         aggregate: period,
-        exchange: 'Kraken',
+        // exchange: 'oneinch',
       });
-      // console.log('getHistory:', result);
+      console.log('getHistory:', result);
       setMarketHistory(result.data);
     } catch (e) {
       console.error(e);
@@ -542,7 +592,7 @@ export const PageMarketsContent: React.FC = () => {
     getHistory();
     getPoints();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [period]);
+  }, [period, tokens, tokensReceive]);
 
   React.useEffect(() => {
     if (!tokens || tokens?.length === 0) return;

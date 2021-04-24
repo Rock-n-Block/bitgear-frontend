@@ -62,6 +62,30 @@ export class CryptoCompareService {
     }
   };
 
+  getExchangeOfPair = async ({ symbolOne, symbolTwo }: TypeGetPriceProps) => {
+    try {
+      const url = `/data/v2/pair/mapping/fsym?fsym=${symbolOne.toUpperCase()}&api_key=${
+        config.keys.cryptoCompare
+      }`;
+      const result = await this.axios.get(url);
+      if (result.data.Response === 'Error') {
+        console.error('CryptoCompareService getPairMapping:', result);
+        return { status: 'ERROR', data: undefined };
+      }
+      const mapping = result.data.Data.current;
+      let exchanges = mapping.filter((item: any) => item.tsym === symbolTwo);
+      exchanges = exchanges.map((item: any) => item.exchange);
+      console.log('CryptoCompareService getPairMapping:', exchanges);
+      return {
+        status: 'SUCCESS',
+        data: exchanges,
+      };
+    } catch (e) {
+      console.error(e);
+      return { status: 'ERROR', data: undefined };
+    }
+  };
+
   getHistory = async ({
     symbolOne,
     symbolTwo,
@@ -70,21 +94,26 @@ export class CryptoCompareService {
     exchange,
   }: TypeGetHistoryProps) => {
     try {
+      let e = exchange;
+      const exchanges = await this.getExchangeOfPair({ symbolOne, symbolTwo });
+      if (exchanges.status === 'SUCCESS') {
+        [e] = exchanges.data;
+      }
       const query = qs.stringify({
         fsym: symbolOne.toUpperCase(),
         tsym: symbolTwo.toUpperCase(),
         limit,
         aggregate,
-        exchange,
+        e,
       });
       const result = await this.axios.get(`/data/v2/histoday?${query}`);
-      // console.log('CryptoCompareService getHistory:', result);
       if (result.data.Response === 'Error') {
+        console.log('CryptoCompareService getHistory:', result);
         return { status: 'ERROR', data: undefined };
       }
       return { status: 'SUCCESS', data: result.data.Data.Data };
-    } catch (e) {
-      console.error(e);
+    } catch (error) {
+      console.error('CryptoCompareService getHistory:', error);
       return { status: 'ERROR', data: undefined };
     }
   };

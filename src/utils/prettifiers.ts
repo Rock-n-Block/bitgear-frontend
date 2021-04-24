@@ -10,7 +10,7 @@ export const prettyAmount = (value: string) => {
 export const prettyPrice = (value: string) => {
   const parts = value.toString().split('.');
   const part0Length = parts[0].length;
-  let sliceLength = 6 - part0Length;
+  let sliceLength = 10 - part0Length;
   if (sliceLength < 0) sliceLength = 0;
   if (parts[1]) parts[1] = parts[1].slice(0, sliceLength);
   return parts.join('.');
