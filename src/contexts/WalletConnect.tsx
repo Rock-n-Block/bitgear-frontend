@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { userActions } from '../redux/actions';
 import MetamaskProvider from '../services/Metamask';
 import Web3Provider from '../services/Web3Provider';
-import { getFromStorage } from '../utils/localStorage';
+import { getFromStorage, setToStorage } from '../utils/localStorage';
 
 const walletConnectorContext = createContext<any>({
   web3Provider: {},
@@ -49,7 +49,8 @@ const Connector: React.FC = ({ children }) => {
         setUserData({ address: addresses[0], balance });
       } catch (e) {
         console.error('login:', e);
-        // walletInit();
+        setToStorage('walletType', '');
+        // init();
         window.location.reload();
       }
     },
