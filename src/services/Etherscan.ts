@@ -23,6 +23,11 @@ export class EtherscanService {
       const url = `?${qs.stringify(props)}`;
       const result = await this.axios.get(url);
       console.log('EtherscanService getAbi:', result);
+      if (result.data.status === '0')
+        return {
+          status: 'ERROR',
+          data: result.data.message,
+        };
       return {
         status: 'SUCCESS',
         data: result.data.result,

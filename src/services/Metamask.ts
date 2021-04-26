@@ -44,7 +44,7 @@ export default class MetamaskService {
   public approve = async ({ data, contractAbi }: any) => {
     try {
       const { from, allowanceTarget, sellAmount, sellTokenAddress } = data;
-      // console.log('Web3Provider approve data:', data);
+      console.log('Web3Provider approve data:', data);
       const contractAddress = sellTokenAddress;
       // console.log('Web3Provider approve contractAbi:', contractAbi);
       const contract = new this.web3Provider.eth.Contract(JSON.parse(contractAbi), contractAddress);

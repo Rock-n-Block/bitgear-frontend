@@ -28,7 +28,7 @@ export class CryptoCompareService {
 
   getAllCoins = async () => {
     try {
-      const url = `/data/all/coinlist`;
+      const url = `/data/all/coinlist&api_key=${config.keys.cryptoCompare}`;
       const result = await this.axios.get(url);
       // console.log('CryptoCompareService getAllCoins:', result);
       if (result.data.Response === 'Error') {
@@ -46,7 +46,9 @@ export class CryptoCompareService {
 
   getMarketData = async ({ symbolOne, symbolTwo }: TypeGetPriceProps) => {
     try {
-      const url = `/data/pricemultifull?fsyms=${symbolOne.toUpperCase()}&tsyms=${symbolTwo.toUpperCase()}`;
+      const url = `/data/pricemultifull?fsyms=${symbolOne.toUpperCase()}&tsyms=${symbolTwo.toUpperCase()}&api_key=${
+        config.keys.cryptoCompare
+      }`;
       const result = await this.axios.get(url);
       // console.log('CryptoCompareService getMarketData:', result);
       if (result.data.Response === 'Error') {
@@ -105,6 +107,7 @@ export class CryptoCompareService {
         limit,
         aggregate,
         e,
+        api_key: config.keys.cryptoCompare,
       });
       const result = await this.axios.get(`/data/v2/histoday?${query}`);
       if (result.data.Response === 'Error') {

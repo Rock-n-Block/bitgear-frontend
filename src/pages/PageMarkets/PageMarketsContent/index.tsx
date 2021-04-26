@@ -481,9 +481,23 @@ export const PageMarketsContent: React.FC = () => {
       console.log('trade getQuote:', result);
       if (result.status === 'ERROR') return validateTradeErrors(result.error);
       result.data.from = userAddress;
+      const contractAddressPay = getTokenBySymbol(symbolPay).address;
+      console.log('trade contractAddressPay:', contractAddressPay);
+      result.data.contractAddress = contractAddressPay;
       const resultGetAbi = await Etherscan.getAbi(result.data.sellTokenAddress);
+      if (resultGetAbi.status === 'ERROR') {
+        setWaiting(false);
+        return toggleModal({
+          open: true,
+          text: `Contract data of token ${symbolPay} is not verified`,
+        });
+      }
       const contractAbi = resultGetAbi.data;
-      const resultApprove = await web3Provider.approve({ data: result.data, contractAbi });
+      const resultApprove = await web3Provider.approve({
+        data: result.data,
+        contractAbi,
+        contractAddress: contractAddressPay,
+      });
       console.log('trade resultApprove:', resultApprove);
       const resultSendTx = await web3Provider.sendTx(result.data);
       console.log('trade resultSendTx:', resultSendTx);
@@ -508,6 +522,7 @@ export const PageMarketsContent: React.FC = () => {
     userAddress,
     getBalanceOfTokensPay,
     getBalanceOfTokensReceive,
+    getTokenBySymbol,
   ]);
 
   const handleSelectSymbolPay = async (symbol: string) => {
