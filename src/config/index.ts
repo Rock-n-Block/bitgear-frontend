@@ -1,4 +1,4 @@
-const IS_PRODUCTION = true;
+const IS_PRODUCTION = false;
 
 export default {
   IS_PRODUCTION,

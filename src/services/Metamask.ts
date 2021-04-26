@@ -41,12 +41,21 @@ export default class MetamaskService {
     return +balance / 10e17;
   };
 
+  public totalSupply = async ({ contractAddress, contractAbi }: any) => {
+    const contract = new this.web3Provider.eth.Contract(contractAbi, contractAddress);
+    const totalSupply = await contract.methods.totalSupply().call();
+    return +totalSupply;
+  };
+
   public approve = async ({ data, contractAbi }: any) => {
     try {
-      const { from, allowanceTarget, sellAmount, sellTokenAddress } = data;
+      const { from, allowanceTarget, sellTokenAddress, sellAmount } = data;
       console.log('Web3Provider approve data:', data);
       const contractAddress = sellTokenAddress;
-      // console.log('Web3Provider approve contractAbi:', contractAbi);
+      // const totalSupply = await this.totalSupply({
+      //   contractAddress,
+      //   contractAbi: JSON.parse(contractAbi),
+      // });
       const contract = new this.web3Provider.eth.Contract(JSON.parse(contractAbi), contractAddress);
       return contract.methods.approve(allowanceTarget, sellAmount).send({ from });
     } catch (e) {

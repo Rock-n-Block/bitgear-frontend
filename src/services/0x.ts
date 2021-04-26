@@ -6,14 +6,16 @@ import config from '../config';
 type TypeGetQuoteProps = {
   buyToken: string;
   sellToken: string;
-  buyAmount: string;
+  sellAmount: number;
+  decimals: number;
 };
 
 type TypeGetPriceProps = {
   buyToken: string;
   sellToken: string;
-  sellAmount: string;
+  sellAmount: number;
   skipValidation?: boolean;
+  decimals: number;
 };
 
 type TypeGetPricesProps = {
@@ -46,8 +48,10 @@ export class Service0x {
 
   getQuote = async (props: TypeGetQuoteProps) => {
     try {
+      const { decimals, sellAmount } = props;
       // eslint-disable-next-line no-param-reassign
-      props.buyAmount = `${+props.buyAmount * 10e17}`; // todo
+      props.sellAmount = sellAmount * 10 ** decimals; // todo
+      console.log('Service0x getQuote:', props);
       const url = `/swap/v1/quote?${qs.stringify(props)}`;
       const result = await this.axios.get(url);
       // console.log('Service0x getQuote:', result);
@@ -63,8 +67,10 @@ export class Service0x {
 
   getPrice = async (props: TypeGetPriceProps) => {
     try {
+      const { decimals, sellAmount } = props;
       // eslint-disable-next-line no-param-reassign
-      props.sellAmount = `${+props.sellAmount * 10e17}`; // todo
+      props.sellAmount = sellAmount * 10 ** decimals; // todo
+      console.log('Service0x getPrice:', props);
       const url = `/swap/v1/price?${qs.stringify(props)}`;
       const result = await this.axios.get(url);
       // console.log('Service0x getQuote:', result);

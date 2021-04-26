@@ -132,8 +132,8 @@ export const PageMarketsContent: React.FC = () => {
   const [tokenNamePay, setTokenNamePay] = React.useState<string>('');
   const [symbolPay, setSymbolPay] = React.useState<string>(symbolOne.toUpperCase());
   const [symbolReceive, setSymbolReceive] = React.useState<string>(symbolTwo?.toUpperCase() || '');
-  const [amountPay, setAmountPay] = React.useState<string>('0');
-  const [amountReceive, setAmountReceive] = React.useState<string>('0');
+  const [amountPay, setAmountPay] = React.useState<number>(0);
+  const [amountReceive, setAmountReceive] = React.useState<number>(0);
   const [waiting, setWaiting] = React.useState<boolean>(false);
   const [balanceOfTokenPay, setBalanceOfTokenPay] = React.useState<number>(0);
   const [balanceOfTokenReceive, setBalanceOfTokenReceive] = React.useState<number>(0);
@@ -166,14 +166,17 @@ export const PageMarketsContent: React.FC = () => {
     [tokens],
   );
 
-  const getPricePay = async () => {
+  const getPricePay = async (amountToPay: number) => {
     try {
-      const result = await Zx.getPrice({
+      const { decimals } = getTokenBySymbol(symbolPay);
+      const props = {
         buyToken: symbolReceive,
         sellToken: symbolPay,
-        sellAmount: amountPay,
-      });
-      console.log('getPricePay:', result);
+        sellAmount: amountToPay,
+        decimals,
+      };
+      const result = await Zx.getPrice(props);
+      console.log('getPricePay:', props, result);
       if (result.status === 'SUCCESS') {
         return result.data.price;
       }
@@ -202,12 +205,12 @@ export const PageMarketsContent: React.FC = () => {
 
   const handleChangeAmountPay = async (event: any) => {
     try {
-      let { value } = event.target;
-      if (Number(value) < 0) value = '0';
-      setAmountPay(prettyAmount(value));
-      const pricePay = await getPricePay();
+      const { value } = event.target;
+      setAmountPay(prettyAmount(+value));
+      const pricePay = await getPricePay(value);
       const newAmountReceive = pricePay * value;
-      setAmountReceive(prettyPrice(String(newAmountReceive)));
+      console.log('handleChangeAmountPay newAmountReceive:', newAmountReceive);
+      setAmountReceive(prettyAmount(newAmountReceive));
     } catch (e) {
       console.error('handleChangeAmountPay:', e);
     }
@@ -215,12 +218,11 @@ export const PageMarketsContent: React.FC = () => {
 
   const handleChangeAmountReceive = async (event: any) => {
     try {
-      let { value } = event.target;
-      if (Number(value) < 0) value = '0';
-      setAmountReceive(value);
-      const pricePay = await getPricePay();
+      const { value } = event.target;
+      setAmountReceive(prettyAmount(value));
+      const pricePay = await getPricePay(value);
       const newAmountPay = value / pricePay;
-      setAmountPay(prettyPrice(String(newAmountPay)));
+      setAmountPay(newAmountPay);
     } catch (e) {
       console.error('handleChangeAmountReceive:', e);
     }
@@ -291,11 +293,13 @@ export const PageMarketsContent: React.FC = () => {
 
   const getPrices = React.useCallback(async () => {
     try {
+      const { decimals } = getTokenBySymbol(symbolPay);
       const result = await Zx.getPrice({
         buyToken: symbolReceive,
         sellToken: symbolPay,
-        sellAmount: '1',
+        sellAmount: 1,
         skipValidation: true,
+        decimals,
       });
       console.log('getPrices:', result);
       if (result.status === 'SUCCESS') {
@@ -307,7 +311,7 @@ export const PageMarketsContent: React.FC = () => {
     } catch (e) {
       console.error(e);
     }
-  }, [symbolPay, symbolReceive]);
+  }, [symbolPay, symbolReceive, getTokenBySymbol]);
 
   const getTokenPay = React.useCallback(async () => {
     try {
@@ -471,19 +475,24 @@ export const PageMarketsContent: React.FC = () => {
           ),
         });
       }
+      const { decimals } = getTokenBySymbol(symbolPay);
       const props = {
         buyToken: symbolReceive,
         sellToken: symbolPay,
-        buyAmount: amountPay,
+        sellAmount: amountPay,
+        decimals,
       };
       // console.log('trade props:', props);
       const result = await Zx.getQuote(props);
       console.log('trade getQuote:', result);
       if (result.status === 'ERROR') return validateTradeErrors(result.error);
       result.data.from = userAddress;
-      const contractAddressPay = getTokenBySymbol(symbolPay).address;
-      console.log('trade contractAddressPay:', contractAddressPay);
-      result.data.contractAddress = contractAddressPay;
+      const { estimatedGas } = result.data;
+      const newEstimatedGas = +estimatedGas * 2;
+      result.data.gas = String(newEstimatedGas);
+      // const contractAddressPay = getTokenBySymbol(symbolPay).address;
+      // console.log('trade contractAddressPay:', contractAddressPay);
+      // result.data.contractAddress = contractAddressPay;
       const resultGetAbi = await Etherscan.getAbi(result.data.sellTokenAddress);
       if (resultGetAbi.status === 'ERROR') {
         setWaiting(false);
@@ -496,7 +505,7 @@ export const PageMarketsContent: React.FC = () => {
       const resultApprove = await web3Provider.approve({
         data: result.data,
         contractAbi,
-        contractAddress: contractAddressPay,
+        // contractAddress: contractAddressPay,
       });
       console.log('trade resultApprove:', resultApprove);
       const resultSendTx = await web3Provider.sendTx(result.data);
@@ -527,8 +536,8 @@ export const PageMarketsContent: React.FC = () => {
 
   const handleSelectSymbolPay = async (symbol: string) => {
     console.log('handleSelectSymbolPay:', symbol);
-    setAmountPay('0');
-    setAmountReceive('0');
+    setAmountPay(0);
+    setAmountReceive(0);
     setSymbolPay(symbol);
     setOpenDropdownPay(false);
     const tokensSymbolsReceive = await getTokensSymbolsReceive();
@@ -539,8 +548,8 @@ export const PageMarketsContent: React.FC = () => {
 
   const handleSelectSymbolReceive = (symbol: string) => {
     console.log('handleSelectSymbolReceive:', symbol);
-    setAmountPay('0');
-    setAmountReceive('0');
+    setAmountPay(0);
+    setAmountReceive(0);
     setSymbolReceive(symbol);
     setOpenDropdownReceive(false);
     history.push(`/markets/${symbolPay}/${symbol}`);
@@ -989,7 +998,9 @@ export const PageMarketsContent: React.FC = () => {
           </div>
         </div>
         <div className={s.containerTradingButton}>
-          <Button onClick={trade}>{waiting ? 'Waiting...' : 'Trade'}</Button>
+          <Button onClick={trade}>
+            {!userAddress ? 'Connect wallet' : waiting ? 'Waiting...' : 'Trade'}
+          </Button>
         </div>
       </section>
 
