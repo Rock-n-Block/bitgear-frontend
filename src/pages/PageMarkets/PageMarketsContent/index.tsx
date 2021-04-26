@@ -273,11 +273,13 @@ export const PageMarketsContent: React.FC = () => {
   };
 
   const handleWalletConnectLogin = React.useCallback(async () => {
+    setToStorage('walletType', 'walletConnect');
     setWalletType('walletConnect');
     toggleModal({ open: false });
   }, [setWalletType, toggleModal]);
 
   const handleMetamaskLogin = React.useCallback(async () => {
+    setToStorage('walletType', 'metamask');
     setWalletType('metamask');
     toggleModal({ open: false });
   }, [setWalletType, toggleModal]);

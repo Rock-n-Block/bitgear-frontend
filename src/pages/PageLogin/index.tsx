@@ -7,6 +7,7 @@ import FortmaticLogo from '../../assets/images/logo/fortmatic-logo.svg';
 import MetamaskLogo from '../../assets/images/logo/metamask-logo.svg';
 import WalletConnectLogo from '../../assets/images/logo/wallet-connect-logo.svg';
 import { walletActions } from '../../redux/actions';
+import { setToStorage } from '../../utils/localStorage';
 
 import s from './style.module.scss';
 
@@ -16,10 +17,12 @@ export const PageLogin: React.FC = () => {
   const setWalletType = (props: string) => dispatch(walletActions.setWalletType(props));
 
   const handleMetamaskLogin = async () => {
+    setToStorage('walletType', 'metamask');
     setWalletType('metamask');
   };
 
   const handleWalletConnectLogin = async () => {
+    setToStorage('walletType', 'walletConnect');
     setWalletType('walletConnect');
   };
 

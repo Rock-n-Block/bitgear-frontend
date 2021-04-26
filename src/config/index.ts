@@ -20,6 +20,7 @@ export default {
       : 'https://api-kovan.etherscan.io/api',
   },
   keys: {
+    infura: 'd1bbf6a40e514be6878e06b2d01a7f41',
     etherscan: 'VI2S1A8EBH54NNDH3Q4H2IFYJ4E85YDQEF',
     cryptoCompare: '64003a2defe5d1cd62c11cae1ed06c7248a0a985e63ce30fdd280c3855ae4dc3',
   },

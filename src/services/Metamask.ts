@@ -2,24 +2,31 @@
 // import * as BigNumber from 'bignumber.js';
 import Web3 from 'web3';
 
+import config from '../config';
+
 export default class MetamaskService {
-  private provider: any;
+  public provider: any;
 
   public web3Provider: any;
+
+  public wallet: any;
 
   constructor() {
     this.provider = (window as any).ethereum;
     this.web3Provider = new Web3(this.provider);
-    this.provider.on('accountsChanged', (accounts: string[]) => {
-      console.log('Web3Provider accountsChanged:', accounts);
-    });
-    this.provider.on('chainChanged', (chainId: number) => {
-      console.log('Web3Provider chainChanged:', chainId);
-    });
-    this.provider.on('disconnect', (code: number, reason: string) => {
-      console.log('Web3Provider disconnect:', code, reason);
-    });
+    this.wallet = (window as any).ethereum;
   }
+
+  public checkNetwork = async () => {
+    const { chainIds } = config;
+    const chainIdsByType = chainIds[config.IS_PRODUCTION ? 'mainnet' : 'testnet'];
+    const usedNet = chainIdsByType.Ethereum.id;
+    const netVersion = this.wallet.chainId;
+    const neededNetName = chainIdsByType.Ethereum.name;
+    console.log('MetamaskService checkNetwork:', usedNet, netVersion, neededNetName);
+    if (netVersion === usedNet) return { status: 'SUCCESS' };
+    return { status: 'ERROR', message: `Please, change network to ${neededNetName}` };
+  };
 
   public connect = async () => {
     return this.provider.request({ method: 'eth_requestAccounts' });

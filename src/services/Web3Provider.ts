@@ -1,26 +1,38 @@
 import WalletConnectProvider from '@walletconnect/web3-provider';
+import { isEqual } from 'lodash';
 // import BigNumber from 'bignumber.js';
 // import * as BigNumber from 'bignumber.js';
 import Web3 from 'web3';
 
+import config from '../config';
+
 export default class Web3Provider {
-  private provider: any;
+  public provider: any;
 
   public web3Provider: any;
 
   constructor() {
     this.provider = new WalletConnectProvider({
-      infuraId: 'd1bbf6a40e514be6878e06b2d01a7f41',
+      infuraId: config.keys.infura,
     });
-
     this.web3Provider = new Web3(this.provider);
 
     this.provider.on('accountsChanged', (accounts: string[]) => {
-      console.log('Web3Provider accountsChanged:', accounts);
+      const fromStorage = localStorage.getItem('accountsWalletConnect') || '{}';
+      console.log('Web3Provider accountsChanged:', accounts, JSON.parse(fromStorage).accounts);
+      if (!accounts || !isEqual(JSON.parse(fromStorage).accounts, accounts)) {
+        localStorage.setItem('accountsWalletConnect', JSON.stringify({ accounts }));
+        window.location.reload();
+      }
     });
 
     this.provider.on('chainChanged', (chainId: number) => {
-      console.log('Web3Provider chainChanged:', chainId);
+      const fromStorage = localStorage.getItem('chainIdWalletConnect') || '{}';
+      console.log('Web3Provider chainChanged:', chainId, JSON.parse(fromStorage).chainId);
+      if (!chainId || !isEqual(JSON.parse(fromStorage).chainId, chainId)) {
+        localStorage.setItem('chainIdWalletConnect', JSON.stringify({ chainId }));
+        window.location.reload();
+      }
     });
 
     this.provider.on('disconnect', (code: number, reason: string) => {

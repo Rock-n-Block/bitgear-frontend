@@ -14,6 +14,7 @@ import IconLogo from '../../assets/images/logo/HQ2.png';
 import config from '../../config';
 import { useWalletConnectorContext } from '../../contexts/WalletConnect';
 import { userActions } from '../../redux/actions';
+import { getFromStorage, setToStorage } from '../../utils/localStorage';
 import { Dropdown } from '../Dropdown';
 
 import s from './style.module.scss';
@@ -39,7 +40,9 @@ export const Header: React.FC = () => {
   };
 
   const handleDisconnect = () => {
-    web3Provider.disconnect();
+    setToStorage('walletType', '');
+    const walletType = getFromStorage('walletType');
+    if (walletType === 'walletConnect' && web3Provider) web3Provider.disconnect();
     setUserData({ address: undefined, balance: 0 });
   };
 
