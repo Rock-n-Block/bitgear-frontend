@@ -60,6 +60,7 @@ $fs: 16px;
     }
 
     &Btn {
+      @include flex(row, center);
       cursor: pointer;
       background-color: $color-text-link;
       padding: 10px;
@@ -189,4 +190,11 @@ $fs: 16px;
     border-radius: 4px;
     min-height: 100px;
   }
+}
+
+.headerWalletLogo {
+  width: 18px;
+  height: 18px;
+  margin: 0 10px 0 0;
+  filter: brightness(0.7);
 }

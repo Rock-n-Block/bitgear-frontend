@@ -11,6 +11,8 @@ import { ReactComponent as IconMedium } from '../../assets/icons/social/medium.s
 import { ReactComponent as IconTelegram } from '../../assets/icons/social/telegram.svg';
 import { ReactComponent as IconTwitter } from '../../assets/icons/social/twitter.svg';
 import IconLogo from '../../assets/images/logo/HQ2.png';
+import { ReactComponent as IconMetamask } from '../../assets/images/logo/metamask-logo.svg';
+import { ReactComponent as IconWalletConnect } from '../../assets/images/logo/wallet-connect-logo.svg';
 import config from '../../config';
 import { useWalletConnectorContext } from '../../contexts/WalletConnect';
 import { userActions } from '../../redux/actions';
@@ -35,13 +37,16 @@ export const Header: React.FC = () => {
   const [openDropdown, setOpenDropdown] = React.useState<boolean>(false);
   const [isAddressCopied, setIsAddressCopied] = React.useState<boolean>(false);
 
+  const walletType = getFromStorage('walletType');
+  const isMetamask = walletType === 'metamask';
+  const isWalletConnect = walletType === 'walletConnect';
+
   const handleOpenDropdown = () => {
     setOpenDropdown(!openDropdown);
   };
 
   const handleDisconnect = () => {
     setToStorage('walletType', '');
-    const walletType = getFromStorage('walletType');
     if (walletType === 'walletConnect' && web3Provider) web3Provider.disconnect();
     setUserData({ address: undefined, balance: 0 });
   };
@@ -55,6 +60,8 @@ export const Header: React.FC = () => {
       tabIndex={0}
       onKeyDown={() => {}}
     >
+      {isMetamask && <IconMetamask className={s.headerWalletLogo} />}
+      {isWalletConnect && <IconWalletConnect className={s.headerWalletLogo} />}
       {`${userAddress?.slice(0, 12)}...`}
     </div>
   );
