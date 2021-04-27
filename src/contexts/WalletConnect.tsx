@@ -1,7 +1,7 @@
 import React, { createContext, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { userActions } from '../redux/actions';
+import { modalActions, userActions } from '../redux/actions';
 import MetamaskProvider from '../services/Metamask';
 import Web3Provider from '../services/Web3Provider';
 import { getFromStorage, setToStorage } from '../utils/localStorage';
@@ -10,12 +10,12 @@ const walletConnectorContext = createContext<any>({
   web3Provider: {},
 });
 
-// type TypeModalParams = {
-//   open: boolean;
-//   text?: string | React.ReactElement;
-//   header?: string | React.ReactElement;
-//   delay?: number;
-// };
+type TypeModalParams = {
+  open: boolean;
+  text?: string | React.ReactElement;
+  header?: string | React.ReactElement;
+  delay?: number;
+};
 
 const Connector: React.FC = ({ children }) => {
   const [web3Provider, setWeb3Provider] = React.useState<any>(null);
@@ -28,10 +28,10 @@ const Connector: React.FC = ({ children }) => {
   const setUserData = React.useCallback((props: any) => dispatch(userActions.setUserData(props)), [
     dispatch,
   ]);
-  // const toggleModal = React.useCallback(
-  //   (props: TypeModalParams) => dispatch(modalActions.toggleModal(props)),
-  //   [dispatch],
-  // );
+  const toggleModal = React.useCallback(
+    (props: TypeModalParams) => dispatch(modalActions.toggleModal(props)),
+    [dispatch],
+  );
   // const walletInit = React.useCallback(() => dispatch(walletActions.walletInit()), [dispatch]);
 
   const login = React.useCallback(
@@ -41,10 +41,10 @@ const Connector: React.FC = ({ children }) => {
         const addresses = await web3.connect();
         console.log('login addresses:', addresses);
         const balance = await web3.getBalance(addresses[0]);
-        // const resultCheckNetwork = await web3.checkNetwork();
-        // if (resultCheckNetwork.status === 'ERROR') {
-        //   toggleModal({ open: true, text: resultCheckNetwork.message });
-        // }
+        const resultCheckNetwork = await web3.checkNetwork();
+        if (resultCheckNetwork.status === 'ERROR') {
+          toggleModal({ open: true, text: resultCheckNetwork.message });
+        }
         console.log('login balance:', balance);
         setUserData({ address: addresses[0], balance });
       } catch (e) {
@@ -54,7 +54,7 @@ const Connector: React.FC = ({ children }) => {
         window.location.reload();
       }
     },
-    [setUserData],
+    [setUserData, toggleModal],
   );
 
   const init: any = React.useCallback(() => {

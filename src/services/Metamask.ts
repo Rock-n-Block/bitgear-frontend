@@ -9,22 +9,19 @@ export default class MetamaskService {
 
   public web3Provider: any;
 
-  public wallet: any;
-
   constructor() {
     this.provider = (window as any).ethereum;
     this.web3Provider = new Web3(this.provider);
-    this.wallet = (window as any).ethereum;
   }
 
   public checkNetwork = async () => {
     const { chainIds } = config;
     const chainIdsByType = chainIds[config.IS_PRODUCTION ? 'mainnet' : 'testnet'];
     const usedNet = chainIdsByType.Ethereum.id;
-    const netVersion = this.wallet.chainId;
+    const netVersion = this.provider.chainId;
     const neededNetName = chainIdsByType.Ethereum.name;
     console.log('MetamaskService checkNetwork:', usedNet, netVersion, neededNetName);
-    if (netVersion === usedNet) return { status: 'SUCCESS' };
+    if (usedNet.includes(netVersion)) return { status: 'SUCCESS' };
     return { status: 'ERROR', message: `Please, change network to ${neededNetName}` };
   };
 

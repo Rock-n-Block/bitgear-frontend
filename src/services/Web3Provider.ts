@@ -40,6 +40,21 @@ export default class Web3Provider {
     });
   }
 
+  public checkNetwork = async () => {
+    const { chainIds } = config;
+    const chainIdsByType = chainIds[config.IS_PRODUCTION ? 'mainnet' : 'testnet'];
+    const usedNet = chainIdsByType.Ethereum.id;
+    const netVersion =
+      (await this.provider.request({ method: 'eth_chainId' })) || this.provider.chainId;
+    const neededNetName = chainIdsByType.Ethereum.name;
+    console.log('Web3Provider checkNetwork:', usedNet, netVersion, neededNetName);
+    if (usedNet.includes(netVersion)) return { status: 'SUCCESS' };
+    return {
+      status: 'ERROR',
+      message: `Please, change network to ${neededNetName} in your WalletConnect wallet`,
+    };
+  };
+
   public connect = async () => {
     console.log('Web3Provider connect:', this.provider);
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
