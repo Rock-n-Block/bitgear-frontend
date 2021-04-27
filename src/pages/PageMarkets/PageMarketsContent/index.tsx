@@ -449,34 +449,38 @@ export const PageMarketsContent: React.FC = () => {
     [toggleModal],
   );
 
+  const tradeLimit = React.useCallback(async () => {
+    try {
+      const { address: addressPay }: { address: string } = getTokenBySymbol(symbolPay);
+      const { address: addressReceive }: { address: string } = getTokenBySymbol(symbolReceive);
+      const props = {
+        provider: web3Provider,
+        chainId: 42, // todo
+        userAddress,
+        addressPay,
+        addressReceive,
+        amountPay: String(amountPay),
+        amountReceive: String(amountReceive),
+      };
+      const result = await Zx.signOrder(props);
+      console.log('tradeLimit', result);
+      setWaiting(false);
+    } catch (e) {
+      console.error(e);
+      setWaiting(false);
+    }
+  }, [
+    getTokenBySymbol,
+    symbolPay,
+    symbolReceive,
+    web3Provider,
+    amountPay,
+    amountReceive,
+    userAddress,
+  ]);
+
   const trade = React.useCallback(async () => {
     try {
-      setWaiting(true);
-      if (!userAddress) {
-        setWaiting(false);
-        return toggleModal({
-          open: true,
-          text: (
-            <div>
-              <p>Please, connect wallet</p>
-              <Button
-                secondary
-                onClick={handleWalletConnectLogin}
-                classNameCustom={s.containerTradingModalButton}
-              >
-                WalletConnect
-              </Button>
-              <Button
-                secondary
-                onClick={handleMetamaskLogin}
-                classNameCustom={s.containerTradingModalButton}
-              >
-                Metamask
-              </Button>
-            </div>
-          ),
-        });
-      }
       const { decimals } = getTokenBySymbol(symbolPay);
       const props = {
         buyToken: symbolReceive,
@@ -522,8 +526,6 @@ export const PageMarketsContent: React.FC = () => {
       return null;
     }
   }, [
-    handleWalletConnectLogin,
-    handleMetamaskLogin,
     symbolPay,
     symbolReceive,
     amountPay,
@@ -535,6 +537,47 @@ export const PageMarketsContent: React.FC = () => {
     getBalanceOfTokensReceive,
     getTokenBySymbol,
   ]);
+
+  const handleTrade = () => {
+    try {
+      setWaiting(true);
+      if (!userAddress) {
+        setWaiting(false);
+        return toggleModal({
+          open: true,
+          text: (
+            <div>
+              <p>Please, connect wallet</p>
+              <Button
+                secondary
+                onClick={handleWalletConnectLogin}
+                classNameCustom={s.containerTradingModalButton}
+              >
+                WalletConnect
+              </Button>
+              <Button
+                secondary
+                onClick={handleMetamaskLogin}
+                classNameCustom={s.containerTradingModalButton}
+              >
+                Metamask
+              </Button>
+            </div>
+          ),
+        });
+      }
+      if (mode === 'market') {
+        trade();
+      } else {
+        tradeLimit();
+      }
+      return null;
+    } catch (e) {
+      console.error(e);
+      setWaiting(false);
+      return null;
+    }
+  };
 
   const handleSelectSymbolPay = async (symbol: string) => {
     console.log('handleSelectSymbolPay:', symbol);
@@ -1000,7 +1043,7 @@ export const PageMarketsContent: React.FC = () => {
           </div>
         </div>
         <div className={s.containerTradingButton}>
-          <Button onClick={trade}>
+          <Button onClick={handleTrade}>
             {!userAddress ? 'Connect wallet' : waiting ? 'Waiting...' : 'Trade'}
           </Button>
         </div>
