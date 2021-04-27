@@ -123,7 +123,7 @@ export const PageMarketsContent: React.FC = () => {
   const [openDropdownReceive, setOpenDropdownReceive] = React.useState<boolean>(false);
   const [openSelect, setOpenSelect] = React.useState<boolean>(false);
   const [openSettings, setOpenSettings] = React.useState<boolean>(false);
-  const [mode, setMode] = React.useState<string>('market');
+  const [mode, setMode] = React.useState<string>('limit');
   const [searchTokensResultPay, setSearchTokensResultPay] = React.useState<TypeToken[]>(tokens);
   const [tokensReceive, setTokensReceive] = React.useState<TypeToken[]>([]);
   const [searchTokensResultReceive, setSearchTokensResultReceive] = React.useState<TypeToken[]>(
@@ -137,6 +137,7 @@ export const PageMarketsContent: React.FC = () => {
   const [waiting, setWaiting] = React.useState<boolean>(false);
   const [balanceOfTokenPay, setBalanceOfTokenPay] = React.useState<number>(0);
   const [balanceOfTokenReceive, setBalanceOfTokenReceive] = React.useState<number>(0);
+  const [expiration, setExpiration] = React.useState<number>(0);
 
   const data: TypeToken = {
     symbol: 'ETH',
@@ -453,6 +454,7 @@ export const PageMarketsContent: React.FC = () => {
     try {
       const { address: addressPay }: { address: string } = getTokenBySymbol(symbolPay);
       const { address: addressReceive }: { address: string } = getTokenBySymbol(symbolReceive);
+      const newExpiration = new Date().getTime() + expiration * 60 * 1000;
       const props = {
         provider: web3Provider,
         chainId: 42, // todo
@@ -461,6 +463,7 @@ export const PageMarketsContent: React.FC = () => {
         addressReceive,
         amountPay: String(amountPay),
         amountReceive: String(amountReceive),
+        expiration: newExpiration,
       };
       const result = await Zx.signOrder(props);
       console.log('tradeLimit', result);
@@ -477,6 +480,7 @@ export const PageMarketsContent: React.FC = () => {
     amountPay,
     amountReceive,
     userAddress,
+    expiration,
   ]);
 
   const trade = React.useCallback(async () => {
@@ -598,6 +602,11 @@ export const PageMarketsContent: React.FC = () => {
     setSymbolReceive(symbol);
     setOpenDropdownReceive(false);
     history.push(`/markets/${symbolPay}/${symbol}`);
+  };
+
+  const handleSelectExpiration = (minutes: number) => {
+    setExpiration(minutes);
+    setOpenSelect(false);
   };
 
   const switchPayAndReceive = () => {
@@ -727,6 +736,20 @@ export const PageMarketsContent: React.FC = () => {
       onClick={handleOpenSelect}
     >
       <div>1%</div>
+      <IconArrowDownWhite />
+    </div>
+  );
+
+  const SelectLabelExpiration = (
+    <div
+      ref={refSelectLabel}
+      className={s.containerSettingsSelectLabel}
+      role="button"
+      tabIndex={0}
+      onKeyDown={() => {}}
+      onClick={handleOpenSelect}
+    >
+      <div>{expiration} min</div>
       <IconArrowDownWhite />
     </div>
   );
@@ -987,10 +1010,24 @@ export const PageMarketsContent: React.FC = () => {
                 <div className={s.containerTradingCardLimitLabel}>
                   <div>Expires in</div>
                 </div>
-                <Select open={openSelect} label={SelectLabel}>
+                <Select open={openSelect} label={SelectLabelExpiration}>
                   <div ref={refSelect} className={s.containerSettingsSelectItems}>
-                    <div>30min</div>
-                    <div>60min</div>
+                    <div
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => handleSelectExpiration(30)}
+                      onKeyDown={() => {}}
+                    >
+                      30min
+                    </div>
+                    <div
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => handleSelectExpiration(60)}
+                      onKeyDown={() => {}}
+                    >
+                      1hour
+                    </div>
                   </div>
                 </Select>
               </div>

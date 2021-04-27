@@ -32,6 +32,7 @@ type TypeSignOrderProps = {
   addressReceive: string;
   amountPay: string;
   amountReceive: string;
+  expiration: number;
 };
 
 export class Service0x {
@@ -125,18 +126,23 @@ export class Service0x {
     amountReceive,
     addressPay: makerToken,
     addressReceive: takerToken,
+    expiration: expires,
   }: TypeSignOrderProps) => {
     try {
       console.log('Service0x signOrder provider:', {
         provider,
+        chainId,
         maker,
         makerToken,
         takerToken,
         amountPay,
         amountReceive,
+        expires,
       });
       const makerAmount = new BigNumber(amountPay);
       const takerAmount = new BigNumber(amountReceive);
+      const expiry = new BigNumber(expires);
+      const salt = new BigNumber(Math.round(Math.random() * 10));
       const order = new utils.LimitOrder({
         chainId,
         maker,
@@ -144,8 +150,8 @@ export class Service0x {
         takerToken, // symbolTwo address
         makerAmount,
         takerAmount,
-        // expiry, // todo
-        // salt, // todo
+        expiry,
+        salt,
       });
       console.log('Service0x signOrder order:', order);
       const signature = await order.getSignatureWithProviderAsync(
