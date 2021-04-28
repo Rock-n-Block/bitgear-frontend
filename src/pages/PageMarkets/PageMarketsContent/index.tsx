@@ -17,7 +17,7 @@ import { Service0x } from '../../../services/0x';
 import { CryptoCompareService } from '../../../services/CryptoCompareService';
 import { EtherscanService } from '../../../services/Etherscan';
 import { getFromStorage, setToStorage } from '../../../utils/localStorage';
-import { prettyAmount, prettyPrice } from '../../../utils/prettifiers';
+import { prettyAmount, prettyExpiration, prettyPrice } from '../../../utils/prettifiers';
 
 import s from './style.module.scss';
 
@@ -137,7 +137,7 @@ export const PageMarketsContent: React.FC = () => {
   const [waiting, setWaiting] = React.useState<boolean>(false);
   const [balanceOfTokenPay, setBalanceOfTokenPay] = React.useState<number>(0);
   const [balanceOfTokenReceive, setBalanceOfTokenReceive] = React.useState<number>(0);
-  const [expiration, setExpiration] = React.useState<number>(0);
+  const [expiration, setExpiration] = React.useState<number>(60);
 
   const data: TypeToken = {
     symbol: 'ETH',
@@ -749,7 +749,7 @@ export const PageMarketsContent: React.FC = () => {
       onKeyDown={() => {}}
       onClick={handleOpenSelect}
     >
-      <div>{expiration} min</div>
+      <div>{prettyExpiration(expiration)}</div>
       <IconArrowDownWhite />
     </div>
   );
@@ -996,7 +996,7 @@ export const PageMarketsContent: React.FC = () => {
             <div className={s.containerTradingCardLimit}>
               <div className={s.containerTradingCardLimitInner}>
                 <div className={s.containerTradingCardLimitLabel}>
-                  <div>ETH Price</div>
+                  <div>Limit Price</div>
                 </div>
                 <div className={s.containerTradingCardLimitInput}>
                   {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
@@ -1015,10 +1015,18 @@ export const PageMarketsContent: React.FC = () => {
                     <div
                       role="button"
                       tabIndex={0}
+                      onClick={() => handleSelectExpiration(10)}
+                      onKeyDown={() => {}}
+                    >
+                      10 min
+                    </div>
+                    <div
+                      role="button"
+                      tabIndex={0}
                       onClick={() => handleSelectExpiration(30)}
                       onKeyDown={() => {}}
                     >
-                      30min
+                      30 min
                     </div>
                     <div
                       role="button"
@@ -1026,7 +1034,31 @@ export const PageMarketsContent: React.FC = () => {
                       onClick={() => handleSelectExpiration(60)}
                       onKeyDown={() => {}}
                     >
-                      1hour
+                      1 hour
+                    </div>
+                    <div
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => handleSelectExpiration(24 * 60)}
+                      onKeyDown={() => {}}
+                    >
+                      24 hours
+                    </div>
+                    <div
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => handleSelectExpiration(3 * 24 * 60)}
+                      onKeyDown={() => {}}
+                    >
+                      3 days
+                    </div>
+                    <div
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => handleSelectExpiration(7 * 24 * 60)}
+                      onKeyDown={() => {}}
+                    >
+                      7 days
                     </div>
                   </div>
                 </Select>

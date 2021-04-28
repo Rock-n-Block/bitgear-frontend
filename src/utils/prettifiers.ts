@@ -16,3 +16,25 @@ export const prettyPrice = (value: string) => {
   if (parts[1]) parts[1] = parts[1].slice(0, sliceLength);
   return parts.join('.');
 };
+
+export const prettyExpiration = (expiration: number) => {
+  let time = expiration;
+  let period = 'min';
+  if (expiration >= 60) {
+    time = expiration / 60;
+    period = 'hour';
+  }
+  if (expiration >= 2 * 60) {
+    time = expiration / 60;
+    period = 'hours';
+  }
+  if (expiration > 24 * 60) {
+    time = expiration / (24 * 60);
+    period = 'day';
+  }
+  if (expiration >= 2 * 24 * 60) {
+    time = expiration / (24 * 60);
+    period = 'days';
+  }
+  return `${time} ${period}`;
+};
