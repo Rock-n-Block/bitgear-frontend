@@ -222,10 +222,20 @@ export const PageMarketsContent: React.FC = () => {
       const { value } = event.target;
       setAmountReceive(prettyAmount(value));
       const pricePay = await getPricePay(value);
-      const newAmountPay = value / pricePay;
+      let newAmountPay = value / pricePay;
+      if (pricePay === 0) newAmountPay = 0;
       setAmountPay(newAmountPay);
     } catch (e) {
       console.error('handleChangeAmountReceive:', e);
+    }
+  };
+
+  const handleChangeAmountReceiveLimit = async (event: any) => {
+    try {
+      const { value } = event.target;
+      setAmountReceive(prettyAmount(value));
+    } catch (e) {
+      console.error('handleChangeAmountReceiveLimit:', e);
     }
   };
 
@@ -960,6 +970,7 @@ export const PageMarketsContent: React.FC = () => {
         </section>
       )}
 
+      {/* You Pay */}
       <section className={s.containerTrading}>
         <div className={s.containerTradingCard}>
           <div className={s.containerTradingCardLabel}>You Pay</div>
@@ -996,14 +1007,19 @@ export const PageMarketsContent: React.FC = () => {
             <div className={s.containerTradingCardLimit}>
               <div className={s.containerTradingCardLimitInner}>
                 <div className={s.containerTradingCardLimitLabel}>
-                  <div>Limit Price</div>
+                  <div>{symbolPay} Price</div>
                 </div>
                 <div className={s.containerTradingCardLimitInput}>
                   {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
                   <label htmlFor="inputPay">
-                    <div>USD</div>
+                    <div>{symbolReceive}</div>
                   </label>
-                  <input id="inputPay" type="number" />
+                  <input
+                    id="inputPay"
+                    type="number"
+                    value={amountReceive}
+                    onChange={handleChangeAmountReceiveLimit}
+                  />
                 </div>
               </div>
               <div className={s.containerTradingCardLimitInner}>
@@ -1079,6 +1095,7 @@ export const PageMarketsContent: React.FC = () => {
           </div>
         </div>
 
+        {/* You Receive */}
         <div className={cns(s.containerTradingCard, s.containerTradingCardLimitOpen)}>
           <div className={s.containerTradingCardLabel}>You Receive</div>
           <div className={s.containerTradingCardInner}>
