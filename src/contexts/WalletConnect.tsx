@@ -1,7 +1,7 @@
 import React, { createContext, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { modalActions, userActions } from '../redux/actions';
+import { modalActions, userActions, walletActions } from '../redux/actions';
 import MetamaskProvider from '../services/Metamask';
 import Web3Provider from '../services/Web3Provider';
 import { getFromStorage, setToStorage } from '../utils/localStorage';
@@ -32,6 +32,10 @@ const Connector: React.FC = ({ children }) => {
     (props: TypeModalParams) => dispatch(modalActions.toggleModal(props)),
     [dispatch],
   );
+  const setChainId = React.useCallback(
+    (props: string) => dispatch(walletActions.setChainId(props)),
+    [dispatch],
+  );
   // const walletInit = React.useCallback(() => dispatch(walletActions.walletInit()), [dispatch]);
 
   const login = React.useCallback(
@@ -44,6 +48,9 @@ const Connector: React.FC = ({ children }) => {
         const resultCheckNetwork = await web3.checkNetwork();
         if (resultCheckNetwork.status === 'ERROR') {
           toggleModal({ open: true, text: resultCheckNetwork.message });
+        } else {
+          console.log('login chainId:', resultCheckNetwork.data);
+          setChainId(resultCheckNetwork.data);
         }
         console.log('login balance:', balance);
         setUserData({ address: addresses[0], balance });
@@ -54,7 +61,7 @@ const Connector: React.FC = ({ children }) => {
         window.location.reload();
       }
     },
-    [setUserData, toggleModal],
+    [setUserData, toggleModal, setChainId],
   );
 
   const init: any = React.useCallback(() => {

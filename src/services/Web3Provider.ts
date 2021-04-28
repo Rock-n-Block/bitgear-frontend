@@ -48,7 +48,7 @@ export default class Web3Provider {
       (await this.provider.request({ method: 'eth_chainId' })) || this.provider.chainId;
     const neededNetName = chainIdsByType.Ethereum.name;
     console.log('Web3Provider checkNetwork:', usedNet, netVersion, neededNetName);
-    if (usedNet.includes(netVersion)) return { status: 'SUCCESS' };
+    if (usedNet.includes(netVersion)) return { status: 'SUCCESS', data: netVersion };
     return {
       status: 'ERROR',
       message: `Please, change network to ${neededNetName} in your WalletConnect wallet`,

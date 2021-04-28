@@ -102,6 +102,7 @@ export const PageMarketsContent: React.FC = () => {
 
   const { address: userAddress } = useSelector(({ user }: any) => user);
   const { tokens } = useSelector(({ zx }: any) => zx);
+  const { chainId } = useSelector(({ wallet }: any) => wallet);
 
   const { symbolOne, symbolTwo } = useParams<TypeUseParams>();
 
@@ -467,7 +468,7 @@ export const PageMarketsContent: React.FC = () => {
       const newExpiration = new Date().getTime() + expiration * 60 * 1000;
       const props = {
         provider: web3Provider,
-        chainId: 42, // todo
+        chainId,
         userAddress,
         addressPay,
         addressReceive,
@@ -491,6 +492,7 @@ export const PageMarketsContent: React.FC = () => {
     amountReceive,
     userAddress,
     expiration,
+    chainId,
   ]);
 
   const trade = React.useCallback(async () => {
