@@ -35,6 +35,23 @@ type TypeSignOrderProps = {
   expiration: number;
 };
 
+type TypeSendOrderProps = {
+  chainId: number;
+  expiry: string;
+  feeRecipient: string;
+  maker: string;
+  makerAmount: string;
+  makerToken: string;
+  pool: string;
+  salt: string;
+  sender: string;
+  taker: string;
+  takerAmount: string;
+  takerToken: string;
+  takerTokenFeeAmount: string;
+  verifyingContract: string;
+};
+
 export class Service0x {
   private axios: any;
 
@@ -142,7 +159,15 @@ export class Service0x {
       const makerAmount = new BigNumber(amountPay);
       const takerAmount = new BigNumber(amountReceive);
       const expiry = new BigNumber(expires);
-      const salt = new BigNumber(Math.round(Math.random() * 10));
+      const array = new Uint32Array(4);
+      let saltString: string;
+      if ((window as any).crypto && (window as any).crypto.getRandomValues) {
+        saltString = (window as any).crypto.getRandomValues(array).join('');
+      } else {
+        saltString = `${Math.random() * 10000000000000}${Math.random() * 10000000000000}`;
+      }
+      console.log('Service0x signOrder saltString:', saltString);
+      const salt = new BigNumber(saltString);
       const order = new utils.LimitOrder({
         chainId,
         maker,
@@ -161,6 +186,21 @@ export class Service0x {
       return { status: 'SUCCESS', data: signature };
     } catch (e) {
       return { status: 'ERROR', data: undefined, error: e };
+    }
+  };
+
+  sendOrder = async (props: TypeSendOrderProps) => {
+    try {
+      const url = `/sra/v4/order?${qs.stringify(props)}`;
+      const result = await this.axios.post(url, props);
+      // console.log('Service0x getQuote:', result);
+      return {
+        status: 'SUCCESS',
+        data: result.data,
+      };
+    } catch (e) {
+      // console.error(e);
+      return { status: 'ERROR', data: undefined, error: e.response.data };
     }
   };
 }
