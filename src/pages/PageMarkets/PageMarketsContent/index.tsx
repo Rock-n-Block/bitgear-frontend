@@ -463,8 +463,10 @@ export const PageMarketsContent: React.FC = () => {
 
   const tradeLimit = React.useCallback(async () => {
     try {
-      const { address: addressPay }: { address: string } = getTokenBySymbol(symbolPay);
-      const { address: addressReceive }: { address: string } = getTokenBySymbol(symbolReceive);
+      const { address: addressPay, decimals: decimalsPay }: any = getTokenBySymbol(symbolPay);
+      const { address: addressReceive, decimals: decimalsReceive }: any = getTokenBySymbol(
+        symbolReceive,
+      );
       const newExpiration = new Date().getTime() + expiration * 60 * 1000;
       const props = {
         provider: web3Provider,
@@ -472,16 +474,41 @@ export const PageMarketsContent: React.FC = () => {
         userAddress,
         addressPay,
         addressReceive,
+        decimalsPay,
+        decimalsReceive,
         amountPay: String(amountPay),
         amountReceive: String(amountReceive),
         expiration: newExpiration,
       };
-      const result = await Zx.signOrder(props);
-      console.log('tradeLimit', result);
+      const resultSignOrder = await Zx.signOrder(props);
+      console.log('tradeLimit resultSignOrder:', resultSignOrder);
+      if (resultSignOrder.status === 'ERROR') {
+        setWaiting(false);
+        toggleModal({
+          open: true,
+          text: `Order was not signed`,
+        });
+        return null;
+      }
+      const order: any = resultSignOrder.data;
+      console.log('tradeLimit order:', order);
+      const resultSendOrder = await Zx.sendOrder(order);
+      if (resultSendOrder.status === 'ERROR') {
+        console.error('tradeLimit sendOrder:', resultSendOrder.error);
+        setWaiting(false);
+        toggleModal({
+          open: true,
+          text: `Order was not sent`,
+        });
+        return null;
+      }
+      console.log('tradeLimit resultSendOrder:', resultSendOrder);
       setWaiting(false);
+      return null;
     } catch (e) {
       console.error(e);
       setWaiting(false);
+      return null;
     }
   }, [
     getTokenBySymbol,
@@ -493,6 +520,7 @@ export const PageMarketsContent: React.FC = () => {
     userAddress,
     expiration,
     chainId,
+    toggleModal,
   ]);
 
   const trade = React.useCallback(async () => {
@@ -512,9 +540,6 @@ export const PageMarketsContent: React.FC = () => {
       const { estimatedGas } = result.data;
       const newEstimatedGas = +estimatedGas * 2;
       result.data.gas = String(newEstimatedGas);
-      // const contractAddressPay = getTokenBySymbol(symbolPay).address;
-      // console.log('trade contractAddressPay:', contractAddressPay);
-      // result.data.contractAddress = contractAddressPay;
       const resultGetAbi = await Etherscan.getAbi(result.data.sellTokenAddress);
       if (resultGetAbi.status === 'ERROR') {
         setWaiting(false);
@@ -527,7 +552,6 @@ export const PageMarketsContent: React.FC = () => {
       const resultApprove = await web3Provider.approve({
         data: result.data,
         contractAbi,
-        // contractAddress: contractAddressPay,
       });
       console.log('trade resultApprove:', resultApprove);
       const resultSendTx = await web3Provider.sendTx(result.data);

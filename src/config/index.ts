@@ -42,6 +42,16 @@ export default {
         // first id should be a number 42. other ids cause error in tradeLimit function.
         id: [42, '0x2a'],
       },
+      // 'Ethereum': {
+      //   name: 'Ropsten testnet',
+      //   // first id should be a number 3. other ids cause error in tradeLimit function.
+      //   id: [3, '0x3'],
+      // },
+      // 'Ethereum': {
+      //   name: 'Rinkeby testnet',
+      //   // first id should be a number 4. other ids cause error in tradeLimit function.
+      //   id: [4, '0x4'],
+      // },
       'Binance-Smart-Chain': {
         name: 'Binance smart chain testnet',
         id: [97, '0x61'],

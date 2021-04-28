@@ -51,7 +51,7 @@ export default class Web3Provider {
     if (usedNet.includes(netVersion)) return { status: 'SUCCESS', data: netVersion };
     return {
       status: 'ERROR',
-      message: `Please, change network to ${neededNetName} in your WalletConnect wallet`,
+      message: `Please, change network to ${neededNetName} in your WalletConnect wallet. Current chainId: ${netVersion}`,
     };
   };
 

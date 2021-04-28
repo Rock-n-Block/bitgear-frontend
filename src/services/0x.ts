@@ -30,6 +30,8 @@ type TypeSignOrderProps = {
   userAddress: string;
   addressPay: string;
   addressReceive: string;
+  decimalsPay: number;
+  decimalsReceive: number;
   amountPay: string;
   amountReceive: string;
   expiration: number;
@@ -141,6 +143,8 @@ export class Service0x {
     userAddress: maker,
     amountPay,
     amountReceive,
+    decimalsPay,
+    decimalsReceive,
     addressPay: makerToken,
     addressReceive: takerToken,
     expiration: expires,
@@ -156,19 +160,18 @@ export class Service0x {
         amountReceive,
         expires,
       });
-      const makerAmount = new BigNumber(amountPay);
-      const takerAmount = new BigNumber(amountReceive);
+      const makerAmount = new BigNumber(amountPay).multipliedBy(10 ** decimalsPay); // todo decimals
+      const takerAmount = new BigNumber(amountReceive).multipliedBy(10 ** decimalsReceive); // todo decimals
       const expiry = new BigNumber(expires);
-      const array = new Uint32Array(4);
-      let saltString: string;
-      if ((window as any).crypto && (window as any).crypto.getRandomValues) {
-        saltString = (window as any).crypto.getRandomValues(array).join('');
-      } else {
-        saltString = `${Math.random() * 10000000000000}${Math.random() * 10000000000000}`;
-      }
-      console.log('Service0x signOrder saltString:', saltString);
-      const salt = new BigNumber(saltString);
-      const order = new utils.LimitOrder({
+      // const array = new Uint32Array(4);
+      // let saltString: string;
+      // if ((window as any).crypto && (window as any).crypto.getRandomValues) {
+      //   saltString = (window as any).crypto.getRandomValues(array).join('');
+      // } else {
+      //   saltString = `${Math.random() * 10000000000000000}${Math.random() * 10000000000000000}`;
+      // }
+      const salt = new BigNumber(Math.random() * 100000000000000000); // todo
+      const order: any = new utils.LimitOrder({
         chainId,
         maker,
         makerToken, // symbolOne address
@@ -183,17 +186,54 @@ export class Service0x {
         provider.provider,
         utils.SignatureType.EIP712,
       );
-      return { status: 'SUCCESS', data: signature };
+      // chainId: 42
+      // expiry: BigNumber {s: 1, e: 12, c: Array(1)}
+      // feeRecipient: "0x0000000000000000000000000000000000000000"
+      // maker: "0x9641494bfb611b7348c10ee7f57805cf4aca0e09"
+      // makerAmount: BigNumber {s: 1, e: 0, c: Array(1)}
+      // makerToken: "0xd0a1e359811322d97991e03f863a0c30c2cf029c"
+      // pool: "0x0000000000000000000000000000000000000000000000000000000000000000"
+      // salt: BigNumber {s: 1, e: 38, c: Array(3)}
+      // sender: "0x0000000000000000000000000000000000000000"
+      // signature: {r: "0x039247fc00c055211244856b3ef82a75501d0ecdabc147587b06640751b05d6e", s: "0x2553125be79ba015facefb46c5d5eb60f120fe17e874aeef3c1742b9bab37498", v: 28, signatureType: 2}
+      // taker: "0x0000000000000000000000000000000000000000"
+      // takerAmount: BigNumber {s: 1, e: 2, c: Array(2)}
+      // takerToken: "0x4f96fe3b7a6cf9725f59d353f723c1bdb64ca6aa"
+      // takerTokenFeeAmount: BigNumber {s: 1, e: 0, c: Array(1)}
+      // verifyingContract: "0xdef1c0ded9bec7f1a1670819833240f027b25eff"
+
+      // то чего не хватает для v3
+      // "field": "senderAddress",
+      // "field": "makerAddress",
+      // "field": "takerAddress",
+      // "field": "makerFee",
+      // "field": "takerFee",
+      // "field": "makerAssetAmount",
+      // "field": "makerAssetData",
+      // "field": "takerAssetData",
+      // "field": "exchangeAddress",
+      // "field": "feeRecipientAddress",
+      // "field": "expirationTimeSeconds",
+      // "field": "makerFeeAssetData",
+      // "field": "takerFeeAssetData",
+      order.signature = signature;
+      order.expiry = order.expiry.toString();
+      order.salt = order.salt.toString();
+      order.makerAmount = order.makerAmount.toString();
+      order.takerAmount = order.takerAmount.toString();
+      order.takerTokenFeeAmount = order.takerTokenFeeAmount.toString();
+      return { status: 'SUCCESS', data: order };
     } catch (e) {
-      return { status: 'ERROR', data: undefined, error: e };
+      return { status: 'ERROR', data: undefined, error: e.response.data };
     }
   };
 
   sendOrder = async (props: TypeSendOrderProps) => {
     try {
-      const url = `/sra/v4/order?${qs.stringify(props)}`;
+      // const url = `https://api.0x.org/sra/v4/order`;
+      const url = `/sra/v4/order`;
       const result = await this.axios.post(url, props);
-      // console.log('Service0x getQuote:', result);
+      // console.log('Service0x sendOrder:', result);
       return {
         status: 'SUCCESS',
         data: result.data,
