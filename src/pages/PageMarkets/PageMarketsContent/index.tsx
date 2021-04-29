@@ -17,7 +17,7 @@ import { Service0x } from '../../../services/0x';
 import { CryptoCompareService } from '../../../services/CryptoCompareService';
 import { EtherscanService } from '../../../services/Etherscan';
 import { getFromStorage, setToStorage } from '../../../utils/localStorage';
-import { prettyAmount, prettyPrice } from '../../../utils/prettifiers';
+import { prettyAmount, prettyExpiration, prettyPrice } from '../../../utils/prettifiers';
 
 import s from './style.module.scss';
 
@@ -102,6 +102,7 @@ export const PageMarketsContent: React.FC = () => {
 
   const { address: userAddress } = useSelector(({ user }: any) => user);
   const { tokens } = useSelector(({ zx }: any) => zx);
+  const { chainId } = useSelector(({ wallet }: any) => wallet);
 
   const { symbolOne, symbolTwo } = useParams<TypeUseParams>();
 
@@ -137,7 +138,7 @@ export const PageMarketsContent: React.FC = () => {
   const [waiting, setWaiting] = React.useState<boolean>(false);
   const [balanceOfTokenPay, setBalanceOfTokenPay] = React.useState<number>(0);
   const [balanceOfTokenReceive, setBalanceOfTokenReceive] = React.useState<number>(0);
-  const [expiration, setExpiration] = React.useState<number>(0);
+  const [expiration, setExpiration] = React.useState<number>(60);
 
   const data: TypeToken = {
     symbol: 'ETH',
@@ -222,10 +223,20 @@ export const PageMarketsContent: React.FC = () => {
       const { value } = event.target;
       setAmountReceive(prettyAmount(value));
       const pricePay = await getPricePay(value);
-      const newAmountPay = value / pricePay;
+      let newAmountPay = value / pricePay;
+      if (pricePay === 0) newAmountPay = 0;
       setAmountPay(newAmountPay);
     } catch (e) {
       console.error('handleChangeAmountReceive:', e);
+    }
+  };
+
+  const handleChangeAmountReceiveLimit = async (event: any) => {
+    try {
+      const { value } = event.target;
+      setAmountReceive(prettyAmount(value));
+    } catch (e) {
+      console.error('handleChangeAmountReceiveLimit:', e);
     }
   };
 
@@ -452,25 +463,52 @@ export const PageMarketsContent: React.FC = () => {
 
   const tradeLimit = React.useCallback(async () => {
     try {
-      const { address: addressPay }: { address: string } = getTokenBySymbol(symbolPay);
-      const { address: addressReceive }: { address: string } = getTokenBySymbol(symbolReceive);
+      const { address: addressPay, decimals: decimalsPay }: any = getTokenBySymbol(symbolPay);
+      const { address: addressReceive, decimals: decimalsReceive }: any = getTokenBySymbol(
+        symbolReceive,
+      );
       const newExpiration = new Date().getTime() + expiration * 60 * 1000;
       const props = {
         provider: web3Provider,
-        chainId: 42, // todo
+        chainId,
         userAddress,
         addressPay,
         addressReceive,
+        decimalsPay,
+        decimalsReceive,
         amountPay: String(amountPay),
         amountReceive: String(amountReceive),
         expiration: newExpiration,
       };
-      const result = await Zx.signOrder(props);
-      console.log('tradeLimit', result);
+      const resultSignOrder = await Zx.signOrder(props);
+      console.log('tradeLimit resultSignOrder:', resultSignOrder);
+      if (resultSignOrder.status === 'ERROR') {
+        setWaiting(false);
+        toggleModal({
+          open: true,
+          text: `Order was not signed`,
+        });
+        return null;
+      }
+      const order: any = resultSignOrder.data;
+      console.log('tradeLimit order:', order);
+      const resultSendOrder = await Zx.sendOrder(order);
+      if (resultSendOrder.status === 'ERROR') {
+        console.error('tradeLimit sendOrder:', resultSendOrder.error);
+        setWaiting(false);
+        toggleModal({
+          open: true,
+          text: `Order was not sent`,
+        });
+        return null;
+      }
+      console.log('tradeLimit resultSendOrder:', resultSendOrder);
       setWaiting(false);
+      return null;
     } catch (e) {
       console.error(e);
       setWaiting(false);
+      return null;
     }
   }, [
     getTokenBySymbol,
@@ -481,6 +519,8 @@ export const PageMarketsContent: React.FC = () => {
     amountReceive,
     userAddress,
     expiration,
+    chainId,
+    toggleModal,
   ]);
 
   const trade = React.useCallback(async () => {
@@ -500,9 +540,6 @@ export const PageMarketsContent: React.FC = () => {
       const { estimatedGas } = result.data;
       const newEstimatedGas = +estimatedGas * 2;
       result.data.gas = String(newEstimatedGas);
-      // const contractAddressPay = getTokenBySymbol(symbolPay).address;
-      // console.log('trade contractAddressPay:', contractAddressPay);
-      // result.data.contractAddress = contractAddressPay;
       const resultGetAbi = await Etherscan.getAbi(result.data.sellTokenAddress);
       if (resultGetAbi.status === 'ERROR') {
         setWaiting(false);
@@ -515,7 +552,6 @@ export const PageMarketsContent: React.FC = () => {
       const resultApprove = await web3Provider.approve({
         data: result.data,
         contractAbi,
-        // contractAddress: contractAddressPay,
       });
       console.log('trade resultApprove:', resultApprove);
       const resultSendTx = await web3Provider.sendTx(result.data);
@@ -749,7 +785,7 @@ export const PageMarketsContent: React.FC = () => {
       onKeyDown={() => {}}
       onClick={handleOpenSelect}
     >
-      <div>{expiration} min</div>
+      <div>{prettyExpiration(expiration)}</div>
       <IconArrowDownWhite />
     </div>
   );
@@ -960,6 +996,7 @@ export const PageMarketsContent: React.FC = () => {
         </section>
       )}
 
+      {/* You Pay */}
       <section className={s.containerTrading}>
         <div className={s.containerTradingCard}>
           <div className={s.containerTradingCardLabel}>You Pay</div>
@@ -996,14 +1033,19 @@ export const PageMarketsContent: React.FC = () => {
             <div className={s.containerTradingCardLimit}>
               <div className={s.containerTradingCardLimitInner}>
                 <div className={s.containerTradingCardLimitLabel}>
-                  <div>ETH Price</div>
+                  <div>{symbolPay} Price</div>
                 </div>
                 <div className={s.containerTradingCardLimitInput}>
                   {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
                   <label htmlFor="inputPay">
-                    <div>USD</div>
+                    <div>{symbolReceive}</div>
                   </label>
-                  <input id="inputPay" type="number" />
+                  <input
+                    id="inputPay"
+                    type="number"
+                    value={amountReceive}
+                    onChange={handleChangeAmountReceiveLimit}
+                  />
                 </div>
               </div>
               <div className={s.containerTradingCardLimitInner}>
@@ -1015,10 +1057,18 @@ export const PageMarketsContent: React.FC = () => {
                     <div
                       role="button"
                       tabIndex={0}
+                      onClick={() => handleSelectExpiration(10)}
+                      onKeyDown={() => {}}
+                    >
+                      10 min
+                    </div>
+                    <div
+                      role="button"
+                      tabIndex={0}
                       onClick={() => handleSelectExpiration(30)}
                       onKeyDown={() => {}}
                     >
-                      30min
+                      30 min
                     </div>
                     <div
                       role="button"
@@ -1026,7 +1076,31 @@ export const PageMarketsContent: React.FC = () => {
                       onClick={() => handleSelectExpiration(60)}
                       onKeyDown={() => {}}
                     >
-                      1hour
+                      1 hour
+                    </div>
+                    <div
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => handleSelectExpiration(24 * 60)}
+                      onKeyDown={() => {}}
+                    >
+                      24 hours
+                    </div>
+                    <div
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => handleSelectExpiration(3 * 24 * 60)}
+                      onKeyDown={() => {}}
+                    >
+                      3 days
+                    </div>
+                    <div
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => handleSelectExpiration(7 * 24 * 60)}
+                      onKeyDown={() => {}}
+                    >
+                      7 days
                     </div>
                   </div>
                 </Select>
@@ -1047,6 +1121,7 @@ export const PageMarketsContent: React.FC = () => {
           </div>
         </div>
 
+        {/* You Receive */}
         <div className={cns(s.containerTradingCard, s.containerTradingCardLimitOpen)}>
           <div className={s.containerTradingCardLabel}>You Receive</div>
           <div className={s.containerTradingCardInner}>

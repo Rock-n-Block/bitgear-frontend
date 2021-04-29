@@ -1,6 +1,7 @@
 const initialState = {
   counter: 0,
   type: '',
+  chainId: null,
 };
 
 export default (state = initialState, params: any) => {
@@ -18,6 +19,11 @@ export default (state = initialState, params: any) => {
       return {
         ...state,
         ...{ type: params.payload },
+      };
+    case 'WALLET:SET_CHAIN_ID':
+      return {
+        ...state,
+        ...{ chainId: params.payload },
       };
     default:
       return state;
