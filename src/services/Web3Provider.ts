@@ -106,4 +106,10 @@ export default class Web3Provider {
       return null;
     }
   };
+
+  public getGasPrice = async () => {
+    const price = await this.web3Provider.eth.getGasPrice();
+    // return +new BigNumber(balance).dividedBy(new BigNumber(10).pow(18)).toFixed()
+    return +price / 10e8;
+  };
 }

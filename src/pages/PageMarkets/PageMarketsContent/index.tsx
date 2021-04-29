@@ -2,6 +2,7 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
 import cns from 'classnames';
+import _ from 'lodash';
 import { v1 as uuid } from 'uuid';
 
 import { ReactComponent as IconArrowDownWhite } from '../../../assets/icons/arrow-down-white.svg';
@@ -9,7 +10,7 @@ import { ReactComponent as IconExchange } from '../../../assets/icons/exchange.s
 import { ReactComponent as IconGear } from '../../../assets/icons/gear.svg';
 import { ReactComponent as IconSearchWhite } from '../../../assets/icons/search-white.svg';
 import imageTokenPay from '../../../assets/images/token.png';
-import { Checkbox, Dropdown, Input, LineChart, Radio, Select } from '../../../components';
+import { Checkbox, Dropdown, Input, LineChart, Select } from '../../../components';
 import Button from '../../../components/Button';
 import { useWalletConnectorContext } from '../../../contexts/WalletConnect';
 import { modalActions, walletActions } from '../../../redux/actions';
@@ -25,28 +26,9 @@ const CryptoCompare = new CryptoCompareService();
 const Zx = new Service0x();
 const Etherscan = new EtherscanService();
 
-// Native = 'Native',
-// Uniswap = 'Uniswap',
-// UniswapV2 = 'Uniswap_V2',
-// Eth2Dai = 'Eth2Dai',
-// Kyber = 'Kyber',
-// Curve = 'Curve',
-// LiquidityProvider = 'LiquidityProvider',
-// MultiBridge = 'MultiBridge',
-// Balancer = 'Balancer',
-// Cream = 'CREAM',
-// Bancor = 'Bancor',
-// MStable = 'mStable',
-// Mooniswap = 'Mooniswap',
-// MultiHop = 'MultiHop',
-// Shell = 'Shell',
-// Swerve = 'Swerve',
-// SnowSwap = 'SnowSwap',
-// SushiSwap = 'SushiSwap',
-// Dodo = 'DODO',
-
 const exchangesList: string[] = [
   '0x',
+  'Native',
   'Uniswap',
   'UniswapV2',
   'Eth2Dai',
@@ -55,12 +37,14 @@ const exchangesList: string[] = [
   'LiquidityProvider',
   'MultiBridge',
   'Balancer',
+  'Cream',
   'Bancor',
   'MStable',
   'Mooniswap',
   'MultiHop',
   'Shell',
   'Swerve',
+  'SnowSwap',
   'SushiSwap',
   'Dodo',
 ];
@@ -112,6 +96,9 @@ export const PageMarketsContent: React.FC = () => {
   const refDropdownLabelReceive = React.useRef<HTMLDivElement>(null);
   const refSelect = React.useRef<HTMLDivElement>(null);
   const refSelectLabel = React.useRef<HTMLDivElement>(null);
+  const refSelectSlippage = React.useRef<HTMLDivElement>(null);
+  const refSelectLabelSlippage = React.useRef<HTMLDivElement>(null);
+  const refInputGasPrice = React.useRef<HTMLInputElement>(null);
 
   const [price, setPrice] = React.useState(0);
   const [marketHistory, setMarketHistory] = React.useState<any[]>([]);
@@ -120,11 +107,13 @@ export const PageMarketsContent: React.FC = () => {
   const [searchValuePay, setSearchValuePay] = React.useState<string>('');
   const [searchValueReceive, setSearchValueReceive] = React.useState<string>('');
   const [exchanges, setExchanges] = React.useState<any>([]);
+  const [exchangesExcluded, setExchangesExcluded] = React.useState<string[]>([]);
   const [openDropdownPay, setOpenDropdownPay] = React.useState<boolean>(false);
   const [openDropdownReceive, setOpenDropdownReceive] = React.useState<boolean>(false);
   const [openSelect, setOpenSelect] = React.useState<boolean>(false);
-  const [openSettings, setOpenSettings] = React.useState<boolean>(false);
-  const [mode, setMode] = React.useState<string>('limit');
+  const [openSelectSlippage, setOpenSelectSlippage] = React.useState<boolean>(false);
+  const [openSettings, setOpenSettings] = React.useState<boolean>(true);
+  const [mode, setMode] = React.useState<string>('market');
   const [searchTokensResultPay, setSearchTokensResultPay] = React.useState<TypeToken[]>(tokens);
   const [tokensReceive, setTokensReceive] = React.useState<TypeToken[]>([]);
   const [searchTokensResultReceive, setSearchTokensResultReceive] = React.useState<TypeToken[]>(
@@ -139,6 +128,11 @@ export const PageMarketsContent: React.FC = () => {
   const [balanceOfTokenPay, setBalanceOfTokenPay] = React.useState<number>(0);
   const [balanceOfTokenReceive, setBalanceOfTokenReceive] = React.useState<number>(0);
   const [expiration, setExpiration] = React.useState<number>(60);
+  const [slippage, setSlippage] = React.useState<number>(0);
+  const [gasPrice, setGasPrice] = React.useState<number>();
+  const [gasPriceFromNet, setGasPriceFromNet] = React.useState<number>(0);
+  const [gasPriceType, setGasPriceType] = React.useState<string>('');
+  const [gasPriceCustom, setGasPriceCustom] = React.useState<number>(0);
 
   const data: TypeToken = {
     symbol: 'ETH',
@@ -153,6 +147,10 @@ export const PageMarketsContent: React.FC = () => {
   const classPriceChange = s.containerTitlePriceChange;
   const isPriceChangePositive = +priceChange > 0;
   const isPriceChangeNegative = +priceChange < 0;
+
+  const isGasPriceTypeFast = gasPriceType === 'fast';
+  const isGasPriceTypeVeryFast = gasPriceType === 'veryFast';
+  const isGasPriceTypeCustom = gasPriceType === 'custom';
 
   const getTokenBySymbol = React.useCallback(
     (symbol: string) => {
@@ -189,6 +187,22 @@ export const PageMarketsContent: React.FC = () => {
     }
   };
 
+  const getGasPrice = React.useCallback(async () => {
+    const resultGetGasPrice = await web3Provider.getGasPrice();
+    setGasPriceFromNet(resultGetGasPrice);
+  }, [web3Provider]);
+
+  const getGasPriceSetting = React.useCallback(() => {
+    if (isGasPriceTypeCustom) return gasPriceCustom * 10e8;
+    if (!gasPrice) return undefined;
+    return gasPrice * 10e8;
+  }, [gasPrice, gasPriceCustom, isGasPriceTypeCustom]);
+
+  const handleChangeGasPrice = (value: number, type: string) => {
+    setGasPriceType(type);
+    setGasPrice(value);
+  };
+
   const handleOpenSettings = () => {
     setOpenSettings(!openSettings);
   };
@@ -203,6 +217,10 @@ export const PageMarketsContent: React.FC = () => {
 
   const handleOpenSelect = () => {
     setOpenSelect(!openSelect);
+  };
+
+  const handleOpenSelectSlippage = () => {
+    setOpenSelectSlippage(!openSelectSlippage);
   };
 
   const handleChangeAmountPay = async (event: any) => {
@@ -241,7 +259,6 @@ export const PageMarketsContent: React.FC = () => {
   };
 
   const handleChangeExchanges = (e: boolean, exchange: string) => {
-    console.log('handleChangeExchanges:', exchanges);
     const newExchanges = exchanges;
     if (exchanges.includes(exchange)) {
       const index = exchanges.indexOf(exchange);
@@ -249,7 +266,15 @@ export const PageMarketsContent: React.FC = () => {
     } else {
       newExchanges.push(exchange);
     }
+    console.log('handleChangeExchanges:', newExchanges);
     setExchanges(newExchanges);
+    const newExchangesExcluded: string[] = _.difference(exchangesList, newExchanges);
+    console.log('handleChangeExchanges newExchangesExcluded:', newExchangesExcluded);
+    setExchangesExcluded(newExchangesExcluded);
+  };
+
+  const handleChangeGasPriceCustom = (event: any) => {
+    setGasPriceCustom(event.target.value);
   };
 
   const handleChangeSearchPay = (value: string) => {
@@ -526,12 +551,18 @@ export const PageMarketsContent: React.FC = () => {
   const trade = React.useCallback(async () => {
     try {
       const { decimals } = getTokenBySymbol(symbolPay);
-      const props = {
+      const excludedSources = exchangesExcluded.join(',');
+      const gasPriceSetting = getGasPriceSetting();
+      const slippagePercentage = slippage / 100;
+      const props: any = {
         buyToken: symbolReceive,
         sellToken: symbolPay,
         sellAmount: amountPay,
         decimals,
       };
+      if (gasPriceSetting) props.gasPrice = gasPriceSetting;
+      if (slippagePercentage) props.slippagePercentage = slippagePercentage;
+      if (excludedSources) props.excludedSources = excludedSources;
       // console.log('trade props:', props);
       const result = await Zx.getQuote(props);
       console.log('trade getQuote:', result);
@@ -566,6 +597,8 @@ export const PageMarketsContent: React.FC = () => {
       return null;
     }
   }, [
+    slippage,
+    getGasPriceSetting,
     symbolPay,
     symbolReceive,
     amountPay,
@@ -576,6 +609,7 @@ export const PageMarketsContent: React.FC = () => {
     getBalanceOfTokensPay,
     getBalanceOfTokensReceive,
     getTokenBySymbol,
+    exchangesExcluded,
   ]);
 
   const handleTrade = () => {
@@ -640,9 +674,21 @@ export const PageMarketsContent: React.FC = () => {
     history.push(`/markets/${symbolPay}/${symbol}`);
   };
 
+  const handleSelectSlippage = (value: number) => {
+    setSlippage(value);
+    setOpenSelect(false);
+  };
+
   const handleSelectExpiration = (minutes: number) => {
     setExpiration(minutes);
     setOpenSelect(false);
+  };
+
+  const handleResetSettings = () => {
+    setSlippage(0);
+    setExchanges([]);
+    setExchangesExcluded([]);
+    setGasPriceType('');
   };
 
   const switchPayAndReceive = () => {
@@ -675,17 +721,28 @@ export const PageMarketsContent: React.FC = () => {
     }
   };
 
+  const handleClickOutsideSelectSlippage = (e: any) => {
+    if (
+      !refSelectSlippage?.current?.contains(e.target) &&
+      !refSelectLabelSlippage?.current?.contains(e.target)
+    ) {
+      setOpenSelectSlippage(false);
+    }
+  };
+
   React.useEffect(() => {
     document.addEventListener('click', (e) => {
       handleClickOutsideDropdownPay(e);
       handleClickOutsideDropdownReceive(e);
       handleClickOutsideSelect(e);
+      handleClickOutsideSelectSlippage(e);
     });
     return () => {
       document.removeEventListener('click', (e) => {
         handleClickOutsideDropdownPay(e);
         handleClickOutsideDropdownReceive(e);
         handleClickOutsideSelect(e);
+        handleClickOutsideSelectSlippage(e);
       });
     };
   }, []);
@@ -727,7 +784,8 @@ export const PageMarketsContent: React.FC = () => {
     console.log('PageMarketsContent useEffect web3provider:', web3Provider);
     getBalanceOfTokensPay();
     getBalanceOfTokensReceive();
-  }, [web3Provider, getBalanceOfTokensPay, getBalanceOfTokensReceive, userAddress]);
+    getGasPrice();
+  }, [web3Provider, getBalanceOfTokensPay, getBalanceOfTokensReceive, getGasPrice, userAddress]);
 
   React.useEffect(() => {
     getTokenPay();
@@ -737,41 +795,48 @@ export const PageMarketsContent: React.FC = () => {
   const RadioLabelFast = (
     <div className={s.radioLabelGas}>
       <div>Fast</div>
-      <div>161 WETH</div>
+      <div>{gasPriceFromNet} GWei</div>
     </div>
   );
 
   const RadioLabelVeryFast = (
     <div className={s.radioLabelGas}>
       <div>Very Fast</div>
-      <div>161 WETH</div>
+      <div>{gasPriceFromNet + 10} GWei</div>
     </div>
   );
 
   const RadioLabelCustom = (
-    <div className={s.radioLabelGas}>
+    <div className={s.radioLabelGas} key="radioLabelGas">
       <div>Custom</div>
       <div className={s.radioLabelGasInner}>
         <div className={s.radioLabelGasInput}>
           {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
           <label htmlFor="inputGas" />
-          <input id="inputGas" type="number" />
+          <input
+            key="inputGasPrice"
+            ref={refInputGasPrice}
+            id="inputGas"
+            type="number"
+            value={gasPriceCustom}
+            onChange={handleChangeGasPriceCustom}
+          />
         </div>
-        <div>WETH</div>
+        <div>GWei</div>
       </div>
     </div>
   );
 
-  const SelectLabel = (
+  const SelectLabelSlippage = (
     <div
-      ref={refSelectLabel}
+      ref={refSelectLabelSlippage}
       className={s.containerSettingsSelectLabel}
       role="button"
       tabIndex={0}
       onKeyDown={() => {}}
-      onClick={handleOpenSelect}
+      onClick={handleOpenSelectSlippage}
     >
-      <div>1%</div>
+      <div>{slippage} %</div>
       <IconArrowDownWhite />
     </div>
   );
@@ -936,15 +1001,17 @@ export const PageMarketsContent: React.FC = () => {
             >
               Limit
             </div>
-            <div
-              className={s.containerTitleSecondItem}
-              onClick={handleOpenSettings}
-              role="button"
-              tabIndex={0}
-              onKeyDown={() => {}}
-            >
-              <IconGear />
-            </div>
+            {isModeMarket && (
+              <div
+                className={s.containerTitleSecondItem}
+                onClick={handleOpenSettings}
+                role="button"
+                tabIndex={0}
+                onKeyDown={() => {}}
+              >
+                <IconGear />
+              </div>
+            )}
           </div>
         </div>
       </section>
@@ -955,10 +1022,21 @@ export const PageMarketsContent: React.FC = () => {
           <div className={s.containerSettingsInner}>
             <div className={s.containerSettingsSlippage}>
               <h2>Max Slippage</h2>
-              <Select open={openSelect} label={SelectLabel}>
+              <Select open={openSelectSlippage} label={SelectLabelSlippage}>
                 <div ref={refSelect} className={s.containerSettingsSelectItems}>
-                  <div>2%</div>
-                  <div>3%</div>
+                  {new Array(21).fill(0).map((item, ii) => {
+                    return (
+                      <div
+                        key={uuid()}
+                        role="button"
+                        tabIndex={0}
+                        onClick={() => handleSelectSlippage(ii)}
+                        onKeyDown={() => {}}
+                      >
+                        {ii} %
+                      </div>
+                    );
+                  })}
                 </div>
               </Select>
             </div>
@@ -966,10 +1044,12 @@ export const PageMarketsContent: React.FC = () => {
               <h2>Exchanges</h2>
               <div className={s.containerSettingsExchangesInner}>
                 {exchangesList?.map((exchange) => {
+                  const checked = exchanges.includes(exchange);
                   return (
                     <Checkbox
                       key={uuid()}
                       text={exchange}
+                      checkedDefault={checked}
                       onChange={(e: boolean) => handleChangeExchanges(e, exchange)}
                     />
                   );
@@ -979,16 +1059,61 @@ export const PageMarketsContent: React.FC = () => {
             <div className={s.containerSettingsGas}>
               <h2>Gas Price</h2>
               <div className={s.containerSettingsGasInner}>
-                <Radio name="gas" text={RadioLabelFast} />
-                <Radio name="gas" text={RadioLabelVeryFast} />
-                <Radio name="gas" text={RadioLabelCustom} />
+                <div className={s.radioContainer}>
+                  <input
+                    className={s.radioInput}
+                    type="radio"
+                    id="radioGasFast"
+                    name="radioGas"
+                    checked={isGasPriceTypeFast}
+                    onChange={() => handleChangeGasPrice(gasPriceFromNet, 'fast')}
+                  />
+                  {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+                  <label className={s.radioLabel} htmlFor="radioGasFast">
+                    <span className={s.radioPoint} />
+                    {RadioLabelFast}
+                  </label>
+                </div>
+
+                <div className={s.radioContainer}>
+                  <input
+                    className={s.radioInput}
+                    type="radio"
+                    id="radioGasVeryFast"
+                    name="radioGas"
+                    checked={isGasPriceTypeVeryFast}
+                    onChange={() => handleChangeGasPrice(gasPriceFromNet + 10, 'veryFast')}
+                  />
+                  {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+                  <label className={s.radioLabel} htmlFor="radioGasVeryFast">
+                    <span className={s.radioPoint} />
+                    {RadioLabelVeryFast}
+                  </label>
+                </div>
+
+                <div className={s.radioContainer}>
+                  <input
+                    className={s.radioInput}
+                    type="radio"
+                    id="radioGasCustom"
+                    name="radioGas"
+                    checked={isGasPriceTypeCustom}
+                    onChange={() => handleChangeGasPrice(gasPriceCustom, 'custom')}
+                  />
+                  {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+                  <label className={s.radioLabel} htmlFor="radioGasCustom">
+                    <span className={s.radioPoint} />
+                    {RadioLabelCustom}
+                  </label>
+                </div>
               </div>
             </div>
             <div className={s.containerSettingsButtons}>
-              <Button secondary classNameCustom={s.containerSettingsButtonsButton}>
-                Save
-              </Button>
-              <Button normal classNameCustom={s.containerSettingsButtonsButton}>
+              <Button
+                normal
+                classNameCustom={s.containerSettingsButtonsButton}
+                onClick={() => handleResetSettings()}
+              >
                 Reset
               </Button>
             </div>
