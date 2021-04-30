@@ -10,10 +10,19 @@ type TypeLineChartProps = {
   containerStyle?: any;
   svgStyle?: any;
   interactive?: boolean;
+  chartHeight?: number;
+  padding?: number;
 };
 
 export const LineChart: React.FC<TypeLineChartProps> = React.memo(
-  ({ data = [], containerStyle = {}, svgStyle = {}, interactive = false }) => {
+  ({
+    data = [],
+    containerStyle = {},
+    svgStyle = {},
+    interactive = false,
+    chartHeight,
+    padding = 0,
+  }) => {
     const [points, setPoints] = React.useState<string>();
     const [width, setWidth] = React.useState<number>(0);
     const [height, setHeight] = React.useState<number>(0);
@@ -29,52 +38,58 @@ export const LineChart: React.FC<TypeLineChartProps> = React.memo(
       const max = Math.max(...array);
       const amplitude = max - min;
       const newPath = array.map((item) => {
-        if (amplitude === 0) return 0;
-        return ((item - min) / amplitude) * h;
+        if (amplitude === 0) return h;
+        return h - ((item - min) / amplitude) * h;
       });
       return newPath;
     }, []);
 
     const drawVerticalLines = React.useCallback(() => {
       // console.log('drawVerticalLines:', data);
-      const array = resizePath(data, height);
+      const h = chartHeight || height;
+      const array = resizePath(data, h);
       const lines: any[] = [];
-      const step = width / data.length;
+      const step = (width - padding * 2) / (data.length - 1);
       array.map((point: number, ip: number) => {
-        const x = ip * step;
+        const text = data ? data[ip] : '';
+        const x = padding + ip * step;
+        const y = point + padding;
         const pathLine = d3.path();
         pathLine.moveTo(x, 0);
         pathLine.lineTo(x, height);
         let dy = -15;
-        if (point < 30) dy = 20;
-        let dx = -30;
+        if (y < 30) dy = 20;
+        let dx = -15;
         if (x < 60) dx = 0;
-        if (x > width - 60) dx = -60;
+        if (x > width - 60) dx = -30;
         return lines.push(
           <g key={uuid()} className={s.verticalLine}>
             <path d={pathLine.toString()} />
-            <circle cx={x} cy={point} r={6} />
-            <text x={x + dx} y={point + dy}>
-              {point.toString().slice(0, 8)}
+            <circle cx={x} cy={y} r={6} />
+            <text x={x + dx} y={y + dy}>
+              {String(text).slice(0, 8)}
             </text>
             <rect x={x - 0.5 * step} y={0} width={step} height={height} />
           </g>,
         );
       });
       setVerticalLines(lines);
-    }, [resizePath, data, height, width]);
+    }, [resizePath, data, width, height, chartHeight, padding]);
 
     const drawPath = React.useCallback(() => {
       // console.log('drawPath:', data);
-      const array = resizePath(data, height);
+      const h = chartHeight || height;
+      const array = resizePath(data, h);
       const path = d3.path();
+      const step = (width - padding * 2) / (array.length - 1);
       array.map((point: number, ip: number) => {
-        const step = width / array.length;
-        if (ip === 0) return path.moveTo(ip * step, point);
-        return path.lineTo(ip * step, point);
+        const x = padding + ip * step;
+        const y = point + padding;
+        if (ip === 0) return path.moveTo(x, y);
+        return path.lineTo(x, y);
       });
       setPoints(path.toString());
-    }, [data, height, width, resizePath]);
+    }, [data, width, resizePath, chartHeight, height, padding]);
 
     const handleResize = () => {
       if (!refContainer.current) return;
@@ -92,6 +107,7 @@ export const LineChart: React.FC<TypeLineChartProps> = React.memo(
     }, []);
 
     React.useEffect(() => {
+      if (width === 0) return;
       drawPath();
       if (interactive) drawVerticalLines();
     }, [interactive, drawPath, drawVerticalLines, height, width]);

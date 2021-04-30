@@ -1288,7 +1288,9 @@ export const PageMarketsContent: React.FC = () => {
 
       <section className={s.containerChart}>
         <div className={s.chart}>
-          {points.length > 0 && <LineChart interactive data={points} />}
+          {points.length > 0 && (
+            <LineChart interactive data={points} chartHeight={140} padding={20} />
+          )}
         </div>
         <div className={s.chartData}>
           <div className={s.chartDataFirst}>
