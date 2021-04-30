@@ -13,10 +13,10 @@ import imageTokenPay from '../../../assets/images/token.png';
 import { Checkbox, Dropdown, Input, LineChart, Select } from '../../../components';
 import Button from '../../../components/Button';
 import { useWalletConnectorContext } from '../../../contexts/WalletConnect';
+import erc20Abi from '../../../data/erc20Abi.json';
 import { modalActions, walletActions } from '../../../redux/actions';
 import { Service0x } from '../../../services/0x';
 import { CryptoCompareService } from '../../../services/CryptoCompareService';
-import { EtherscanService } from '../../../services/Etherscan';
 import { getFromStorage, setToStorage } from '../../../utils/localStorage';
 import { prettyAmount, prettyExpiration, prettyPrice } from '../../../utils/prettifiers';
 
@@ -24,7 +24,6 @@ import s from './style.module.scss';
 
 const CryptoCompare = new CryptoCompareService();
 const Zx = new Service0x();
-const Etherscan = new EtherscanService();
 
 const exchangesList: string[] = [
   '0x',
@@ -430,12 +429,10 @@ export const PageMarketsContent: React.FC = () => {
         return;
       }
       const contractAddressPay = getTokenBySymbol(symbolPay).address;
-      const resultGetAbiPay = await Etherscan.getAbi(contractAddressPay);
-      const contractAbiPay = JSON.parse(resultGetAbiPay.data);
       const resultBalanceOfPay = await web3Provider.balanceOf({
         address: userAddress,
         contractAddress: contractAddressPay,
-        contractAbi: contractAbiPay,
+        contractAbi: erc20Abi,
       });
       console.log('getBalanceOfTokens resultBalanceOfPay:', resultBalanceOfPay);
       setBalanceOfTokenPay(resultBalanceOfPay);
@@ -453,12 +450,10 @@ export const PageMarketsContent: React.FC = () => {
         return;
       }
       const contractAddressReceive = getTokenBySymbol(symbolReceive).address;
-      const resultGetAbiReceive = await Etherscan.getAbi(contractAddressReceive);
-      const contractAbiReceive = JSON.parse(resultGetAbiReceive.data);
       const resultBalanceOfReceive = await web3Provider.balanceOf({
         address: userAddress,
         contractAddress: contractAddressReceive,
-        contractAbi: contractAbiReceive,
+        contractAbi: erc20Abi,
       });
       console.log('getBalanceOfTokens resultBalanceOfReceive:', resultBalanceOfReceive);
       setBalanceOfTokenReceive(resultBalanceOfReceive);
@@ -572,15 +567,7 @@ export const PageMarketsContent: React.FC = () => {
       const { estimatedGas } = result.data;
       const newEstimatedGas = +estimatedGas * 2;
       result.data.gas = String(newEstimatedGas);
-      const resultGetAbi = await Etherscan.getAbi(result.data.sellTokenAddress);
-      if (resultGetAbi.status === 'ERROR') {
-        setWaiting(false);
-        return toggleModal({
-          open: true,
-          text: `Contract data of token ${symbolPay} is not verified`,
-        });
-      }
-      const contractAbi = resultGetAbi.data;
+      const contractAbi = erc20Abi;
       const resultApprove = await web3Provider.approve({
         data: result.data,
         contractAbi,
@@ -605,7 +592,6 @@ export const PageMarketsContent: React.FC = () => {
     amountPay,
     validateTradeErrors,
     web3Provider,
-    toggleModal,
     userAddress,
     getBalanceOfTokensPay,
     getBalanceOfTokensReceive,

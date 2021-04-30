@@ -99,7 +99,7 @@ export default class Web3Provider {
       // console.log('Web3Provider approve data:', data);
       const contractAddress = sellTokenAddress;
       // console.log('Web3Provider approve contractAbi:', contractAbi);
-      const contract = new this.web3Provider.eth.Contract(JSON.parse(contractAbi), contractAddress);
+      const contract = new this.web3Provider.eth.Contract(contractAbi, contractAddress);
       return contract.methods.approve(allowanceTarget, sellAmount).send({ from });
     } catch (e) {
       console.error(e);
