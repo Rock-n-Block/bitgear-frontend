@@ -100,7 +100,8 @@ export const PageMarketsContent: React.FC = () => {
   const refSelectLabelSlippage = React.useRef<HTMLDivElement>(null);
   const refInputGasPrice = React.useRef<HTMLInputElement>(null);
 
-  const [price, setPrice] = React.useState(0);
+  const [price, setPrice] = React.useState<number>(0);
+  const [priceChart, setPriceChart] = React.useState<string | null>();
   const [marketHistory, setMarketHistory] = React.useState<any[]>([]);
   const [points, setPoints] = React.useState<number[]>([]);
   const [period, setPeriod] = React.useState<number>(periodDefault > 0 ? periodDefault : 1);
@@ -697,6 +698,10 @@ export const PageMarketsContent: React.FC = () => {
     history.push(`/markets/${symbolReceive}/${symbolPay}`);
   };
 
+  const handleHoverChart = (value: string | null) => {
+    setPriceChart(value);
+  };
+
   const handleClickOutsideDropdownPay = (e: any) => {
     if (
       !refDropdownPay?.current?.contains(e.target) &&
@@ -1288,14 +1293,22 @@ export const PageMarketsContent: React.FC = () => {
 
       <section className={s.containerChart}>
         <div className={s.chart}>
-          {points.length > 0 && <LineChart interactive data={points} />}
+          {points.length > 0 && (
+            <LineChart
+              interactive
+              data={points}
+              chartHeight={140}
+              padding={20}
+              onHover={handleHoverChart}
+            />
+          )}
         </div>
         <div className={s.chartData}>
           <div className={s.chartDataFirst}>
             <div className={s.chartDataPriceName}>Current price</div>
             <div className={s.chartDataPrice}>
               {!symbolTwo && '$'}
-              {prettyPrice(price.toString())} {symbolTwo}
+              {prettyPrice(priceChart || price.toString())} {symbolTwo}
             </div>
           </div>
           <div className={s.chartDataSecond}>
