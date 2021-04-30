@@ -12,6 +12,7 @@ type TypeLineChartProps = {
   interactive?: boolean;
   chartHeight?: number;
   padding?: number;
+  onHover?: any;
 };
 
 export const LineChart: React.FC<TypeLineChartProps> = React.memo(
@@ -22,6 +23,7 @@ export const LineChart: React.FC<TypeLineChartProps> = React.memo(
     interactive = false,
     chartHeight,
     padding = 0,
+    onHover = () => {},
   }) => {
     const [points, setPoints] = React.useState<string>();
     const [width, setWidth] = React.useState<number>(0);
@@ -32,6 +34,14 @@ export const LineChart: React.FC<TypeLineChartProps> = React.memo(
     // const [pointsVerticalLine, setPointsVerticalLine] = React.useState<string>();
 
     const refContainer = React.useRef<HTMLDivElement>(null);
+
+    const handleHoverGroup = React.useCallback(
+      (text: string | null) => {
+        if (!text) return;
+        onHover(text);
+      },
+      [onHover],
+    );
 
     const resizePath = React.useCallback((array: number[], h: number) => {
       const min = Math.min(...array);
@@ -63,7 +73,11 @@ export const LineChart: React.FC<TypeLineChartProps> = React.memo(
         if (x < 60) dx = 0;
         if (x > width - 60) dx = -30;
         return lines.push(
-          <g key={uuid()} className={s.verticalLine}>
+          <g
+            key={uuid()}
+            className={s.verticalLine}
+            onMouseEnter={() => handleHoverGroup(String(text))}
+          >
             <path d={pathLine.toString()} />
             <circle cx={x} cy={y} r={6} />
             <text x={x + dx} y={y + dy}>
@@ -74,7 +88,7 @@ export const LineChart: React.FC<TypeLineChartProps> = React.memo(
         );
       });
       setVerticalLines(lines);
-    }, [resizePath, data, width, height, chartHeight, padding]);
+    }, [resizePath, data, width, height, chartHeight, padding, handleHoverGroup]);
 
     const drawPath = React.useCallback(() => {
       // console.log('drawPath:', data);
@@ -120,12 +134,14 @@ export const LineChart: React.FC<TypeLineChartProps> = React.memo(
         // onMouseEnter={() => setHover(true)}
         // onMouseLeave={() => setHover(false)}
         // onMouseMove={handleMoveVerticalLine}
+        // onMouseLeave={() => onHover(null)}
       >
         <svg
           className={cns(s.chart, svgStyle)}
           xmlns="http://www.w3.org/2000/svg"
           // onMouseEnter={() => setHover(true)}
           // onMouseLeave={() => setHover(false)}
+          onMouseLeave={() => onHover(null)}
         >
           <path className={s.path} d={points} />
           {verticalLines.map((line) => line)}
