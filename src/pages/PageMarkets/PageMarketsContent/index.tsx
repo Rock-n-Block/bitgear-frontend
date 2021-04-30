@@ -1016,7 +1016,7 @@ export const PageMarketsContent: React.FC = () => {
         </div>
       </section>
 
-      {openSettings && (
+      {isModeMarket && openSettings && (
         <section className={s.containerSettings}>
           <h1>Advanced Settings</h1>
           <div className={s.containerSettingsInner}>
