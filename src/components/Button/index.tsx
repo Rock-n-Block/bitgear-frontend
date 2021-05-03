@@ -10,6 +10,7 @@ type TypeButtonProps = {
   secondary?: boolean;
   normal?: boolean;
   classNameCustom?: any;
+  disabled?: boolean;
 };
 
 const Button: React.FC<TypeButtonProps> = ({
@@ -19,16 +20,24 @@ const Button: React.FC<TypeButtonProps> = ({
   secondary = false,
   normal = false,
   classNameCustom,
+  disabled = false,
 }) => {
   const className = primary ? s.primary : secondary ? s.secondary : normal ? s.normal : null;
+  const classNameDisabled = disabled ? s.disabled : null;
+
+  const handleClick = () => {
+    if (disabled) return;
+    if (!onClick) return;
+    onClick();
+  };
 
   return (
     <div
       role="button"
       tabIndex={0}
-      onClick={onClick}
+      onClick={handleClick}
       onKeyDown={() => {}}
-      className={cns(s.button, classNameCustom, className)}
+      className={cns(s.button, classNameCustom, className, classNameDisabled)}
     >
       {children}
     </div>

@@ -112,7 +112,7 @@ export const PageMarketsContent: React.FC = () => {
   const [openDropdownReceive, setOpenDropdownReceive] = React.useState<boolean>(false);
   const [openSelect, setOpenSelect] = React.useState<boolean>(false);
   const [openSelectSlippage, setOpenSelectSlippage] = React.useState<boolean>(false);
-  const [openSettings, setOpenSettings] = React.useState<boolean>(true);
+  const [openSettings, setOpenSettings] = React.useState<boolean>(false);
   const [mode, setMode] = React.useState<string>('market');
   const [searchTokensResultPay, setSearchTokensResultPay] = React.useState<TypeToken[]>(tokens);
   const [tokensReceive, setTokensReceive] = React.useState<TypeToken[]>([]);
@@ -151,6 +151,10 @@ export const PageMarketsContent: React.FC = () => {
   const isGasPriceTypeFast = gasPriceType === 'fast';
   const isGasPriceTypeVeryFast = gasPriceType === 'veryFast';
   const isGasPriceTypeCustom = gasPriceType === 'custom';
+
+  const isTradeDisabled = userAddress
+    ? amountReceive === 0 || !balanceOfTokenPay || balanceOfTokenPay < amountPay
+    : false;
 
   const getTokenBySymbol = React.useCallback(
     (symbol: string) => {
@@ -1271,7 +1275,7 @@ export const PageMarketsContent: React.FC = () => {
           </div>
         </div>
         <div className={s.containerTradingButton}>
-          <Button onClick={handleTrade}>
+          <Button onClick={handleTrade} disabled={isTradeDisabled}>
             {!userAddress ? 'Connect wallet' : waiting ? 'Waiting...' : 'Trade'}
           </Button>
         </div>
