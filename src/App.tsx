@@ -74,7 +74,7 @@ export const App: React.FC = () => {
   const getTokens = React.useCallback(async () => {
     try {
       const resultGetTokens = await Zx.getTokens();
-      const newTokens = resultGetTokens.data.records;
+      const newTokens = resultGetTokens.data;
       console.log('getTokens:', newTokens);
       newTokens.push(tokenGear);
       const tokens = changeTokensInfo(newTokens);

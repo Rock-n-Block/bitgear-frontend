@@ -1,6 +1,7 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
+import BigNumber from 'bignumber.js/bignumber';
 import cns from 'classnames';
 import _ from 'lodash';
 import { v1 as uuid } from 'uuid';
@@ -337,6 +338,8 @@ export const PageMarketsContent: React.FC = () => {
   const getPrices = React.useCallback(async () => {
     try {
       const { decimals } = getTokenBySymbol(symbolPay);
+      console.log('getPrices:', decimals);
+      if (!decimals) return null;
       const result = await Zx.getPrice({
         buyToken: symbolReceive,
         sellToken: symbolPay,
@@ -351,8 +354,10 @@ export const PageMarketsContent: React.FC = () => {
       } else {
         setPrice(0);
       }
+      return null;
     } catch (e) {
       console.error(e);
+      return null;
     }
   }, [symbolPay, symbolReceive, getTokenBySymbol]);
 
@@ -492,6 +497,13 @@ export const PageMarketsContent: React.FC = () => {
       const { address: addressReceive, decimals: decimalsReceive }: any = getTokenBySymbol(
         symbolReceive,
       );
+      const contractAbi = erc20Abi;
+      const amountPayInWei = new BigNumber(amountPay).multipliedBy(10 ** decimalsPay).toString();
+      const resultApprove = await web3Provider.approve({
+        data: { from: userAddress, sellAmount: amountPayInWei, sellTokenAddress: addressPay },
+        contractAbi,
+      });
+      console.log('tradeLimit resultApprove:', resultApprove);
       const newExpiration = new Date().getTime() + expiration * 60 * 1000;
       const props = {
         provider: web3Provider,
