@@ -173,6 +173,11 @@
           padding-left: 10px;
           text-align: left;
           text-transform: uppercase;
+          @include b('mobile') {
+            &:last-child {
+              text-align: right;
+            }
+          }
         }
       }
 
@@ -188,6 +193,11 @@
             color: $color-text-primary;
             padding-left: 10px;
             padding: 12px 0 12px 10px;
+            @include b('mobile') {
+              height: 60px;
+              text-transform: uppercase;
+              padding: 5px 0 5px 10px;
+            }
 
             &:first-child {
               border-top-left-radius: 10px;
@@ -198,11 +208,19 @@
               border-top-right-radius: 10px;
               border-bottom-right-radius: 10px;
               color: #01c9c5;
+              @include b('mobile') {
+                @include flex(row, normal, flex-end);
+                padding: 0;
+              }
 
               img {
                 margin-right: 10px;
                 width: 14px;
                 height: 15px;
+                @include b('mobile') {
+                  margin-top: 4px;
+                  margin-right: 4px;
+                }
               }
             }
           }
@@ -216,6 +234,7 @@
       &Active {
         color: $color-text-link;
         font-weight: bold !important;
+        opacity: 1 !important;
       }
 
       &Down {
@@ -226,5 +245,16 @@
         }
       }
     }
+  }
+}
+
+.mobile {
+  &Symbol {
+    opacity: 0.5;
+    font-size: 14px;
+  }
+
+  &PriceAndChangeContainer {
+    padding: 6px 20px 0 0;
   }
 }

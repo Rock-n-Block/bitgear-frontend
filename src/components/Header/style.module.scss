@@ -24,11 +24,20 @@ $fs: 16px;
   border-bottom-style: solid;
   border-image-slice: 1;
   border-image-source: $color-border-header;
+  @include b('mobile') {
+    height: 69px;
+    padding: 0;
+  }
+
   &Container {
     @include flex(row, center, space-between, nowrap);
     height: $height-header;
     width: 100%;
     max-width: 1270px;
+    @include b('mobile') {
+      height: 69px;
+      padding: 0;
+    }
   }
   &LeftGroup {
     @include flex(row, center, center, nowrap);
@@ -42,9 +51,6 @@ $fs: 16px;
     @include flex(row, center, center, nowrap);
     height: $height-header;
     padding: 0 2vw;
-    @include b('mobile') {
-      display: none;
-    }
   }
   &Item {
     @include flex(row, center, center);
@@ -91,6 +97,9 @@ $fs: 16px;
   }
   &Logo {
     height: $height-header - 40px;
+    @include b('mobile') {
+      margin-top: 10px;
+    }
   }
   &MenuMobileClosed {
     display: none;
