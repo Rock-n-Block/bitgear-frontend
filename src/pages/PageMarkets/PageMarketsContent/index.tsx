@@ -337,28 +337,44 @@ export const PageMarketsContent: React.FC = () => {
   const getPrices = React.useCallback(async () => {
     try {
       const { decimals } = getTokenBySymbol(symbolPay);
-      console.log('getPrices:', decimals);
       if (!decimals) return null;
-      const result = await Zx.getPrice({
-        buyToken: symbolReceive,
-        sellToken: symbolPay,
-        sellAmount: 1,
-        skipValidation: true,
-        decimals,
-      });
-      console.log('getPrices:', result);
-      if (result.status === 'SUCCESS') {
-        const newPrice = result.data.price;
-        setPrice(newPrice);
+      let newPrice = 0;
+      if (symbolReceive && amountPay) {
+        const result = await Zx.getPrice({
+          buyToken: symbolReceive,
+          sellToken: symbolPay,
+          sellAmount: amountPay,
+          skipValidation: true,
+          decimals,
+        });
+        console.log('getPrices:', result);
+        if (result.status === 'SUCCESS') {
+          newPrice = result.data.price;
+          setPrice(newPrice);
+        } else {
+          setPrice(0);
+        }
       } else {
-        setPrice(0);
+        const result = await CryptoCompare.getMarketData({
+          symbolOne: symbolPay,
+          symbolTwo: 'USD',
+        });
+        console.log('getPrices:', result);
+        if (result.status === 'SUCCESS') {
+          newPrice = result.data.PRICE;
+          const newPriceChange = prettyPriceChange(result.data.CHANGEHOUR);
+          setPrice(newPrice);
+          setPriceChange(+newPriceChange);
+        } else {
+          setPrice(0);
+        }
       }
       return null;
     } catch (e) {
       console.error(e);
       return null;
     }
-  }, [symbolPay, symbolReceive, getTokenBySymbol]);
+  }, [amountPay, symbolPay, symbolReceive, getTokenBySymbol]);
 
   const getTokenPay = React.useCallback(async () => {
     try {
@@ -422,10 +438,10 @@ export const PageMarketsContent: React.FC = () => {
         return item.close;
       });
       setPoints(newPoints);
-      const newPointsLength = newPoints.length;
-      const newPriceChange = newPoints[newPointsLength - 1] - newPoints[newPointsLength - 2];
-      const prettyNewPriceChange = prettyPriceChange(newPriceChange.toString());
-      setPriceChange(+prettyNewPriceChange);
+      // const newPointsLength = newPoints.length;
+      // const newPriceChange = newPoints[newPointsLength - 1] - newPoints[newPointsLength - 2];
+      // const prettyNewPriceChange = prettyPriceChange(newPriceChange.toString());
+      // setPriceChange(+prettyNewPriceChange);
       // console.log('getPoints:', newPoints);
     } catch (e) {
       console.error(e);
