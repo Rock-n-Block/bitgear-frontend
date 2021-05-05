@@ -514,9 +514,72 @@ export const PageMarketsContent: React.FC = () => {
     }
   }, [symbolPay, symbolReceive, toggleModal]);
 
+  const trade = React.useCallback(async () => {
+    try {
+      if (!verifyForm()) {
+        setWaiting(false);
+        return null;
+      }
+      const { decimals } = getTokenBySymbol(symbolPay);
+      const excludedSources = exchangesExcluded.join(',');
+      const gasPriceSetting = getGasPriceSetting();
+      const slippagePercentage = slippage / 100;
+      const props: any = {
+        buyToken: symbolReceive,
+        sellToken: symbolPay,
+        sellAmount: amountPay,
+        decimals,
+      };
+      if (gasPriceSetting) props.gasPrice = gasPriceSetting;
+      if (slippagePercentage) props.slippagePercentage = slippagePercentage;
+      if (excludedSources) props.excludedSources = excludedSources;
+      // console.log('trade props:', props);
+      const result = await Zx.getQuote(props);
+      console.log('trade getQuote:', result);
+      if (result.status === 'ERROR') return validateTradeErrors(result.error);
+      result.data.from = userAddress;
+      const { estimatedGas } = result.data;
+      const newEstimatedGas = +estimatedGas * 2;
+      result.data.gas = String(newEstimatedGas);
+      const contractAbi = erc20Abi;
+      const resultApprove = await web3Provider.approve({
+        data: result.data,
+        contractAbi,
+      });
+      console.log('trade resultApprove:', resultApprove);
+      const resultSendTx = await web3Provider.sendTx(result.data);
+      console.log('trade resultSendTx:', resultSendTx);
+      setWaiting(false);
+      getBalanceOfTokensPay();
+      getBalanceOfTokensReceive();
+      return null;
+    } catch (e) {
+      console.error(e);
+      setWaiting(false);
+      return null;
+    }
+  }, [
+    verifyForm,
+    slippage,
+    getGasPriceSetting,
+    symbolPay,
+    symbolReceive,
+    amountPay,
+    validateTradeErrors,
+    web3Provider,
+    userAddress,
+    getBalanceOfTokensPay,
+    getBalanceOfTokensReceive,
+    getTokenBySymbol,
+    exchangesExcluded,
+  ]);
+
   const tradeLimit = React.useCallback(async () => {
     try {
-      if (!verifyForm()) return null;
+      if (!verifyForm()) {
+        setWaiting(false);
+        return null;
+      }
       const { address: addressPay, decimals: decimalsPay }: any = getTokenBySymbol(symbolPay);
       const { address: addressReceive, decimals: decimalsReceive }: any = getTokenBySymbol(
         symbolReceive,
@@ -591,63 +654,6 @@ export const PageMarketsContent: React.FC = () => {
     expiration,
     chainId,
     toggleModal,
-  ]);
-
-  const trade = React.useCallback(async () => {
-    try {
-      if (!verifyForm()) return null;
-      const { decimals } = getTokenBySymbol(symbolPay);
-      const excludedSources = exchangesExcluded.join(',');
-      const gasPriceSetting = getGasPriceSetting();
-      const slippagePercentage = slippage / 100;
-      const props: any = {
-        buyToken: symbolReceive,
-        sellToken: symbolPay,
-        sellAmount: amountPay,
-        decimals,
-      };
-      if (gasPriceSetting) props.gasPrice = gasPriceSetting;
-      if (slippagePercentage) props.slippagePercentage = slippagePercentage;
-      if (excludedSources) props.excludedSources = excludedSources;
-      // console.log('trade props:', props);
-      const result = await Zx.getQuote(props);
-      console.log('trade getQuote:', result);
-      if (result.status === 'ERROR') return validateTradeErrors(result.error);
-      result.data.from = userAddress;
-      const { estimatedGas } = result.data;
-      const newEstimatedGas = +estimatedGas * 2;
-      result.data.gas = String(newEstimatedGas);
-      const contractAbi = erc20Abi;
-      const resultApprove = await web3Provider.approve({
-        data: result.data,
-        contractAbi,
-      });
-      console.log('trade resultApprove:', resultApprove);
-      const resultSendTx = await web3Provider.sendTx(result.data);
-      console.log('trade resultSendTx:', resultSendTx);
-      setWaiting(false);
-      getBalanceOfTokensPay();
-      getBalanceOfTokensReceive();
-      return null;
-    } catch (e) {
-      console.error(e);
-      setWaiting(false);
-      return null;
-    }
-  }, [
-    verifyForm,
-    slippage,
-    getGasPriceSetting,
-    symbolPay,
-    symbolReceive,
-    amountPay,
-    validateTradeErrors,
-    web3Provider,
-    userAddress,
-    getBalanceOfTokensPay,
-    getBalanceOfTokensReceive,
-    getTokenBySymbol,
-    exchangesExcluded,
   ]);
 
   const handleTrade = () => {
