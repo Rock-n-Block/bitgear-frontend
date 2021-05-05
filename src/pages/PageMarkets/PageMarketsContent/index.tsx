@@ -491,8 +491,32 @@ export const PageMarketsContent: React.FC = () => {
     [toggleModal],
   );
 
+  const verifyForm = React.useCallback(() => {
+    try {
+      if (!symbolPay) {
+        toggleModal({
+          open: true,
+          text: `Please, choose token to pay`,
+        });
+        return false;
+      }
+      if (!symbolReceive) {
+        toggleModal({
+          open: true,
+          text: `Please, choose token to receive`,
+        });
+        return false;
+      }
+      return true;
+    } catch (e) {
+      console.error(e);
+      return false;
+    }
+  }, [symbolPay, symbolReceive, toggleModal]);
+
   const tradeLimit = React.useCallback(async () => {
     try {
+      if (!verifyForm()) return null;
       const { address: addressPay, decimals: decimalsPay }: any = getTokenBySymbol(symbolPay);
       const { address: addressReceive, decimals: decimalsReceive }: any = getTokenBySymbol(
         symbolReceive,
@@ -541,7 +565,7 @@ export const PageMarketsContent: React.FC = () => {
       }
       toggleModal({
         open: true,
-        text: `Order is successfully placed`,
+        text: `Order was successfully placed`,
       });
       console.log('tradeLimit resultSendOrder:', resultSendOrder);
       setWaiting(false);
@@ -556,6 +580,7 @@ export const PageMarketsContent: React.FC = () => {
       return null;
     }
   }, [
+    verifyForm,
     getTokenBySymbol,
     symbolPay,
     symbolReceive,
@@ -570,6 +595,7 @@ export const PageMarketsContent: React.FC = () => {
 
   const trade = React.useCallback(async () => {
     try {
+      if (!verifyForm()) return null;
       const { decimals } = getTokenBySymbol(symbolPay);
       const excludedSources = exchangesExcluded.join(',');
       const gasPriceSetting = getGasPriceSetting();
@@ -609,6 +635,7 @@ export const PageMarketsContent: React.FC = () => {
       return null;
     }
   }, [
+    verifyForm,
     slippage,
     getGasPriceSetting,
     symbolPay,
