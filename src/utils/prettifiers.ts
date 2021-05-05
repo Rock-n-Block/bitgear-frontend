@@ -17,6 +17,12 @@ export const prettyPrice = (value: string) => {
   return parts.join('.');
 };
 
+export const prettyPriceChange = (value: string) => {
+  const parts = value.toString().split('.');
+  if (parts[1]) parts[1] = parts[1].slice(0, 2);
+  return parts.join('.');
+};
+
 export const prettyExpiration = (expiration: number) => {
   let time = expiration;
   let period = 'min';
