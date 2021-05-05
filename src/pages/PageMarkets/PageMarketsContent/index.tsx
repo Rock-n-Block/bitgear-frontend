@@ -19,7 +19,12 @@ import { modalActions, walletActions } from '../../../redux/actions';
 import { Service0x } from '../../../services/0x';
 import { CryptoCompareService } from '../../../services/CryptoCompareService';
 import { getFromStorage, setToStorage } from '../../../utils/localStorage';
-import { prettyAmount, prettyExpiration, prettyPrice } from '../../../utils/prettifiers';
+import {
+  prettyAmount,
+  prettyExpiration,
+  prettyPrice,
+  prettyPriceChange,
+} from '../../../utils/prettifiers';
 
 import s from './style.module.scss';
 
@@ -101,6 +106,7 @@ export const PageMarketsContent: React.FC = () => {
   const refInputGasPrice = React.useRef<HTMLInputElement>(null);
 
   const [price, setPrice] = React.useState<number>(0);
+  const [priceChange, setPriceChange] = React.useState<number>(0);
   const [priceChart, setPriceChart] = React.useState<string | null>();
   const [marketHistory, setMarketHistory] = React.useState<any[]>([]);
   const [points, setPoints] = React.useState<number[]>([]);
@@ -135,13 +141,6 @@ export const PageMarketsContent: React.FC = () => {
   const [gasPriceType, setGasPriceType] = React.useState<string>('');
   const [gasPriceCustom, setGasPriceCustom] = React.useState<number>(0);
 
-  const data: TypeToken = {
-    symbol: 'ETH',
-    name: 'Currency',
-    priceChange: 3.04,
-  };
-
-  const { priceChange } = data;
   const isModeMarket = mode === 'market';
   const isModeLimit = mode === 'limit';
 
@@ -423,6 +422,10 @@ export const PageMarketsContent: React.FC = () => {
         return item.close;
       });
       setPoints(newPoints);
+      const newPointsLength = newPoints.length;
+      const newPriceChange = newPoints[newPointsLength - 1] - newPoints[newPointsLength - 2];
+      const prettyNewPriceChange = prettyPriceChange(newPriceChange.toString());
+      setPriceChange(+prettyNewPriceChange);
       // console.log('getPoints:', newPoints);
     } catch (e) {
       console.error(e);
