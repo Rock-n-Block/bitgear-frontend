@@ -15,6 +15,9 @@
   line-height: 26px;
   letter-spacing: 0.04em;
   margin: 0 12px 0 0;
+  @include b('mobile') {
+    margin: 0 5px 0 0;
+  }
 }
 
 .containerInput {
@@ -26,6 +29,10 @@
   height: $height-input;
   width: 57px;
   padding: 0 0 0 10px;
+  @include b('mobile') {
+    height: $height-input-small;
+    margin-left: -16px;
+  }
 }
 
 .dropdownSearch {

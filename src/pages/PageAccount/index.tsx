@@ -1,11 +1,14 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { useMedia } from 'use-media';
 
 import ArrowDownIcon from '../../assets/icons/arrow-down-icon.svg';
 import ArrowUpIcon from '../../assets/icons/arrow-up-icon.svg';
 import CopyIcon from '../../assets/icons/copy-icon.svg';
 import EthGlassIcon from '../../assets/images/logo/eth-glass-icon.svg';
+import { sortColumn } from '../../utils/sortColumn';
 
+import sE from '../PageExplore/style.module.scss';
 import s from './style.module.scss';
 
 type TableType = {
@@ -15,52 +18,60 @@ type TableType = {
   priceChange: number;
 };
 
-const tableData: TableType[] = [
-  {
-    symbol: 'Aave',
-    name: 'AAVE',
-    price: 394.36,
-    priceChange: 1.89,
-  },
-  {
-    symbol: 'Aave',
-    name: 'AAVE',
-    price: 394.36,
-    priceChange: 1.89,
-  },
-  {
-    symbol: 'Aave',
-    name: 'AAVE',
-    price: 394.36,
-    priceChange: 1.89,
-  },
-  {
-    symbol: 'Aave',
-    name: 'AAVE',
-    price: 394.36,
-    priceChange: -1.89,
-  },
-  {
-    symbol: 'Aave',
-    name: 'AAVE',
-    price: 394.36,
-    priceChange: 1.89,
-  },
-  {
-    symbol: 'Aave',
-    name: 'AAVE',
-    price: 394.36,
-    priceChange: -1.89,
-  },
-  {
-    symbol: 'Aave',
-    name: 'AAVE',
-    price: 394.36,
-    priceChange: 1.89,
-  },
-];
-
 export const PageAccount: React.FC = () => {
+  const isWide = useMedia({ minWidth: '767px' });
+  const [tableData, setTableData] = React.useState<TableType[]>([
+    {
+      symbol: 'Aave',
+      name: 'AAVE',
+      price: 394.36,
+      priceChange: 1.89,
+    },
+    {
+      symbol: 'Aave',
+      name: 'AAVE',
+      price: 394.36,
+      priceChange: 1.89,
+    },
+    {
+      symbol: 'Aave',
+      name: 'AAVE',
+      price: 394.36,
+      priceChange: 1.89,
+    },
+    {
+      symbol: 'Aave',
+      name: 'AAVE',
+      price: 394.36,
+      priceChange: -1.89,
+    },
+    {
+      symbol: 'Aave',
+      name: 'AAVE',
+      price: 394.36,
+      priceChange: 1.89,
+    },
+    {
+      symbol: 'Aave',
+      name: 'AAVE',
+      price: 555.36,
+      priceChange: -1.89,
+    },
+    {
+      symbol: 'Aave',
+      name: 'AAVE',
+      price: 394.36,
+      priceChange: 1.89,
+    },
+  ]);
+
+  const [flagSort, setFlagSort] = React.useState<string>('');
+
+  const onSort = (param: string): void => {
+    setTableData(sortColumn(param, tableData, flagSort));
+    setFlagSort(param);
+  };
+
   const { address: userAddress = 'Address', balance: userBalance = 0 } = useSelector(
     ({ user }: any) => user,
   );
@@ -100,41 +111,99 @@ export const PageAccount: React.FC = () => {
 
         <div className={s.accountTradeHistory}>
           <table className={s.accountTradeTable}>
-            <thead>
-              <th className={s.accountTradeTableActive}>Token</th>
-              <th>Symbol</th>
-              <th>Price</th>
-              <th>Last 24h</th>
-            </thead>
-            <tbody>
-              {tableData.map((token: TableType) => {
-                const { symbol, name, price, priceChange } = token;
+            {isWide ? (
+              <thead>
+                <th className={s.accountTradeTableActive} onClick={onSort.bind(this, 'name')}>
+                  Token
+                </th>
+                <th>Symbol</th>
+                <th onClick={onSort.bind(this, 'price')}>Price</th>
+                <th onClick={onSort.bind(this, 'priceChange')}>Last 24h</th>
+              </thead>
+            ) : (
+              <thead>
+                <th className={s.accountTradeTableActive} onClick={onSort.bind(this, 'name')}>
+                  Token
+                </th>
+                <th> </th>
+                <th onClick={onSort.bind(this, 'priceChange')}>Last 24h</th>
+              </thead>
+            )}
+            {isWide ? (
+              <tbody>
+                {tableData.map((token: TableType) => {
+                  const { symbol, name, price, priceChange } = token;
 
-                let priceChangeModel = (
-                  <td>
-                    <img src={ArrowUpIcon} alt="arrow up" /> {`${priceChange}`}%
-                  </td>
-                );
-
-                if (priceChange < 0) {
-                  priceChangeModel = (
-                    <td className={`${s.accountTradeTableDown}`}>
-                      <img src={ArrowDownIcon} alt="arrow down" />
-                      {priceChange}%
+                  let priceChangeModel = (
+                    <td>
+                      <img src={ArrowUpIcon} alt="arrow up" /> {`${priceChange}`}%
                     </td>
                   );
-                }
 
-                return (
-                  <tr>
-                    <td>{name}</td>
-                    <td>{symbol}</td>
-                    <td>{price}$</td>
-                    {priceChangeModel}
-                  </tr>
-                );
-              })}
-            </tbody>
+                  if (priceChange < 0) {
+                    priceChangeModel = (
+                      <td className={`${s.accountTradeTableDown}`}>
+                        <img src={ArrowDownIcon} alt="arrow down" />
+                        {priceChange}%
+                      </td>
+                    );
+                  }
+
+                  return (
+                    <tr>
+                      <td>{name}</td>
+                      <td>{symbol}</td>
+                      <td>{price}$</td>
+                      {priceChangeModel}
+                    </tr>
+                  );
+                })}
+              </tbody>
+            ) : (
+              <tbody>
+                {tableData.map((token: TableType, index: number) => {
+                  const { symbol, name, price, priceChange } = token;
+
+                  let priceChangeModel = (
+                    <td className={`${sE.mobilePriceChangeModel}`}>
+                      <div className={sE.flexContainerRow}>
+                        <img src={ArrowUpIcon} alt="arrow up" />
+                        {`${priceChange}`}%
+                      </div>
+                    </td>
+                  );
+
+                  if (priceChange < 0) {
+                    priceChangeModel = (
+                      <td className={`${s.accountTradeTableDown} ${sE.mobilePriceChangeModel}`}>
+                        <img src={ArrowDownIcon} alt="arrow down" />
+                        {priceChange}%
+                      </td>
+                    );
+                  }
+
+                  return (
+                    <>
+                      {index < 5 && (
+                        <tr>
+                          <td>
+                            {name}
+                            <div className={sE.mobileSymbol}>{symbol}</div>
+                          </td>
+                          <td />
+                          <td>
+                            <div className={s.mobilePriceAndChangeContainer}>
+                              <div className={sE.mobilePrice}>${price}</div>
+                              {priceChangeModel}
+                            </div>
+                          </td>
+                        </tr>
+                      )}
+                    </>
+                  );
+                })}
+              </tbody>
+            )}
           </table>
         </div>
       </section>

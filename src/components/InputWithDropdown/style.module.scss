@@ -50,6 +50,10 @@
   &::placeholder {
     color: $color-text-input-placeholder;
   }
+  @include b('mobile') {
+    height: $height-input-small;
+    font-size: 16px;
+  }
 }
 
 .inputBig {
@@ -132,6 +136,9 @@
   border-left: $border-input;
   border-radius: 0 0 20px 20px;
   z-index: 2;
+  @include b('mobile'){
+    top: $height-input-small;
+  }
 }
 
 .dropdownInner {
