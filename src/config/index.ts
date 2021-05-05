@@ -4,7 +4,7 @@ const IS_TESTING_ON_ROPSTEN = true;
 export default {
   IS_PRODUCTION,
   IS_TESTING_ON_ROPSTEN,
-  netType: IS_PRODUCTION ? 'kovan' : IS_TESTING_ON_ROPSTEN ? 'ropsten' : 'mainnet',
+  netType: IS_PRODUCTION ? 'mainnet' : IS_TESTING_ON_ROPSTEN ? 'ropsten' : 'kovan',
   links: {
     twitter: 'https://twitter.com/',
     telegram: 'https://t.me/',
@@ -24,6 +24,8 @@ export default {
       : 'https://kovan.api.0x.org/',
     'etherscan': IS_PRODUCTION
       ? 'https://api.etherscan.io/api'
+      : IS_TESTING_ON_ROPSTEN
+      ? 'https://api-ropsten.etherscan.io/api'
       : 'https://api-kovan.etherscan.io/api',
   },
   keys: {

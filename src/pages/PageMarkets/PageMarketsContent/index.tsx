@@ -523,7 +523,7 @@ export const PageMarketsContent: React.FC = () => {
         setWaiting(false);
         toggleModal({
           open: true,
-          text: `Order was not signed`,
+          text: `Something gone wrong. Order was not signed`,
         });
         return null;
       }
@@ -535,10 +535,14 @@ export const PageMarketsContent: React.FC = () => {
         setWaiting(false);
         toggleModal({
           open: true,
-          text: `Order was not sent`,
+          text: `Something gone wrong. Order was not placed`,
         });
         return null;
       }
+      toggleModal({
+        open: true,
+        text: `Order is successfully placed`,
+      });
       console.log('tradeLimit resultSendOrder:', resultSendOrder);
       setWaiting(false);
       return null;
