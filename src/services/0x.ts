@@ -4,6 +4,7 @@ import BigNumber from 'bignumber.js/bignumber';
 import qs from 'query-string';
 
 import config from '../config';
+import tokensRopsten from '../data/tokensRopsten';
 
 type TypeGetQuoteProps = {
   buyToken: string;
@@ -57,20 +58,30 @@ type TypeSendOrderProps = {
 export class Service0x {
   private axios: any;
 
+  private axiosMainnet: any;
+
   constructor() {
     this.axios = axios.create({
       baseURL: config.apis['0x'],
+    });
+    this.axiosMainnet = axios.create({
+      baseURL: 'https://api.0x.org',
     });
   }
 
   getTokens = async () => {
     try {
+      if (config.IS_TESTING_ON_ROPSTEN)
+        return {
+          status: 'SUCCESS',
+          data: tokensRopsten,
+        };
       const url = `/swap/v1/tokens`;
       const result = await this.axios.get(url);
       // console.log('Service0x getTokens:', result);
       return {
         status: 'SUCCESS',
-        data: result.data,
+        data: result.data.records,
       };
     } catch (e) {
       // console.error(e);
@@ -104,7 +115,12 @@ export class Service0x {
       props.sellAmount = sellAmount * 10 ** decimals; // todo
       console.log('Service0x getPrice:', props);
       const url = `/swap/v1/price?${qs.stringify(props)}`;
-      const result = await this.axios.get(url);
+      let result;
+      if (config.IS_TESTING_ON_ROPSTEN) {
+        result = await this.axiosMainnet.get(url);
+      } else {
+        result = await this.axios.get(url);
+      }
       // console.log('Service0x getQuote:', result);
       return {
         status: 'SUCCESS',
@@ -119,7 +135,12 @@ export class Service0x {
   getPrices = async (props: TypeGetPricesProps) => {
     try {
       const url = `/swap/v1/prices?${qs.stringify(props)}`;
-      const result = await this.axios.get(url);
+      let result;
+      if (config.IS_TESTING_ON_ROPSTEN) {
+        result = await this.axiosMainnet.get(url);
+      } else {
+        result = await this.axios.get(url);
+      }
       // console.log('Service0x getQuote:', result);
       return {
         status: 'SUCCESS',

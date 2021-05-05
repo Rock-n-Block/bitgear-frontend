@@ -1,6 +1,7 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
+import BigNumber from 'bignumber.js/bignumber';
 import cns from 'classnames';
 import _ from 'lodash';
 import { v1 as uuid } from 'uuid';
@@ -337,6 +338,8 @@ export const PageMarketsContent: React.FC = () => {
   const getPrices = React.useCallback(async () => {
     try {
       const { decimals } = getTokenBySymbol(symbolPay);
+      console.log('getPrices:', decimals);
+      if (!decimals) return null;
       const result = await Zx.getPrice({
         buyToken: symbolReceive,
         sellToken: symbolPay,
@@ -351,8 +354,10 @@ export const PageMarketsContent: React.FC = () => {
       } else {
         setPrice(0);
       }
+      return null;
     } catch (e) {
       console.error(e);
+      return null;
     }
   }, [symbolPay, symbolReceive, getTokenBySymbol]);
 
@@ -486,70 +491,35 @@ export const PageMarketsContent: React.FC = () => {
     [toggleModal],
   );
 
-  const tradeLimit = React.useCallback(async () => {
+  const verifyForm = React.useCallback(() => {
     try {
-      const { address: addressPay, decimals: decimalsPay }: any = getTokenBySymbol(symbolPay);
-      const { address: addressReceive, decimals: decimalsReceive }: any = getTokenBySymbol(
-        symbolReceive,
-      );
-      const newExpiration = new Date().getTime() + expiration * 60 * 1000;
-      const props = {
-        provider: web3Provider,
-        chainId,
-        userAddress,
-        addressPay,
-        addressReceive,
-        decimalsPay,
-        decimalsReceive,
-        amountPay: String(amountPay),
-        amountReceive: String(amountReceive),
-        expiration: newExpiration,
-      };
-      const resultSignOrder = await Zx.signOrder(props);
-      console.log('tradeLimit resultSignOrder:', resultSignOrder);
-      if (resultSignOrder.status === 'ERROR') {
-        setWaiting(false);
+      if (!symbolPay) {
         toggleModal({
           open: true,
-          text: `Order was not signed`,
+          text: `Please, choose token to pay`,
         });
-        return null;
+        return false;
       }
-      const order: any = resultSignOrder.data;
-      console.log('tradeLimit order:', order);
-      const resultSendOrder = await Zx.sendOrder(order);
-      if (resultSendOrder.status === 'ERROR') {
-        console.error('tradeLimit sendOrder:', resultSendOrder.error);
-        setWaiting(false);
+      if (!symbolReceive) {
         toggleModal({
           open: true,
-          text: `Order was not sent`,
+          text: `Please, choose token to receive`,
         });
-        return null;
+        return false;
       }
-      console.log('tradeLimit resultSendOrder:', resultSendOrder);
-      setWaiting(false);
-      return null;
+      return true;
     } catch (e) {
       console.error(e);
-      setWaiting(false);
-      return null;
+      return false;
     }
-  }, [
-    getTokenBySymbol,
-    symbolPay,
-    symbolReceive,
-    web3Provider,
-    amountPay,
-    amountReceive,
-    userAddress,
-    expiration,
-    chainId,
-    toggleModal,
-  ]);
+  }, [symbolPay, symbolReceive, toggleModal]);
 
   const trade = React.useCallback(async () => {
     try {
+      if (!verifyForm()) {
+        setWaiting(false);
+        return null;
+      }
       const { decimals } = getTokenBySymbol(symbolPay);
       const excludedSources = exchangesExcluded.join(',');
       const gasPriceSetting = getGasPriceSetting();
@@ -589,6 +559,7 @@ export const PageMarketsContent: React.FC = () => {
       return null;
     }
   }, [
+    verifyForm,
     slippage,
     getGasPriceSetting,
     symbolPay,
@@ -601,6 +572,88 @@ export const PageMarketsContent: React.FC = () => {
     getBalanceOfTokensReceive,
     getTokenBySymbol,
     exchangesExcluded,
+  ]);
+
+  const tradeLimit = React.useCallback(async () => {
+    try {
+      if (!verifyForm()) {
+        setWaiting(false);
+        return null;
+      }
+      const { address: addressPay, decimals: decimalsPay }: any = getTokenBySymbol(symbolPay);
+      const { address: addressReceive, decimals: decimalsReceive }: any = getTokenBySymbol(
+        symbolReceive,
+      );
+      const contractAbi = erc20Abi;
+      const amountPayInWei = new BigNumber(amountPay).multipliedBy(10 ** decimalsPay).toString();
+      const resultApprove = await web3Provider.approve({
+        data: { from: userAddress, sellAmount: amountPayInWei, sellTokenAddress: addressPay },
+        contractAbi,
+      });
+      console.log('tradeLimit resultApprove:', resultApprove);
+      const newExpiration = new Date().getTime() + expiration * 60 * 1000;
+      const props = {
+        provider: web3Provider,
+        chainId,
+        userAddress,
+        addressPay,
+        addressReceive,
+        decimalsPay,
+        decimalsReceive,
+        amountPay: String(amountPay),
+        amountReceive: String(amountReceive),
+        expiration: newExpiration,
+      };
+      const resultSignOrder = await Zx.signOrder(props);
+      console.log('tradeLimit resultSignOrder:', resultSignOrder);
+      if (resultSignOrder.status === 'ERROR') {
+        setWaiting(false);
+        toggleModal({
+          open: true,
+          text: `Something gone wrong. Order was not signed`,
+        });
+        return null;
+      }
+      const order: any = resultSignOrder.data;
+      console.log('tradeLimit order:', order);
+      const resultSendOrder = await Zx.sendOrder(order);
+      if (resultSendOrder.status === 'ERROR') {
+        console.error('tradeLimit sendOrder:', resultSendOrder.error);
+        setWaiting(false);
+        toggleModal({
+          open: true,
+          text: `Something gone wrong. Order was not placed`,
+        });
+        return null;
+      }
+      toggleModal({
+        open: true,
+        text: `Order was successfully placed`,
+      });
+      console.log('tradeLimit resultSendOrder:', resultSendOrder);
+      setWaiting(false);
+      return null;
+    } catch (e) {
+      console.error(e);
+      setWaiting(false);
+      toggleModal({
+        open: true,
+        text: `Something gone wrong. Order was not placed`,
+      });
+      return null;
+    }
+  }, [
+    verifyForm,
+    getTokenBySymbol,
+    symbolPay,
+    symbolReceive,
+    web3Provider,
+    amountPay,
+    amountReceive,
+    userAddress,
+    expiration,
+    chainId,
+    toggleModal,
   ]);
 
   const handleTrade = () => {

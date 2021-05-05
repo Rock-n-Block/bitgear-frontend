@@ -11,11 +11,17 @@ export default class Web3Provider {
 
   public web3Provider: any;
 
+  public allowanceTarget: string;
+
+  public addresses: any;
+
   constructor() {
     this.provider = new WalletConnectProvider({
       infuraId: config.keys.infura,
     });
     this.web3Provider = new Web3(this.provider);
+    this.addresses = config.addresses;
+    this.allowanceTarget = this.addresses[config.netType].allowanceTarget;
 
     this.provider.on('accountsChanged', (accounts: string[]) => {
       const fromStorage = localStorage.getItem('accountsWalletConnect') || '{}';
@@ -95,12 +101,13 @@ export default class Web3Provider {
 
   public approve = async ({ data, contractAbi }: any) => {
     try {
-      const { from, allowanceTarget, sellAmount, sellTokenAddress } = data;
+      // const { from, allowanceTarget, sellAmount, sellTokenAddress } = data;
+      const { from, sellAmount, sellTokenAddress } = data;
       // console.log('Web3Provider approve data:', data);
       const contractAddress = sellTokenAddress;
       // console.log('Web3Provider approve contractAbi:', contractAbi);
       const contract = new this.web3Provider.eth.Contract(contractAbi, contractAddress);
-      return contract.methods.approve(allowanceTarget, sellAmount).send({ from });
+      return contract.methods.approve(this.allowanceTarget, sellAmount).send({ from });
     } catch (e) {
       console.error(e);
       return null;
