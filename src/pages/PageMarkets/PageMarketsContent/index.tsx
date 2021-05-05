@@ -549,6 +549,10 @@ export const PageMarketsContent: React.FC = () => {
     } catch (e) {
       console.error(e);
       setWaiting(false);
+      toggleModal({
+        open: true,
+        text: `Something gone wrong. Order was not placed`,
+      });
       return null;
     }
   }, [
