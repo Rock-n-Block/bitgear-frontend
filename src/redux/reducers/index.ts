@@ -2,6 +2,7 @@ import { combineReducers } from 'redux';
 
 import zx from './0x';
 import modal from './modal';
+import status from './status';
 import user from './user';
 import wallet from './wallet';
 
@@ -10,4 +11,5 @@ export default combineReducers({
   wallet,
   zx,
   modal,
+  status,
 });

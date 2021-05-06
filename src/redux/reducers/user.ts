@@ -2,6 +2,7 @@ const initialState = {
   address: null,
   network: null,
   balance: 0,
+  balances: {},
 };
 
 export default (state = initialState, params: any) => {

@@ -883,6 +883,12 @@ export const PageMarketsContent: React.FC = () => {
     getPrices();
   }, [symbolPay, getPrices, getTokenPay]);
 
+  React.useEffect(() => {
+    setSymbolPay(symbolOne);
+    if (!symbolTwo) return;
+    setSymbolReceive(symbolTwo);
+  }, [symbolOne, symbolTwo]);
+
   const RadioLabelFast = (
     <div className={s.radioLabelGas}>
       <div>Fast</div>

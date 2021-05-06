@@ -1,18 +1,20 @@
 import React from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
+import _ from 'lodash';
 import useMedia from 'use-media';
+import { v1 as uuid } from 'uuid';
 
 import { ReactComponent as IconCopy } from '../../assets/icons/copy-icon.svg';
 import { ReactComponent as IconExit } from '../../assets/icons/exit.svg';
-import { ReactComponent as IconInfo } from '../../assets/icons/info.svg';
 import { ReactComponent as IconMedium } from '../../assets/icons/social/medium.svg';
 import { ReactComponent as IconTelegram } from '../../assets/icons/social/telegram.svg';
 import { ReactComponent as IconTwitter } from '../../assets/icons/social/twitter.svg';
 import IconLogo from '../../assets/images/logo/HQ2.png';
 import { ReactComponent as IconMetamask } from '../../assets/images/logo/metamask-logo.svg';
 import { ReactComponent as IconWalletConnect } from '../../assets/images/logo/wallet-connect-logo.svg';
+import imageTokenPay from '../../assets/images/token.png';
 import config from '../../config';
 import { useWalletConnectorContext } from '../../contexts/WalletConnect';
 import { userActions } from '../../redux/actions';
@@ -20,6 +22,100 @@ import { getFromStorage, setToStorage } from '../../utils/localStorage';
 import { Dropdown } from '../Dropdown';
 
 import s from './style.module.scss';
+
+type TypeItemTokenBalanceProps = {
+  symbol: string;
+  balance: string;
+};
+
+export const ItemTokenBalance: React.FC<TypeItemTokenBalanceProps> = ({ symbol, balance }) => {
+  const history = useHistory();
+  const { tokens } = useSelector(({ zx }: any) => zx);
+
+  const getTokenBySymbol = React.useCallback(
+    (symbolInner: string) => {
+      const tokenEmpty = { name: 'Currency', symbol: null, image: imageTokenPay };
+      try {
+        const token = tokens.filter((item: any) => item.symbol === symbolInner);
+        // console.log('Header getTokenBySymbol:', token);
+        return token.length > 0 ? token[0] : tokenEmpty;
+      } catch (e) {
+        console.error('Header getTokenBySymbol:', e);
+        return tokenEmpty;
+      }
+    },
+    [tokens],
+  );
+
+  const handleClick = () => {
+    history.push(`/markets/${symbol}`);
+  };
+
+  const { image } = getTokenBySymbol(symbol);
+  const balancePrettified = (+balance).toFixed(12);
+
+  return (
+    <Link
+      className={s.headerDropdownItemToken}
+      to={`/markets/${symbol}`}
+      // role="button"
+      // tabIndex={0}
+      // onKeyDown={() => {}}
+      onClick={handleClick}
+    >
+      <div className={s.headerDropdownItemTokenImageWrap}>
+        <img src={image} alt="" className={s.headerDropdownItemTokenImage} />
+      </div>
+      <div>
+        <div className={s.headerDropdownItemTokenSymbol}>{symbol}:</div>
+        <div className={s.headerDropdownItemTokenBalance}>{balancePrettified}</div>
+      </div>
+    </Link>
+  );
+};
+
+export const ListOfTokenBalances: React.FC = () => {
+  const { balances: userBalances } = useSelector(({ user }: any) => user);
+  const { tokens } = useSelector(({ zx }: any) => zx);
+  const { loadingBalances } = useSelector(({ status }: any) => status);
+
+  const [userBalancesFiltered, setUserBalancesFiltered] = React.useState<any>({});
+
+  const userBalancesAsArray = Object.entries(userBalancesFiltered);
+
+  const isLoadingBalancesDone = loadingBalances === 'done';
+  const isLoadingBalancesError = loadingBalances === 'error';
+
+  const filterAndSortUserBalances = React.useCallback(() => {
+    const newBalances = _.pickBy(userBalances, (v) => v !== null && v !== undefined && v !== 0);
+    setUserBalancesFiltered(newBalances);
+  }, [userBalances]);
+
+  React.useEffect(() => {
+    if (!tokens || tokens?.length === 0) return;
+    filterAndSortUserBalances();
+  }, [tokens, filterAndSortUserBalances]);
+
+  if (userBalancesAsArray.length === 0) {
+    return (
+      <div className={s.headerDropdownItemTokens}>
+        {isLoadingBalancesDone
+          ? 'You do not have any tokens'
+          : isLoadingBalancesError
+          ? 'Not loaded'
+          : 'Loading...'}
+      </div>
+    );
+  }
+  return (
+    <div className={s.headerDropdownItemTokensList}>
+      {userBalancesAsArray.map((item: any) => {
+        const [symbol, balance] = item;
+        return <ItemTokenBalance key={uuid()} symbol={symbol} balance={balance} />;
+      })}
+    </div>
+  );
+};
 
 export const Header: React.FC = () => {
   const { web3Provider } = useWalletConnectorContext();
@@ -158,7 +254,9 @@ export const Header: React.FC = () => {
                     Your account
                   </Link>
                 </div>
-                <div className={s.headerDropdownItemTokens}>You do not have any tokens</div>
+
+                <div className={s.headerDropdownItemLabel}>Your balance</div>
+                <ListOfTokenBalances />
 
                 <CopyToClipboard text={userAddress} onCopy={handleCopyAddress}>
                   <div
@@ -172,16 +270,6 @@ export const Header: React.FC = () => {
                     {isAddressCopied ? 'Copied!' : 'Copy address'}
                   </div>
                 </CopyToClipboard>
-                <div
-                  role="button"
-                  tabIndex={0}
-                  onKeyDown={() => {}}
-                  className={s.headerDropdownItem}
-                  onClick={() => {}}
-                >
-                  <IconInfo />
-                  Help center
-                </div>
                 <div
                   role="button"
                   tabIndex={0}

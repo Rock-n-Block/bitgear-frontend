@@ -169,12 +169,27 @@ $fs: 16px;
 }
 
 .headerDropdown {
-  width: 370px;
+  position: fixed;
+  top: $height-header;
+  right: 20px;
+  min-width: 370px;
   padding: 0;
+  z-index: 1000000;
+  border-radius: 20px;
+
+  @include b('mobile') {
+    min-width: calc(100vw - 40px);
+    width: calc(100vw - 40px);
+    margin: 0 20px;
+  }
 
   &Inner {
-    height: 400px;
+    min-height: 580px;
     padding: 18px 30px 40px 30px;
+
+    @include b('mobile') {
+      padding: 18px 20px 10px 20px;
+    }
   }
 
   &Item {
@@ -191,13 +206,76 @@ $fs: 16px;
     }
   }
 
+  &ItemLabel {
+    margin: 10px 0 0 0;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 26px;
+    color: $color-text-secondary;
+  }
+
+  &ItemTokensList {
+    margin: 0 -10px 10px 0;
+    padding: 0;
+    max-height: 300px;
+    overflow: auto;
+  }
+
   &ItemTokens {
     @include flex(row, center, center);
-    margin: 10px 0;
     padding: 20px;
     background: $color-bg-input-small;
     border-radius: 4px;
     min-height: 100px;
+  }
+
+  &ItemToken {
+    @include grid(38px 1fr, 1fr, 20px);
+    margin: 10px 0;
+    padding: 20px;
+    background: $color-bg-input-small;
+    border-radius: 4px;
+    min-height: 78px;
+
+    @include b('mobile') {
+      @include grid(38px 1fr, 1fr, 10px);
+      min-height: 48px;
+      padding: 10px;
+    }
+  }
+
+  &ItemTokenImageWrap {
+    @include flex(row, center, center);
+  }
+
+  &ItemTokenImage {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+  }
+
+  &ItemTokenSymbol {
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 25px;
+    color: $color-text-secondary;
+
+    @include b('mobile') {
+      font-size: 14px;
+      line-height: 18px;
+    }
+  }
+
+  &ItemTokenBalance {
+    font-weight: 500;
+    font-size: 24px;
+    line-height: 25px;
+    color: $color-text-primary;
+
+    @include b('mobile') {
+      font-size: 16px;
+      line-height: 20px;
+    }
   }
 }
 

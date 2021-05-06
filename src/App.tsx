@@ -1,10 +1,12 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom';
 
 import imageTokenPay from './assets/images/token.png';
+import { useWalletConnectorContext } from './contexts/WalletConnect';
 import tokensListData from './data/coinlist.json';
-import { zxActions } from './redux/actions';
+import erc20Abi from './data/erc20Abi.json';
+import { statusActions, userActions, zxActions } from './redux/actions';
 import { Service0x } from './services/0x';
 // import { CryptoCompareService } from './services/CryptoCompareService';
 import * as Components from './components';
@@ -27,11 +29,21 @@ const Zx = new Service0x();
 // const CryptoCompare = new CryptoCompareService();
 
 export const App: React.FC = () => {
+  const { web3Provider } = useWalletConnectorContext();
+
   const dispatch = useDispatch();
   const setTokens = React.useCallback((props: any) => dispatch(zxActions.setTokens(props)), [
     dispatch,
   ]);
+  const setUserData = React.useCallback((props: any) => dispatch(userActions.setUserData(props)), [
+    dispatch,
+  ]);
+  const setStatus = React.useCallback((props: any) => dispatch(statusActions.setStatus(props)), [
+    dispatch,
+  ]);
+  const { address: userAddress } = useSelector(({ user }: any) => user);
 
+  const [tokens0x, setTokens0x] = React.useState<any[]>([]);
   const [tokensCryptoCompare, setTokensCryptoCompare] = React.useState<any[]>([]);
 
   const getTokensFromCryptoCompare = async () => {
@@ -72,14 +84,47 @@ export const App: React.FC = () => {
     try {
       const resultGetTokens = await Zx.getTokens();
       const newTokens = resultGetTokens.data;
-      console.log('getTokens:', newTokens);
+      console.log('App getTokens:', newTokens);
       newTokens.push(tokenGear);
       const tokens = changeTokensInfo(newTokens);
       setTokens({ tokens });
+      setTokens0x(tokens);
     } catch (e) {
-      console.error('getTokens:', e);
+      console.error('App getTokens:', e);
     }
   }, [setTokens, changeTokensInfo]);
+
+  const getTokensBalances = React.useCallback(async () => {
+    try {
+      setStatus({ loadingBalances: 'loading' });
+      const balances = {};
+      // eslint-disable-next-line no-plusplus
+      for (let i = 0; i < tokens0x.length; i++) {
+        const token = tokens0x[i];
+        const { symbol, address }: { symbol: string; address: string } = token;
+        let balance = 0;
+        if (symbol === 'ETH') {
+          // eslint-disable-next-line no-await-in-loop
+          balance = await web3Provider.getBalance(userAddress);
+        } else {
+          // eslint-disable-next-line no-await-in-loop
+          balance = await web3Provider.balanceOf({
+            address: userAddress,
+            contractAddress: address,
+            contractAbi: erc20Abi,
+          });
+        }
+        (balances as any)[symbol] = balance;
+      }
+      console.log('App getTokensBalances balances:', balances);
+      setUserData({ balances });
+      setStatus({ loadingBalances: 'done' });
+    } catch (e) {
+      console.error('App getTokensBalances:', e);
+      setStatus({ loadingBalances: 'error' });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tokens0x, setTokens, setUserData, userAddress, web3Provider]);
 
   React.useEffect(() => {
     getTokensFromCryptoCompare();
@@ -91,6 +136,13 @@ export const App: React.FC = () => {
     getTokens();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tokensCryptoCompare]);
+
+  React.useEffect(() => {
+    if (!tokens0x || tokens0x?.length === 0) return;
+    if (!userAddress) return;
+    getTokensBalances();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tokens0x, userAddress]);
 
   return (
     <Router>
