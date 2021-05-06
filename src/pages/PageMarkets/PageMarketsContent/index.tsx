@@ -105,6 +105,7 @@ export const PageMarketsContent: React.FC = () => {
   const refSelectLabelSlippage = React.useRef<HTMLDivElement>(null);
   const refInputGasPrice = React.useRef<HTMLInputElement>(null);
 
+  const [tokensFiltered, setTokensFiltered] = React.useState<any[]>(tokens);
   const [price, setPrice] = React.useState<number>(0);
   const [priceChange, setPriceChange] = React.useState<number>(0);
   const [priceChart, setPriceChart] = React.useState<string | null>();
@@ -284,7 +285,7 @@ export const PageMarketsContent: React.FC = () => {
   const handleChangeSearchPay = (value: string) => {
     try {
       setSearchValuePay(value);
-      const result = tokens.filter((token: TypeToken) => {
+      const result = tokensFiltered.filter((token: TypeToken) => {
         const includesInSymbol = token.symbol.toLowerCase().includes(value.toLowerCase());
         const includesInName = token.name.toLowerCase().includes(value.toLowerCase());
         if (includesInSymbol || includesInName) return true;
@@ -300,7 +301,7 @@ export const PageMarketsContent: React.FC = () => {
   const handleChangeSearchReceive = (value: string) => {
     try {
       setSearchValueReceive(value);
-      const result = tokens.filter((token: TypeToken) => {
+      const result = tokensFiltered.filter((token: TypeToken) => {
         const includesInSymbol = token.symbol.toLowerCase().includes(value.toLowerCase());
         const includesInName = token.name.toLowerCase().includes(value.toLowerCase());
         if (includesInSymbol || includesInName) return true;
@@ -362,9 +363,9 @@ export const PageMarketsContent: React.FC = () => {
         console.log('getPrices:', result);
         if (result.status === 'SUCCESS') {
           newPrice = result.data.PRICE;
-          const newPriceChange = prettyPriceChange(result.data.CHANGEHOUR);
           setPrice(newPrice);
-          setPriceChange(+newPriceChange);
+          // const newPriceChange = prettyPriceChange(result.data.CHANGEHOUR);
+          // setPriceChange(+newPriceChange);
         } else {
           setPrice(0);
         }
@@ -386,6 +387,24 @@ export const PageMarketsContent: React.FC = () => {
     }
   }, [getTokenBySymbol, symbolPay]);
 
+  const filterTokens = React.useCallback(() => {
+    try {
+      let newTokens = [];
+      if (isModeLimit) {
+        newTokens = tokens.filter((item: any) => item.symbol !== 'ETH');
+      } else {
+        newTokens = tokens;
+      }
+      // eslint-disable-next-line no-confusing-arrow
+      newTokens.sort((a: any, b: any) => (a.name !== b.name ? (a.name < b.name ? -1 : 1) : 0));
+      setTokensFiltered(newTokens);
+      return null;
+    } catch (e) {
+      console.error('filterTokens:', e);
+      return null;
+    }
+  }, [isModeLimit, tokens]);
+
   const getTokensSymbolsReceive = async () => {
     try {
       const result = await Zx.getPrices({
@@ -403,7 +422,7 @@ export const PageMarketsContent: React.FC = () => {
 
   const getTokensReceive = React.useCallback(async () => {
     try {
-      const newTokensReceive = tokens.filter((item: any) => item.symbol !== symbolPay);
+      const newTokensReceive = tokensFiltered.filter((item: any) => item.symbol !== symbolPay);
       if (newTokensReceive.length === 0) {
         setSymbolReceive('');
         setTokensReceive([]);
@@ -414,7 +433,7 @@ export const PageMarketsContent: React.FC = () => {
     } catch (e) {
       console.error(e);
     }
-  }, [symbolPay, tokens]);
+  }, [symbolPay, tokensFiltered]);
 
   const getHistory = React.useCallback(async () => {
     try {
@@ -438,10 +457,10 @@ export const PageMarketsContent: React.FC = () => {
         return item.close;
       });
       setPoints(newPoints);
-      // const newPointsLength = newPoints.length;
-      // const newPriceChange = newPoints[newPointsLength - 1] - newPoints[newPointsLength - 2];
-      // const prettyNewPriceChange = prettyPriceChange(newPriceChange.toString());
-      // setPriceChange(+prettyNewPriceChange);
+      const newPointsLength = newPoints.length;
+      const newPriceChange = newPoints[newPointsLength - 1] - newPoints[newPointsLength - 2];
+      const prettyNewPriceChange = prettyPriceChange(newPriceChange.toString());
+      setPriceChange(+prettyNewPriceChange);
       // console.log('getPoints:', newPoints);
     } catch (e) {
       console.error(e);
@@ -822,6 +841,11 @@ export const PageMarketsContent: React.FC = () => {
   }, []);
 
   React.useEffect(() => {
+    filterTokens();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mode]);
+
+  React.useEffect(() => {
     getPoints();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [marketHistory]);
@@ -833,18 +857,18 @@ export const PageMarketsContent: React.FC = () => {
   }, [period, tokens, tokensReceive]);
 
   React.useEffect(() => {
-    if (!tokens || tokens?.length === 0) return;
-    console.log('PageMarketsContent useEffect tokens:', tokens);
+    if (!tokensFiltered || tokensFiltered?.length === 0) return;
+    console.log('PageMarketsContent useEffect tokensFiltered:', tokensFiltered);
     // eslint-disable-next-line react-hooks/exhaustive-deps
     getTokensReceive();
-  }, [tokens, getTokensReceive]);
+  }, [tokensFiltered, getTokensReceive]);
 
   React.useEffect(() => {
-    if (!tokens || tokens?.length === 0) return;
+    if (!tokensFiltered || tokensFiltered?.length === 0) return;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    setSearchTokensResultPay(tokens);
+    setSearchTokensResultPay(tokensFiltered);
     setSearchTokensResultReceive(tokensReceive);
-  }, [tokens, tokensReceive]);
+  }, [tokensFiltered, tokensReceive]);
 
   React.useEffect(() => {
     if (!web3Provider && !userAddress) return;
