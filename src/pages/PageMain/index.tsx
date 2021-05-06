@@ -6,8 +6,12 @@ import { v1 as uuid } from 'uuid';
 import imageCoin from '../../assets/images/coin.png';
 import imageRocket from '../../assets/images/rocket.png';
 import { Search } from '../../components';
+import { CryptoCompareService } from '../../services/CryptoCompareService';
+import { prettyPrice, prettyPriceChange } from '../../utils/prettifiers';
 
 import s from './style.module.scss';
+
+const CryptoCompare = new CryptoCompareService();
 
 type TypeToken = {
   symbol: string;
@@ -18,16 +22,67 @@ type TypeToken = {
 };
 
 type TypeCardProps = {
-  children: React.ReactElement[];
+  token: TypeToken;
   to: string;
 };
 
 const firstTokens = ['DAI', 'WETH', 'GEAR'];
 
-export const Card: React.FC<TypeCardProps> = ({ children = [], to = '/' }) => {
+export const CardToken: React.FC<TypeCardProps> = ({ token, to = '/' }) => {
+  const [price, setPrice] = React.useState<number>(0);
+  const [priceChange, setPriceChange] = React.useState<string>('0');
+
+  const { symbol, image = imageCoin } = token;
+  let classPriceChange = s.cardPriceChange;
+  let newPriceChange = priceChange.toString();
+  if (priceChange && +priceChange > 0) {
+    newPriceChange = `+${priceChange}`;
+    classPriceChange = s.cardPriceChangePlus;
+  } else if (priceChange && +priceChange < 0) {
+    classPriceChange = s.cardPriceChangeMinus;
+  }
+
+  const getPrices = React.useCallback(async () => {
+    try {
+      const resultGetExchangeOfPair = await CryptoCompare.getExchangeOfPair({
+        symbolOne: symbol,
+        symbolTwo: 'USD',
+      });
+      if (resultGetExchangeOfPair.status === 'SUCCESS') {
+        console.log('PageMain resultGetExchangeOfPair:', resultGetExchangeOfPair);
+        const resultGetPrice = await CryptoCompare.getMarketData({
+          symbolOne: symbol,
+          symbolTwo: 'USD',
+        });
+        if (resultGetExchangeOfPair.status === 'SUCCESS') {
+          const newPrice = prettyPrice(resultGetPrice.data.PRICE);
+          const newNewPriceChange = prettyPriceChange(resultGetPrice.data.CHANGEPCTHOUR);
+          setPrice(+newPrice);
+          setPriceChange(newNewPriceChange.toString());
+          console.log('PageMain resultGetPrice:', resultGetPrice);
+        }
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }, [symbol]);
+
+  React.useEffect(() => {
+    if (!token) return;
+    getPrices();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [getPrices]);
+
   return (
     <Link to={to} className={s.card}>
-      {children}
+      <div className={s.cardContainerFirst}>
+        <div className={s.cardSymbol}>{symbol}</div>
+        <div className={s.cardPrice}>${price}</div>
+        <div className={classPriceChange}>{newPriceChange}%</div>
+      </div>
+      <div className={s.cardContainerSecond}>
+        <img src={image} alt="" className={s.cardImage} />
+      </div>
     </Link>
   );
 };
@@ -66,27 +121,8 @@ export const PageMain: React.FC = () => {
       </section>
       <section className={s.containerCards}>
         {tokensList.map((token: TypeToken) => {
-          let { priceChange } = token;
-          const { symbol, price, image = imageCoin } = token;
-          let classPriceChange = s.cardPriceChange;
-          if (priceChange && priceChange > 0) {
-            priceChange = `+${priceChange}`;
-            classPriceChange = s.cardPriceChangePlus;
-          } else if (priceChange && priceChange < 0) {
-            classPriceChange = s.cardPriceChangeMinus;
-          }
-          return (
-            <Card key={`token-${uuid()}`} to={`/markets/${symbol}`}>
-              <div className={s.cardContainerFirst}>
-                <div className={s.cardSymbol}>{symbol}</div>
-                <div className={s.cardPrice}>${price}</div>
-                <div className={classPriceChange}>{priceChange}%</div>
-              </div>
-              <div className={s.cardContainerSecond}>
-                <img src={image} alt="" className={s.cardImage} />
-              </div>
-            </Card>
-          );
+          const { symbol } = token;
+          return <CardToken key={uuid()} to={`/markets/${symbol}`} token={token} />;
         })}
       </section>
       <section className={s.containerLists}>

@@ -19,7 +19,12 @@ import { modalActions, walletActions } from '../../../redux/actions';
 import { Service0x } from '../../../services/0x';
 import { CryptoCompareService } from '../../../services/CryptoCompareService';
 import { getFromStorage, setToStorage } from '../../../utils/localStorage';
-import { prettyAmount, prettyExpiration, prettyPrice } from '../../../utils/prettifiers';
+import {
+  prettyAmount,
+  prettyExpiration,
+  prettyPrice,
+  prettyPriceChange,
+} from '../../../utils/prettifiers';
 
 import s from './style.module.scss';
 
@@ -100,7 +105,9 @@ export const PageMarketsContent: React.FC = () => {
   const refSelectLabelSlippage = React.useRef<HTMLDivElement>(null);
   const refInputGasPrice = React.useRef<HTMLInputElement>(null);
 
+  const [tokensFiltered, setTokensFiltered] = React.useState<any[]>(tokens);
   const [price, setPrice] = React.useState<number>(0);
+  const [priceChange, setPriceChange] = React.useState<number>(0);
   const [priceChart, setPriceChart] = React.useState<string | null>();
   const [marketHistory, setMarketHistory] = React.useState<any[]>([]);
   const [points, setPoints] = React.useState<number[]>([]);
@@ -135,13 +142,6 @@ export const PageMarketsContent: React.FC = () => {
   const [gasPriceType, setGasPriceType] = React.useState<string>('');
   const [gasPriceCustom, setGasPriceCustom] = React.useState<number>(0);
 
-  const data: TypeToken = {
-    symbol: 'ETH',
-    name: 'Currency',
-    priceChange: 3.04,
-  };
-
-  const { priceChange } = data;
   const isModeMarket = mode === 'market';
   const isModeLimit = mode === 'limit';
 
@@ -285,7 +285,7 @@ export const PageMarketsContent: React.FC = () => {
   const handleChangeSearchPay = (value: string) => {
     try {
       setSearchValuePay(value);
-      const result = tokens.filter((token: TypeToken) => {
+      const result = tokensFiltered.filter((token: TypeToken) => {
         const includesInSymbol = token.symbol.toLowerCase().includes(value.toLowerCase());
         const includesInName = token.name.toLowerCase().includes(value.toLowerCase());
         if (includesInSymbol || includesInName) return true;
@@ -301,7 +301,7 @@ export const PageMarketsContent: React.FC = () => {
   const handleChangeSearchReceive = (value: string) => {
     try {
       setSearchValueReceive(value);
-      const result = tokens.filter((token: TypeToken) => {
+      const result = tokensFiltered.filter((token: TypeToken) => {
         const includesInSymbol = token.symbol.toLowerCase().includes(value.toLowerCase());
         const includesInName = token.name.toLowerCase().includes(value.toLowerCase());
         if (includesInSymbol || includesInName) return true;
@@ -338,28 +338,44 @@ export const PageMarketsContent: React.FC = () => {
   const getPrices = React.useCallback(async () => {
     try {
       const { decimals } = getTokenBySymbol(symbolPay);
-      console.log('getPrices:', decimals);
       if (!decimals) return null;
-      const result = await Zx.getPrice({
-        buyToken: symbolReceive,
-        sellToken: symbolPay,
-        sellAmount: 1,
-        skipValidation: true,
-        decimals,
-      });
-      console.log('getPrices:', result);
-      if (result.status === 'SUCCESS') {
-        const newPrice = result.data.price;
-        setPrice(newPrice);
+      let newPrice = 0;
+      if (symbolReceive && amountPay) {
+        const result = await Zx.getPrice({
+          buyToken: symbolReceive,
+          sellToken: symbolPay,
+          sellAmount: amountPay,
+          skipValidation: true,
+          decimals,
+        });
+        console.log('getPrices:', result);
+        if (result.status === 'SUCCESS') {
+          newPrice = result.data.price;
+          setPrice(newPrice);
+        } else {
+          setPrice(0);
+        }
       } else {
-        setPrice(0);
+        const result = await CryptoCompare.getMarketData({
+          symbolOne: symbolPay,
+          symbolTwo: 'USD',
+        });
+        console.log('getPrices:', result);
+        if (result.status === 'SUCCESS') {
+          newPrice = result.data.PRICE;
+          setPrice(newPrice);
+          // const newPriceChange = prettyPriceChange(result.data.CHANGEHOUR);
+          // setPriceChange(+newPriceChange);
+        } else {
+          setPrice(0);
+        }
       }
       return null;
     } catch (e) {
       console.error(e);
       return null;
     }
-  }, [symbolPay, symbolReceive, getTokenBySymbol]);
+  }, [amountPay, symbolPay, symbolReceive, getTokenBySymbol]);
 
   const getTokenPay = React.useCallback(async () => {
     try {
@@ -370,6 +386,24 @@ export const PageMarketsContent: React.FC = () => {
       console.error(e);
     }
   }, [getTokenBySymbol, symbolPay]);
+
+  const filterTokens = React.useCallback(() => {
+    try {
+      let newTokens = [];
+      if (isModeLimit) {
+        newTokens = tokens.filter((item: any) => item.symbol !== 'ETH');
+      } else {
+        newTokens = tokens;
+      }
+      // eslint-disable-next-line no-confusing-arrow
+      newTokens.sort((a: any, b: any) => (a.name !== b.name ? (a.name < b.name ? -1 : 1) : 0));
+      setTokensFiltered(newTokens);
+      return null;
+    } catch (e) {
+      console.error('filterTokens:', e);
+      return null;
+    }
+  }, [isModeLimit, tokens]);
 
   const getTokensSymbolsReceive = async () => {
     try {
@@ -388,7 +422,7 @@ export const PageMarketsContent: React.FC = () => {
 
   const getTokensReceive = React.useCallback(async () => {
     try {
-      const newTokensReceive = tokens.filter((item: any) => item.symbol !== symbolPay);
+      const newTokensReceive = tokensFiltered.filter((item: any) => item.symbol !== symbolPay);
       if (newTokensReceive.length === 0) {
         setSymbolReceive('');
         setTokensReceive([]);
@@ -399,7 +433,7 @@ export const PageMarketsContent: React.FC = () => {
     } catch (e) {
       console.error(e);
     }
-  }, [symbolPay, tokens]);
+  }, [symbolPay, tokensFiltered]);
 
   const getHistory = React.useCallback(async () => {
     try {
@@ -423,6 +457,10 @@ export const PageMarketsContent: React.FC = () => {
         return item.close;
       });
       setPoints(newPoints);
+      const newPointsLength = newPoints.length;
+      const newPriceChange = newPoints[newPointsLength - 1] - newPoints[newPointsLength - 2];
+      const prettyNewPriceChange = prettyPriceChange(newPriceChange.toString());
+      setPriceChange(+prettyNewPriceChange);
       // console.log('getPoints:', newPoints);
     } catch (e) {
       console.error(e);
@@ -803,6 +841,11 @@ export const PageMarketsContent: React.FC = () => {
   }, []);
 
   React.useEffect(() => {
+    filterTokens();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mode]);
+
+  React.useEffect(() => {
     getPoints();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [marketHistory]);
@@ -814,18 +857,18 @@ export const PageMarketsContent: React.FC = () => {
   }, [period, tokens, tokensReceive]);
 
   React.useEffect(() => {
-    if (!tokens || tokens?.length === 0) return;
-    console.log('PageMarketsContent useEffect tokens:', tokens);
+    if (!tokensFiltered || tokensFiltered?.length === 0) return;
+    console.log('PageMarketsContent useEffect tokensFiltered:', tokensFiltered);
     // eslint-disable-next-line react-hooks/exhaustive-deps
     getTokensReceive();
-  }, [tokens, getTokensReceive]);
+  }, [tokensFiltered, getTokensReceive]);
 
   React.useEffect(() => {
-    if (!tokens || tokens?.length === 0) return;
+    if (!tokensFiltered || tokensFiltered?.length === 0) return;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    setSearchTokensResultPay(tokens);
+    setSearchTokensResultPay(tokensFiltered);
     setSearchTokensResultReceive(tokensReceive);
-  }, [tokens, tokensReceive]);
+  }, [tokensFiltered, tokensReceive]);
 
   React.useEffect(() => {
     if (!web3Provider && !userAddress) return;
