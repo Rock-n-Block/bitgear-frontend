@@ -30,7 +30,7 @@ export default class MetamaskService {
     if (usedNet.includes(netVersion)) return { status: 'SUCCESS', data: usedNet[0] };
     return {
       status: 'ERROR',
-      message: `Please, change network to ${neededNetName}. Current chainId: ${netVersion}`,
+      message: `Please, change network to ${neededNetName}`,
     };
   };
 
