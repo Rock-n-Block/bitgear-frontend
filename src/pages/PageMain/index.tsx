@@ -26,7 +26,7 @@ type TypeCardProps = {
   to: string;
 };
 
-const firstTokens = ['DAI', 'WETH', 'GEAR'];
+const firstTokens = ['WETH', 'WBTC', 'GEAR', 'USDC'].reverse();
 
 export const CardToken: React.FC<TypeCardProps> = ({ token, to = '/' }) => {
   const [price, setPrice] = React.useState<number>(0);
@@ -98,7 +98,7 @@ export const PageMain: React.FC = () => {
       newTokens.sort((a: TypeToken, b: TypeToken) => {
         return firstTokens.indexOf(b.symbol) - firstTokens.indexOf(a.symbol);
       });
-      newTokens = newTokens.slice(0, 3);
+      newTokens = newTokens.slice(0, 4);
       setTokensList(newTokens);
     } catch (e) {
       console.error(e);

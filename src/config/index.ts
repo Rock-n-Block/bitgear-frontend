@@ -17,6 +17,7 @@ export default {
   },
   apis: {
     'cryptoCompare': 'https://min-api.cryptocompare.com',
+    'coinGecko': 'https://api.coingecko.com/api/v3',
     '0x': IS_PRODUCTION
       ? 'https://api.0x.org'
       : IS_TESTING_ON_ROPSTEN

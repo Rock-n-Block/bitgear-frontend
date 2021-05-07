@@ -8,6 +8,8 @@ import tokensListData from './data/coinlist.json';
 import erc20Abi from './data/erc20Abi.json';
 import { statusActions, userActions, zxActions } from './redux/actions';
 import { Service0x } from './services/0x';
+import { CoinGeckoService } from './services/CoinGecko';
+import { race } from './utils/promises';
 // import { CryptoCompareService } from './services/CryptoCompareService';
 import * as Components from './components';
 import config from './config';
@@ -26,6 +28,7 @@ const tokenGear = {
 };
 
 const Zx = new Service0x();
+const CoinGecko = new CoinGeckoService();
 // const CryptoCompare = new CryptoCompareService();
 
 export const App: React.FC = () => {
@@ -45,6 +48,7 @@ export const App: React.FC = () => {
 
   const [tokens0x, setTokens0x] = React.useState<any[]>([]);
   const [tokensCryptoCompare, setTokensCryptoCompare] = React.useState<any[]>([]);
+  const [tokensCoinGecko, setTokensCoinGecko] = React.useState<any[]>([]);
 
   const getTokensFromCryptoCompare = async () => {
     try {
@@ -55,26 +59,61 @@ export const App: React.FC = () => {
       //   setTokensCryptoCompare(newTokens);
       // }
       const newTokens = (tokensListData as any).Data;
-      console.log('App getTokensFromCryptoCompare:', newTokens);
+      // console.log('App getTokensFromCryptoCompare:', newTokens);
       setTokensCryptoCompare(newTokens);
     } catch (e) {
       console.error(e);
     }
   };
 
+  const getTokensFromCoinGecko = async () => {
+    try {
+      const result = await CoinGecko.getAllCoins();
+      console.log('App getTokensFromCoinGecko:', result.data);
+      if (result.status === 'SUCCESS') {
+        const newTokens = result.data;
+        setTokensCoinGecko(newTokens);
+      }
+      console.log('App getTokensFromCoinGecko:', tokensCoinGecko);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   const changeTokensInfo = React.useCallback(
-    (data) => {
+    async (data) => {
       const newData = data;
-      data.map((token: any, it: number) => {
+      console.log('App changeTokensInfo:', data);
+      // eslint-disable-next-line no-plusplus
+      for (let it = 0; it < data.length; it++) {
+        const token = data[it];
+        console.log('App changeTokensInfo:', token);
         const { symbol, address, decimals } = token;
         const isImage = tokensCryptoCompare[symbol] && tokensCryptoCompare[symbol].ImageUrl;
-        newData[it].image = isImage
-          ? `https://www.cryptocompare.com/media${tokensCryptoCompare[symbol].ImageUrl}`
-          : imageTokenPay;
+        if (isImage) {
+          newData[
+            it
+          ].image = `https://www.cryptocompare.com/media${tokensCryptoCompare[symbol].ImageUrl}`;
+        } else {
+          // newData[it].image = imageTokenPay;
+          // continue;
+          try {
+            // eslint-disable-next-line no-await-in-loop
+            const resultGetCoinInfo = await race(CoinGecko.getCoinInfo({ symbol }), 10000);
+            if (resultGetCoinInfo.status === 'SUCCESS') {
+              const image = resultGetCoinInfo.data.image.small;
+              newData[it].image = image;
+            }
+          } catch (e) {
+            console.error(e);
+            newData[it].image = imageTokenPay;
+          }
+        }
         newData[it].address = address;
         newData[it].decimals = decimals;
-        return null;
-      });
+        // eslint-disable-next-line no-continue
+        continue;
+      }
       return newData;
     },
     [tokensCryptoCompare],
@@ -86,7 +125,7 @@ export const App: React.FC = () => {
       const newTokens = resultGetTokens.data;
       console.log('App getTokens:', newTokens);
       newTokens.push(tokenGear);
-      const tokens = changeTokensInfo(newTokens);
+      const tokens = await changeTokensInfo(newTokens);
       setTokens({ tokens });
       setTokens0x(tokens);
     } catch (e) {
@@ -127,6 +166,7 @@ export const App: React.FC = () => {
   }, [tokens0x, setTokens, setUserData, userAddress, web3Provider]);
 
   React.useEffect(() => {
+    getTokensFromCoinGecko();
     getTokensFromCryptoCompare();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
