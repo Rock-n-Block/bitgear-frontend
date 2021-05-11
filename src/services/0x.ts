@@ -55,6 +55,10 @@ type TypeSendOrderProps = {
   verifyingContract: string;
 };
 
+type TypeGetOrdersProps = {
+  trader: string;
+};
+
 export class Service0x {
   private axios: any;
 
@@ -152,7 +156,19 @@ export class Service0x {
     }
   };
 
-  getOrders = async () => {
+  getOrders = async (props: TypeGetOrdersProps) => {
+    try {
+      const url = `/sra/v4/orders?${qs.stringify(props)}`;
+      const result = await this.axios.get(url);
+      // console.log('Service0x getOrders:', result);
+      return {
+        status: 'SUCCESS',
+        data: result.data,
+      };
+    } catch (e) {
+      // console.error(e);
+      return { status: 'ERROR', data: undefined, error: e.response.data };
+    }
     // link below works properly
     // https://api.0x.org/sra/v4/orders?page=1&perPage=1000&makerToken=0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2
   };

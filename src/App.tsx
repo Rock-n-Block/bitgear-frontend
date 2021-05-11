@@ -9,8 +9,8 @@ import erc20Abi from './data/erc20Abi.json';
 import { statusActions, userActions, zxActions } from './redux/actions';
 import { Service0x } from './services/0x';
 import { CoinGeckoService } from './services/CoinGecko';
+import { CryptoCompareService } from './services/CryptoCompareService';
 import { race } from './utils/promises';
-// import { CryptoCompareService } from './services/CryptoCompareService';
 import * as Components from './components';
 import config from './config';
 import * as Pages from './pages';
@@ -29,7 +29,7 @@ const tokenGear = {
 
 const Zx = new Service0x();
 const CoinGecko = new CoinGeckoService();
-// const CryptoCompare = new CryptoCompareService();
+const CryptoCompare = new CryptoCompareService();
 
 export const App: React.FC = () => {
   const { web3Provider } = useWalletConnectorContext();
@@ -52,12 +52,12 @@ export const App: React.FC = () => {
 
   const getTokensFromCryptoCompare = async () => {
     try {
-      // const result = await CryptoCompare.getAllCoins();
-      // console.log('App getTokensFromCryptoCompare:', result.data);
-      // if (result.status === 'SUCCESS') {
-      //   const newTokens = result.data;
-      //   setTokensCryptoCompare(newTokens);
-      // }
+      const result = await CryptoCompare.getAllCoins();
+      console.log('App getTokensFromCryptoCompare:', result.data);
+      if (result.status === 'SUCCESS') {
+        const newTokens = result.data;
+        setTokensCryptoCompare(newTokens);
+      }
       const newTokens = (tokensListData as any).Data;
       // console.log('App getTokensFromCryptoCompare:', newTokens);
       setTokensCryptoCompare(newTokens);
