@@ -1,4 +1,5 @@
 import React from 'react';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useSelector } from 'react-redux';
 import { Link, Route, Switch, useLocation, useRouteMatch } from 'react-router-dom';
 import BigNumber from 'bignumber.js/bignumber';
@@ -9,7 +10,7 @@ import { v1 as uuid } from 'uuid';
 
 import ArrowDownIcon from '../../assets/icons/arrow-down-icon.svg';
 import ArrowUpIcon from '../../assets/icons/arrow-up-icon.svg';
-import CopyIcon from '../../assets/icons/copy-icon.svg';
+import { ReactComponent as IconCopy } from '../../assets/icons/copy-icon.svg';
 import EthGlassIcon from '../../assets/images/logo/eth-glass-icon.svg';
 import { Pagination } from '../../components';
 import { Service0x } from '../../services/0x';
@@ -42,6 +43,7 @@ export const PageAccount: React.FC = () => {
   const [orders, setOrders] = React.useState<any[]>([]);
   const [pageCount, setPageCount] = React.useState<number>(1);
   const [flagSort, setFlagSort] = React.useState<string>('');
+  const [isAddressCopied, setIsAddressCopied] = React.useState<boolean>(false);
 
   const { tokens } = useSelector(({ zx }: any) => zx);
   const { address: userAddress = 'Address', balance: userBalance = 0 } = useSelector(
@@ -187,6 +189,13 @@ export const PageAccount: React.FC = () => {
     setSortFlagChanged(false);
   };
 
+  const handleCopyAddress = () => {
+    setIsAddressCopied(true);
+    setTimeout(() => {
+      setIsAddressCopied(false);
+    }, 1000);
+  };
+
   React.useEffect(() => {
     getOrders(address);
   }, [getOrders]);
@@ -204,7 +213,12 @@ export const PageAccount: React.FC = () => {
       <section className={s.containerTitle}>
         <div className={s.containerTitleBlock}>
           <h1>Your Account</h1>
-          <span>{userAddress === '' ? '' : userAddress}</span>
+          <CopyToClipboard text={userAddress} onCopy={handleCopyAddress}>
+            <span>
+              {isAddressCopied ? 'Copied to clipboard!' : userAddress}
+              <IconCopy />
+            </span>
+          </CopyToClipboard>
         </div>
         <div className={s.accountMenu}>
           <Link
@@ -230,13 +244,6 @@ export const PageAccount: React.FC = () => {
                 <h3>Your balance:</h3>
                 <span>{userBalance} ETH</span>
                 <img src={EthGlassIcon} alt="ehereum logo" />
-              </div>
-              <div className={s.accountFundsDeposit}>
-                <h3>Deposit more funds</h3>
-                <div className={s.accountFundsDepositCopy}>
-                  <span>0x9C3fD81263...337317c0404d</span>
-                  <img src={CopyIcon} alt="copy icon" />
-                </div>
               </div>
             </div>
           </section>
