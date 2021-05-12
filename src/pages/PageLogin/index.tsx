@@ -1,9 +1,9 @@
+import qs from 'querystring';
+
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 
-import CoinbaseWalletLogo from '../../assets/images/logo/coinbase-logo.svg';
-import FortmaticLogo from '../../assets/images/logo/fortmatic-logo.svg';
 import MetamaskLogo from '../../assets/images/logo/metamask-logo.svg';
 import WalletConnectLogo from '../../assets/images/logo/wallet-connect-logo.svg';
 import { walletActions } from '../../redux/actions';
@@ -12,6 +12,11 @@ import { setToStorage } from '../../utils/localStorage';
 import s from './style.module.scss';
 
 export const PageLogin: React.FC = () => {
+  const history = useHistory();
+  const { search } = useLocation();
+  const query = qs.parse(search);
+  console.log('PageLogin query:', query);
+
   const { address: userAddress } = useSelector(({ user }: any) => user);
   const dispatch = useDispatch();
   const setWalletType = (props: string) => dispatch(walletActions.setWalletType(props));
@@ -19,11 +24,15 @@ export const PageLogin: React.FC = () => {
   const handleMetamaskLogin = async () => {
     setToStorage('walletType', 'metamask');
     setWalletType('metamask');
+    if (query.back) history.push(`${query.back}`);
+    if (query['?back']) history.push(`${query['?back']}`);
   };
 
   const handleWalletConnectLogin = async () => {
     setToStorage('walletType', 'walletConnect');
     setWalletType('walletConnect');
+    if (query.back) history.push(`${query.back}`);
+    if (query['?back']) history.push(`${query['?back']}`);
   };
 
   React.useEffect(() => {
@@ -37,10 +46,6 @@ export const PageLogin: React.FC = () => {
         <span>Connect with one of available wallet providers or create a new wallet.</span>
       </section>
       <div className={s.login_methods}>
-        <Link className={s.login_methods_item} to="/account">
-          <img src={FortmaticLogo} alt="Fortmatic logo" />
-          <span>Fortmatic</span>
-        </Link>
         <div
           role="button"
           tabIndex={0}
@@ -51,10 +56,6 @@ export const PageLogin: React.FC = () => {
           <img src={WalletConnectLogo} alt="WalletConnect logo" />
           <span>WalletConnect</span>
         </div>
-        <Link className={s.login_methods_item} to="/account">
-          <img src={CoinbaseWalletLogo} alt="Coinbase Wallet logo" />
-          <span>Coinbase Wallet</span>
-        </Link>
         <div
           role="button"
           tabIndex={0}

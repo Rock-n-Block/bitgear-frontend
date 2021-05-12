@@ -1,7 +1,7 @@
 import React from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useHistory, useLocation } from 'react-router-dom';
 import _ from 'lodash';
 import useMedia from 'use-media';
 import { v1 as uuid } from 'uuid';
@@ -118,6 +118,8 @@ export const ListOfTokenBalances: React.FC = () => {
 };
 
 export const Header: React.FC = () => {
+  const { pathname } = useLocation();
+
   const { web3Provider } = useWalletConnectorContext();
 
   const dispatch = useDispatch();
@@ -284,7 +286,7 @@ export const Header: React.FC = () => {
             </Dropdown>
           ) : (
             <div className={s.headerItemBtn}>
-              <Link to="/login" onClick={() => setOpenMenu(false)}>
+              <Link to={`/login?back=${pathname}`} onClick={() => setOpenMenu(false)}>
                 Connect Wallet
               </Link>
             </div>

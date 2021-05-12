@@ -30,7 +30,7 @@
 
 .login {
   &_methods {
-    @include flex(row, normal, space-between, wrap);
+    @include flex(row, normal, center, wrap);
     margin: 50px -10px 0 -10px;
 
     &_item {

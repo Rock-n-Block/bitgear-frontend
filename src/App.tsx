@@ -44,7 +44,7 @@ export const App: React.FC = () => {
   const setStatus = React.useCallback((props: any) => dispatch(statusActions.setStatus(props)), [
     dispatch,
   ]);
-  const { address: userAddress } = useSelector(({ user }: any) => user);
+  const { address: userAddress = '' } = useSelector(({ user }: any) => user);
 
   const [tokens0x, setTokens0x] = React.useState<any[]>([]);
   const [tokensCryptoCompare, setTokensCryptoCompare] = React.useState<any[]>([]);
@@ -83,11 +83,10 @@ export const App: React.FC = () => {
   const changeTokensInfo = React.useCallback(
     async (data) => {
       const newData = data;
-      console.log('App changeTokensInfo:', data);
+      // console.log('App changeTokensInfo:', data);
       // eslint-disable-next-line no-plusplus
       for (let it = 0; it < data.length; it++) {
         const token = data[it];
-        console.log('App changeTokensInfo:', token);
         const { symbol, address, decimals } = token;
         const isImage = tokensCryptoCompare[symbol] && tokensCryptoCompare[symbol].ImageUrl;
         if (isImage) {
@@ -215,7 +214,7 @@ export const App: React.FC = () => {
               <Pages.PageLogin />
             </Route>
             <Route path="/account">
-              <Pages.PageAccount />
+              {userAddress ? <Pages.PageAccount /> : <Pages.PageLogin />}
             </Route>
             <Route path="*">
               <Pages.Page404 />
