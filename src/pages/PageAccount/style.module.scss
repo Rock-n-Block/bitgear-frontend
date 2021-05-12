@@ -36,7 +36,7 @@
       }
 
       @include b('mobile') {
-        font-size: 3vw;
+        font-size: 3.5vw;
       }
     }
 
@@ -94,22 +94,23 @@
   }
 
   &Funds {
+    @include grid(1fr 1fr, 1fr, 20px);
     margin-top: 50px;
 
-    &Item {
-      @include flex(row, normal, space-between, wrap);
+    @include b('mobile') {
+      @include grid(1fr, 1fr, 20px);
     }
 
     &Card {
       background-color: #0197e241;
       border-radius: 10px;
       min-height: 200px;
-      max-width: 500px;
       width: 100%;
       padding: 30px 20px;
       position: relative;
       cursor: default;
       margin-bottom: 10px;
+      cursor: pointer;
 
       h3 {
         font-weight: normal;

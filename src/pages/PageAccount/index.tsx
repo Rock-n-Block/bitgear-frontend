@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { Link, Route, Switch, useLocation, useRouteMatch } from 'react-router-dom';
 import BigNumber from 'bignumber.js/bignumber';
 import cns from 'classnames';
+import _ from 'lodash';
 import moment from 'moment/moment';
 import { useMedia } from 'use-media';
 import { v1 as uuid } from 'uuid';
@@ -15,6 +16,7 @@ import EthGlassIcon from '../../assets/images/logo/eth-glass-icon.svg';
 import { Pagination } from '../../components';
 import { Service0x } from '../../services/0x';
 import { CryptoCompareService } from '../../services/CryptoCompareService';
+import { prettyPrice } from '../../utils/prettifiers';
 import { sortColumn } from '../../utils/sortColumn';
 
 import s from './style.module.scss';
@@ -49,18 +51,33 @@ export const PageAccount: React.FC = () => {
   const { address: userAddress = 'Address', balance: userBalance = 0 } = useSelector(
     ({ user }: any) => user,
   );
+  const { balances: userBalances } = useSelector(({ user }: any) => user);
+  const { loadingBalances } = useSelector(({ status }: any) => status);
 
   const [isPending, setIsPending] = React.useState<boolean>(true);
   const [sortFlagChanged, setSortFlagChanged] = React.useState<boolean>(false);
   const [activeColumn, setActiveColumn] = React.useState<string>('');
+  const [userBalancesFiltered, setUserBalancesFiltered] = React.useState<any>({});
+
+  const userBalancesAsArray = Object.entries(userBalancesFiltered);
 
   const isWide = useMedia({ minWidth: '767px' });
+
   const isBalancePage = pathname === '/account';
   const isOrdersPage = pathname === '/account/orders';
+
+  const isLoadingBalancesDone = loadingBalances === 'done';
+  const isLoadingBalancesError = loadingBalances === 'error';
+  const isNoBalances = userBalancesAsArray.length === 0;
 
   const countDataForPagination = React.useCallback((): void => {
     setPageCount(Math.ceil(data.length / 12));
   }, [data.length]);
+
+  const filterAndSortUserBalances = React.useCallback(() => {
+    const newBalances = _.pickBy(userBalances, (v) => v !== null && v !== undefined && v !== 0);
+    setUserBalancesFiltered(newBalances);
+  }, [userBalances]);
 
   const getExchangeOfPair = React.useCallback(
     async ({ symbolOne, symbolTwo }: any): Promise<any> => {
@@ -208,6 +225,11 @@ export const PageAccount: React.FC = () => {
     countDataForPagination();
   }, [countDataForPagination]);
 
+  React.useEffect(() => {
+    if (!tokens || tokens?.length === 0) return;
+    filterAndSortUserBalances();
+  }, [tokens, filterAndSortUserBalances]);
+
   return (
     <div className={s.container}>
       <section className={s.containerTitle}>
@@ -239,13 +261,33 @@ export const PageAccount: React.FC = () => {
       <Switch>
         <Route path={match.path} exact>
           <section className={s.accountFunds}>
-            <div className={s.accountFundsItem}>
-              <div className={s.accountFundsCard}>
-                <h3>Your balance:</h3>
-                <span>{userBalance} ETH</span>
-                <img src={EthGlassIcon} alt="ehereum logo" />
+            <Link to="/markets/ETH" className={s.accountFundsCard}>
+              <h3>Your balance:</h3>
+              <span>{userBalance} ETH</span>
+              <img src={EthGlassIcon} alt="ehereum logo" />
+            </Link>
+            {isNoBalances && (
+              <div>
+                {isLoadingBalancesDone
+                  ? 'You do not have any tokens'
+                  : isLoadingBalancesError
+                  ? 'Not loaded'
+                  : 'Loading...'}
               </div>
-            </div>
+            )}
+            {userBalancesAsArray.map((item: any) => {
+              const [symbol, balance] = item;
+              if (symbol === 'ETH') return null;
+              return (
+                <Link key={uuid()} className={s.accountFundsCard} to={`/markets/${symbol}`}>
+                  <h3>Your balance:</h3>
+                  <span>
+                    {prettyPrice(balance)} {symbol}
+                  </span>
+                  <img src={EthGlassIcon} alt="ehereum logo" />
+                </Link>
+              );
+            })}
           </section>
         </Route>
         <Route path={`${match.path}/orders`}>
