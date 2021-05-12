@@ -29,21 +29,40 @@
       font-weight: normal;
       font-size: 24px;
       color: $color-text-span;
+      cursor: pointer;
+
+      @include b('tablet') {
+        font-size: 2.5vw;
+      }
+
+      @include b('mobile') {
+        font-size: 3.5vw;
+      }
+    }
+
+    svg {
+      margin: 0 10px;
+      cursor: pointer;
     }
   }
 }
 
 .account {
   &Menu {
-    @include flex(row, center, space-between, nowrap);
+    //@include flex(row, center, space-between, nowrap);
+    @include grid(1.2fr 2fr, 1fr, 0px);
     font-size: 16px;
     max-width: 200px;
     width: 100%;
 
-    span {
+    @include b('mobile') {
+      margin: 40px 0 0 0;
+    }
+
+    a {
       padding-bottom: 15px;
       border-bottom: 2px solid $color-border-account-menu-item;
-      width: 50%;
+      width: 100%;
 
       &:first-child {
         text-align: left;
@@ -75,22 +94,23 @@
   }
 
   &Funds {
+    @include grid(1fr 1fr, 1fr, 20px);
     margin-top: 50px;
 
-    &Item {
-      @include flex(row, normal, space-between, wrap);
+    @include b('mobile') {
+      @include grid(1fr, 1fr, 20px);
     }
 
     &Card {
       background-color: #0197e241;
       border-radius: 10px;
       min-height: 200px;
-      max-width: 500px;
       width: 100%;
       padding: 30px 20px;
       position: relative;
       cursor: default;
       margin-bottom: 10px;
+      cursor: pointer;
 
       h3 {
         font-weight: normal;
