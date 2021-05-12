@@ -29,21 +29,34 @@
       font-weight: normal;
       font-size: 24px;
       color: $color-text-span;
+
+      @include b('tablet') {
+        font-size: 2.5vw;
+      }
+
+      @include b('mobile') {
+        font-size: 3vw;
+      }
     }
   }
 }
 
 .account {
   &Menu {
-    @include flex(row, center, space-between, nowrap);
+    //@include flex(row, center, space-between, nowrap);
+    @include grid(1.2fr 2fr, 1fr, 0px);
     font-size: 16px;
     max-width: 200px;
     width: 100%;
 
-    span {
+    @include b('mobile') {
+      margin: 40px 0 0 0;
+    }
+
+    a {
       padding-bottom: 15px;
       border-bottom: 2px solid $color-border-account-menu-item;
-      width: 50%;
+      width: 100%;
 
       &:first-child {
         text-align: left;
