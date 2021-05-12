@@ -173,6 +173,10 @@
           padding-left: 10px;
           text-align: left;
           text-transform: uppercase;
+          cursor: default;
+          &:first-child {
+            cursor: pointer;
+          }
           @include b('mobile') {
             &:last-child {
               text-align: right;
@@ -248,11 +252,32 @@
   }
 }
 
+.paginationContainer {
+  margin-top: 50px;
+}
+
+.flexContainer {
+  &Row {
+    @include flex(row, normal, flex-end, nowrap);
+  }
+}
+
 .mobile {
   &Symbol {
     opacity: 0.5;
     font-size: 14px;
   }
+
+  &Price {
+    text-align: right;
+    color: white;
+  }
+
+  &PriceChangeModel {
+    background: initial !important;
+    padding: 0;
+  }
+
 
   &PriceAndChangeContainer {
     padding: 6px 20px 0 0;

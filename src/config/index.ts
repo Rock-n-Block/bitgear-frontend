@@ -1,5 +1,5 @@
 const IS_PRODUCTION = false;
-const IS_TESTING_ON_ROPSTEN = false;
+const IS_TESTING_ON_ROPSTEN = true;
 
 export default {
   IS_PRODUCTION,
