@@ -266,6 +266,11 @@ export const PageAccount: React.FC = () => {
               <span>{userBalance} ETH</span>
               <img src={EthGlassIcon} alt="ehereum logo" />
             </Link>
+            <Link key={uuid()} className={s.accountFundsCard} to="/markets/GEAR">
+              <h3>Your balance:</h3>
+              <span>{prettyPrice(userBalances.GEAR || 0)} GEAR</span>
+              <img src={EthGlassIcon} alt="ehereum logo" />
+            </Link>
             {isNoBalances && (
               <div>
                 {isLoadingBalancesDone
@@ -277,7 +282,7 @@ export const PageAccount: React.FC = () => {
             )}
             {userBalancesAsArray.map((item: any) => {
               const [symbol, balance] = item;
-              if (symbol === 'ETH') return null;
+              if (symbol === 'ETH' || symbol === 'GEAR') return null;
               return (
                 <Link key={uuid()} className={s.accountFundsCard} to={`/markets/${symbol}`}>
                   <h3>Your balance:</h3>
