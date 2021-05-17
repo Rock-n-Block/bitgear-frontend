@@ -210,9 +210,18 @@ table {
   &PriceChangeModel {
     background: initial !important;
     padding: 0;
+    text-align: right;
   }
 
   &PriceAndChangeContainer {
     padding-right: 20px;
+  }
+}
+
+.arrowSort {
+  margin-left: 2px;
+  &Up {
+    transform: rotate(180deg);
+    margin-left: 2px;
   }
 }

@@ -17,6 +17,7 @@ export default {
   },
   apis: {
     'cryptoCompare': 'https://min-api.cryptocompare.com',
+    'coinMarketCap': 'https://cmc-api.mywish.io',
     'coinGecko': 'https://api.coingecko.com/api/v3',
     '0x': IS_PRODUCTION
       ? 'https://api.0x.org'
@@ -33,6 +34,7 @@ export default {
     infura: 'd1bbf6a40e514be6878e06b2d01a7f41',
     etherscan: 'VI2S1A8EBH54NNDH3Q4H2IFYJ4E85YDQEF',
     cryptoCompare: '64003a2defe5d1cd62c11cae1ed06c7248a0a985e63ce30fdd280c3855ae4dc3',
+    coinMarketCap: '81020735-ae3c-4f94-ad58-89ffd839d328',
   },
   chainIds: {
     mainnet: {

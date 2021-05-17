@@ -1,15 +1,16 @@
-@import "../../scss/theme";
-@import "../../scss/mixins";
+@import '../../scss/theme';
+@import '../../scss/mixins';
 
 .container {
   max-width: 1100px;
-  padding: 10px;
+  width: 100%;
+  padding: 10px 10px 200px 10px;
 }
 
 .containerTitle {
   padding: 120px 0 0;
   @include b('mobile') {
-    padding: 60px 0 0;
+    padding: 0;
   }
   h1 {
     max-width: 800px;
@@ -18,3 +19,189 @@
   }
 }
 
+.containerButtons {
+  @include flex(row, normal, space-between, wrap);
+  margin: 50px -10px 0 -10px;
+  @include b('mobile') {
+    margin-top: 10px;
+  }
+
+  &Item {
+    @include flex(row, center, center, nowrap);
+    box-sizing: border-box;
+    max-width: 48%;
+    width: 100%;
+    margin: 10px;
+    min-height: 90px;
+    border: 2px solid $color-border-login-item;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.5s cubic-bezier(0.2, 3, 0.4, 1) 0s, background-color 0.4s ease;
+    @include b('mobile') {
+      min-height: 60px;
+      margin-bottom: 5px;
+      @include flex(row, center, flex-start, nowrap);
+    }
+
+    @include b('tablet') {
+      max-width: 100%;
+    }
+
+    &:hover {
+      background-color: $color-bg-login-item-hover;
+    }
+
+    &:active,
+    &:focus {
+      transform: scale(0.98);
+    }
+
+    img {
+      max-width: 40px;
+      margin-right: 15px;
+      @include b('mobile') {
+        margin-left: 20px;
+      }
+    }
+
+    span {
+      font-weight: normal;
+      font-size: 20px;
+      color: $color-text-primary;
+    }
+  }
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+
+  thead {
+    th {
+      font-weight: normal;
+      padding-left: 10px;
+      text-align: left;
+      text-transform: uppercase;
+      opacity: 0.5;
+      cursor: pointer;
+      &:last-child {
+        text-align: right;
+        padding: 0 20px 0 0;
+      }
+      &:nth-child(2) {
+        cursor: default;
+      }
+    }
+  }
+
+  tbody {
+    tr {
+      max-height: 60px;
+
+      &:nth-child(odd) {
+        td {
+          background: #30335533;
+        }
+      }
+
+      td {
+        max-height: 60px;
+        color: $color-text-primary;
+        padding-left: 10px;
+        padding: 12px 0 12px 10px;
+        @include b('mobile') {
+          text-transform: uppercase;
+          padding: 5px 0 5px 10px;
+        }
+
+        &:first-child {
+          border-top-left-radius: 10px;
+          border-bottom-left-radius: 10px;
+        }
+
+        &:last-child {
+          border-top-right-radius: 10px;
+          border-bottom-right-radius: 10px;
+          color: #01c9c5;
+          @include b('mobile') {
+            @include flex(column, normal, flex-end);
+          }
+
+          img {
+            margin-right: 10px;
+            width: 14px;
+            height: 15px;
+            @include b('mobile') {
+              margin-top: 4px;
+              margin-right: 4px;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.chart {
+  &Container {
+    max-height: 50px;
+    background-color: transparent;
+  }
+
+  &Svg {
+    background-color: transparent;
+  }
+}
+
+.priceChange {
+  @include flex(row, normal, normal, nowrap);
+  margin-right: 0;
+  text-transform: uppercase;
+}
+
+.priceChangeModel {
+  background: initial !important;
+}
+
+.priceChangeUp {
+  color: #01c9c5;
+}
+
+.paginationContainer {
+  margin-top: 50px;
+}
+
+.flexContainer {
+  &Row {
+    @include flex(row, normal, flex-end, nowrap);
+  }
+}
+
+.mobile {
+  &Symbol {
+    opacity: 0.5;
+    font-size: 14px;
+  }
+
+  &Price {
+    text-align: right;
+    color: white;
+  }
+
+  &PriceChangeModel {
+    background: initial !important;
+    text-align: right;
+  }
+
+  &PriceAndChangeContainer {
+    padding-right: 20px;
+  }
+}
+
+.arrowSort {
+  margin-left: 2px;
+  &Up {
+    transform: rotate(180deg);
+    margin-left: 2px;
+  }
+}
