@@ -118,7 +118,7 @@ export const MainTable: React.FC<TableTypeProps> = React.memo(
           {isWide ? (
             <tbody>
               {data.map((item: any) => {
-                const { name, symbol, price, priceChange, volume } = item;
+                const { name, symbol, price, priceChange, marketCap, volume } = item;
 
                 let priceChangeModel = (
                   <td className={s.priceChangeUp}>
@@ -143,7 +143,7 @@ export const MainTable: React.FC<TableTypeProps> = React.memo(
                     <td>{symbol}</td>
                     <td>${numberTransform(price)}</td>
                     {priceChangeModel}
-                    <td>{numberTransform(911111111.233)}</td>
+                    <td>{numberTransform(marketCap)}</td>
                     <td>{numberTransform(volume)}</td>
                     <td>
                       <LineChart
