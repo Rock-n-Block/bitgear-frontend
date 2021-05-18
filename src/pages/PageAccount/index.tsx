@@ -263,7 +263,7 @@ export const PageAccount: React.FC = () => {
           <section className={s.accountFunds}>
             <Link to="/markets/ETH" className={s.accountFundsCard}>
               <h3>Your balance:</h3>
-              <span>{userBalance} ETH</span>
+              <span>{prettyPrice(userBalance)} ETH</span>
               <img src={EthGlassIcon} alt="ehereum logo" />
             </Link>
             <Link key={uuid()} className={s.accountFundsCard} to="/markets/GEAR">
