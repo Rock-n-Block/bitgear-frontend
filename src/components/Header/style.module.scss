@@ -180,7 +180,6 @@ $fs: 16px;
   @include b('mobile') {
     min-width: calc(100vw - 40px);
     width: calc(100vw - 40px);
-    margin: 0 20px;
   }
 
   &Inner {
