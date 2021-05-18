@@ -195,33 +195,3 @@ table {
     @include flex(row, normal, flex-end, nowrap);
   }
 }
-
-.mobile {
-  &Symbol {
-    opacity: 0.5;
-    font-size: 14px;
-  }
-
-  &Price {
-    text-align: right;
-    color: white;
-  }
-
-  &PriceChangeModel {
-    background: initial !important;
-    padding: 0;
-    text-align: right;
-  }
-
-  &PriceAndChangeContainer {
-    padding-right: 20px;
-  }
-}
-
-.arrowSort {
-  margin-left: 2px;
-  &Up {
-    transform: rotate(180deg);
-    margin-left: 2px;
-  }
-}

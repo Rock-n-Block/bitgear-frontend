@@ -2,30 +2,41 @@
 @import '../../scss/mixins';
 
 table {
-  border-collapse: collapse;
   width: 100%;
+
+  border-collapse: collapse;
 
   thead {
     th {
-      font-weight: normal;
       padding-left: 10px;
+
       min-width: 50px;
       max-width: 155px;
+
+      font-weight: normal;
       text-align: left;
       text-transform: uppercase;
-      opacity: 0.5;
+
       cursor: pointer;
+
+      opacity: 0.5;
+
       &:last-child {
-        text-align: right;
         padding: 0 20px 0 0;
+
         min-width: 100px;
+
+        text-align: right;
       }
+
       &:nth-child(2) {
         cursor: default;
       }
+
       &:nth-child(4) {
         min-width: 100px;
       }
+
       &:nth-child(6) {
         width: 100px;
       }
@@ -43,24 +54,40 @@ table {
       }
 
       td {
-        max-height: 60px;
-        color: $color-text-primary;
         padding: 12px 0 12px 10px;
+        max-height: 80px;
+        color: $color-text-primary;
         @include b('mobile') {
-          text-transform: uppercase;
           padding: 5px 0 5px 10px;
+          text-transform: uppercase;
         }
 
         &:first-child {
+          min-width: 191px;
           border-top-left-radius: 10px;
           border-bottom-left-radius: 10px;
+          @include b('mobile') {
+            min-width: 80px;
+          }
+        }
+
+        &:nth-child(2) {
+          @include b('mobile') {
+            max-width: 120px;
+          }
+        }
+
+        &:nth-child(3) {
+          min-width: 81px;
         }
 
         &:last-child {
+          color: #01c9c5;
           border-top-right-radius: 10px;
           border-bottom-right-radius: 10px;
-          color: #01c9c5;
           @include b('mobile') {
+            padding-bottom: 16px;
+            max-height: 80px;
             @include flex(column, normal, flex-end);
           }
 
@@ -80,13 +107,13 @@ table {
 }
 
 .ExploreTable {
-  width: 100%;
   margin-top: 50px;
+  width: 100%;
 
   &Active {
-    color: $color-text-link;
-    text-shadow: 0 0 1px $color-text-link, 0 0 1px $color-text-link;
+    text-shadow: 0 0 1px $color-text-link, 0 0 1px $color-text-link !important;
     opacity: 1 !important;
+    color: $color-text-link;
   }
 
   &Down {
@@ -111,8 +138,8 @@ table {
 
 .mobile {
   &Symbol {
-    opacity: 0.5;
     font-size: 14px;
+    opacity: 0.5;
   }
 
   &Price {
@@ -121,12 +148,21 @@ table {
   }
 
   &PriceChangeModel {
-    background: initial !important;
     text-align: right;
+    background: initial !important;
+    &Down {
+      text-align: right;
+      color: red;
+      background: initial !important;
+
+      img {
+        transform: rotate(180deg);
+      }
+    }
   }
 
   &PriceAndChangeContainer {
-    height: 40px;
+    padding-top: 10px;
     padding-right: 20px;
   }
 }
@@ -135,8 +171,8 @@ table {
   padding-left: 2px;
 
   &Up {
-    transform: rotate(180deg);
     margin-left: 2px;
+    transform: rotate(180deg);
   }
 }
 

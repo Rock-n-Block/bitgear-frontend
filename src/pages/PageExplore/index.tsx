@@ -1,6 +1,7 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { useMedia } from 'use-media';
 
 import CoinIcon from '../../assets/images/coin.png';
 import RocketIcon from '../../assets/images/rocket.png';
@@ -26,13 +27,17 @@ export const PageExplore: React.FC = () => {
   const [isPending, setIsPending] = React.useState<boolean>(true);
   const [data, setData] = React.useState<TableType[]>([] as any);
   const [pageCount, setPageCount] = React.useState<number>(1);
+  const [pageCountMobile, setPageCountMobile] = React.useState<number>(1);
   const [sortFlagChanged, setSortFlagChanged] = React.useState<boolean>(false);
   const [activeColumn, setActiveColumn] = React.useState<string>('');
   const [isArrowUp, setIsArrowUp] = React.useState<boolean>(true);
   const [flagSort, setFlagSort] = React.useState<string>('');
   const [dataForTable, setDataForTable] = React.useState<TableType[]>([] as any);
+  const [dataForTableMobile, setDataForTableMobile] = React.useState<TableType[]>([] as any);
   const [tokenPairs, setTokenPairs] = React.useState([] as any);
   const { tokens } = useSelector(({ zx }: any) => zx);
+
+  const isWide = useMedia({ minWidth: '767px' });
 
   const dispatch = useDispatch();
 
@@ -69,6 +74,7 @@ export const PageExplore: React.FC = () => {
 
   const countDataForPagination = React.useCallback(() => {
     setPageCount(Math.ceil(data.length / 12));
+    setPageCountMobile(Math.ceil(data.length / 5));
   }, [data.length]);
 
   const fillData = React.useCallback(async () => {
@@ -125,6 +131,7 @@ export const PageExplore: React.FC = () => {
       console.log('DONE! *explore table data*');
       console.log('DATA', dataForTableLocal);
       setDataForTable([...dataForTableLocal].slice(0, 12));
+      setDataForTableMobile([...dataForTableLocal].slice(0, 5));
       setData(dataForTableLocal);
       setDataStore({ dataFromStore: dataForTableLocal });
     } catch (e) {
@@ -134,6 +141,7 @@ export const PageExplore: React.FC = () => {
 
   const emitChanges = (arg: any) => {
     setDataForTable(arg);
+    setDataForTableMobile(arg);
   };
 
   const emitSorting = (param: any) => {
@@ -142,14 +150,16 @@ export const PageExplore: React.FC = () => {
     }
     if (param !== activeColumn) {
       setIsArrowUp(true);
+      setSortFlagChanged(!sortFlagChanged);
     }
     if (param === activeColumn) {
       setIsArrowUp(!isArrowUp);
+      setSortFlagChanged(!sortFlagChanged);
     }
     setData(sortColumn(param, data, flagSort));
     setDataForTable(sortColumn(param, data, flagSort).slice(0, 12));
+    setDataForTableMobile(sortColumn(param, data, flagSort).slice(0, 5));
     setFlagSort(param);
-    setSortFlagChanged(true);
     setActiveColumn(param);
   };
 
@@ -164,6 +174,15 @@ export const PageExplore: React.FC = () => {
   React.useEffect(() => {
     countDataForPagination();
   }, [countDataForPagination]);
+
+  React.useEffect(() => {
+    if (isWide) {
+      setDataForTable(data.slice(0, 12));
+    }
+    if (!isWide) {
+      setDataForTableMobile(data.slice(0, 5));
+    }
+  }, [data, isWide]);
 
   return (
     <div className={s.container}>
@@ -181,6 +200,7 @@ export const PageExplore: React.FC = () => {
       <section className={s.ExploreTable}>
         <MainTable
           data={dataForTable}
+          dataForMobile={dataForTableMobile}
           emitSorting={emitSorting}
           activeColumn={activeColumn}
           isArrowUp={isArrowUp}
@@ -188,10 +208,11 @@ export const PageExplore: React.FC = () => {
       </section>
       <section className={s.paginationContainer}>
         <Pagination
-          pageCount={pageCount}
+          pageCountProp={pageCount}
+          pageCountMobileProp={pageCountMobile}
           emitChanges={emitChanges}
           data={data}
-          sortFlagChanged={sortFlagChanged}
+          sortFlagChangedProp={sortFlagChanged}
         />
       </section>
     </div>
