@@ -100,7 +100,7 @@ export const Search: React.FC = React.memo(() => {
         label={<Label />}
         labelInner={<SearchLabel />}
         dropdown={<SearchDropdown items={searchResult} search={searchValue} />}
-        placeholder="Search token or input token address..."
+        placeholder="Search token..."
       />
     </div>
   );
