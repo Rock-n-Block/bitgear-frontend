@@ -111,7 +111,7 @@ $fs: 16px;
     height: 100vh;
     width: 100vw;
     left: 0;
-    top: $height-header;
+    top: $height-header - 14px;
     padding: 0 30px 120px 30px;
     flex-grow: 0;
     background-color: $color-bg-header;
@@ -178,8 +178,8 @@ $fs: 16px;
   border-radius: 20px;
 
   @include b('mobile') {
-    min-width: calc(100vw - 40px);
     width: calc(100vw - 40px);
+    margin-top: 256px;
   }
 
   &Inner {
@@ -188,6 +188,7 @@ $fs: 16px;
 
     @include b('mobile') {
       padding: 18px 20px 10px 20px;
+      min-height: 400px;
     }
   }
 
