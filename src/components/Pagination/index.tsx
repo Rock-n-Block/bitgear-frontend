@@ -1,22 +1,36 @@
 import React from 'react';
+import { useMedia } from 'use-media';
 
 import s from './style.module.scss';
 
 type TypePaginationProps = {
-  pageCount?: number;
+  pageCountProp?: number;
+  pageCountMobileProp?: number;
   data?: any[];
   emitChanges?: (T: any) => any;
-  sortFlagChanged: boolean;
+  sortFlagChangedProp: boolean;
 };
 
 export const Pagination: React.FC<TypePaginationProps> = React.memo(
-  ({ pageCount = 1, data = [], emitChanges = () => 1, sortFlagChanged = false }) => {
+  ({
+    pageCountProp = 1,
+    pageCountMobileProp = 1,
+    data = [],
+    emitChanges = () => 1,
+    sortFlagChangedProp = false,
+  }) => {
     const [activeButton, setActiveButton] = React.useState<number>(1);
     const [numbers, setNumbers] = React.useState<any>([] as any[]);
+    const [pageCount, setPageCount] = React.useState<number>(1);
+    const isWide = useMedia({ minWidth: '767px' });
 
     const changePage = (pageNumber: number) => {
       setActiveButton(pageNumber);
-      emitChanges(data.slice((pageNumber - 1) * 12, pageNumber * 12));
+      if (!isWide) {
+        emitChanges(data.slice((pageNumber - 1) * 5, pageNumber * 5));
+      } else {
+        emitChanges(data.slice((pageNumber - 1) * 12, pageNumber * 12));
+      }
     };
 
     const firstPaginationRender = React.useCallback(() => {
@@ -52,6 +66,17 @@ export const Pagination: React.FC<TypePaginationProps> = React.memo(
     }, [activeButton, pageCount]);
 
     React.useEffect(() => {
+      if (!isWide) {
+        setPageCount(pageCountMobileProp);
+        setActiveButton(1);
+      } else {
+        setPageCount(pageCountProp);
+        setActiveButton(1);
+      }
+    }, [isWide, pageCountMobileProp, pageCountProp]);
+    React.useEffect(() => {}, [isWide, pageCount, pageCountMobileProp, pageCountProp]);
+
+    React.useEffect(() => {
       paginationRender();
     }, [paginationRender]);
 
@@ -60,10 +85,13 @@ export const Pagination: React.FC<TypePaginationProps> = React.memo(
     }, [firstPaginationRender]);
 
     React.useEffect(() => {
-      if (sortFlagChanged) {
+      if (sortFlagChangedProp) {
         setActiveButton(1);
       }
-    }, [sortFlagChanged]);
+      if (!sortFlagChangedProp) {
+        setActiveButton(1);
+      }
+    }, [sortFlagChangedProp]);
 
     return (
       <div>

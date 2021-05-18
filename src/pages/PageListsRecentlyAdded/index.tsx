@@ -123,7 +123,7 @@ export const PageListsRecentlyAdded: React.FC = React.memo(() => {
         <h1>Recently Added</h1>
       </section>
       <section className={s.ExploreTable}>
-        <MainTable data={dataForTable} />
+        <MainTable data={dataForTable} dataForMobile={dataForTable.slice(0, 5)} />
       </section>
     </div>
   );

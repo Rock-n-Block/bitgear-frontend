@@ -86,10 +86,9 @@
     }
 
     &Active {
-      color: $color-text-span;
-      font-weight: bold;
-      cursor: default;
-      border-bottom-color: $color-border-bottom-span !important;
+      text-shadow: 0 0 1px $color-text-link, 0 0 1px $color-text-link !important;
+      opacity: 1 !important;
+      color: $color-text-link;
     }
   }
 
@@ -257,7 +256,7 @@
 
       &Active {
         color: $color-text-link;
-        font-weight: bold !important;
+        text-shadow: 0 0 1px $color-text-link, 0 0 1px $color-text-link !important;
         opacity: 1 !important;
       }
 
@@ -280,26 +279,81 @@
   &Row {
     @include flex(row, normal, flex-end, nowrap);
   }
+  &Column {
+    @include flex(column);
+  }
 }
 
 .mobile {
-  &Symbol {
-    opacity: 0.5;
-    font-size: 14px;
+  &Container{
+    height: 180px;
+    width: 100%;
+    padding: 20px;
+    background: #30335533;
+    border-radius: 10px;
+    margin: 0 9px 6px 0;
+    @include flex(column);
   }
 
-  &Price {
-    text-align: right;
-    color: white;
+  &ColumnTitle {
+    font-size: 13px;
+    width: 108px;
+    opacity: 0.5;
+  }
+
+  &Pair {
+    text-align: left;
+    font-size: 19px;
+  }
+
+  &Time {
+    @include flex(row, normal, space-between);
+    margin-bottom: 8px;
+  }
+
+  &AmountPrice {
+    @include flex(row, normal, space-between);
   }
 
   &PriceChangeModel {
-    background: initial !important;
-    padding: 0;
+    color: #01c9c5;
+    &Down {
+      color: red;
+      background: initial !important;
+
+      img {
+        transform: rotate(180deg);
+      }
+    }
+  }
+}
+
+.time {
+  color: #0197e2;
+  margin-left: 4px;
+}
+
+.arrowSort {
+  padding-left: 4px;
+
+  &Up {
+    margin-left: 4px;
+    transform: rotate(180deg);
+  }
+}
+
+.tokenImage {
+  &Maker {
+    height: 28px;
+    width: 28px;
+    margin-bottom: -8px;
   }
 
-
-  &PriceAndChangeContainer {
-    padding: 6px 20px 0 0;
+  &Taker {
+    height: 28px;
+    width: 28px;
+    margin-left: -8px;
+    margin-right: 8px;
+    margin-bottom: -8px;
   }
 }
