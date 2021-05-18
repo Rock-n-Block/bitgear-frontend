@@ -6,12 +6,15 @@
   height: 100%;
   max-width: 1000px;
   padding: 30px 30px 400px 30px;
+  @include b('mobile') {
+    padding: 0 30px 200px 30px;
+  }
 }
 
 .containerTitle {
   padding: 55px 0 0;
   @include b('mobile') {
-    padding: 60px 0 0;
+    padding: 0;
   }
   h1 {
     max-width: 563px;
