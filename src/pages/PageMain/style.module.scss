@@ -182,8 +182,11 @@
 }
 
 .containerCards {
-  @include grid(repeat(3, 1fr), 1fr, 20px);
-  margin: 40px 0px 0 0px;
+  @include grid(repeat(2, 1fr), 1fr, 20px);
+  margin: 40px 160px 0 160px;
+  @include b('mobile'){
+    margin: 40px 0px 0 0px;
+  }
 
   @include b('tablet') {
     @include grid(repeat(2, 1fr), 1fr, 20px);
