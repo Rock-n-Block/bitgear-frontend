@@ -26,7 +26,7 @@ type TypeCardProps = {
   to: string;
 };
 
-const firstTokens = ['WETH', 'WBTC', 'GEAR', 'USDC'].reverse();
+const firstTokens = ['GEAR', 'WETH', 'WBTC', 'USDC'].reverse();
 
 export const CardToken: React.FC<TypeCardProps> = ({ token, to = '/' }) => {
   const [price, setPrice] = React.useState<number>(0);
