@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { v1 as uuid } from 'uuid';
 
-//
 import { ReactComponent as IconSearch } from '../../assets/icons/search.svg';
 import { InputWithDropdown } from '../InputWithDropdown';
 
