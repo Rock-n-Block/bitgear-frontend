@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { v1 as uuid } from 'uuid';
 
+//
 import { ReactComponent as IconSearch } from '../../assets/icons/search.svg';
 import { InputWithDropdown } from '../InputWithDropdown';
 
@@ -19,6 +20,10 @@ type TypeToken = {
 type TypeSearchDropdownProps = {
   items?: TypeToken[];
   search?: string;
+};
+
+type TypeSearchProps = {
+  wide?: boolean;
 };
 
 const Label: React.FC = () => {
@@ -63,7 +68,7 @@ const SearchDropdown: React.FC<TypeSearchDropdownProps> = ({ items = [], search 
   );
 };
 
-export const Search: React.FC = React.memo(() => {
+export const Search: React.FC<TypeSearchProps> = React.memo(({ wide = true }) => {
   const [searchValue, setSearchValue] = React.useState<string>('');
   const [searchResult, setSearchResult] = React.useState<any[]>([]);
 
@@ -93,15 +98,30 @@ export const Search: React.FC = React.memo(() => {
 
   return (
     <div>
-      <InputWithDropdown
-        classContainer={s.containerInput}
-        onChange={handleSearch}
-        value={searchValue}
-        label={<Label />}
-        labelInner={<SearchLabel />}
-        dropdown={<SearchDropdown items={searchResult} search={searchValue} />}
-        placeholder="Search token..."
-      />
+      {wide}
+      {wide ? (
+        <>
+          <InputWithDropdown
+            classContainer={s.containerInput}
+            onChange={handleSearch}
+            value={searchValue}
+            label={<Label />}
+            labelInner={<SearchLabel />}
+            dropdown={<SearchDropdown items={searchResult} search={searchValue} />}
+            placeholder="Search token or input token address..."
+          />
+        </>
+      ) : (
+        <InputWithDropdown
+          classContainer={s.containerInput}
+          onChange={handleSearch}
+          value={searchValue}
+          label={<Label />}
+          labelInner={<SearchLabel />}
+          dropdown={<SearchDropdown items={searchResult} search={searchValue} />}
+          placeholder="Search token..."
+        />
+      )}
     </div>
   );
 });
