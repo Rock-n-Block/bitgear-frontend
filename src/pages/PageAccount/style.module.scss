@@ -220,6 +220,7 @@
               height: 60px;
               text-transform: uppercase;
               padding: 5px 0 5px 10px;
+              margin-bottom: 130px;
             }
 
             &:first-child {
@@ -233,6 +234,8 @@
               color: #01c9c5;
               @include b('mobile') {
                 @include flex(row, normal, flex-end);
+                color: white;
+                background-color: initial;
                 padding: 0;
               }
 
@@ -241,8 +244,8 @@
                 width: 14px;
                 height: 15px;
                 @include b('mobile') {
-                  margin-top: 4px;
-                  margin-right: 4px;
+                  width: 14px;
+                  height: 15px;
                 }
               }
             }
@@ -344,16 +347,19 @@
 
 .tokenImage {
   &Maker {
-    height: 28px;
-    width: 28px;
-    margin-bottom: -8px;
+    height: 28px !important;
+    width: 28px !important;
+    margin-bottom: -8px !important;
   }
 
   &Taker {
-    height: 28px;
-    width: 28px;
-    margin-left: -8px;
-    margin-right: 8px;
-    margin-bottom: -8px;
+    height: 28px !important;
+    width: 28px !important;
+    margin-left: -8px !important;
+    margin-right: 8px !important;
+    margin-bottom: -8px !important;
+    @include b('mobile') {
+      margin-left: -16px !important;
+    }
   }
 }

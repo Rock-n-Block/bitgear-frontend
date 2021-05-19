@@ -343,7 +343,7 @@ export const PageAccount: React.FC = () => {
               <table className={s.accountTradeTable}>
                 {isWide ? (
                   <thead>
-                    <tr>
+                    <tr key={uuid()}>
                       <th
                         className={cns(
                           activeColumn === 'timestart' ? s.accountTradeTableActive : null,
@@ -383,7 +383,7 @@ export const PageAccount: React.FC = () => {
                       } = item;
                       let priceChangeModel = (
                         <td>
-                          <img src={ArrowUpIcon} alt="arrow up" /> {`$${price}`}
+                          <img src={ArrowUpIcon} alt="arrow up" /> {`$${numberTransform(price)}`}
                         </td>
                       );
                       if (price < 0) {
@@ -395,7 +395,7 @@ export const PageAccount: React.FC = () => {
                         );
                       }
                       if (price === 0) {
-                        priceChangeModel = <td>{`$${price}`}</td>;
+                        priceChangeModel = <td>{`$${numberTransform(price)}`}</td>;
                       }
                       return (
                         <tr key={uuid()}>
@@ -418,7 +418,7 @@ export const PageAccount: React.FC = () => {
                             />
                             {tradingPair.symbolMaker} / {tradingPair.symbolTaker}
                           </td>
-                          <td>{amount}</td>
+                          <td>{numberTransform(amount)}</td>
                           {priceChangeModel}
                         </tr>
                       );
@@ -453,49 +453,51 @@ export const PageAccount: React.FC = () => {
                         priceChangeModel = <div>{`$${price}`}</div>;
                       }
                       return (
-                        <>
-                          <div className={s.mobileContainer}>
-                            <div className={s.mobilePair}>
-                              <img
-                                className={s.tokenImageMaker}
-                                src={getTokenBySymbol(tradingPair.symbolMaker).image}
-                                alt=""
-                              />
-                              <img
-                                className={s.tokenImageTaker}
-                                src={getTokenBySymbol(tradingPair.symbolTaker).image}
-                                alt=""
-                              />
-                              {tradingPair.symbolMaker} / {tradingPair.symbolTaker}
-                            </div>
-                            <div className={s.mobileTime}>
-                              <div className={s.flexContainerColumn}>
-                                <div className={s.mobileColumnTitle}>TIME START</div>
-                                <div>
-                                  {orderCreate}
-                                  <span className={s.time}>{timeCreate}</span>
+                        <tr key={uuid()}>
+                          <td>
+                            <div className={s.mobileContainer}>
+                              <div className={s.mobilePair}>
+                                <img
+                                  className={s.tokenImageMaker}
+                                  src={getTokenBySymbol(tradingPair.symbolMaker).image}
+                                  alt=""
+                                />
+                                <img
+                                  className={s.tokenImageTaker}
+                                  src={getTokenBySymbol(tradingPair.symbolTaker).image}
+                                  alt=""
+                                />
+                                {tradingPair.symbolMaker} / {tradingPair.symbolTaker}
+                              </div>
+                              <div className={s.mobileTime}>
+                                <div className={s.flexContainerColumn}>
+                                  <div className={s.mobileColumnTitle}>TIME START</div>
+                                  <div>
+                                    {orderCreate}
+                                    <span className={s.time}>{timeCreate}</span>
+                                  </div>
+                                </div>
+                                <div className={s.flexContainerColumn}>
+                                  <div className={s.mobileColumnTitle}>TIME END</div>
+                                  <div>
+                                    {orderExpire}
+                                    <span className={s.time}>{timeExpire}</span>
+                                  </div>
                                 </div>
                               </div>
-                              <div className={s.flexContainerColumn}>
-                                <div className={s.mobileColumnTitle}>TIME END</div>
-                                <div>
-                                  {orderExpire}
-                                  <span className={s.time}>{timeExpire}</span>
+                              <div className={s.mobileAmountPrice}>
+                                <div className={s.flexContainerColumn}>
+                                  <div className={s.mobileColumnTitle}>AMOUNT</div>
+                                  <div>{numberTransform(amount)}</div>
+                                </div>
+                                <div className={s.flexContainerColumn}>
+                                  <div className={s.mobileColumnTitle}>PRICE</div>
+                                  <div>{priceChangeModel}</div>
                                 </div>
                               </div>
                             </div>
-                            <div className={s.mobileAmountPrice}>
-                              <div className={s.flexContainerColumn}>
-                                <div className={s.mobileColumnTitle}>AMOUNT</div>
-                                <div>{numberTransform(amount)}</div>
-                              </div>
-                              <div className={s.flexContainerColumn}>
-                                <div className={s.mobileColumnTitle}>PRICE</div>
-                                <div>{priceChangeModel}</div>
-                              </div>
-                            </div>
-                          </div>
-                        </>
+                          </td>
+                        </tr>
                       );
                     })}
                   </tbody>
