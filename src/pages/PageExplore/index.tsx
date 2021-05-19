@@ -187,7 +187,7 @@ export const PageExplore: React.FC = () => {
   return (
     <div className={s.container}>
       <section className={s.containerTitle}>
-        <Search />
+        <Search wide={isWide} />
       </section>
       <section className={s.containerButtons}>
         <Link className={s.containerButtonsItem} to="/lists/recently-added">

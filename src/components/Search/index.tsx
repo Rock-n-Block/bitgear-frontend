@@ -21,6 +21,10 @@ type TypeSearchDropdownProps = {
   search?: string;
 };
 
+type TypeSearchProps = {
+  wide?: boolean;
+};
+
 const Label: React.FC = () => {
   return (
     <div className={s.label}>
@@ -63,7 +67,7 @@ const SearchDropdown: React.FC<TypeSearchDropdownProps> = ({ items = [], search 
   );
 };
 
-export const Search: React.FC = React.memo(() => {
+export const Search: React.FC<TypeSearchProps> = React.memo(({ wide = true }) => {
   const [searchValue, setSearchValue] = React.useState<string>('');
   const [searchResult, setSearchResult] = React.useState<any[]>([]);
 
@@ -93,15 +97,30 @@ export const Search: React.FC = React.memo(() => {
 
   return (
     <div>
-      <InputWithDropdown
-        classContainer={s.containerInput}
-        onChange={handleSearch}
-        value={searchValue}
-        label={<Label />}
-        labelInner={<SearchLabel />}
-        dropdown={<SearchDropdown items={searchResult} search={searchValue} />}
-        placeholder="Search token..."
-      />
+      {wide}
+      {wide ? (
+        <>
+          <InputWithDropdown
+            classContainer={s.containerInput}
+            onChange={handleSearch}
+            value={searchValue}
+            label={<Label />}
+            labelInner={<SearchLabel />}
+            dropdown={<SearchDropdown items={searchResult} search={searchValue} />}
+            placeholder="Search token or input token address..."
+          />
+        </>
+      ) : (
+        <InputWithDropdown
+          classContainer={s.containerInput}
+          onChange={handleSearch}
+          value={searchValue}
+          label={<Label />}
+          labelInner={<SearchLabel />}
+          dropdown={<SearchDropdown items={searchResult} search={searchValue} />}
+          placeholder="Search token..."
+        />
+      )}
     </div>
   );
 });

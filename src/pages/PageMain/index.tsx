@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { useMedia } from 'use-media';
 import { v1 as uuid } from 'uuid';
 
 import imageCoin from '../../assets/images/coin.png';
@@ -92,6 +93,8 @@ export const PageMain: React.FC = () => {
 
   const [tokensList, setTokensList] = React.useState<TypeToken[]>([]);
 
+  const isWide = useMedia({ minWidth: '767px' });
+
   const changeTokens = React.useCallback(async () => {
     try {
       let newTokens = tokens;
@@ -117,7 +120,7 @@ export const PageMain: React.FC = () => {
         <h1>
           Find the <span>best prices</span> across exchange networks
         </h1>
-        <Search />
+        <Search wide={isWide} />
       </section>
       <section className={s.containerCards}>
         {tokensList.map((token: TypeToken) => {
