@@ -158,6 +158,8 @@ export const PageMarketsContent: React.FC = () => {
     ? +amountReceive === 0 || !balanceOfTokenPay || balanceOfTokenPay < +amountPay
     : false;
 
+  const marketPrice = marketHistory[0]?.close || 0;
+
   const getTokenBySymbol = React.useCallback(
     (symbol: string) => {
       const tokenEmpty = { name: 'Currency', symbol: null, image: imageTokenPay };
@@ -629,6 +631,22 @@ export const PageMarketsContent: React.FC = () => {
 
   const handleOpenSelectSlippage = () => {
     setOpenSelectSlippage(!openSelectSlippage);
+  };
+
+  const handleFocusAmountPay = async () => {
+    if (amountPay === '0') setAmountPay('');
+  };
+
+  const handleBlurAmountPay = async () => {
+    if (amountPay === '') setAmountPay('0');
+  };
+
+  const handleFocusAmountReceive = async () => {
+    if (amountReceive === '0') setAmountReceive('');
+  };
+
+  const handleBlurAmountReceive = async () => {
+    if (amountReceive === '') setAmountReceive('0');
   };
 
   const handleChangeAmountPay = async (event: any) => {
@@ -1141,7 +1159,7 @@ export const PageMarketsContent: React.FC = () => {
           </div>
           <div className={s.containerTitlePrice}>
             {!symbolReceive && '$'}
-            {prettyPrice(price.toString())} {symbolReceive}
+            {prettyPrice(marketPrice.toString())} {symbolReceive}
           </div>
           <div
             className={classPriceChange}
@@ -1321,6 +1339,8 @@ export const PageMarketsContent: React.FC = () => {
                   type="number"
                   value={amountPay}
                   onChange={handleChangeAmountPay}
+                  onFocus={handleFocusAmountPay}
+                  onBlur={handleBlurAmountPay}
                 />
               </div>
               <div className={s.containerTradingCardBalance}>
@@ -1345,6 +1365,8 @@ export const PageMarketsContent: React.FC = () => {
                     type="number"
                     value={amountReceive}
                     onChange={handleChangeAmountReceiveLimit}
+                    onFocus={handleFocusAmountReceive}
+                    onBlur={handleBlurAmountReceive}
                   />
                 </div>
               </div>
@@ -1445,6 +1467,8 @@ export const PageMarketsContent: React.FC = () => {
                   type="number"
                   value={amountReceive}
                   onChange={handleChangeAmountReceive}
+                  onFocus={handleFocusAmountReceive}
+                  onBlur={handleBlurAmountReceive}
                 />
               </div>
               <div className={s.containerTradingCardBalance}>
