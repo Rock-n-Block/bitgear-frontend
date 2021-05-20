@@ -1,12 +1,14 @@
 import React from 'react';
 import cns from 'classnames';
 import * as d3 from 'd3-path';
+import moment from 'moment/moment';
 import { v1 as uuid } from 'uuid';
 
 import s from './style.module.scss';
 
 type TypeLineChartProps = {
   data?: any;
+  dateTime?: any;
   containerStyle?: any;
   svgStyle?: any;
   interactive?: boolean;
@@ -18,6 +20,7 @@ type TypeLineChartProps = {
 export const LineChart: React.FC<TypeLineChartProps> = React.memo(
   ({
     data = [],
+    dateTime = [],
     containerStyle = {},
     svgStyle = {},
     interactive = false,
@@ -62,6 +65,7 @@ export const LineChart: React.FC<TypeLineChartProps> = React.memo(
       const step = (width - padding * 2) / (data.length - 1);
       array.map((point: number, ip: number) => {
         const text = data ? data[ip] : '';
+        const time = dateTime ? dateTime[ip] : '';
         const x = padding + ip * step;
         const y = point + padding;
         const pathLine = d3.path();
@@ -78,17 +82,20 @@ export const LineChart: React.FC<TypeLineChartProps> = React.memo(
             className={s.verticalLine}
             onMouseEnter={() => handleHoverGroup(String(text))}
           >
+            <text x={x + dx} y={y + dy - 20}>
+              ${String(text).slice(0, 8)}
+            </text>
+            <text x={x + dx} y={y + dy}>
+              {String(moment(new Date(time.toString() * 1000)).format('MMMM Do YYYY, h:mm:ss a'))}
+            </text>
             <path d={pathLine.toString()} />
             <circle cx={x} cy={y} r={6} />
-            <text x={x + dx} y={y + dy}>
-              {String(text).slice(0, 8)}
-            </text>
             <rect x={x - 0.5 * step} y={0} width={step} height={height} />
           </g>,
         );
       });
       setVerticalLines(lines);
-    }, [resizePath, data, width, height, chartHeight, padding, handleHoverGroup]);
+    }, [dateTime, chartHeight, height, resizePath, data, width, padding, handleHoverGroup]);
 
     const drawPath = React.useCallback(() => {
       // console.log('drawPath:', data);
