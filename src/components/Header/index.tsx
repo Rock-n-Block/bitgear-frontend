@@ -19,6 +19,7 @@ import config from '../../config';
 import { useWalletConnectorContext } from '../../contexts/WalletConnect';
 import { userActions } from '../../redux/actions';
 import { getFromStorage, setToStorage } from '../../utils/localStorage';
+import { prettyAmount } from '../../utils/prettifiers';
 import { Dropdown } from '../Dropdown';
 
 import s from './style.module.scss';
@@ -52,7 +53,7 @@ export const ItemTokenBalance: React.FC<TypeItemTokenBalanceProps> = ({ symbol, 
   };
 
   const { image } = getTokenBySymbol(symbol);
-  const balancePrettified = (+balance).toFixed(12);
+  const balancePrettified = prettyAmount(+(+balance).toFixed(9));
 
   return (
     <Link
@@ -67,6 +68,7 @@ export const ItemTokenBalance: React.FC<TypeItemTokenBalanceProps> = ({ symbol, 
         <img src={image} alt="" className={s.headerDropdownItemTokenImage} />
       </div>
       <div>
+        {balancePrettified}
         <div className={s.headerDropdownItemTokenSymbol}>{symbol}:</div>
         <div className={s.headerDropdownItemTokenBalance}>{balancePrettified}</div>
       </div>
