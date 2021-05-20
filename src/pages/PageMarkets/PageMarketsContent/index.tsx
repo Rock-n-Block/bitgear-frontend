@@ -111,6 +111,7 @@ export const PageMarketsContent: React.FC = () => {
   const [priceChart, setPriceChart] = React.useState<string | null>();
   const [marketHistory, setMarketHistory] = React.useState<any[]>([]);
   const [points, setPoints] = React.useState<number[]>([]);
+  const [dateTime, setDateTime] = React.useState<number[]>([]);
   const [period, setPeriod] = React.useState<number>(periodDefault > 0 ? periodDefault : 1);
   const [searchValuePay, setSearchValuePay] = React.useState<string>('');
   const [searchValueReceive, setSearchValueReceive] = React.useState<string>('');
@@ -435,21 +436,53 @@ export const PageMarketsContent: React.FC = () => {
     }
   }, [symbolPay, tokensFiltered]);
 
-  const getHistory = React.useCallback(async () => {
+  const getHistoryDay = React.useCallback(async () => {
     try {
-      const result = await CryptoCompare.getHistory({
+      const result = await CryptoCompare.getHistoryMinute({
         symbolOne,
         symbolTwo: symbolTwo || 'USD',
-        limit: 100,
-        aggregate: period,
+        limit: 96,
+        aggregate: 15,
         // exchange: 'oneinch',
       });
-      console.log('getHistory:', result);
+      console.log('getHistoryDay:', result);
       setMarketHistory(result.data);
     } catch (e) {
       console.error(e);
     }
-  }, [symbolOne, symbolTwo, period]);
+  }, [symbolOne, symbolTwo]);
+
+  const getHistoryHourWeek = React.useCallback(async () => {
+    try {
+      const result = await CryptoCompare.getHistoryHour({
+        symbolOne,
+        symbolTwo: symbolTwo || 'USD',
+        limit: 168,
+        aggregate: 1,
+        // exchange: 'oneinch',
+      });
+      console.log('getHistoryWeek:', result);
+      setMarketHistory(result.data);
+    } catch (e) {
+      console.error(e);
+    }
+  }, [symbolOne, symbolTwo]);
+
+  const getHistoryHourMonth = React.useCallback(async () => {
+    try {
+      const result = await CryptoCompare.getHistoryHour({
+        symbolOne,
+        symbolTwo: symbolTwo || 'USD',
+        limit: 180,
+        aggregate: 4,
+        // exchange: 'oneinch',
+      });
+      console.log('getHistoryMonth:', result);
+      setMarketHistory(result.data);
+    } catch (e) {
+      console.error(e);
+    }
+  }, [symbolOne, symbolTwo]);
 
   const getPoints = React.useCallback(() => {
     try {
@@ -462,6 +495,17 @@ export const PageMarketsContent: React.FC = () => {
       const prettyNewPriceChange = prettyPriceChange(newPriceChange.toString());
       setPriceChange(+prettyNewPriceChange);
       // console.log('getPoints:', newPoints);
+    } catch (e) {
+      console.error(e);
+    }
+  }, [marketHistory]);
+
+  const getDateTime = React.useCallback(() => {
+    try {
+      const newDateTime = marketHistory.map((item: any) => {
+        return item.time;
+      });
+      setDateTime(newDateTime);
     } catch (e) {
       console.error(e);
     }
@@ -836,7 +880,20 @@ export const PageMarketsContent: React.FC = () => {
   React.useEffect(() => {
     getTokenPay();
     getPrices();
-    getHistory();
+
+    switch (period) {
+      case 1:
+        getHistoryDay();
+        break;
+      case 7:
+        getHistoryHourWeek();
+        break;
+      case 30:
+        getHistoryHourMonth();
+        break;
+      default:
+        break;
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -851,10 +908,28 @@ export const PageMarketsContent: React.FC = () => {
   }, [marketHistory]);
 
   React.useEffect(() => {
-    getHistory();
+    switch (period) {
+      case 1:
+        getHistoryDay();
+        break;
+      case 7:
+        getHistoryHourWeek();
+        break;
+      case 30:
+        getHistoryHourMonth();
+        break;
+      default:
+        break;
+    }
     getPoints();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [period, tokens, tokensReceive]);
+
+  React.useEffect(() => {
+    getDateTime();
+    getPoints();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [marketHistory, period]);
 
   React.useEffect(() => {
     if (!tokensFiltered || tokensFiltered?.length === 0) return;
@@ -1390,6 +1465,7 @@ export const PageMarketsContent: React.FC = () => {
             <LineChart
               interactive
               data={points}
+              dateTime={dateTime}
               chartHeight={140}
               padding={20}
               onHover={handleHoverChart}

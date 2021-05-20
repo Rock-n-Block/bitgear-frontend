@@ -120,4 +120,70 @@ export class CryptoCompareService {
       return { status: 'ERROR', data: undefined };
     }
   };
+
+  getHistoryMinute = async ({
+    symbolOne,
+    symbolTwo,
+    limit,
+    aggregate,
+    exchange,
+  }: TypeGetHistoryProps) => {
+    try {
+      let e = exchange;
+      const exchanges = await this.getExchangeOfPair({ symbolOne, symbolTwo });
+      if (exchanges.status === 'SUCCESS') {
+        [e] = exchanges.data;
+      }
+      const query = qs.stringify({
+        fsym: symbolOne.toUpperCase(),
+        tsym: symbolTwo.toUpperCase(),
+        limit,
+        aggregate,
+        e,
+        api_key: config.keys.cryptoCompare,
+      });
+      const result = await this.axios.get(`/data/v2/histominute?${query}`);
+      if (result.data.Response === 'Error') {
+        console.log('CryptoCompareService getHistory:', result);
+        return { status: 'ERROR', data: undefined };
+      }
+      return { status: 'SUCCESS', data: result.data.Data.Data };
+    } catch (e) {
+      console.error(e);
+      return { status: 'ERROR', data: undefined };
+    }
+  };
+
+  getHistoryHour = async ({
+    symbolOne,
+    symbolTwo,
+    limit,
+    aggregate,
+    exchange,
+  }: TypeGetHistoryProps) => {
+    try {
+      let e = exchange;
+      const exchanges = await this.getExchangeOfPair({ symbolOne, symbolTwo });
+      if (exchanges.status === 'SUCCESS') {
+        [e] = exchanges.data;
+      }
+      const query = qs.stringify({
+        fsym: symbolOne.toUpperCase(),
+        tsym: symbolTwo.toUpperCase(),
+        limit,
+        aggregate,
+        e,
+        api_key: config.keys.cryptoCompare,
+      });
+      const result = await this.axios.get(`/data/v2/histohour?${query}`);
+      if (result.data.Response === 'Error') {
+        console.log('CryptoCompareService getHistory:', result);
+        return { status: 'ERROR', data: undefined };
+      }
+      return { status: 'SUCCESS', data: result.data.Data.Data };
+    } catch (e) {
+      console.error(e);
+      return { status: 'ERROR', data: undefined };
+    }
+  };
 }
