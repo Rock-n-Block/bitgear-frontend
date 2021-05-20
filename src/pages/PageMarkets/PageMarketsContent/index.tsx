@@ -652,7 +652,7 @@ export const PageMarketsContent: React.FC = () => {
   const handleChangeAmountPay = async (event: any) => {
     try {
       const { value } = event.target;
-      setAmountPay(prettyAmount(value));
+      setAmountPay(value);
       const pricePay = await getPricePay(value);
       const newAmountReceive = String(pricePay * value);
       console.log('handleChangeAmountPay newAmountReceive:', newAmountReceive);
@@ -669,7 +669,7 @@ export const PageMarketsContent: React.FC = () => {
       const pricePay = await getPricePay(value);
       let newAmountPay = value / pricePay;
       if (pricePay === 0) newAmountPay = 0;
-      setAmountPay(String(newAmountPay));
+      setAmountPay(prettyAmount(String(newAmountPay)));
     } catch (e) {
       console.error('handleChangeAmountReceive:', e);
     }
