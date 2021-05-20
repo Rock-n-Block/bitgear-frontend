@@ -1378,7 +1378,7 @@ export const PageMarketsContent: React.FC = () => {
           </div>
         </div>
         <div className={s.containerTradingButton}>
-          <Button onClick={handleTrade} disabled={isTradeDisabled}>
+          <Button onClick={handleTrade} disabled={isTradeDisabled || waiting}>
             {!userAddress ? 'Connect wallet' : waiting ? 'Waiting...' : 'Trade'}
           </Button>
         </div>
