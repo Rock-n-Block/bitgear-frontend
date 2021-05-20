@@ -1,6 +1,6 @@
-export const prettyAmount = (value: number) => {
+export const prettyAmount = (value: string) => {
   let newValue = value;
-  if (+newValue < 0) newValue = 0;
+  if (+newValue < 0) newValue = '0';
   // if (newValue.length > 1 && Number(newValue) >= 1 && newValue.slice(0, 1)[0] === '0') {
   //   newValue = newValue.slice(1);
   // }

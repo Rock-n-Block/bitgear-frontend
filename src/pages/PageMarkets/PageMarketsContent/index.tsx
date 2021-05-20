@@ -131,8 +131,8 @@ export const PageMarketsContent: React.FC = () => {
   const [tokenNamePay, setTokenNamePay] = React.useState<string>('');
   const [symbolPay, setSymbolPay] = React.useState<string>(symbolOne.toUpperCase());
   const [symbolReceive, setSymbolReceive] = React.useState<string>(symbolTwo?.toUpperCase() || '');
-  const [amountPay, setAmountPay] = React.useState<number>(0);
-  const [amountReceive, setAmountReceive] = React.useState<number>(0);
+  const [amountPay, setAmountPay] = React.useState<string>('0');
+  const [amountReceive, setAmountReceive] = React.useState<string>('0');
   const [waiting, setWaiting] = React.useState<boolean>(false);
   const [balanceOfTokenPay, setBalanceOfTokenPay] = React.useState<number>(0);
   const [balanceOfTokenReceive, setBalanceOfTokenReceive] = React.useState<number>(0);
@@ -155,7 +155,7 @@ export const PageMarketsContent: React.FC = () => {
   const isGasPriceTypeCustom = gasPriceType === 'custom';
 
   const isTradeDisabled = userAddress
-    ? amountReceive === 0 || !balanceOfTokenPay || balanceOfTokenPay < amountPay
+    ? +amountReceive === 0 || !balanceOfTokenPay || balanceOfTokenPay < +amountPay
     : false;
 
   const getTokenBySymbol = React.useCallback(
@@ -172,7 +172,7 @@ export const PageMarketsContent: React.FC = () => {
     [tokens],
   );
 
-  const getPricePay = async (amountToPay: number) => {
+  const getPricePay = async (amountToPay: string) => {
     try {
       const { decimals } = getTokenBySymbol(symbolPay);
       const props = {
@@ -203,138 +203,6 @@ export const PageMarketsContent: React.FC = () => {
     if (!gasPrice) return undefined;
     return gasPrice * 10e8;
   }, [gasPrice, gasPriceCustom, isGasPriceTypeCustom]);
-
-  const handleChangeGasPrice = (value: number, type: string) => {
-    setGasPriceType(type);
-    setGasPrice(value);
-  };
-
-  const handleOpenSettings = () => {
-    setOpenSettings(!openSettings);
-  };
-
-  const handleOpenDropdownPay = () => {
-    setOpenDropdownPay(!openDropdownPay);
-  };
-
-  const handleOpenDropdownReceive = () => {
-    setOpenDropdownReceive(!openDropdownReceive);
-  };
-
-  const handleOpenSelect = () => {
-    setOpenSelect(!openSelect);
-  };
-
-  const handleOpenSelectSlippage = () => {
-    setOpenSelectSlippage(!openSelectSlippage);
-  };
-
-  const handleChangeAmountPay = async (event: any) => {
-    try {
-      const { value } = event.target;
-      setAmountPay(prettyAmount(+value));
-      const pricePay = await getPricePay(value);
-      const newAmountReceive = pricePay * value;
-      console.log('handleChangeAmountPay newAmountReceive:', newAmountReceive);
-      setAmountReceive(prettyAmount(newAmountReceive));
-    } catch (e) {
-      console.error('handleChangeAmountPay:', e);
-    }
-  };
-
-  const handleChangeAmountReceive = async (event: any) => {
-    try {
-      const { value } = event.target;
-      setAmountReceive(prettyAmount(value));
-      const pricePay = await getPricePay(value);
-      let newAmountPay = value / pricePay;
-      if (pricePay === 0) newAmountPay = 0;
-      setAmountPay(newAmountPay);
-    } catch (e) {
-      console.error('handleChangeAmountReceive:', e);
-    }
-  };
-
-  const handleChangeAmountReceiveLimit = async (event: any) => {
-    try {
-      const { value } = event.target;
-      setAmountReceive(prettyAmount(value));
-    } catch (e) {
-      console.error('handleChangeAmountReceiveLimit:', e);
-    }
-  };
-
-  const handleChangeExchanges = (e: boolean, exchange: string) => {
-    const newExchanges = exchanges;
-    if (exchanges.includes(exchange)) {
-      const index = exchanges.indexOf(exchange);
-      newExchanges.splice(index, 1);
-    } else {
-      newExchanges.push(exchange);
-    }
-    console.log('handleChangeExchanges:', newExchanges);
-    setExchanges(newExchanges);
-    const newExchangesExcluded: string[] = _.difference(exchangesList, newExchanges);
-    console.log('handleChangeExchanges newExchangesExcluded:', newExchangesExcluded);
-    setExchangesExcluded(newExchangesExcluded);
-  };
-
-  const handleChangeGasPriceCustom = (event: any) => {
-    setGasPriceCustom(event.target.value);
-  };
-
-  const handleChangeSearchPay = (value: string) => {
-    try {
-      setSearchValuePay(value);
-      const result = tokensFiltered.filter((token: TypeToken) => {
-        const includesInSymbol = token.symbol.toLowerCase().includes(value.toLowerCase());
-        const includesInName = token.name.toLowerCase().includes(value.toLowerCase());
-        if (includesInSymbol || includesInName) return true;
-        return false;
-      });
-      console.log('matchSearch:', result);
-      setSearchTokensResultPay(result);
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-  const handleChangeSearchReceive = (value: string) => {
-    try {
-      setSearchValueReceive(value);
-      const result = tokensFiltered.filter((token: TypeToken) => {
-        const includesInSymbol = token.symbol.toLowerCase().includes(value.toLowerCase());
-        const includesInName = token.name.toLowerCase().includes(value.toLowerCase());
-        if (includesInSymbol || includesInName) return true;
-        return false;
-      });
-      console.log('matchSearch:', result);
-      setSearchTokensResultReceive(result);
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-  const handleWalletConnectLogin = React.useCallback(async () => {
-    setToStorage('walletType', 'walletConnect');
-    setWalletType('walletConnect');
-    toggleModal({ open: false });
-  }, [setWalletType, toggleModal]);
-
-  const handleMetamaskLogin = React.useCallback(async () => {
-    setToStorage('walletType', 'metamask');
-    setWalletType('metamask');
-    toggleModal({ open: false });
-  }, [setWalletType, toggleModal]);
-
-  const handleSetPeriod = (newPeriod: number) => {
-    setPeriod(newPeriod);
-    setToStorage('chartPeriod', newPeriod);
-  };
-
-  const handleSetMode = (newMode: string) => {
-    setMode(newMode);
-  };
 
   const getPrices = React.useCallback(async () => {
     try {
@@ -615,7 +483,7 @@ export const PageMarketsContent: React.FC = () => {
       if (gasPriceSetting) props.gasPrice = gasPriceSetting;
       if (slippagePercentage) props.slippagePercentage = slippagePercentage;
       if (excludedSources) props.excludedSources = excludedSources;
-      // console.log('trade props:', props);
+      console.log('trade props:', props);
       const result = await Zx.getQuote(props);
       console.log('trade getQuote:', result);
       if (result.status === 'ERROR') return validateTradeErrors(result.error);
@@ -738,6 +606,138 @@ export const PageMarketsContent: React.FC = () => {
     toggleModal,
   ]);
 
+  const handleChangeGasPrice = (value: number, type: string) => {
+    setGasPriceType(type);
+    setGasPrice(value);
+  };
+
+  const handleOpenSettings = () => {
+    setOpenSettings(!openSettings);
+  };
+
+  const handleOpenDropdownPay = () => {
+    setOpenDropdownPay(!openDropdownPay);
+  };
+
+  const handleOpenDropdownReceive = () => {
+    setOpenDropdownReceive(!openDropdownReceive);
+  };
+
+  const handleOpenSelect = () => {
+    setOpenSelect(!openSelect);
+  };
+
+  const handleOpenSelectSlippage = () => {
+    setOpenSelectSlippage(!openSelectSlippage);
+  };
+
+  const handleChangeAmountPay = async (event: any) => {
+    try {
+      const { value } = event.target;
+      setAmountPay(prettyAmount(value));
+      const pricePay = await getPricePay(value);
+      const newAmountReceive = String(pricePay * value);
+      console.log('handleChangeAmountPay newAmountReceive:', newAmountReceive);
+      setAmountReceive(prettyAmount(newAmountReceive));
+    } catch (e) {
+      console.error('handleChangeAmountPay:', e);
+    }
+  };
+
+  const handleChangeAmountReceive = async (event: any) => {
+    try {
+      const { value } = event.target;
+      setAmountReceive(prettyAmount(value));
+      const pricePay = await getPricePay(value);
+      let newAmountPay = value / pricePay;
+      if (pricePay === 0) newAmountPay = 0;
+      setAmountPay(String(newAmountPay));
+    } catch (e) {
+      console.error('handleChangeAmountReceive:', e);
+    }
+  };
+
+  const handleChangeAmountReceiveLimit = async (event: any) => {
+    try {
+      const { value } = event.target;
+      setAmountReceive(prettyAmount(value));
+    } catch (e) {
+      console.error('handleChangeAmountReceiveLimit:', e);
+    }
+  };
+
+  const handleChangeExchanges = (e: boolean, exchange: string) => {
+    const newExchanges = exchanges;
+    if (exchanges.includes(exchange)) {
+      const index = exchanges.indexOf(exchange);
+      newExchanges.splice(index, 1);
+    } else {
+      newExchanges.push(exchange);
+    }
+    console.log('handleChangeExchanges:', newExchanges);
+    setExchanges(newExchanges);
+    const newExchangesExcluded: string[] = _.difference(exchangesList, newExchanges);
+    console.log('handleChangeExchanges newExchangesExcluded:', newExchangesExcluded);
+    setExchangesExcluded(newExchangesExcluded);
+  };
+
+  const handleChangeGasPriceCustom = (event: any) => {
+    setGasPriceCustom(event.target.value);
+  };
+
+  const handleChangeSearchPay = (value: string) => {
+    try {
+      setSearchValuePay(value);
+      const result = tokensFiltered.filter((token: TypeToken) => {
+        const includesInSymbol = token.symbol.toLowerCase().includes(value.toLowerCase());
+        const includesInName = token.name.toLowerCase().includes(value.toLowerCase());
+        if (includesInSymbol || includesInName) return true;
+        return false;
+      });
+      console.log('matchSearch:', result);
+      setSearchTokensResultPay(result);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const handleChangeSearchReceive = (value: string) => {
+    try {
+      setSearchValueReceive(value);
+      const result = tokensFiltered.filter((token: TypeToken) => {
+        const includesInSymbol = token.symbol.toLowerCase().includes(value.toLowerCase());
+        const includesInName = token.name.toLowerCase().includes(value.toLowerCase());
+        if (includesInSymbol || includesInName) return true;
+        return false;
+      });
+      console.log('matchSearch:', result);
+      setSearchTokensResultReceive(result);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const handleWalletConnectLogin = React.useCallback(async () => {
+    setToStorage('walletType', 'walletConnect');
+    setWalletType('walletConnect');
+    toggleModal({ open: false });
+  }, [setWalletType, toggleModal]);
+
+  const handleMetamaskLogin = React.useCallback(async () => {
+    setToStorage('walletType', 'metamask');
+    setWalletType('metamask');
+    toggleModal({ open: false });
+  }, [setWalletType, toggleModal]);
+
+  const handleSetPeriod = (newPeriod: number) => {
+    setPeriod(newPeriod);
+    setToStorage('chartPeriod', newPeriod);
+  };
+
+  const handleSetMode = (newMode: string) => {
+    setMode(newMode);
+  };
+
   const handleTrade = () => {
     try {
       setWaiting(true);
@@ -781,8 +781,8 @@ export const PageMarketsContent: React.FC = () => {
 
   const handleSelectSymbolPay = async (symbol: string) => {
     console.log('handleSelectSymbolPay:', symbol);
-    setAmountPay(0);
-    setAmountReceive(0);
+    // setAmountPay(0);
+    // setAmountReceive(0);
     setSymbolPay(symbol);
     setOpenDropdownPay(false);
     const tokensSymbolsReceive = await getTokensSymbolsReceive();
@@ -793,8 +793,8 @@ export const PageMarketsContent: React.FC = () => {
 
   const handleSelectSymbolReceive = (symbol: string) => {
     console.log('handleSelectSymbolReceive:', symbol);
-    setAmountPay(0);
-    setAmountReceive(0);
+    // setAmountPay('0');
+    // setAmountReceive('0');
     setSymbolReceive(symbol);
     setOpenDropdownReceive(false);
     history.push(`/markets/${symbolPay}/${symbol}`);
@@ -820,6 +820,8 @@ export const PageMarketsContent: React.FC = () => {
   const switchPayAndReceive = () => {
     setSymbolPay(symbolReceive);
     setSymbolReceive(symbolPay);
+    setAmountPay(amountReceive);
+    setAmountReceive(amountPay);
     history.push(`/markets/${symbolReceive}/${symbolPay}`);
   };
 
