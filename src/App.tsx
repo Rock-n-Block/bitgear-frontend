@@ -179,7 +179,10 @@ export const App: React.FC = () => {
   React.useEffect(() => {
     if (!tokens0x || tokens0x?.length === 0) return;
     if (!userAddress) return;
+    const interval = setInterval(() => getTokensBalances(), 10000);
     getTokensBalances();
+    // eslint-disable-next-line consistent-return
+    return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tokens0x, userAddress]);
 
