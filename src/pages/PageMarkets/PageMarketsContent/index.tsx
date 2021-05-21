@@ -20,12 +20,7 @@ import { modalActions, walletActions } from '../../../redux/actions';
 import { Service0x } from '../../../services/0x';
 import { CryptoCompareService } from '../../../services/CryptoCompareService';
 import { getFromStorage, setToStorage } from '../../../utils/localStorage';
-import {
-  prettyAmount,
-  prettyExpiration,
-  prettyPrice,
-  prettyPriceChange,
-} from '../../../utils/prettifiers';
+import { prettyExpiration, prettyPrice, prettyPriceChange } from '../../../utils/prettifiers';
 
 import s from './style.module.scss';
 
@@ -517,7 +512,8 @@ export const PageMarketsContent: React.FC = () => {
       }
       const newAmountReceive = String(pricePay * +amountPay);
       // console.log('PageMarketsContent updateAmountReceive:', amountPay, newAmountReceive);
-      setAmountReceive(prettyAmount(newAmountReceive));
+      const newAmountReceiveFormatted = new BigNumber(newAmountReceive).toString();
+      setAmountReceive(newAmountReceiveFormatted);
     } catch (e) {
       console.error('PageMarketsContent updateAmountReceive:', e);
     }
@@ -726,7 +722,8 @@ export const PageMarketsContent: React.FC = () => {
       }
       const newAmountReceive = String(pricePay * value);
       console.log('handleChangeAmountPay newAmountReceive:', newAmountReceive);
-      setAmountReceive(prettyAmount(newAmountReceive));
+      const newAmountReceiveFormatted = new BigNumber(newAmountReceive).toString(10);
+      setAmountReceive(newAmountReceiveFormatted);
     } catch (e) {
       console.error('handleChangeAmountPay:', e);
     }
@@ -735,7 +732,7 @@ export const PageMarketsContent: React.FC = () => {
   const handleChangeAmountReceive = async (event: any) => {
     try {
       const { value } = event.target;
-      setAmountReceive(prettyAmount(value));
+      setAmountReceive(value);
       let pricePay = 0;
       if (isModeLimit) {
         pricePay = await getPricePayLimit(value);
@@ -744,7 +741,7 @@ export const PageMarketsContent: React.FC = () => {
       }
       let newAmountPay = value / pricePay;
       if (pricePay === 0) newAmountPay = 0;
-      setAmountPay(prettyAmount(String(newAmountPay)));
+      setAmountPay(String(newAmountPay));
     } catch (e) {
       console.error('handleChangeAmountReceive:', e);
     }
