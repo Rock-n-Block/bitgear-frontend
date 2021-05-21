@@ -20,7 +20,12 @@ import { modalActions, walletActions } from '../../../redux/actions';
 import { Service0x } from '../../../services/0x';
 import { CryptoCompareService } from '../../../services/CryptoCompareService';
 import { getFromStorage, setToStorage } from '../../../utils/localStorage';
-import { prettyExpiration, prettyPrice, prettyPriceChange } from '../../../utils/prettifiers';
+import {
+  prettyBalance,
+  prettyExpiration,
+  prettyPrice,
+  prettyPriceChange,
+} from '../../../utils/prettifiers';
 
 import s from './style.module.scss';
 
@@ -130,8 +135,8 @@ export const PageMarketsContent: React.FC = () => {
   const [amountPay, setAmountPay] = React.useState<string>('0');
   const [amountReceive, setAmountReceive] = React.useState<string>('0');
   const [waiting, setWaiting] = React.useState<boolean>(false);
-  const [balanceOfTokenPay, setBalanceOfTokenPay] = React.useState<number>(0);
-  const [balanceOfTokenReceive, setBalanceOfTokenReceive] = React.useState<number>(0);
+  const [balanceOfTokenPay, setBalanceOfTokenPay] = React.useState<string>('0');
+  const [balanceOfTokenReceive, setBalanceOfTokenReceive] = React.useState<string>('0');
   const [expiration, setExpiration] = React.useState<number>(60);
   const [slippage, setSlippage] = React.useState<number>(0);
   const [gasPrice, setGasPrice] = React.useState<number>();
@@ -151,7 +156,7 @@ export const PageMarketsContent: React.FC = () => {
   const isGasPriceTypeCustom = gasPriceType === 'custom';
 
   const isTradeDisabled = userAddress
-    ? +amountReceive === 0 || !balanceOfTokenPay || balanceOfTokenPay < +amountPay
+    ? +amountReceive === 0 || !balanceOfTokenPay || +balanceOfTokenPay < +amountPay
     : false;
 
   const marketPrice = marketHistory && marketHistory[0] ? marketHistory[0]?.close : 0;
@@ -406,7 +411,8 @@ export const PageMarketsContent: React.FC = () => {
       if (!userAddress) return;
       if (symbolPay === 'ETH') {
         const balancePay = await web3Provider.getBalance(userAddress);
-        setBalanceOfTokenPay(balancePay);
+        const balancePayFormatted = new BigNumber(balancePay).toString(10);
+        setBalanceOfTokenPay(balancePayFormatted);
         return;
       }
       const contractAddressPay = getTokenBySymbol(symbolPay).address;
@@ -416,7 +422,8 @@ export const PageMarketsContent: React.FC = () => {
         contractAbi: erc20Abi,
       });
       console.log('getBalanceOfTokens resultBalanceOfPay:', resultBalanceOfPay);
-      setBalanceOfTokenPay(resultBalanceOfPay);
+      const balancePayFormatted = new BigNumber(resultBalanceOfPay).toString(10);
+      setBalanceOfTokenPay(balancePayFormatted);
     } catch (e) {
       console.error(e);
     }
@@ -427,7 +434,8 @@ export const PageMarketsContent: React.FC = () => {
       if (!userAddress) return;
       if (symbolReceive === 'ETH') {
         const balanceReceive = await web3Provider.getBalance(userAddress);
-        setBalanceOfTokenReceive(balanceReceive);
+        const balanceReceiveFormatted = new BigNumber(balanceReceive).toString(10);
+        setBalanceOfTokenReceive(balanceReceiveFormatted);
         return;
       }
       const contractAddressReceive = getTokenBySymbol(symbolReceive).address;
@@ -437,7 +445,8 @@ export const PageMarketsContent: React.FC = () => {
         contractAbi: erc20Abi,
       });
       console.log('getBalanceOfTokens resultBalanceOfReceive:', resultBalanceOfReceive);
-      setBalanceOfTokenReceive(resultBalanceOfReceive);
+      const balanceReceiveFormatted = new BigNumber(resultBalanceOfReceive).toString(10);
+      setBalanceOfTokenReceive(balanceReceiveFormatted);
     } catch (e) {
       console.error(e);
     }
@@ -1437,7 +1446,7 @@ export const PageMarketsContent: React.FC = () => {
               {symbolPay && (
                 <div className={s.containerTradingCardBalance}>
                   Current balance ({getTokenBySymbol(symbolPay).symbol})
-                  <span>{prettyPrice(String(balanceOfTokenPay))}</span>
+                  <span>{prettyBalance(String(balanceOfTokenPay))}</span>
                 </div>
               )}
             </div>
@@ -1567,7 +1576,7 @@ export const PageMarketsContent: React.FC = () => {
               {symbolReceive && (
                 <div className={s.containerTradingCardBalance}>
                   Current balance ({getTokenBySymbol(symbolReceive).symbol})
-                  <span>{prettyPrice(String(balanceOfTokenReceive))}</span>
+                  <span>{prettyBalance(String(balanceOfTokenReceive))}</span>
                 </div>
               )}
             </div>

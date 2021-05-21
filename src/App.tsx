@@ -1,6 +1,7 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom';
+import BigNumber from 'bignumber.js/bignumber';
 
 import imageTokenPay from './assets/images/token.png';
 import { useWalletConnectorContext } from './contexts/WalletConnect';
@@ -154,7 +155,7 @@ export const App: React.FC = () => {
             contractAbi: erc20Abi,
           });
         }
-        (balances as any)[symbol] = balance;
+        (balances as any)[symbol] = new BigNumber(balance).toString(10);
       }
       console.log('App getTokensBalances balances:', balances);
       setUserData({ balances });
