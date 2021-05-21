@@ -174,50 +174,52 @@ export const PageMarketsContent: React.FC = () => {
     [tokens],
   );
 
-  const getPricePay = async (amountToPay: string) => {
-    try {
-      const { decimals, address: addressPay } = getTokenBySymbol(symbolPay);
-      const { address: addressReceive } = getTokenBySymbol(symbolReceive);
-      const props = {
-        buyToken: addressReceive,
-        sellToken: addressPay,
-        sellAmount: amountToPay,
-        decimals,
-      };
-      const result = await Zx.getQuote(props);
-      console.log('PageMarketsContent getPricePay:', props, result);
-      if (result.status === 'SUCCESS') {
-        return result.data.guaranteedPrice;
+  const getPricePay = React.useCallback(
+    async (amountToPay: string) => {
+      try {
+        const { decimals, address: addressPay } = getTokenBySymbol(symbolPay);
+        const { address: addressReceive } = getTokenBySymbol(symbolReceive);
+        const props = {
+          buyToken: addressReceive,
+          sellToken: addressPay,
+          sellAmount: amountToPay,
+          decimals,
+        };
+        const result = await Zx.getQuote(props);
+        console.log('PageMarketsContent getPricePay:', props, result);
+        if (result.status === 'SUCCESS') return result.data.guaranteedPrice;
+        return marketPrice;
+        return 0;
+      } catch (e) {
+        console.error(e);
+        return 0;
       }
-      return marketPrice;
-      return 0;
-    } catch (e) {
-      console.error(e);
-      return 0;
-    }
-  };
+    },
+    [getTokenBySymbol, marketPrice, symbolPay, symbolReceive],
+  );
 
-  const getPricePayLimit = async (amountToPay: string) => {
-    try {
-      const { decimals, address: addressPay } = getTokenBySymbol(symbolPay);
-      const { address: addressReceive } = getTokenBySymbol(symbolReceive);
-      const props = {
-        buyToken: addressReceive,
-        sellToken: addressPay,
-        sellAmount: amountToPay,
-        decimals,
-      };
-      const result = await Zx.getPrice(props);
-      console.log('PageMarketsContent getPricePayLimit:', props, result);
-      if (result.status === 'SUCCESS') {
-        return result.data.guaranteedPrice;
+  const getPricePayLimit = React.useCallback(
+    async (amountToPay: string) => {
+      try {
+        const { decimals, address: addressPay } = getTokenBySymbol(symbolPay);
+        const { address: addressReceive } = getTokenBySymbol(symbolReceive);
+        const props = {
+          buyToken: addressReceive,
+          sellToken: addressPay,
+          sellAmount: amountToPay,
+          decimals,
+        };
+        const result = await Zx.getPrice(props);
+        console.log('PageMarketsContent getPricePayLimit:', props, result);
+        if (result.status === 'SUCCESS') return result.data.guaranteedPrice;
+        return marketPrice;
+      } catch (e) {
+        console.error(e);
+        return 0;
       }
-      return marketPrice;
-    } catch (e) {
-      console.error(e);
-      return 0;
-    }
-  };
+    },
+    [getTokenBySymbol, marketPrice, symbolPay, symbolReceive],
+  );
 
   const getGasPrice = React.useCallback(async () => {
     const resultGetGasPrice = await web3Provider.getGasPrice();
@@ -504,6 +506,22 @@ export const PageMarketsContent: React.FC = () => {
       return false;
     }
   }, [toggleModal]);
+
+  const updateAmountReceive = React.useCallback(async () => {
+    try {
+      let pricePay = 0;
+      if (isModeLimit) {
+        pricePay = await getPricePayLimit(amountPay);
+      } else {
+        pricePay = await getPricePay(amountPay);
+      }
+      const newAmountReceive = String(pricePay * +amountPay);
+      // console.log('PageMarketsContent updateAmountReceive:', amountPay, newAmountReceive);
+      setAmountReceive(prettyAmount(newAmountReceive));
+    } catch (e) {
+      console.error('PageMarketsContent updateAmountReceive:', e);
+    }
+  }, [amountPay, getPricePay, getPricePayLimit, isModeLimit]);
 
   const trade = React.useCallback(async () => {
     try {
@@ -1037,6 +1055,12 @@ export const PageMarketsContent: React.FC = () => {
     if (!symbolTwo) return;
     setSymbolReceive(symbolTwo);
   }, [symbolOne, symbolTwo, filterTokens]);
+
+  React.useEffect(() => {
+    if (!symbolReceive) return;
+    updateAmountReceive();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [symbolReceive]);
 
   const RadioLabelFast = (
     <div className={s.radioLabelGas}>
