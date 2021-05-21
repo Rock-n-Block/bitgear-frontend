@@ -1,5 +1,5 @@
 const IS_PRODUCTION = false;
-const IS_TESTING_ON_ROPSTEN = false;
+const IS_TESTING_ON_ROPSTEN = true;
 
 export default {
   IS_PRODUCTION,
@@ -71,16 +71,17 @@ export default {
       },
     },
   },
+  // todo remove (allowanceTarget gets in getQuote). because it changes sometimes.
   addresses: {
     // 0x contract
     mainnet: {
-      allowanceTarget: '0xdef1c0ded9bec7f1a1670819833240f027b25eff',
+      // allowanceTarget: '0xdef1c0ded9bec7f1a1670819833240f027b25eff',
     },
     kovan: {
-      allowanceTarget: '0xdef1c0ded9bec7f1a1670819833240f027b25eff',
+      // allowanceTarget: '0xdef1c0ded9bec7f1a1670819833240f027b25eff',
     },
     ropsten: {
-      allowanceTarget: '0xdef1c0ded9bec7f1a1670819833240f027b25eff',
+      // allowanceTarget: '0xdef1c0ded9bec7f1a1670819833240f027b25eff',
     },
   },
 };

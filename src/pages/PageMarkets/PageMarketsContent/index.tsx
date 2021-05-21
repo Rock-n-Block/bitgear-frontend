@@ -158,7 +158,7 @@ export const PageMarketsContent: React.FC = () => {
     ? +amountReceive === 0 || !balanceOfTokenPay || balanceOfTokenPay < +amountPay
     : false;
 
-  const marketPrice = marketHistory[0]?.close || 0;
+  const marketPrice = marketHistory && marketHistory[0] ? marketHistory[0]?.close : 0;
 
   const getTokenBySymbol = React.useCallback(
     (symbol: string) => {
@@ -176,19 +176,44 @@ export const PageMarketsContent: React.FC = () => {
 
   const getPricePay = async (amountToPay: string) => {
     try {
-      const { decimals } = getTokenBySymbol(symbolPay);
+      const { decimals, address: addressPay } = getTokenBySymbol(symbolPay);
+      const { address: addressReceive } = getTokenBySymbol(symbolReceive);
       const props = {
-        buyToken: symbolReceive,
-        sellToken: symbolPay,
+        buyToken: addressReceive,
+        sellToken: addressPay,
+        sellAmount: amountToPay,
+        decimals,
+      };
+      const result = await Zx.getQuote(props);
+      console.log('PageMarketsContent getPricePay:', props, result);
+      if (result.status === 'SUCCESS') {
+        return result.data.guaranteedPrice;
+      }
+      return marketPrice;
+
+      return 0;
+    } catch (e) {
+      console.error(e);
+      return 0;
+    }
+  };
+
+  const getPricePayLimit = async (amountToPay: string) => {
+    try {
+      const { decimals, address: addressPay } = getTokenBySymbol(symbolPay);
+      const { address: addressReceive } = getTokenBySymbol(symbolReceive);
+      const props = {
+        buyToken: addressReceive,
+        sellToken: addressPay,
         sellAmount: amountToPay,
         decimals,
       };
       const result = await Zx.getPrice(props);
-      console.log('getPricePay:', props, result);
+      console.log('PageMarketsContent getPricePayLimit:', props, result);
       if (result.status === 'SUCCESS') {
-        return result.data.price;
+        return result.data.guaranteedPrice;
       }
-      return 0;
+      return marketPrice;
     } catch (e) {
       console.error(e);
       return 0;
@@ -653,7 +678,12 @@ export const PageMarketsContent: React.FC = () => {
     try {
       const { value } = event.target;
       setAmountPay(value);
-      const pricePay = await getPricePay(value);
+      let pricePay = 0;
+      if (isModeLimit) {
+        pricePay = await getPricePayLimit(value);
+      } else {
+        pricePay = await getPricePay(value);
+      }
       const newAmountReceive = String(pricePay * value);
       console.log('handleChangeAmountPay newAmountReceive:', newAmountReceive);
       setAmountReceive(prettyAmount(newAmountReceive));
@@ -666,7 +696,12 @@ export const PageMarketsContent: React.FC = () => {
     try {
       const { value } = event.target;
       setAmountReceive(prettyAmount(value));
-      const pricePay = await getPricePay(value);
+      let pricePay = 0;
+      if (isModeLimit) {
+        pricePay = await getPricePayLimit(value);
+      } else {
+        pricePay = await getPricePay(value);
+      }
       let newAmountPay = value / pricePay;
       if (pricePay === 0) newAmountPay = 0;
       setAmountPay(prettyAmount(String(newAmountPay)));
