@@ -123,7 +123,9 @@ export const App: React.FC = () => {
       const resultGetTokens = await Zx.getTokens();
       const newTokens = resultGetTokens.data;
       console.log('App getTokens:', newTokens);
-      newTokens.push(tokenGear);
+      // eslint-disable-next-line no-confusing-arrow
+      newTokens.sort((a: any, b: any) => (a.name !== b.name ? (a.name < b.name ? -1 : 1) : 0));
+      newTokens.unshift(tokenGear);
       const tokens = await changeTokensInfo(newTokens);
       setTokens({ tokens });
       setTokens0x(tokens);
@@ -179,8 +181,8 @@ export const App: React.FC = () => {
   React.useEffect(() => {
     if (!tokens0x || tokens0x?.length === 0) return;
     if (!userAddress) return;
-    const interval = setInterval(() => getTokensBalances(), 10000);
     getTokensBalances();
+    const interval = setInterval(() => getTokensBalances(), 10000);
     // eslint-disable-next-line consistent-return
     return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps

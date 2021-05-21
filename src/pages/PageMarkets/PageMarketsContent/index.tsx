@@ -190,7 +190,6 @@ export const PageMarketsContent: React.FC = () => {
         return result.data.guaranteedPrice;
       }
       return marketPrice;
-
       return 0;
     } catch (e) {
       console.error(e);
@@ -291,12 +290,11 @@ export const PageMarketsContent: React.FC = () => {
       } else {
         newTokens = tokens;
       }
-      // eslint-disable-next-line no-confusing-arrow
-      newTokens.sort((a: any, b: any) => (a.name !== b.name ? (a.name < b.name ? -1 : 1) : 0));
       setTokensFiltered(newTokens);
+      console.error('PageMarketsContent filterTokens:', newTokens);
       return null;
     } catch (e) {
-      console.error('filterTokens:', e);
+      console.error('PageMarketsContent filterTokens:', e);
       return null;
     }
   }, [isModeLimit, tokens]);
@@ -1124,7 +1122,7 @@ export const PageMarketsContent: React.FC = () => {
       <div className={s.containerTradingCardSearchItems}>
         {searchTokensResultPay.map((token: any) => {
           const { name: tokenName, symbol, image = imageTokenPay } = token;
-          const isBalanceZero = userBalances[symbol] === 0;
+          const isBalanceZero = !userBalances[symbol] || userBalances[symbol] === 0;
           const balance = !isBalanceZero ? prettyPrice(userBalances[symbol]) : '';
           return (
             <div
@@ -1163,7 +1161,7 @@ export const PageMarketsContent: React.FC = () => {
       <div className={s.containerTradingCardSearchItems}>
         {searchTokensResultReceive.map((token: any) => {
           const { name: tokenName, symbol, image = imageTokenPay } = token;
-          const isBalanceZero = userBalances[symbol] === 0;
+          const isBalanceZero = !userBalances[symbol] || userBalances[symbol] === 0;
           const balance = !isBalanceZero ? prettyPrice(userBalances[symbol]) : '';
           return (
             <div
