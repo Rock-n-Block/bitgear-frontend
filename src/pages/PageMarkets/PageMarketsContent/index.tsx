@@ -89,7 +89,7 @@ export const PageMarketsContent: React.FC = () => {
     [dispatch],
   );
 
-  const { address: userAddress } = useSelector(({ user }: any) => user);
+  const { address: userAddress, balances: userBalances } = useSelector(({ user }: any) => user);
   const { tokens } = useSelector(({ zx }: any) => zx);
   const { chainId } = useSelector(({ wallet }: any) => wallet);
 
@@ -1123,7 +1123,9 @@ export const PageMarketsContent: React.FC = () => {
       </div>
       <div className={s.containerTradingCardSearchItems}>
         {searchTokensResultPay.map((token: any) => {
-          const { name: tokenName, symbol, price: tokenPrice = 0, image = imageTokenPay } = token;
+          const { name: tokenName, symbol, image = imageTokenPay } = token;
+          const isBalanceZero = userBalances[symbol] === 0;
+          const balance = !isBalanceZero ? prettyPrice(userBalances[symbol]) : '';
           return (
             <div
               role="button"
@@ -1136,7 +1138,7 @@ export const PageMarketsContent: React.FC = () => {
               <img src={image} alt="" className={s.containerTradingCardSearchItemImage} />
               <div className={s.containerTradingCardSearchItemFirst}>
                 <div className={s.containerTradingCardSearchItemName}>{tokenName}</div>
-                <div className={s.containerTradingCardSearchItemPrice}>{tokenPrice}</div>
+                <div className={s.containerTradingCardSearchItemPrice}>{balance}</div>
               </div>
               <div className={s.containerTradingCardSearchItemSymbol}>
                 <div>{symbol}</div>
@@ -1159,8 +1161,10 @@ export const PageMarketsContent: React.FC = () => {
         />
       </div>
       <div className={s.containerTradingCardSearchItems}>
-        {searchTokensResultReceive.map((item: any) => {
-          const { name: tokenName, symbol, price: tokenPrice = '0', image = imageTokenPay } = item;
+        {searchTokensResultReceive.map((token: any) => {
+          const { name: tokenName, symbol, image = imageTokenPay } = token;
+          const isBalanceZero = userBalances[symbol] === 0;
+          const balance = !isBalanceZero ? prettyPrice(userBalances[symbol]) : '';
           return (
             <div
               role="button"
@@ -1173,7 +1177,7 @@ export const PageMarketsContent: React.FC = () => {
               <img src={image} alt="" className={s.containerTradingCardSearchItemImage} />
               <div className={s.containerTradingCardSearchItemFirst}>
                 <div className={s.containerTradingCardSearchItemName}>{tokenName}</div>
-                <div className={s.containerTradingCardSearchItemPrice}>{tokenPrice}</div>
+                <div className={s.containerTradingCardSearchItemPrice}>{balance}</div>
               </div>
               <div className={s.containerTradingCardSearchItemSymbol}>
                 <div>{symbol}</div>
