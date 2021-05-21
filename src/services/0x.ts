@@ -9,14 +9,14 @@ import tokensRopsten from '../data/tokensRopsten';
 type TypeGetQuoteProps = {
   buyToken: string;
   sellToken: string;
-  sellAmount: number;
+  sellAmount: string;
   decimals: number;
 };
 
 type TypeGetPriceProps = {
   buyToken: string;
   sellToken: string;
-  sellAmount: number;
+  sellAmount: string;
   skipValidation?: boolean;
   decimals: number;
 };
@@ -97,7 +97,7 @@ export class Service0x {
     try {
       const { decimals, sellAmount } = props;
       // eslint-disable-next-line no-param-reassign
-      props.sellAmount = sellAmount * 10 ** decimals; // todo
+      props.sellAmount = new BigNumber(sellAmount).multipliedBy(10 ** decimals).toString();
       console.log('Service0x getQuote:', props);
       const url = `/swap/v1/quote?${qs.stringify(props)}`;
       const result = await this.axios.get(url);
@@ -116,7 +116,7 @@ export class Service0x {
     try {
       const { decimals, sellAmount } = props;
       // eslint-disable-next-line no-param-reassign
-      props.sellAmount = sellAmount * 10 ** decimals; // todo
+      props.sellAmount = new BigNumber(sellAmount).multipliedBy(10 ** decimals).toString();
       console.log('Service0x getPrice:', props);
       const url = `/swap/v1/price?${qs.stringify(props)}`;
       let result;
