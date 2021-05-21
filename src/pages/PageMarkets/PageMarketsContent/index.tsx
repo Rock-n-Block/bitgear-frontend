@@ -1378,10 +1378,12 @@ export const PageMarketsContent: React.FC = () => {
                   onBlur={handleBlurAmountPay}
                 />
               </div>
-              <div className={s.containerTradingCardBalance}>
-                Current balance ({getTokenBySymbol(symbolPay).symbol})
-                <span>{prettyPrice(String(balanceOfTokenPay))}</span>
-              </div>
+              {symbolPay && (
+                <div className={s.containerTradingCardBalance}>
+                  Current balance ({getTokenBySymbol(symbolPay).symbol})
+                  <span>{prettyPrice(String(balanceOfTokenPay))}</span>
+                </div>
+              )}
             </div>
           </div>
           {isModeLimit && (
@@ -1506,10 +1508,12 @@ export const PageMarketsContent: React.FC = () => {
                   onBlur={handleBlurAmountReceive}
                 />
               </div>
-              <div className={s.containerTradingCardBalance}>
-                Current balance ({getTokenBySymbol(symbolReceive).symbol})
-                <span>{prettyPrice(String(balanceOfTokenReceive))}</span>
-              </div>
+              {symbolReceive && (
+                <div className={s.containerTradingCardBalance}>
+                  Current balance ({getTokenBySymbol(symbolReceive).symbol})
+                  <span>{prettyPrice(String(balanceOfTokenReceive))}</span>
+                </div>
+              )}
             </div>
           </div>
         </div>
