@@ -489,6 +489,22 @@ export const PageMarketsContent: React.FC = () => {
     }
   }, [symbolPay, symbolReceive, toggleModal]);
 
+  const rejectUsingEthForLimit = React.useCallback(() => {
+    try {
+      return toggleModal({
+        open: true,
+        text: (
+          <div>
+            <p>Unavailable on ETH-based pairs. Use WETH for limit orders.</p>
+          </div>
+        ),
+      });
+    } catch (e) {
+      console.error(e);
+      return false;
+    }
+  }, [toggleModal]);
+
   const trade = React.useCallback(async () => {
     try {
       if (!verifyForm()) {
@@ -786,6 +802,10 @@ export const PageMarketsContent: React.FC = () => {
   };
 
   const handleSetMode = (newMode: string) => {
+    if (symbolPay === 'ETH') {
+      rejectUsingEthForLimit();
+      return;
+    }
     setMode(newMode);
   };
 
