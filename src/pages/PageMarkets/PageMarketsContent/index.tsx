@@ -876,6 +876,11 @@ export const PageMarketsContent: React.FC = () => {
     setOpenDropdownPay(false);
     const tokensSymbolsReceive = await getTokensSymbolsReceive();
     let newSymbolReceive = symbolReceive;
+    if (symbol === newSymbolReceive) {
+      newSymbolReceive = '';
+      setSymbolReceive('');
+      setAmountReceive('0');
+    }
     if (!tokensSymbolsReceive.includes(symbolReceive)) newSymbolReceive = '';
     history.push(`/markets/${symbol}/${newSymbolReceive}`);
   };
