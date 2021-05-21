@@ -744,7 +744,7 @@ export const PageMarketsContent: React.FC = () => {
   const handleChangeAmountReceiveLimit = async (event: any) => {
     try {
       const { value } = event.target;
-      setAmountReceive(prettyAmount(value));
+      setAmountReceive(value);
     } catch (e) {
       console.error('handleChangeAmountReceiveLimit:', e);
     }
