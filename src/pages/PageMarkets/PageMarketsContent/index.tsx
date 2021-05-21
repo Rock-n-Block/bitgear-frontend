@@ -1060,7 +1060,7 @@ export const PageMarketsContent: React.FC = () => {
     if (!symbolReceive) return;
     updateAmountReceive();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [symbolReceive]);
+  }, [symbolReceive, symbolPay]);
 
   const RadioLabelFast = (
     <div className={s.radioLabelGas}>
