@@ -188,14 +188,13 @@ export const PageMarketsContent: React.FC = () => {
         const result = await Zx.getQuote(props);
         console.log('PageMarketsContent getPricePay:', props, result);
         if (result.status === 'SUCCESS') return result.data.guaranteedPrice;
-        return marketPrice;
         return 0;
       } catch (e) {
         console.error(e);
         return 0;
       }
     },
-    [getTokenBySymbol, marketPrice, symbolPay, symbolReceive],
+    [getTokenBySymbol, symbolPay, symbolReceive],
   );
 
   const getPricePayLimit = React.useCallback(
@@ -245,7 +244,7 @@ export const PageMarketsContent: React.FC = () => {
           skipValidation: true,
           decimals,
         });
-        console.log('getPrices:', result);
+        console.log('PageMarketsContent getPrices:', result);
         if (result.status === 'SUCCESS') {
           newPrice = result.data.price;
           setPrice(newPrice);
@@ -257,7 +256,7 @@ export const PageMarketsContent: React.FC = () => {
           symbolOne: symbolPay,
           symbolTwo: 'USD',
         });
-        console.log('getPrices:', result);
+        console.log('PageMarketsContent getPrices:', result);
         if (result.status === 'SUCCESS') {
           newPrice = result.data.PRICE;
           setPrice(newPrice);

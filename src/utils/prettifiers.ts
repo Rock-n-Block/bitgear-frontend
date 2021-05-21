@@ -1,6 +1,6 @@
 export const prettyAmount = (value: string) => {
   let newValue = value;
-  if (+newValue < 0) return '0';
+  if (+newValue <= 0) return '0';
   if (+newValue < 1) {
     newValue = String(Number(newValue).toFixed(8));
     newValue = newValue.replace(/0*\s*$/, '');
