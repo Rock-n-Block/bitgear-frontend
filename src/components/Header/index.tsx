@@ -53,7 +53,7 @@ export const ItemTokenBalance: React.FC<TypeItemTokenBalanceProps> = ({ symbol, 
   };
 
   const { image } = getTokenBySymbol(symbol);
-  const balancePrettified = prettyAmount(+(+balance).toFixed(9));
+  const balancePrettified = prettyAmount((+balance).toFixed(9));
 
   return (
     <Link
