@@ -13,6 +13,7 @@ import { ReactComponent as IconSearchWhite } from '../../../assets/icons/search-
 import imageTokenPay from '../../../assets/images/token.png';
 import { Checkbox, Dropdown, Input, LineChart, Select } from '../../../components';
 import Button from '../../../components/Button';
+import config from '../../../config';
 import { useWalletConnectorContext } from '../../../contexts/WalletConnect';
 import erc20Abi from '../../../data/erc20Abi.json';
 import { modalActions, walletActions } from '../../../redux/actions';
@@ -594,8 +595,16 @@ export const PageMarketsContent: React.FC = () => {
       );
       const contractAbi = erc20Abi;
       const amountPayInWei = new BigNumber(amountPay).multipliedBy(10 ** decimalsPay).toString();
+      const { netType, addresses } = config as { [index: string]: any };
+      const { allowanceTarget } = addresses[netType];
+      const data = {
+        from: userAddress,
+        sellAmount: amountPayInWei,
+        sellTokenAddress: addressPay,
+        allowanceTarget,
+      };
       const resultApprove = await web3Provider.approve({
-        data: { from: userAddress, sellAmount: amountPayInWei, sellTokenAddress: addressPay },
+        data,
         contractAbi,
       });
       console.log('tradeLimit resultApprove:', resultApprove);

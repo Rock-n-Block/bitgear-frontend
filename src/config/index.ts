@@ -75,13 +75,13 @@ export default {
   addresses: {
     // 0x contract
     mainnet: {
-      // allowanceTarget: '0xdef1c0ded9bec7f1a1670819833240f027b25eff',
+      allowanceTarget: '0xdef1c0ded9bec7f1a1670819833240f027b25eff',
     },
     kovan: {
-      // allowanceTarget: '0xdef1c0ded9bec7f1a1670819833240f027b25eff',
+      allowanceTarget: '0xdef1c0ded9bec7f1a1670819833240f027b25eff',
     },
     ropsten: {
-      // allowanceTarget: '0xdef1c0ded9bec7f1a1670819833240f027b25eff',
+      allowanceTarget: '0xdef1c0ded9bec7f1a1670819833240f027b25eff',
     },
   },
 };
