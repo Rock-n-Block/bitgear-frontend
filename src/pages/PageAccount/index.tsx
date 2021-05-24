@@ -324,13 +324,17 @@ export const PageAccount: React.FC = () => {
               const [symbol, balance] = item;
               if (symbol === 'ETH' || symbol === 'GEAR') return null;
               return (
-                <Link key={uuid()} className={s.accountFundsCard} to={`/markets/${symbol}`}>
-                  <h3>Your balance:</h3>
-                  <span>
-                    {prettyPrice(balance)} {symbol}
-                  </span>
-                  <img src={EthGlassIcon} alt="ehereum logo" />
-                </Link>
+                <>
+                  {balance > 0 ? (
+                    <Link key={uuid()} className={s.accountFundsCard} to={`/markets/${symbol}`}>
+                      <h3>Your balance:</h3>
+                      <span>
+                        {prettyPrice(balance)} {symbol}
+                      </span>
+                      <img src={EthGlassIcon} alt="ehereum logo" />
+                    </Link>
+                  ) : null}
+                </>
               );
             })}
           </section>
