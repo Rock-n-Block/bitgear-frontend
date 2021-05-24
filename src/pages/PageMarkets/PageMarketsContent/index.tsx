@@ -942,6 +942,7 @@ export const PageMarketsContent: React.FC = () => {
   };
 
   const switchPayAndReceive = () => {
+    if (!symbolReceive) return;
     setSymbolPay(symbolReceive);
     setSymbolReceive(symbolPay);
     setAmountPay(amountReceive);
@@ -1552,6 +1553,7 @@ export const PageMarketsContent: React.FC = () => {
         <div className={cns(s.containerTradingDivider, s.containerTradingCardLimitOpen)}>
           <div
             role="button"
+            title={!symbolReceive ? 'Select receive currency to switch' : ''}
             tabIndex={0}
             className={s.containerTradingDividerInner}
             onClick={switchPayAndReceive}

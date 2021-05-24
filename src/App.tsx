@@ -162,7 +162,7 @@ export const App: React.FC = () => {
               // console.error(`App getTokensBalances (${symbol}):`, e);
               // eslint-disable-next-line no-await-in-loop
               const resultGetAbi = await Etherscan.getAbi(address);
-              console.log('App getTokensBalances resultGetAbi:', resultGetAbi);
+              // console.log('App getTokensBalances resultGetAbi:', resultGetAbi);
               if (resultGetAbi.status === 'SUCCESS') {
                 // eslint-disable-next-line no-await-in-loop
                 balance = await web3Provider.balanceOf({
@@ -180,7 +180,7 @@ export const App: React.FC = () => {
         }
         (balances as any)[symbol] = new BigNumber(balance).toString(10);
       }
-      console.log('App getTokensBalances balances:', balances);
+      // console.log('App getTokensBalances balances:', balances);
       setUserData({ balances });
       setStatus({ loadingBalances: 'done' });
     } catch (e) {
