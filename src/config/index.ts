@@ -16,7 +16,9 @@ export default {
     policy: '',
   },
   apis: {
-    'cryptoCompare': 'https://min-api.cryptocompare.com',
+    // 'cryptoCompare': 'https://min-api.cryptocompare.com',
+    'cryptoCompare': 'https://crypto-api.mywish.io',
+    // 'coinMarketCap': 'https://cmc-api.mywish.io',
     'coinMarketCap': 'https://cmc-api.mywish.io',
     'coinGecko': 'https://api.coingecko.com/api/v3',
     '0x': IS_PRODUCTION
