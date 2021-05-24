@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 
 import { MainTable } from '../../components';
+import excludedCoins from '../../data/excludedCoins';
 import { CoinMarketCapService } from '../../services/CoinMarketCap';
 import { sortColumn } from '../../utils/sortColumn';
 import { TableType } from '../PageExplore';
@@ -42,42 +43,45 @@ export const PageListsTopGainers: React.FC = React.memo(() => {
       for (const token of tokenPairs) {
         // eslint-disable-next-line no-await-in-loop
         const resultGetPairInfo = await getCoinsInfo({
-          symbolOne: token[0].symbol,
+          symbolOne: token[0]?.symbol,
           symbolTwo: token[1]?.symbol,
         });
 
         if (token[1]?.symbol) {
           dataForTableLocal.push(
             {
-              name: resultGetPairInfo[token[0].symbol].name,
-              symbol: resultGetPairInfo[token[0].symbol].symbol,
-              marketCap: resultGetPairInfo[token[0].symbol].quote.USD.market_cap,
-              price: resultGetPairInfo[token[0].symbol].quote.USD.price,
-              priceChange: resultGetPairInfo[token[0].symbol].quote.USD.percent_change_24h,
-              volume: resultGetPairInfo[token[0].symbol].quote.USD.volume_24h,
-              genesisDate: resultGetPairInfo[token[0].symbol].date_added,
+              name: resultGetPairInfo[token[0].symbol.toUpperCase()].name,
+              symbol: resultGetPairInfo[token[0].symbol.toUpperCase()].symbol,
+              marketCap: resultGetPairInfo[token[0].symbol.toUpperCase()].quote.USD.market_cap,
+              price: resultGetPairInfo[token[0].symbol.toUpperCase()].quote.USD.price,
+              priceChange:
+                resultGetPairInfo[token[0].symbol.toUpperCase()].quote.USD.percent_change_24h,
+              volume: resultGetPairInfo[token[0].symbol.toUpperCase()].quote.USD.volume_24h,
+              genesisDate: resultGetPairInfo[token[0].symbol.toUpperCase()].date_added,
             },
             {
-              name: resultGetPairInfo[token[1].symbol].name,
-              symbol: resultGetPairInfo[token[1].symbol].symbol,
-              marketCap: resultGetPairInfo[token[1].symbol].quote.USD.market_cap,
-              price: resultGetPairInfo[token[1].symbol].quote.USD.price,
-              priceChange: resultGetPairInfo[token[1].symbol].quote.USD.percent_change_24h,
-              volume: resultGetPairInfo[token[1].symbol].quote.USD.volume_24h,
-              genesisDate: resultGetPairInfo[token[1].symbol].date_added,
+              name: resultGetPairInfo[token[1].symbol.toUpperCase()].name,
+              symbol: resultGetPairInfo[token[1].symbol.toUpperCase()].symbol,
+              marketCap: resultGetPairInfo[token[1].symbol.toUpperCase()].quote.USD.market_cap,
+              price: resultGetPairInfo[token[1].symbol.toUpperCase()].quote.USD.price,
+              priceChange:
+                resultGetPairInfo[token[1].symbol.toUpperCase()].quote.USD.percent_change_24h,
+              volume: resultGetPairInfo[token[1].symbol.toUpperCase()].quote.USD.volume_24h,
+              genesisDate: resultGetPairInfo[token[1].symbol.toUpperCase()].date_added,
             },
           );
         }
 
         if (!token[1]?.symbol) {
           dataForTableLocal.push({
-            name: resultGetPairInfo[token[0].symbol].name,
-            symbol: resultGetPairInfo[token[0].symbol].symbol,
-            marketCap: resultGetPairInfo[token[0].symbol].quote.USD.market_cap,
-            price: resultGetPairInfo[token[0].symbol].quote.USD.price,
-            priceChange: resultGetPairInfo[token[0].symbol].quote.USD.percent_change_24h,
-            volume: resultGetPairInfo[token[0].symbol].quote.USD.volume_24h,
-            genesisDate: resultGetPairInfo[token[0].symbol].date_added,
+            name: resultGetPairInfo[token[0].symbol.toUpperCase()].name,
+            symbol: resultGetPairInfo[token[0].symbol.toUpperCase()].symbol,
+            marketCap: resultGetPairInfo[token[0].symbol.toUpperCase()].quote.USD.market_cap,
+            price: resultGetPairInfo[token[0].symbol.toUpperCase()].quote.USD.price,
+            priceChange:
+              resultGetPairInfo[token[0].symbol.toUpperCase()].quote.USD.percent_change_24h,
+            volume: resultGetPairInfo[token[0].symbol.toUpperCase()].quote.USD.volume_24h,
+            genesisDate: resultGetPairInfo[token[0].symbol.toUpperCase()].date_added,
           });
         }
       }
@@ -108,7 +112,25 @@ export const PageListsTopGainers: React.FC = React.memo(() => {
   }, []);
 
   React.useEffect(() => {
-    divideTokensOnPairs(tokens);
+    const arrayExcluded = excludedCoins.map((item: any) => {
+      return item.symbol;
+    });
+
+    divideTokensOnPairs(
+      tokens.filter((token: any) => {
+        return !arrayExcluded.includes(token.symbol.toUpperCase());
+        // token.symbol.toUpperCase() !== 'BOOTY' &&
+        // token.symbol.toUpperCase() !== 'BASED' &&
+        // token.symbol.toUpperCase() !== 'CVL' &&
+        // token.symbol.toUpperCase() !== 'ICN' &&
+        // token.symbol.toUpperCase() !== 'YBCRV' &&
+        // token.symbol.toUpperCase() !== 'YUSD' &&
+        // token.symbol.toUpperCase() !== 'YDAI' &&
+        // token.symbol.toUpperCase() !== 'YTUSD' &&
+        // token.symbol.toUpperCase() !== 'YUSDC' &&
+        // token.symbol.toUpperCase() !== 'SPANK'
+      }),
+    );
   }, [divideTokensOnPairs, tokens]);
 
   React.useEffect(() => {

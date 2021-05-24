@@ -48,7 +48,7 @@ export const App: React.FC = () => {
 
   const [tokens0x, setTokens0x] = React.useState<any[]>([]);
   const [tokensCryptoCompare, setTokensCryptoCompare] = React.useState<any[]>([]);
-  const [tokensCoinGecko, setTokensCoinGecko] = React.useState<any[]>([]);
+  // const [tokensCoinGecko, setTokensCoinGecko] = React.useState<any[]>([]);
 
   const getTokensFromCryptoCompare = async () => {
     try {
@@ -66,19 +66,19 @@ export const App: React.FC = () => {
     }
   };
 
-  const getTokensFromCoinGecko = async () => {
-    try {
-      const result = await CoinGecko.getAllCoins();
-      console.log('App getTokensFromCoinGecko:', result.data);
-      if (result.status === 'SUCCESS') {
-        const newTokens = result.data;
-        setTokensCoinGecko(newTokens);
-      }
-      console.log('App getTokensFromCoinGecko:', tokensCoinGecko);
-    } catch (e) {
-      console.error(e);
-    }
-  };
+  // const getTokensFromCoinGecko = async () => {
+  //   try {
+  //     const result = await CoinGecko.getAllCoins();
+  //     console.log('App getTokensFromCoinGecko:', result.data);
+  //     if (result.status === 'SUCCESS') {
+  //       const newTokens = result.data;
+  //       setTokensCoinGecko(newTokens);
+  //     }
+  //     console.log('App getTokensFromCoinGecko:', tokensCoinGecko);
+  //   } catch (e) {
+  //     console.error(e);
+  //   }
+  // };
 
   const changeTokensInfo = React.useCallback(
     async (data) => {
@@ -167,7 +167,7 @@ export const App: React.FC = () => {
   }, [tokens0x, setTokens, setUserData, userAddress, web3Provider]);
 
   React.useEffect(() => {
-    getTokensFromCoinGecko();
+    // getTokensFromCoinGecko();
     getTokensFromCryptoCompare();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
