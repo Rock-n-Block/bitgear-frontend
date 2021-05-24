@@ -11,6 +11,7 @@ import { statusActions, userActions, zxActions } from './redux/actions';
 import { Service0x } from './services/0x';
 import { CoinGeckoService } from './services/CoinGecko';
 import { CryptoCompareService } from './services/CryptoCompareService';
+import { EtherscanService } from './services/Etherscan';
 import { race } from './utils/promises';
 import * as Components from './components';
 import config from './config';
@@ -31,6 +32,7 @@ const tokenGear = {
 const Zx = new Service0x();
 const CoinGecko = new CoinGeckoService();
 const CryptoCompare = new CryptoCompareService();
+const Etherscan = new EtherscanService();
 
 export const App: React.FC = () => {
   const { web3Provider } = useWalletConnectorContext();
@@ -148,12 +150,33 @@ export const App: React.FC = () => {
           // eslint-disable-next-line no-await-in-loop
           balance = await web3Provider.getBalance(userAddress);
         } else {
-          // eslint-disable-next-line no-await-in-loop
-          balance = await web3Provider.balanceOf({
-            address: userAddress,
-            contractAddress: address,
-            contractAbi: erc20Abi,
-          });
+          try {
+            // eslint-disable-next-line no-await-in-loop
+            balance = await web3Provider.balanceOf({
+              address: userAddress,
+              contractAddress: address,
+              contractAbi: erc20Abi,
+            });
+          } catch (e) {
+            try {
+              // console.error(`App getTokensBalances (${symbol}):`, e);
+              // eslint-disable-next-line no-await-in-loop
+              const resultGetAbi = await Etherscan.getAbi(address);
+              console.log('App getTokensBalances resultGetAbi:', resultGetAbi);
+              if (resultGetAbi.status === 'SUCCESS') {
+                // eslint-disable-next-line no-await-in-loop
+                balance = await web3Provider.balanceOf({
+                  address: userAddress,
+                  contractAddress: address,
+                  contractAbi: resultGetAbi.data,
+                });
+              } else {
+                balance = 0;
+              }
+            } catch {
+              balance = 0;
+            }
+          }
         }
         (balances as any)[symbol] = new BigNumber(balance).toString(10);
       }

@@ -30,7 +30,7 @@ export class EtherscanService {
         };
       return {
         status: 'SUCCESS',
-        data: result.data.result,
+        data: JSON.parse(result.data.result),
       };
     } catch (e) {
       // console.error(e);

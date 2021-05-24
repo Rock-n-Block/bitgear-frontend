@@ -1200,7 +1200,7 @@ export const PageMarketsContent: React.FC = () => {
       <div className={s.containerTradingCardSearchItems}>
         {searchTokensResultPay.map((token: any) => {
           const { name: tokenName, symbol, image = imageTokenPay } = token;
-          const isBalanceZero = !userBalances[symbol] || userBalances[symbol] === 0;
+          const isBalanceZero = !userBalances[symbol] || +userBalances[symbol] === 0;
           const balance = !isBalanceZero ? prettyPrice(userBalances[symbol]) : '';
           return (
             <div

@@ -112,6 +112,7 @@ export const ListOfTokenBalances: React.FC = () => {
     <div className={s.headerDropdownItemTokensList}>
       {userBalancesAsArray.map((item: any) => {
         const [symbol, balance] = item;
+        if (+balance === 0) return null;
         return <ItemTokenBalance key={uuid()} symbol={symbol} balance={balance} />;
       })}
     </div>
