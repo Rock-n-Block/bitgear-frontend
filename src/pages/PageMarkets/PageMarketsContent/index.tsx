@@ -19,6 +19,7 @@ import erc20Abi from '../../../data/erc20Abi.json';
 import { modalActions, walletActions } from '../../../redux/actions';
 import { Service0x } from '../../../services/0x';
 import { CryptoCompareService } from '../../../services/CryptoCompareService';
+import { EtherscanService } from '../../../services/Etherscan';
 import { getFromStorage, setToStorage } from '../../../utils/localStorage';
 import {
   prettyBalance,
@@ -31,6 +32,7 @@ import s from './style.module.scss';
 
 const CryptoCompare = new CryptoCompareService();
 const Zx = new Service0x();
+const Etherscan = new EtherscanService();
 
 const exchangesList: string[] = [
   '0x',
@@ -222,8 +224,15 @@ export const PageMarketsContent: React.FC = () => {
   );
 
   const getGasPrice = React.useCallback(async () => {
-    const resultGetGasPrice = await web3Provider.getGasPrice();
-    setGasPriceFromNet(resultGetGasPrice);
+    const resultGetGasPrice = await Etherscan.getGasPrice();
+    // console.log('PageMarketsContent resultGetGasPrice:', resultGetGasPrice);
+    if (resultGetGasPrice.status === 'SUCCESS') {
+      setGasPriceFromNet(resultGetGasPrice.data);
+    } else {
+      const resultGetGasPriceFromWeb3 = await web3Provider.getGasPrice();
+      // console.log('PageMarketsContent resultGetGasPriceFromWeb3:', resultGetGasPriceFromWeb3);
+      setGasPriceFromNet(resultGetGasPriceFromWeb3);
+    }
   }, [web3Provider]);
 
   const getGasPriceSetting = React.useCallback(() => {
@@ -1097,7 +1106,7 @@ export const PageMarketsContent: React.FC = () => {
   const RadioLabelVeryFast = (
     <div className={s.radioLabelGas}>
       <div>Very Fast</div>
-      <div>{gasPriceFromNet + 10} GWei</div>
+      <div>{gasPriceFromNet + 15} GWei</div>
     </div>
   );
 
@@ -1381,7 +1390,7 @@ export const PageMarketsContent: React.FC = () => {
                     id="radioGasVeryFast"
                     name="radioGas"
                     checked={isGasPriceTypeVeryFast}
-                    onChange={() => handleChangeGasPrice(gasPriceFromNet + 10, 'veryFast')}
+                    onChange={() => handleChangeGasPrice(gasPriceFromNet + 15, 'veryFast')}
                   />
                   {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
                   <label className={s.radioLabel} htmlFor="radioGasVeryFast">

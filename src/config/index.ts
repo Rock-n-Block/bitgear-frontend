@@ -1,4 +1,4 @@
-const IS_PRODUCTION = false;
+const IS_PRODUCTION = true;
 const IS_TESTING_ON_ROPSTEN = false;
 
 export default {
@@ -16,10 +16,10 @@ export default {
     policy: '',
   },
   apis: {
-    'cryptoCompare': 'https://min-api.cryptocompare.com',
-    // 'cryptoCompare': 'https://crypto-api.mywish.io',
+    // 'cryptoCompare': 'https://min-api.cryptocompare.com',
+    'cryptoCompare': 'https://crypto-api.mywish.io',
+    // 'coinMarketCap': 'https://cmc-api.mywish.io',
     'coinMarketCap': 'https://cmc-api.mywish.io',
-    // 'coinMarketCap': 'https://cmc-api.mywish.io/v1',
     'coinGecko': 'https://api.coingecko.com/api/v3',
     '0x': IS_PRODUCTION
       ? 'https://api.0x.org'

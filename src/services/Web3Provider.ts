@@ -123,6 +123,6 @@ export default class Web3Provider {
   public getGasPrice = async () => {
     const price = await this.web3Provider.eth.getGasPrice();
     // console.log('Web3Provider getGasPrice:', price);
-    return +new BigNumber(price).dividedBy(new BigNumber(10).pow(18)).toFixed();
+    return +new BigNumber(price).dividedBy(new BigNumber(10).pow(9)).toFixed();
   };
 }
