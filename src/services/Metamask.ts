@@ -45,7 +45,13 @@ export default class MetamaskService {
   };
 
   public sendTx = async (data: any) => {
-    return this.web3Provider.eth.sendTransaction(data);
+    try {
+      const result = await this.web3Provider.eth.sendTransaction(data);
+      return { status: 'SUCCESS', data: result };
+    } catch (e) {
+      console.error(e);
+      return { status: 'ERROR', data: null };
+    }
   };
 
   public balanceOf = async ({ address, contractAddress, contractAbi }: any) => {

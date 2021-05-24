@@ -563,6 +563,10 @@ export const PageMarketsContent: React.FC = () => {
       console.log('trade resultApprove:', resultApprove);
       const resultSendTx = await web3Provider.sendTx(result.data);
       console.log('trade resultSendTx:', resultSendTx);
+      if (resultSendTx.status === 'SUCCESS') {
+        setAmountPay('0');
+        setAmountReceive('0');
+      }
       setWaiting(false);
       getBalanceOfTokensPay();
       getBalanceOfTokensReceive();
@@ -652,6 +656,8 @@ export const PageMarketsContent: React.FC = () => {
         open: true,
         text: `Order was successfully placed`,
       });
+      setAmountPay('0');
+      setAmountReceive('0');
       console.log('tradeLimit resultSendOrder:', resultSendOrder);
       setWaiting(false);
       return null;
