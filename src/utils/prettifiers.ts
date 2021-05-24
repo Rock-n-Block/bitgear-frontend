@@ -39,6 +39,27 @@ export const prettyPrice = (value: string) => {
   return newValue;
 };
 
+export const prettyBalance = (value: string) => {
+  let newValue = value;
+  if (+newValue < 1) {
+    newValue = String(Number(newValue).toFixed(16));
+  } else if (+newValue > 10 && +newValue <= 100) {
+    newValue = String(Number(newValue).toFixed(5));
+  } else if (+newValue > 100 && +newValue <= 1000) {
+    newValue = String(Number(newValue).toFixed(4));
+  } else if (+newValue > 1000 && +newValue <= 10000) {
+    newValue = String(Number(newValue).toFixed(3));
+  } else if (+newValue > 10000 && +newValue <= 100000) {
+    newValue = String(Number(newValue).toFixed(2));
+  } else {
+    newValue = String(Number(newValue).toFixed(8));
+  }
+  newValue = newValue.split(',').join('.');
+  newValue = newValue.replace(/0*\s*$/, '');
+  newValue = newValue.replace(/\.*\s*$/, '');
+  return newValue;
+};
+
 export const prettyPriceOld = (value: string) => {
   const parts = value.toString().split('.');
   const part0Length = parts[0].length;

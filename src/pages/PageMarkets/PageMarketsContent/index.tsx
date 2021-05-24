@@ -19,9 +19,10 @@ import erc20Abi from '../../../data/erc20Abi.json';
 import { modalActions, walletActions } from '../../../redux/actions';
 import { Service0x } from '../../../services/0x';
 import { CryptoCompareService } from '../../../services/CryptoCompareService';
+import { EtherscanService } from '../../../services/Etherscan';
 import { getFromStorage, setToStorage } from '../../../utils/localStorage';
 import {
-  prettyAmount,
+  prettyBalance,
   prettyExpiration,
   prettyPrice,
   prettyPriceChange,
@@ -31,6 +32,7 @@ import s from './style.module.scss';
 
 const CryptoCompare = new CryptoCompareService();
 const Zx = new Service0x();
+const Etherscan = new EtherscanService();
 
 const exchangesList: string[] = [
   '0x',
@@ -135,8 +137,8 @@ export const PageMarketsContent: React.FC = () => {
   const [amountPay, setAmountPay] = React.useState<string>('0');
   const [amountReceive, setAmountReceive] = React.useState<string>('0');
   const [waiting, setWaiting] = React.useState<boolean>(false);
-  const [balanceOfTokenPay, setBalanceOfTokenPay] = React.useState<number>(0);
-  const [balanceOfTokenReceive, setBalanceOfTokenReceive] = React.useState<number>(0);
+  const [balanceOfTokenPay, setBalanceOfTokenPay] = React.useState<string>('0');
+  const [balanceOfTokenReceive, setBalanceOfTokenReceive] = React.useState<string>('0');
   const [expiration, setExpiration] = React.useState<number>(60);
   const [slippage, setSlippage] = React.useState<number>(0);
   const [gasPrice, setGasPrice] = React.useState<number>();
@@ -156,7 +158,7 @@ export const PageMarketsContent: React.FC = () => {
   const isGasPriceTypeCustom = gasPriceType === 'custom';
 
   const isTradeDisabled = userAddress
-    ? +amountReceive === 0 || !balanceOfTokenPay || balanceOfTokenPay < +amountPay
+    ? +amountReceive === 0 || !balanceOfTokenPay || +balanceOfTokenPay < +amountPay
     : false;
 
   const marketPrice = marketHistory && marketHistory[0] ? marketHistory[0]?.close : 0;
@@ -222,8 +224,15 @@ export const PageMarketsContent: React.FC = () => {
   );
 
   const getGasPrice = React.useCallback(async () => {
-    const resultGetGasPrice = await web3Provider.getGasPrice();
-    setGasPriceFromNet(resultGetGasPrice);
+    const resultGetGasPrice = await Etherscan.getGasPrice();
+    // console.log('PageMarketsContent resultGetGasPrice:', resultGetGasPrice);
+    if (resultGetGasPrice.status === 'SUCCESS') {
+      setGasPriceFromNet(resultGetGasPrice.data);
+    } else {
+      const resultGetGasPriceFromWeb3 = await web3Provider.getGasPrice();
+      // console.log('PageMarketsContent resultGetGasPriceFromWeb3:', resultGetGasPriceFromWeb3);
+      setGasPriceFromNet(resultGetGasPriceFromWeb3);
+    }
   }, [web3Provider]);
 
   const getGasPriceSetting = React.useCallback(() => {
@@ -411,7 +420,8 @@ export const PageMarketsContent: React.FC = () => {
       if (!userAddress) return;
       if (symbolPay === 'ETH') {
         const balancePay = await web3Provider.getBalance(userAddress);
-        setBalanceOfTokenPay(balancePay);
+        const balancePayFormatted = new BigNumber(balancePay).toString(10);
+        setBalanceOfTokenPay(balancePayFormatted);
         return;
       }
       const contractAddressPay = getTokenBySymbol(symbolPay).address;
@@ -421,7 +431,8 @@ export const PageMarketsContent: React.FC = () => {
         contractAbi: erc20Abi,
       });
       console.log('getBalanceOfTokens resultBalanceOfPay:', resultBalanceOfPay);
-      setBalanceOfTokenPay(resultBalanceOfPay);
+      const balancePayFormatted = new BigNumber(resultBalanceOfPay).toString(10);
+      setBalanceOfTokenPay(balancePayFormatted);
     } catch (e) {
       console.error(e);
     }
@@ -432,7 +443,8 @@ export const PageMarketsContent: React.FC = () => {
       if (!userAddress) return;
       if (symbolReceive === 'ETH') {
         const balanceReceive = await web3Provider.getBalance(userAddress);
-        setBalanceOfTokenReceive(balanceReceive);
+        const balanceReceiveFormatted = new BigNumber(balanceReceive).toString(10);
+        setBalanceOfTokenReceive(balanceReceiveFormatted);
         return;
       }
       const contractAddressReceive = getTokenBySymbol(symbolReceive).address;
@@ -442,7 +454,8 @@ export const PageMarketsContent: React.FC = () => {
         contractAbi: erc20Abi,
       });
       console.log('getBalanceOfTokens resultBalanceOfReceive:', resultBalanceOfReceive);
-      setBalanceOfTokenReceive(resultBalanceOfReceive);
+      const balanceReceiveFormatted = new BigNumber(resultBalanceOfReceive).toString(10);
+      setBalanceOfTokenReceive(balanceReceiveFormatted);
     } catch (e) {
       console.error(e);
     }
@@ -517,7 +530,8 @@ export const PageMarketsContent: React.FC = () => {
       }
       const newAmountReceive = String(pricePay * +amountPay);
       // console.log('PageMarketsContent updateAmountReceive:', amountPay, newAmountReceive);
-      setAmountReceive(prettyAmount(newAmountReceive));
+      const newAmountReceiveFormatted = new BigNumber(newAmountReceive).toString();
+      setAmountReceive(newAmountReceiveFormatted);
     } catch (e) {
       console.error('PageMarketsContent updateAmountReceive:', e);
     }
@@ -558,6 +572,10 @@ export const PageMarketsContent: React.FC = () => {
       console.log('trade resultApprove:', resultApprove);
       const resultSendTx = await web3Provider.sendTx(result.data);
       console.log('trade resultSendTx:', resultSendTx);
+      if (resultSendTx.status === 'SUCCESS') {
+        setAmountPay('0');
+        setAmountReceive('0');
+      }
       setWaiting(false);
       getBalanceOfTokensPay();
       getBalanceOfTokensReceive();
@@ -647,6 +665,8 @@ export const PageMarketsContent: React.FC = () => {
         open: true,
         text: `Order was successfully placed`,
       });
+      setAmountPay('0');
+      setAmountReceive('0');
       console.log('tradeLimit resultSendOrder:', resultSendOrder);
       setWaiting(false);
       return null;
@@ -726,7 +746,8 @@ export const PageMarketsContent: React.FC = () => {
       }
       const newAmountReceive = String(pricePay * value);
       console.log('handleChangeAmountPay newAmountReceive:', newAmountReceive);
-      setAmountReceive(prettyAmount(newAmountReceive));
+      const newAmountReceiveFormatted = new BigNumber(newAmountReceive).toString(10);
+      setAmountReceive(newAmountReceiveFormatted);
     } catch (e) {
       console.error('handleChangeAmountPay:', e);
     }
@@ -735,7 +756,7 @@ export const PageMarketsContent: React.FC = () => {
   const handleChangeAmountReceive = async (event: any) => {
     try {
       const { value } = event.target;
-      setAmountReceive(prettyAmount(value));
+      setAmountReceive(value);
       let pricePay = 0;
       if (isModeLimit) {
         pricePay = await getPricePayLimit(value);
@@ -744,7 +765,7 @@ export const PageMarketsContent: React.FC = () => {
       }
       let newAmountPay = value / pricePay;
       if (pricePay === 0) newAmountPay = 0;
-      setAmountPay(prettyAmount(String(newAmountPay)));
+      setAmountPay(String(newAmountPay));
     } catch (e) {
       console.error('handleChangeAmountReceive:', e);
     }
@@ -1085,7 +1106,7 @@ export const PageMarketsContent: React.FC = () => {
   const RadioLabelVeryFast = (
     <div className={s.radioLabelGas}>
       <div>Very Fast</div>
-      <div>{gasPriceFromNet + 10} GWei</div>
+      <div>{gasPriceFromNet + 15} GWei</div>
     </div>
   );
 
@@ -1369,7 +1390,7 @@ export const PageMarketsContent: React.FC = () => {
                     id="radioGasVeryFast"
                     name="radioGas"
                     checked={isGasPriceTypeVeryFast}
-                    onChange={() => handleChangeGasPrice(gasPriceFromNet + 10, 'veryFast')}
+                    onChange={() => handleChangeGasPrice(gasPriceFromNet + 15, 'veryFast')}
                   />
                   {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
                   <label className={s.radioLabel} htmlFor="radioGasVeryFast">
@@ -1440,7 +1461,7 @@ export const PageMarketsContent: React.FC = () => {
               {symbolPay && (
                 <div className={s.containerTradingCardBalance}>
                   Current balance ({getTokenBySymbol(symbolPay).symbol})
-                  <span>{prettyPrice(String(balanceOfTokenPay))}</span>
+                  <span>{prettyBalance(String(balanceOfTokenPay))}</span>
                 </div>
               )}
             </div>
@@ -1570,7 +1591,7 @@ export const PageMarketsContent: React.FC = () => {
               {symbolReceive && (
                 <div className={s.containerTradingCardBalance}>
                   Current balance ({getTokenBySymbol(symbolReceive).symbol})
-                  <span>{prettyPrice(String(balanceOfTokenReceive))}</span>
+                  <span>{prettyBalance(String(balanceOfTokenReceive))}</span>
                 </div>
               )}
             </div>
