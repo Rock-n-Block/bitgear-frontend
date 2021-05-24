@@ -1217,7 +1217,11 @@ export const PageMarketsContent: React.FC = () => {
                 <div className={s.containerTradingCardSearchItemPrice}>{balance}</div>
               </div>
               <div className={s.containerTradingCardSearchItemSymbol}>
-                <div>{symbol}</div>
+                {symbol.length < 4 ? (
+                  <div>{symbol}</div>
+                ) : (
+                  <div className={s.symbolWide}>{symbol}</div>
+                )}
               </div>
             </div>
           );
