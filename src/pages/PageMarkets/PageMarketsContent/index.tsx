@@ -737,6 +737,7 @@ export const PageMarketsContent: React.FC = () => {
   const handleChangeAmountPay = async (event: any) => {
     try {
       const { value } = event.target;
+      // console.log('handleChangeAmountPay value:', value);
       setAmountPay(value);
       let pricePay = 0;
       if (isModeLimit) {
@@ -745,7 +746,7 @@ export const PageMarketsContent: React.FC = () => {
         pricePay = await getPricePay(value);
       }
       const newAmountReceive = String(pricePay * value);
-      console.log('handleChangeAmountPay newAmountReceive:', newAmountReceive);
+      // console.log('handleChangeAmountPay newAmountReceive:', newAmountReceive);
       const newAmountReceiveFormatted = new BigNumber(newAmountReceive).toString(10);
       setAmountReceive(newAmountReceiveFormatted);
     } catch (e) {
