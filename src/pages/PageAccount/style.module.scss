@@ -193,6 +193,7 @@
           text-align: left;
           text-transform: uppercase;
           cursor: default;
+
           &:first-child {
             cursor: pointer;
           }
@@ -338,10 +339,12 @@
 
 .arrowSort {
   padding-left: 4px;
+  transition: transform 0.3s;
 
   &Up {
     margin-left: 4px;
     transform: rotate(180deg);
+    transition: transform 0.3s;
   }
 }
 
