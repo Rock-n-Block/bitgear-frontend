@@ -124,7 +124,7 @@ export class Service0x {
       // console.log('Service0x getPrice:', props);
       const url = `/swap/v1/price?${qs.stringify(props)}`;
       let result;
-      if (config.IS_TESTING_ON_ROPSTEN) {
+      if (!config.IS_PRODUCTION && config.IS_TESTING_ON_ROPSTEN) {
         result = await this.axiosMainnet.get(url);
       } else {
         result = await this.axios.get(url);
@@ -144,7 +144,7 @@ export class Service0x {
     try {
       const url = `/swap/v1/prices?${qs.stringify(props)}`;
       let result;
-      if (config.IS_TESTING_ON_ROPSTEN) {
+      if (!config.IS_PRODUCTION && config.IS_TESTING_ON_ROPSTEN) {
         result = await this.axiosMainnet.get(url);
       } else {
         result = await this.axios.get(url);

@@ -250,13 +250,15 @@ export const PageMarketsContent: React.FC = () => {
 
   const getPrices = React.useCallback(async () => {
     try {
-      const { decimals } = getTokenBySymbol(symbolPay);
+      const { decimals, address: addressPay } = getTokenBySymbol(symbolPay);
+      const { address: addressReceive } = getTokenBySymbol(symbolReceive);
       if (!decimals) return null;
+      if (!amountPay) return null;
       let newPrice = 0;
       if (symbolReceive && amountPay) {
         const result = await Zx.getPrice({
-          buyToken: symbolReceive,
-          sellToken: symbolPay,
+          buyToken: addressReceive,
+          sellToken: addressPay,
           sellAmount: amountPay,
           skipValidation: true,
           decimals,
@@ -319,8 +321,9 @@ export const PageMarketsContent: React.FC = () => {
 
   const getTokensSymbolsReceive = async () => {
     try {
+      const { address: addressPay } = getTokenBySymbol(symbolPay);
       const result = await Zx.getPrices({
-        sellToken: symbolPay,
+        sellToken: addressPay,
       });
       const prices = result.data.records;
       const newPricesSymbols = prices.map((item: any) => item.symbol);
@@ -571,13 +574,14 @@ export const PageMarketsContent: React.FC = () => {
         setWaiting(false);
         return null;
       }
-      const { decimals } = getTokenBySymbol(symbolPay);
+      const { decimals, address: addressPay } = getTokenBySymbol(symbolPay);
+      const { address: addressReceive } = getTokenBySymbol(symbolReceive);
       const excludedSources = exchangesExcluded.join(',');
       const gasPriceSetting = getGasPriceSetting();
       const slippagePercentage = slippage / 100;
       const props: any = {
-        buyToken: symbolReceive,
-        sellToken: symbolPay,
+        buyToken: addressReceive,
+        sellToken: addressPay,
         sellAmount: amountPay,
         decimals,
       };
