@@ -28,9 +28,10 @@ export class CryptoCompareService {
 
   getAllCoins = async () => {
     try {
-      const url = `/data/all/coinlist&api_key=${config.keys.cryptoCompare}`;
+      // const url = `/data/all/coinlist&api_key=${config.keys.cryptoCompare}`;
+      const url = `/data/all/coinlist`;
       const result = await this.axios.get(url);
-      // console.log('CryptoCompareService getAllCoins:', result);
+      console.log('CryptoCompareService getAllCoins:', result);
       if (result.data.Response === 'Error') {
         return { status: 'ERROR', data: undefined };
       }

@@ -56,7 +56,7 @@ export const App: React.FC = () => {
   const getTokensFromCryptoCompare = async () => {
     try {
       const result = await CryptoCompare.getAllCoins();
-      console.log('App getTokensFromCryptoCompare:', result.data);
+      console.log('App getTokensFromCryptoCompare:', result);
       if (result.status === 'SUCCESS') {
         const newTokens = result.data;
         setTokensCryptoCompare(newTokens);
