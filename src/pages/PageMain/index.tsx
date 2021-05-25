@@ -7,12 +7,14 @@ import { v1 as uuid } from 'uuid';
 import imageCoin from '../../assets/images/coin.png';
 import imageRocket from '../../assets/images/rocket.png';
 import { Search } from '../../components';
+import { CoinMarketCapService } from '../../services/CoinMarketCap';
 import { CryptoCompareService } from '../../services/CryptoCompareService';
 import { prettyPrice, prettyPriceChange } from '../../utils/prettifiers';
 
 import s from './style.module.scss';
 
 const CryptoCompare = new CryptoCompareService();
+const CoinMarketCap = new CoinMarketCapService();
 
 type TypeToken = {
   symbol: string;
@@ -43,12 +45,37 @@ export const CardToken: React.FC<TypeCardProps> = ({ token, to = '/' }) => {
     classPriceChange = s.cardPriceChangeMinus;
   }
 
+  const getPricesFromCMC = React.useCallback(async () => {
+    try {
+      const resultGetPrice = await CoinMarketCap.getTwoCoinsInfo({
+        symbolOne: symbol,
+        symbolTwo: '',
+      });
+      if (resultGetPrice.status === 'SUCCESS') {
+        const newPrice = prettyPrice(resultGetPrice.data[symbol.toUpperCase()].quote.USD.price);
+        const newNewPriceChange = prettyPriceChange(
+          resultGetPrice.data[symbol.toUpperCase()].quote.USD.percent_change_24h,
+        );
+        setPrice(+newPrice);
+        setPriceChange(newNewPriceChange.toString());
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }, [symbol]);
+
   const getPrices = React.useCallback(async () => {
     try {
+      if (symbol === 'GEAR') {
+        await getPricesFromCMC();
+      }
       const resultGetExchangeOfPair = await CryptoCompare.getExchangeOfPair({
         symbolOne: symbol,
         symbolTwo: 'USD',
       });
+      if (resultGetExchangeOfPair.status === 'ERROR') {
+        await getPricesFromCMC();
+      }
       if (resultGetExchangeOfPair.status === 'SUCCESS') {
         console.log('PageMain resultGetExchangeOfPair:', resultGetExchangeOfPair);
         const resultGetPrice = await CryptoCompare.getMarketData({
@@ -66,7 +93,7 @@ export const CardToken: React.FC<TypeCardProps> = ({ token, to = '/' }) => {
     } catch (e) {
       console.error(e);
     }
-  }, [symbol]);
+  }, [getPricesFromCMC, symbol]);
 
   React.useEffect(() => {
     if (!token) return;
