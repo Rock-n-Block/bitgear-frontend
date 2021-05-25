@@ -9,7 +9,6 @@ import tokensListData from './data/coinlist.json';
 import erc20Abi from './data/erc20Abi.json';
 import { statusActions, userActions, zxActions } from './redux/actions';
 import { Service0x } from './services/0x';
-import { CoinGeckoService } from './services/CoinGecko';
 import { CoinMarketCapService } from './services/CoinMarketCap';
 import { CryptoCompareService } from './services/CryptoCompareService';
 import { EtherscanService } from './services/Etherscan';
@@ -31,7 +30,6 @@ const tokenGear = {
 };
 
 const Zx = new Service0x();
-const CoinGecko = new CoinGeckoService();
 const CryptoCompare = new CryptoCompareService();
 const CoinMarketCap = new CoinMarketCapService();
 const Etherscan = new EtherscanService();
