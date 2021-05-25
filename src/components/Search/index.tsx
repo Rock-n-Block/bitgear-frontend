@@ -11,6 +11,7 @@ import s from './style.module.scss';
 type TypeToken = {
   symbol: string;
   name: string;
+  address: string;
   price?: number;
   priceChange?: string | number;
   image?: string;
@@ -78,7 +79,8 @@ export const Search: React.FC<TypeSearchProps> = React.memo(({ wide = true }) =>
       let result = tokens.filter((token: TypeToken) => {
         const includesInSymbol = token.symbol.toLowerCase().includes(value.toLowerCase());
         const includesInName = token.name.toLowerCase().includes(value.toLowerCase());
-        if (includesInSymbol || includesInName) return true;
+        const includesInAddress = token.address.toLowerCase().includes(value.toLowerCase());
+        if (includesInSymbol || includesInName || includesInAddress) return true;
         return false;
       });
       result = result.slice(0, 50);
