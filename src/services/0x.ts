@@ -75,7 +75,7 @@ export class Service0x {
 
   getTokens = async () => {
     try {
-      if (config.IS_TESTING_ON_ROPSTEN)
+      if (!config.IS_PRODUCTION && config.IS_TESTING_ON_ROPSTEN)
         return {
           status: 'SUCCESS',
           data: tokensRopsten,
@@ -97,7 +97,9 @@ export class Service0x {
     try {
       const { decimals, sellAmount } = props;
       // eslint-disable-next-line no-param-reassign
-      props.sellAmount = new BigNumber(sellAmount).multipliedBy(10 ** decimals).toString();
+      props.sellAmount = new BigNumber(sellAmount)
+        .multipliedBy(new BigNumber(10).pow(decimals))
+        .toString(10);
       console.log('Service0x getQuote:', props);
       const url = `/swap/v1/quote?${qs.stringify(props)}`;
       const result = await this.axios.get(url);
@@ -116,16 +118,18 @@ export class Service0x {
     try {
       const { decimals, sellAmount } = props;
       // eslint-disable-next-line no-param-reassign
-      props.sellAmount = new BigNumber(sellAmount).multipliedBy(10 ** decimals).toString();
-      console.log('Service0x getPrice:', props);
+      props.sellAmount = new BigNumber(sellAmount)
+        .multipliedBy(new BigNumber(10).pow(decimals))
+        .toString(10);
+      // console.log('Service0x getPrice:', props);
       const url = `/swap/v1/price?${qs.stringify(props)}`;
       let result;
-      if (config.IS_TESTING_ON_ROPSTEN) {
+      if (!config.IS_PRODUCTION && config.IS_TESTING_ON_ROPSTEN) {
         result = await this.axiosMainnet.get(url);
       } else {
         result = await this.axios.get(url);
       }
-      // console.log('Service0x getQuote:', result);
+      console.log('Service0x getPrice:', result);
       return {
         status: 'SUCCESS',
         data: result.data,
@@ -140,7 +144,7 @@ export class Service0x {
     try {
       const url = `/swap/v1/prices?${qs.stringify(props)}`;
       let result;
-      if (config.IS_TESTING_ON_ROPSTEN) {
+      if (!config.IS_PRODUCTION && config.IS_TESTING_ON_ROPSTEN) {
         result = await this.axiosMainnet.get(url);
       } else {
         result = await this.axios.get(url);
@@ -197,8 +201,10 @@ export class Service0x {
         amountReceive,
         expires,
       });
-      const makerAmount = new BigNumber(amountPay).multipliedBy(10 ** decimalsPay); // todo decimals
-      const takerAmount = new BigNumber(amountReceive).multipliedBy(10 ** decimalsReceive); // todo decimals
+      const makerAmount = new BigNumber(amountPay).multipliedBy(new BigNumber(10).pow(decimalsPay));
+      const takerAmount = new BigNumber(amountReceive).multipliedBy(
+        new BigNumber(10).pow(decimalsReceive),
+      );
       const expiry = new BigNumber(expires);
       // const array = new Uint32Array(4);
       // let saltString: string;

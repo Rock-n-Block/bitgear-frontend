@@ -3,6 +3,21 @@ import Web3 from 'web3';
 
 import config from '../config';
 
+type TypeAllowance = {
+  userAddress: string;
+  allowanceTarget: string;
+  contractAddress: string;
+  contractAbi: any;
+};
+
+type TypeApprove = {
+  amount: string;
+  userAddress: string;
+  allowanceTarget: string;
+  contractAddress: string;
+  contractAbi: any;
+};
+
 export default class MetamaskService {
   public provider: any;
 
@@ -60,25 +75,50 @@ export default class MetamaskService {
   };
 
   public totalSupply = async ({ contractAddress, contractAbi }: any) => {
-    const contract = new this.web3Provider.eth.Contract(contractAbi, contractAddress);
-    const totalSupply = await contract.methods.totalSupply().call();
-    return +totalSupply;
+    try {
+      const contract = new this.web3Provider.eth.Contract(contractAbi, contractAddress);
+      const totalSupply = await contract.methods.totalSupply().call();
+      return new BigNumber(totalSupply).toString(10);
+    } catch (e) {
+      console.error('MetamaskService totalSupply:', e);
+      return '0';
+    }
   };
 
-  public approve = async ({ data, contractAbi }: any) => {
+  public allowance = async ({
+    userAddress,
+    allowanceTarget,
+    contractAddress,
+    contractAbi,
+  }: TypeAllowance) => {
     try {
-      // const { from, allowanceTarget, sellTokenAddress, sellAmount } = data;
-      const { from, sellTokenAddress, sellAmount, allowanceTarget } = data;
-      console.log('Web3Provider approve data:', data);
-      const contractAddress = sellTokenAddress;
-      // const totalSupply = await this.totalSupply({
-      //   contractAddress,
-      //   contractAbi: JSON.parse(contractAbi),
-      // });
+      console.log('MetamaskService allowance', {
+        userAddress,
+        allowanceTarget,
+        contractAddress,
+        contractAbi,
+      });
       const contract = new this.web3Provider.eth.Contract(contractAbi, contractAddress);
-      return contract.methods.approve(allowanceTarget, sellAmount).send({ from });
+      const allowance = await contract.methods.allowance(userAddress, allowanceTarget).call();
+      return +allowance;
     } catch (e) {
-      console.error(e);
+      console.error('MetamaskService allowance:', e);
+      return 0;
+    }
+  };
+
+  public approve = async ({
+    amount,
+    userAddress,
+    allowanceTarget,
+    contractAbi,
+    contractAddress,
+  }: TypeApprove) => {
+    try {
+      const contract = new this.web3Provider.eth.Contract(contractAbi, contractAddress);
+      return contract.methods.approve(allowanceTarget, amount).send({ from: userAddress });
+    } catch (e) {
+      console.error('MetamaskService approve:', e);
       return null;
     }
   };

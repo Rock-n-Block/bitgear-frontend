@@ -5,6 +5,21 @@ import Web3 from 'web3';
 
 import config from '../config';
 
+type TypeAllowance = {
+  userAddress: string;
+  allowanceTarget: string;
+  contractAddress: string;
+  contractAbi: any;
+};
+
+type TypeApprove = {
+  amount: string;
+  userAddress: string;
+  allowanceTarget: string;
+  contractAddress: string;
+  contractAbi: any;
+};
+
 export default class Web3Provider {
   public provider: any;
 
@@ -85,7 +100,6 @@ export default class Web3Provider {
   public getBalance = async (address: string) => {
     const balance = await this.web3Provider.eth.getBalance(address);
     return +new BigNumber(balance).dividedBy(new BigNumber(10).pow(18)).toFixed();
-    // return +balance / 10e17;
   };
 
   public sendTx = async (data: any) => {
@@ -105,17 +119,40 @@ export default class Web3Provider {
     return +new BigNumber(balance).dividedBy(new BigNumber(10).pow(decimals)).toFixed();
   };
 
-  public approve = async ({ data, contractAbi }: any) => {
+  public allowance = async ({
+    userAddress,
+    allowanceTarget,
+    contractAddress,
+    contractAbi,
+  }: TypeAllowance) => {
     try {
-      // const { from, allowanceTarget, sellAmount, sellTokenAddress } = data;
-      const { from, sellAmount, sellTokenAddress, allowanceTarget } = data;
-      // console.log('Web3Provider approve data:', data);
-      const contractAddress = sellTokenAddress;
-      // console.log('Web3Provider approve contractAbi:', contractAbi);
+      console.log('Web3Provider allowance', {
+        userAddress,
+        allowanceTarget,
+        contractAddress,
+        contractAbi,
+      });
       const contract = new this.web3Provider.eth.Contract(contractAbi, contractAddress);
-      return contract.methods.approve(allowanceTarget, sellAmount).send({ from });
+      const allowance = await contract.methods.allowance(userAddress, allowanceTarget).call();
+      return +allowance;
     } catch (e) {
-      console.error(e);
+      console.error('Web3Provider allowance:', e);
+      return 0;
+    }
+  };
+
+  public approve = async ({
+    amount,
+    userAddress,
+    allowanceTarget,
+    contractAbi,
+    contractAddress,
+  }: TypeApprove) => {
+    try {
+      const contract = new this.web3Provider.eth.Contract(contractAbi, contractAddress);
+      return contract.methods.approve(allowanceTarget, amount).send({ from: userAddress });
+    } catch (e) {
+      console.error('Web3Provider approve:', e);
       return null;
     }
   };

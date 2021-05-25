@@ -1,4 +1,4 @@
-const IS_PRODUCTION = true;
+const IS_PRODUCTION = false;
 const IS_TESTING_ON_ROPSTEN = false;
 
 export default {
@@ -73,7 +73,7 @@ export default {
       },
     },
   },
-  // todo remove (allowanceTarget gets in getQuote). because it changes sometimes.
+  // todo remove (allowanceTarget gets in getQuote). maybe it changes sometimes.
   addresses: {
     // 0x contract
     mainnet: {

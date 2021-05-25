@@ -10,6 +10,7 @@ import erc20Abi from './data/erc20Abi.json';
 import { statusActions, userActions, zxActions } from './redux/actions';
 import { Service0x } from './services/0x';
 import { CoinGeckoService } from './services/CoinGecko';
+import { CoinMarketCapService } from './services/CoinMarketCap';
 import { CryptoCompareService } from './services/CryptoCompareService';
 import { EtherscanService } from './services/Etherscan';
 import { race } from './utils/promises';
@@ -32,6 +33,7 @@ const tokenGear = {
 const Zx = new Service0x();
 const CoinGecko = new CoinGeckoService();
 const CryptoCompare = new CryptoCompareService();
+const CoinMarketCap = new CoinMarketCapService();
 const Etherscan = new EtherscanService();
 
 export const App: React.FC = () => {
@@ -86,7 +88,7 @@ export const App: React.FC = () => {
   const changeTokensInfo = React.useCallback(
     async (data) => {
       const newData = data;
-      // console.log('App changeTokensInfo:', data);
+      console.log('App changeTokensInfo:', data);
       // eslint-disable-next-line no-plusplus
       for (let it = 0; it < data.length; it++) {
         const token = data[it];
@@ -97,17 +99,17 @@ export const App: React.FC = () => {
             it
           ].image = `https://www.cryptocompare.com/media${tokensCryptoCompare[symbol].ImageUrl}`;
         } else {
-          // newData[it].image = imageTokenPay;
-          // continue;
           try {
             // eslint-disable-next-line no-await-in-loop
-            const resultGetCoinInfo = await race(CoinGecko.getCoinInfo({ symbol }), 10000);
+            const resultGetCoinInfo = await race(CoinMarketCap.getCoinInfo({ symbol }), 300);
             if (resultGetCoinInfo.status === 'SUCCESS') {
-              const image = resultGetCoinInfo.data.image.small;
+              const image = resultGetCoinInfo.data.logo;
               newData[it].image = image;
+            } else {
+              newData[it].image = imageTokenPay;
             }
           } catch (e) {
-            console.error(e);
+            console.error('App changeTokensInfo:', symbol, e);
             newData[it].image = imageTokenPay;
           }
         }
@@ -161,8 +163,8 @@ export const App: React.FC = () => {
             try {
               // console.error(`App getTokensBalances (${symbol}):`, e);
               // eslint-disable-next-line no-await-in-loop
-              const resultGetAbi = await Etherscan.getAbi(address);
-              console.log('App getTokensBalances resultGetAbi:', resultGetAbi);
+              const resultGetAbi = await Etherscan.getAbi(address); // todo after adding excludedCoins it can be removed
+              // console.log('App getTokensBalances resultGetAbi:', resultGetAbi);
               if (resultGetAbi.status === 'SUCCESS') {
                 // eslint-disable-next-line no-await-in-loop
                 balance = await web3Provider.balanceOf({
@@ -180,7 +182,7 @@ export const App: React.FC = () => {
         }
         (balances as any)[symbol] = new BigNumber(balance).toString(10);
       }
-      console.log('App getTokensBalances balances:', balances);
+      // console.log('App getTokensBalances balances:', balances);
       setUserData({ balances });
       setStatus({ loadingBalances: 'done' });
     } catch (e) {
