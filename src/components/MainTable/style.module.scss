@@ -63,7 +63,7 @@ table {
         }
 
         &:first-child {
-          min-width: 191px;
+          width: 191px;
           border-top-left-radius: 10px;
           border-bottom-left-radius: 10px;
           @include b('mobile') {
@@ -72,14 +72,23 @@ table {
         }
 
         &:nth-child(2) {
+          min-width: 96px;
           @include b('mobile') {
-            max-width: 120px;
+            min-width: 120px;
           }
         }
 
         &:nth-child(3) {
-          min-width: 81px;
+          width: 90px;
+          @include b('mobile') {
+            min-width: 120px;
+          }
         }
+
+        &:nth-child(4) {
+          // width: 120px;
+        }
+
 
         &:last-child {
           color: #01c9c5;
@@ -150,6 +159,7 @@ table {
   &PriceChangeModel {
     text-align: right;
     background: initial !important;
+
     &Down {
       text-align: right;
       color: red;
@@ -164,15 +174,22 @@ table {
   &PriceAndChangeContainer {
     padding-top: 10px;
     padding-right: 20px;
+    text-align: right;
   }
 }
 
 .arrowSort {
   padding-left: 2px;
+  @include b('mobile') {
+    margin-right: 2px;
+  }
 
   &Up {
     margin-left: 2px;
     transform: rotate(180deg);
+    @include b('mobile') {
+      margin-right: 2px;
+    }
   }
 }
 
