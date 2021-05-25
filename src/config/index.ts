@@ -73,7 +73,7 @@ export default {
       },
     },
   },
-  // todo remove (allowanceTarget gets in getQuote). because it changes sometimes.
+  // todo remove (allowanceTarget gets in getQuote). maybe it changes sometimes.
   addresses: {
     // 0x contract
     mainnet: {

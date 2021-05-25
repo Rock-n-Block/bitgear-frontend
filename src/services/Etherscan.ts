@@ -22,7 +22,7 @@ export class EtherscanService {
       };
       const url = `?${qs.stringify(props)}`;
       const result = await this.axios.get(url);
-      console.log('EtherscanService getAbi:', result);
+      // console.log('EtherscanService getAbi:', result);
       if (result.data.status === '0')
         return {
           status: 'ERROR',
@@ -47,7 +47,7 @@ export class EtherscanService {
       };
       const url = `?${qs.stringify(props)}`;
       const result = await this.axios.get(url);
-      console.log('EtherscanService getGasPrice:', result);
+      // console.log('EtherscanService getGasPrice:', result);
       if (result.data.status === '0')
         return {
           status: 'ERROR',

@@ -2,6 +2,10 @@ import axios from 'axios';
 
 import config from '../config';
 
+type TypeGetCoinInfoProps = {
+  symbol: string;
+};
+
 type getTwoCoinsProps = {
   symbolOne: string;
   symbolTwo: string;
@@ -15,6 +19,25 @@ export class CoinMarketCapService {
       baseURL: config.apis.coinMarketCap,
     });
   }
+
+  getCoinInfo = async ({ symbol }: TypeGetCoinInfoProps) => {
+    try {
+      const newSymbol = symbol.toUpperCase();
+      const url = `/v1/cryptocurrency/info?symbol=${newSymbol}`;
+      const result = await this.axios.get(url);
+      // console.log('CoinMarketCapService getCoinInfo:', result);
+      if (result.data.Response === 'Error') {
+        return { status: 'ERROR', data: undefined };
+      }
+      return {
+        status: 'SUCCESS',
+        data: result.data.data[newSymbol],
+      };
+    } catch (e) {
+      console.error('CoinMarketCapService getCoinInfo:', e);
+      return { status: 'ERROR', data: undefined };
+    }
+  };
 
   getTwoCoinsInfo = async ({ symbolOne, symbolTwo }: getTwoCoinsProps) => {
     try {
@@ -35,7 +58,7 @@ export class CoinMarketCapService {
         data: result.data.data,
       };
     } catch (e) {
-      console.error(e);
+      console.error('CoinMarketCapService getTwoCoinsInfo:', e);
       return { status: 'ERROR', data: undefined };
     }
   };

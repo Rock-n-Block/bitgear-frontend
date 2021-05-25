@@ -38,7 +38,8 @@ const exchangesList: string[] = [
   '0x',
   'Native',
   'Uniswap',
-  'UniswapV2',
+  'Uniswap_V2',
+  'Uniswap_V3',
   'Eth2Dai',
   'Kyber',
   'Curve',
@@ -137,6 +138,7 @@ export const PageMarketsContent: React.FC = () => {
   const [amountPay, setAmountPay] = React.useState<string>('0');
   const [amountReceive, setAmountReceive] = React.useState<string>('0');
   const [waiting, setWaiting] = React.useState<boolean>(false);
+  // const [approved, setApproved] = React.useState<boolean>(false);
   const [balanceOfTokenPay, setBalanceOfTokenPay] = React.useState<string>('0');
   const [balanceOfTokenReceive, setBalanceOfTokenReceive] = React.useState<string>('0');
   const [expiration, setExpiration] = React.useState<number>(60);
@@ -145,6 +147,9 @@ export const PageMarketsContent: React.FC = () => {
   const [gasPriceFromNet, setGasPriceFromNet] = React.useState<number>(0);
   const [gasPriceType, setGasPriceType] = React.useState<string>('');
   const [gasPriceCustom, setGasPriceCustom] = React.useState<number>(0);
+  const [allowance, setAllowance] = React.useState<number>(0);
+
+  const isSymbolPayETH = symbolPay === 'ETH';
 
   const isModeMarket = mode === 'market';
   const isModeLimit = mode === 'limit';
@@ -156,6 +161,8 @@ export const PageMarketsContent: React.FC = () => {
   const isGasPriceTypeFast = gasPriceType === 'fast';
   const isGasPriceTypeVeryFast = gasPriceType === 'veryFast';
   const isGasPriceTypeCustom = gasPriceType === 'custom';
+
+  const isAllowed = allowance > +amountPay;
 
   const isTradeDisabled = userAddress
     ? +amountReceive === 0 || !balanceOfTokenPay || +balanceOfTokenPay < +amountPay
@@ -537,6 +544,27 @@ export const PageMarketsContent: React.FC = () => {
     }
   }, [amountPay, getPricePay, getPricePayLimit, isModeLimit]);
 
+  const getAllowance = React.useCallback(async () => {
+    try {
+      // console.log('PageMarketsContent getAllowance:', symbolPay, symbolReceive, amountPay);
+      if (!symbolPay || !symbolReceive || !amountPay || !userAddress) return;
+      const { address: addressPay } = getTokenBySymbol(symbolPay);
+      const { netType, addresses } = config as { [index: string]: any };
+      const { allowanceTarget } = addresses[netType];
+      const propsGetAllowance = {
+        userAddress,
+        allowanceTarget,
+        contractAddress: addressPay,
+        contractAbi: erc20Abi,
+      };
+      const resultGetAllowance = await web3Provider.allowance(propsGetAllowance);
+      console.log('PageMarketsContent getAllowance:', resultGetAllowance);
+      setAllowance(resultGetAllowance);
+    } catch (e) {
+      console.error('PageMarketsContent getAllowance:', e);
+    }
+  }, [getTokenBySymbol, symbolPay, symbolReceive, userAddress, web3Provider, amountPay]);
+
   const trade = React.useCallback(async () => {
     try {
       if (!verifyForm()) {
@@ -564,12 +592,6 @@ export const PageMarketsContent: React.FC = () => {
       const { estimatedGas } = result.data;
       const newEstimatedGas = +estimatedGas * 2;
       result.data.gas = String(newEstimatedGas);
-      const contractAbi = erc20Abi;
-      const resultApprove = await web3Provider.approve({
-        data: result.data,
-        contractAbi,
-      });
-      console.log('trade resultApprove:', resultApprove);
       const resultSendTx = await web3Provider.sendTx(result.data);
       console.log('trade resultSendTx:', resultSendTx);
       if (resultSendTx.status === 'SUCCESS') {
@@ -611,21 +633,6 @@ export const PageMarketsContent: React.FC = () => {
       const { address: addressReceive, decimals: decimalsReceive }: any = getTokenBySymbol(
         symbolReceive,
       );
-      const contractAbi = erc20Abi;
-      const amountPayInWei = new BigNumber(amountPay).multipliedBy(10 ** decimalsPay).toString();
-      const { netType, addresses } = config as { [index: string]: any };
-      const { allowanceTarget } = addresses[netType];
-      const data = {
-        from: userAddress,
-        sellAmount: amountPayInWei,
-        sellTokenAddress: addressPay,
-        allowanceTarget,
-      };
-      const resultApprove = await web3Provider.approve({
-        data,
-        contractAbi,
-      });
-      console.log('tradeLimit resultApprove:', resultApprove);
       const newExpiration = new Date().getTime() + expiration * 60 * 1000;
       const props = {
         provider: web3Provider,
@@ -857,7 +864,7 @@ export const PageMarketsContent: React.FC = () => {
     setMode(newMode);
   };
 
-  const handleTrade = () => {
+  const handleConnect = () => {
     try {
       setWaiting(true);
       if (!userAddress) {
@@ -885,11 +892,62 @@ export const PageMarketsContent: React.FC = () => {
           ),
         });
       }
-      if (mode === 'market') {
-        trade();
+      return null;
+    } catch (e) {
+      console.error(e);
+      setWaiting(false);
+      return null;
+    }
+  };
+
+  const handleApprove = async () => {
+    try {
+      setWaiting(true);
+      const { address: contractAddress, decimals }: any = getTokenBySymbol(symbolPay);
+      const { netType, addresses } = config as { [index: string]: any };
+      const { allowanceTarget } = addresses[netType];
+      const amountInWei = new BigNumber(amountPay)
+        .multipliedBy(new BigNumber(10).pow(decimals))
+        .toString(10);
+      const propsApprove: any = {
+        amount: amountInWei,
+        userAddress,
+        allowanceTarget,
+        contractAbi: erc20Abi,
+        contractAddress,
+      };
+      if (isSymbolPayETH) {
+        // propsApprove.amount = new BigNumber(amountPay)
+        //   .multipliedBy(new BigNumber(10).pow(decimals))
+        //   .toString(10);
+        // const resultApprove = await web3Provider.approve(propsApprove);
+        // console.log('handleApprove resultApprove:', resultApprove);
+        // setWaiting(false);
+        // setApproved(true);
       } else {
-        tradeLimit();
+        // const totalSupply = await web3Provider.totalSupply({
+        //   contractAddress,
+        //   contractAbi: erc20Abi,
+        // });
+        // console.log('handleApprove totalSupply:', totalSupply);
+        // propsApprove.amount = totalSupply;
+        const resultApprove = await web3Provider.approve(propsApprove);
+        console.log('handleApprove resultApprove:', resultApprove);
+        setWaiting(false);
       }
+      return null;
+    } catch (e) {
+      console.error(e);
+      setWaiting(false);
+      return null;
+    }
+  };
+
+  const handleTrade = () => {
+    try {
+      setWaiting(true);
+      if (isModeLimit) return tradeLimit();
+      trade();
       return null;
     } catch (e) {
       console.error(e);
@@ -1095,8 +1153,27 @@ export const PageMarketsContent: React.FC = () => {
   React.useEffect(() => {
     if (!symbolReceive) return;
     updateAmountReceive();
+    if (!symbolPay) return;
+    if (symbolPay === 'ETH') return;
+    getAllowance();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [symbolReceive, symbolPay]);
+
+  React.useEffect(() => {
+    if (!symbolReceive) return;
+    if (!symbolPay) return;
+    if (!amountPay) return;
+    if (!userAddress) return;
+    if (waiting) return;
+    if (symbolPay === 'ETH') return;
+    getAllowance();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [symbolReceive, symbolPay, amountPay, userAddress, waiting]);
+
+  React.useEffect(() => {
+    // setApproved(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [symbolPay]);
 
   const RadioLabelFast = (
     <div className={s.radioLabelGas}>
@@ -1601,9 +1678,19 @@ export const PageMarketsContent: React.FC = () => {
           </div>
         </div>
         <div className={s.containerTradingButton}>
-          <Button onClick={handleTrade} disabled={isTradeDisabled || waiting}>
-            {!userAddress ? 'Connect wallet' : waiting ? 'Waiting...' : 'Trade'}
-          </Button>
+          {userAddress ? (
+            isAllowed || isSymbolPayETH ? (
+              <Button onClick={handleTrade} disabled={isTradeDisabled || waiting}>
+                {waiting ? 'Waiting...' : 'Trade'}
+              </Button>
+            ) : (
+              <Button onClick={handleApprove} disabled={isTradeDisabled || waiting}>
+                {waiting ? 'Waiting...' : 'Approve'}
+              </Button>
+            )
+          ) : (
+            <Button onClick={handleConnect}>Connect wallet</Button>
+          )}
         </div>
       </section>
 
