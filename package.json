@@ -1,9 +1,6 @@
 {
   "name": "bitgear-frontend",
   "version": "0.0.1",
-  "engines": {
-    "node": "15.5.1"
-  },
   "private": true,
   "scripts": {
     "start": "react-scripts start",
