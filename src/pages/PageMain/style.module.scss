@@ -50,6 +50,11 @@
   cursor: pointer;
   text-decoration: none;
   color: $color-text-primary;
+  transition: transform 0.5s cubic-bezier(0.2, 3, 0.4, 1) 0s, background-color 0.4s ease;
+
+  &:hover {
+    background-color: $color-bg-login-item-hover;
+  }
 
   @include b('mobile') {
     height: 60px;
