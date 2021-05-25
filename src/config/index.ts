@@ -1,4 +1,4 @@
-const IS_PRODUCTION = false;
+const IS_PRODUCTION = true;
 const IS_TESTING_ON_ROPSTEN = false;
 
 export default {
