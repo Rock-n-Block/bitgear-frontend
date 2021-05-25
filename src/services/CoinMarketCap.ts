@@ -26,7 +26,25 @@ export class CoinMarketCapService {
         url = `/v1/cryptocurrency/quotes/latest?symbol=${symbolOne.toUpperCase()}`;
       }
       const result = await this.axios.get(url);
-      // console.log('CoinMarketCapService getAllCoins:', result);
+      // console.log('CoinMarketCapService getTwoCoinsCoins:', result);
+      if (result.data.Response === 'Error') {
+        return { status: 'ERROR', data: undefined };
+      }
+      return {
+        status: 'SUCCESS',
+        data: result.data.data,
+      };
+    } catch (e) {
+      console.error(e);
+      return { status: 'ERROR', data: undefined };
+    }
+  };
+
+  getAllCoinsInfo = async (symbolsList: string[]) => {
+    try {
+      const url = `/v1/cryptocurrency/quotes/latest?symbol=${symbolsList}`;
+      const result = await this.axios.get(url);
+      // console.log('CoinMarketCapService getTwoCoinsCoins:', result);
       if (result.data.Response === 'Error') {
         return { status: 'ERROR', data: undefined };
       }
