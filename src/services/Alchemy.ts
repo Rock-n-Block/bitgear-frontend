@@ -13,7 +13,7 @@ export class AlchemyService {
 
   constructor() {
     this.axios = axios.create({
-      baseURL: config.apis.alchemy,
+      baseURL: config.apis.alchemy + config.keys.alchemy,
     });
   }
 
