@@ -6,9 +6,9 @@ import { v1 as uuid } from 'uuid';
 import ArrowDownIcon from '../../assets/icons/arrow-down-icon.svg';
 import { ReactComponent as IconArrowDownWhite } from '../../assets/icons/arrow-down-white.svg';
 import ArrowUpIcon from '../../assets/icons/arrow-up-icon.svg';
-import points from '../../pages/PageExplore/points.json';
+import { CoinMarketCapService } from '../../services/CoinMarketCap';
 import { numberTransform } from '../../utils/numberTransform';
-import { LineChart } from '../LineChart';
+import { LineChartWrapper } from '../LineChartWrapper';
 
 import s from './style.module.scss';
 
@@ -20,6 +20,8 @@ type TableTypeProps = {
   isArrowUp?: boolean;
 };
 
+const CoinMarketCap = new CoinMarketCapService();
+
 export const MainTable: React.FC<TableTypeProps> = React.memo(
   ({
     data = [],
@@ -29,6 +31,10 @@ export const MainTable: React.FC<TableTypeProps> = React.memo(
     isArrowUp = true,
   }) => {
     const isWide = useMedia({ minWidth: '767px' });
+    const [symbols, setSymbols] = React.useState<string[]>([]);
+    const [dataPoints, setDataPoints] = React.useState<string[]>([]);
+    const [marketHistory, setMarketHistory] = React.useState<any[]>([]);
+    const [points, setPoints] = React.useState<number[]>([]);
 
     const isActiveColumnName = activeColumn === 'name';
     const isActiveColumnPrice = activeColumn === 'price';
@@ -39,6 +45,69 @@ export const MainTable: React.FC<TableTypeProps> = React.memo(
     const onSort = (columnName: any) => {
       emitSorting(columnName);
     };
+
+    const getSymbolsList = React.useCallback(() => {
+      const arrayOfSymbolsDesktop = dataPoints.map((token: any) => {
+        return token.symbol.toUpperCase();
+      });
+      setSymbols(arrayOfSymbolsDesktop);
+    }, [dataPoints]);
+
+    const getHistoryCMC = React.useCallback(async (): Promise<any> => {
+      try {
+        setPoints([]);
+        const resultFromGetHistoryCMC = await CoinMarketCap.getAllCoinsHistoryDay(symbols);
+
+        const marketHistoryArray = Object.keys(resultFromGetHistoryCMC.data.data).map(
+          (token: any) => {
+            return resultFromGetHistoryCMC.data.data[token];
+          },
+        );
+
+        setMarketHistory(marketHistoryArray);
+
+        return resultFromGetHistoryCMC;
+      } catch (e) {
+        console.error(e);
+        return {
+          status: 'ERROR',
+          data: undefined,
+        };
+      }
+    }, [symbols]);
+
+    const getPoints = React.useCallback(() => {
+      try {
+        const arraysOfQuotes = marketHistory.map((token: any) => {
+          return token.quotes;
+        });
+
+        const arrayOfPoints = arraysOfQuotes.map((item: any) => {
+          return item.map((quote: any) => {
+            return quote.quote.USD.close;
+          });
+        });
+        setPoints(arrayOfPoints);
+      } catch (e) {
+        console.error(e);
+      }
+    }, [marketHistory]);
+
+    React.useEffect(() => {
+      getSymbolsList();
+    }, [getSymbolsList]);
+
+    React.useEffect(() => {
+      getHistoryCMC();
+    }, [getHistoryCMC]);
+
+    React.useEffect(() => {
+      getPoints();
+    }, [getPoints]);
+
+    React.useEffect(() => {
+      setDataPoints(data);
+    }, [data]);
 
     return (
       <>
@@ -144,7 +213,7 @@ export const MainTable: React.FC<TableTypeProps> = React.memo(
           )}
           {isWide ? (
             <tbody>
-              {data.map((item: any) => {
+              {data.map((item: any, index: number) => {
                 const { name, symbol, price, priceChange, marketCap, volume } = item;
 
                 let priceChangeModel = (
@@ -173,11 +242,7 @@ export const MainTable: React.FC<TableTypeProps> = React.memo(
                     <td>{numberTransform(marketCap)}</td>
                     <td>{numberTransform(volume)}</td>
                     <td>
-                      <LineChart
-                        containerStyle={s.chartContainer}
-                        svgStyle={s.chartSvg}
-                        data={points.map((point) => point.close)}
-                      />
+                      <LineChartWrapper points={points[index]} />
                     </td>
                   </tr>
                 );
@@ -185,7 +250,7 @@ export const MainTable: React.FC<TableTypeProps> = React.memo(
             </tbody>
           ) : (
             <tbody>
-              {dataForMobile.map((token: any) => {
+              {dataForMobile.map((token: any, index: number) => {
                 const { symbol, name, price, priceChange } = token;
 
                 let priceChangeModel = (
@@ -221,11 +286,7 @@ export const MainTable: React.FC<TableTypeProps> = React.memo(
                         </div>
                       </td>
                       <td>
-                        <LineChart
-                          containerStyle={s.chartContainer}
-                          svgStyle={s.chartSvg}
-                          data={points.map((point) => point.close)}
-                        />
+                        <LineChartWrapper points={points[index]} />
                       </td>
                       <td>
                         <div className={s.mobilePriceAndChangeContainer}>

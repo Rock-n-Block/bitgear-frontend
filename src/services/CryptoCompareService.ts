@@ -71,13 +71,13 @@ export class CryptoCompareService {
       }`;
       const result = await this.axios.get(url);
       if (result.data.Response === 'Error') {
-        console.error('CryptoCompareService getPairMapping:', result);
+        // console.error('CryptoCompareService getPairMapping:', result);
         return { status: 'ERROR', data: undefined };
       }
       const mapping = result.data.Data.current;
       let exchanges = mapping.filter((item: any) => item.tsym === symbolTwo);
       exchanges = exchanges.map((item: any) => item.exchange);
-      console.log('CryptoCompareService getPairMapping:', exchanges);
+      // console.log('CryptoCompareService getPairMapping:', exchanges);
       return {
         status: 'SUCCESS',
         data: exchanges,
@@ -111,7 +111,7 @@ export class CryptoCompareService {
       });
       const result = await this.axios.get(`/data/v2/histoday?${query}`);
       if (result.data.Response === 'Error') {
-        console.log('CryptoCompareService getHistory:', result);
+        // console.log('CryptoCompareService getHistory:', result);
         return { status: 'ERROR', data: undefined };
       }
       return { status: 'SUCCESS', data: result.data.Data.Data };
@@ -144,7 +144,7 @@ export class CryptoCompareService {
       });
       const result = await this.axios.get(`/data/v2/histominute?${query}`);
       if (result.data.Response === 'Error') {
-        console.log('CryptoCompareService getHistory:', result);
+        // console.log('CryptoCompareService getHistory:', result);
         return { status: 'ERROR', data: undefined };
       }
       return { status: 'SUCCESS', data: result.data.Data.Data };
@@ -177,7 +177,7 @@ export class CryptoCompareService {
       });
       const result = await this.axios.get(`/data/v2/histohour?${query}`);
       if (result.data.Response === 'Error') {
-        console.log('CryptoCompareService getHistory:', result);
+        // console.log('CryptoCompareService getHistory:', result);
         return { status: 'ERROR', data: undefined };
       }
       return { status: 'SUCCESS', data: result.data.Data.Data };

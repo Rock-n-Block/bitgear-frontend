@@ -45,7 +45,7 @@ table {
 
   tbody {
     tr {
-      max-height: 60px;
+      height: 80px;
 
       &:nth-child(odd) {
         td {
@@ -57,6 +57,7 @@ table {
         padding: 12px 0 12px 10px;
         max-height: 80px;
         color: $color-text-primary;
+        padding: 0;
         @include b('mobile') {
           padding: 5px 0 5px 10px;
           text-transform: uppercase;
@@ -88,7 +89,6 @@ table {
         &:nth-child(4) {
           // width: 120px;
         }
-
 
         &:last-child {
           color: #01c9c5;
@@ -136,7 +136,7 @@ table {
 
 .chart {
   &Container {
-    max-height: 50px;
+    max-height: 60px;
     background-color: transparent;
   }
 
