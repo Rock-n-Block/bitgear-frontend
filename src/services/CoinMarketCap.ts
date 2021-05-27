@@ -79,4 +79,22 @@ export class CoinMarketCapService {
       return { status: 'ERROR', data: undefined };
     }
   };
+
+  getAllCoinsHistoryDay = async (symbolList: string[]) => {
+    try {
+      const url = `/v1/cryptocurrency/ohlcv/historical?symbol=${symbolList}&time_period=hourly&count=24&interval=1h`;
+      const result = await this.axios.get(url);
+      // console.log('CoinMarketCapService getTwoCoinsCoins:', result);
+      if (result.data.Response === 'Error') {
+        return { status: 'ERROR', data: undefined };
+      }
+      return {
+        status: 'SUCCESS',
+        data: result.data,
+      };
+    } catch (e) {
+      console.error(e);
+      return { status: 'ERROR', data: undefined };
+    }
+  };
 }

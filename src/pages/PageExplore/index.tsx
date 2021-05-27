@@ -46,6 +46,24 @@ export const PageExplore: React.FC = () => {
     dispatch,
   ]);
 
+  const getHistoryCMC = React.useCallback(async (): Promise<any> => {
+    try {
+      const resultFromGetHistoryCMC = await CoinMarketCap.getAllCoinsHistoryDay(symbolsList);
+
+      return resultFromGetHistoryCMC;
+    } catch (e) {
+      console.error(e);
+      return {
+        status: 'ERROR',
+        data: undefined,
+      };
+    }
+  }, [symbolsList]);
+
+  React.useEffect(() => {
+    getHistoryCMC();
+  }, [getHistoryCMC]);
+
   const getAllCoinsInfo = async (symbols: any): Promise<any> => {
     try {
       let pairInfo: any;
@@ -167,10 +185,10 @@ export const PageExplore: React.FC = () => {
       </section>
       <section className={s.containerButtons}>
         <Link className={s.containerButtonsItem} to="/lists/recently-added">
-          <img src={CoinIcon} alt="CoinIcon" /> <span> Recently Added</span>
+          <img src={CoinIcon} alt="CoinIcon" /> <span> Hot and new</span>
         </Link>
         <Link className={s.containerButtonsItem} to="/lists/top-gainers">
-          <img src={RocketIcon} alt="RocketIcon" /> <span> Top Gainers</span>
+          <img src={RocketIcon} alt="RocketIcon" /> <span> Top performers</span>
         </Link>
       </section>
       <section className={s.ExploreTable}>
