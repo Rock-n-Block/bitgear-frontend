@@ -220,7 +220,7 @@ export const PageMarketsContent: React.FC = () => {
         };
         const result = await Zx.getPrice(props);
         console.log('PageMarketsContent getPricePayLimit:', props, result);
-        if (result.status === 'SUCCESS') return result.data.guaranteedPrice;
+        if (result.status === 'SUCCESS') return result.data.price;
         return marketPrice;
       } catch (e) {
         console.error(e);
