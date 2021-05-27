@@ -129,6 +129,8 @@
         position: absolute;
         bottom: 30px;
         right: 20px;
+        -webkit-filter: grayscale(0.9) brightness(0.9);
+        filter: grayscale(0.9) brightness(0.9);
       }
     }
 

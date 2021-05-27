@@ -343,7 +343,11 @@ export const PageAccount: React.FC = () => {
                       <span>
                         {prettyPrice(balance)} {symbol}
                       </span>
-                      <img src={EthGlassIcon} alt="ehereum logo" />
+                      <img
+                        className={s.accountFundsCardImage}
+                        src={imageTokenPay}
+                        alt="ehereum logo"
+                      />
                     </Link>
                   ) : null}
                 </>
