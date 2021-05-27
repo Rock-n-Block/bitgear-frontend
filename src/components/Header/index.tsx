@@ -2,7 +2,7 @@ import React from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useHistory, useLocation } from 'react-router-dom';
-import _ from 'lodash';
+import BigNumber from 'bignumber.js/bignumber';
 import useMedia from 'use-media';
 import { v1 as uuid } from 'uuid';
 
@@ -77,27 +77,37 @@ export const ItemTokenBalance: React.FC<TypeItemTokenBalanceProps> = ({ symbol, 
 
 export const ListOfTokenBalances: React.FC = () => {
   const { balances: userBalances } = useSelector(({ user }: any) => user);
-  const { tokens } = useSelector(({ zx }: any) => zx);
+  const { tokens, tokensByAddress } = useSelector(({ zx }: any) => zx);
   const { loadingBalances } = useSelector(({ status }: any) => status);
 
-  const [userBalancesFiltered, setUserBalancesFiltered] = React.useState<any>({});
-
-  const userBalancesAsArray = Object.entries(userBalancesFiltered);
+  const [userBalancesFiltered, setUserBalancesFiltered] = React.useState<any>([]);
 
   const isLoadingBalancesDone = loadingBalances === 'done';
   const isLoadingBalancesError = loadingBalances === 'error';
 
   const filterAndSortUserBalances = React.useCallback(() => {
-    const newBalances = _.pickBy(userBalances, (v) => v !== null && v !== undefined && v !== 0);
-    setUserBalancesFiltered(newBalances);
-  }, [userBalances]);
+    try {
+      console.log('Header filterAndSortUserBalances:', userBalances);
+      const newBalances = Object.entries(userBalances).map((item) => {
+        const [address, balance]: any = item;
+        const { symbol, decimals } = tokensByAddress[address];
+        const newBalance = new BigNumber(balance).dividedBy(new BigNumber(10).pow(decimals));
+        return { symbol, balance: newBalance };
+      });
+      console.log('Header filterAndSortUserBalances:', newBalances);
+      setUserBalancesFiltered(newBalances);
+    } catch (e) {
+      console.error(e);
+    }
+  }, [userBalances, tokensByAddress]);
 
   React.useEffect(() => {
     if (!tokens || tokens?.length === 0) return;
+    if (!tokensByAddress || tokensByAddress?.length === 0) return;
     filterAndSortUserBalances();
-  }, [tokens, filterAndSortUserBalances]);
+  }, [tokens, tokensByAddress, filterAndSortUserBalances]);
 
-  if (userBalancesAsArray.length === 0) {
+  if (userBalancesFiltered.length === 0) {
     return (
       <div className={s.headerDropdownItemTokens}>
         {isLoadingBalancesDone
@@ -110,8 +120,8 @@ export const ListOfTokenBalances: React.FC = () => {
   }
   return (
     <div className={s.headerDropdownItemTokensList}>
-      {userBalancesAsArray.map((item: any) => {
-        const [symbol, balance] = item;
+      {userBalancesFiltered.map((item: any) => {
+        const { symbol, balance } = item;
         if (+balance === 0) return null;
         return <ItemTokenBalance key={uuid()} symbol={symbol} balance={balance} />;
       })}

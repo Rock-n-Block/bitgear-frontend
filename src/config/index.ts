@@ -4,6 +4,7 @@ const IS_TESTING_ON_ROPSTEN = false;
 export default {
   IS_PRODUCTION,
   IS_TESTING_ON_ROPSTEN,
+  isMainnetOrTestnet: IS_PRODUCTION ? 'mainnet' : 'testnet',
   netType: IS_PRODUCTION ? 'mainnet' : IS_TESTING_ON_ROPSTEN ? 'ropsten' : 'kovan',
   links: {
     twitter: 'https://twitter.com/bitgeario',
@@ -18,9 +19,14 @@ export default {
   apis: {
     // 'cryptoCompare': 'https://min-api.cryptocompare.com',
     'cryptoCompare': 'https://crypto-api.mywish.io',
-    // 'coinMarketCap': 'https://cmc-api.mywish.io',
+    // 'coinMarketCap': 'https://pro-api.coinmarketcap.com',
     'coinMarketCap': 'https://cmc-api.mywish.io',
     'coinGecko': 'https://api.coingecko.com/api/v3',
+    'alchemy': IS_PRODUCTION
+      ? 'https://eth.alchemyapi.io/v2/9e37toZE9l2XRTjIUsWUD3gAyiRPWYCQ'
+      : IS_TESTING_ON_ROPSTEN
+      ? 'https://eth-ropsten.alchemyapi.io/v2/9e37toZE9l2XRTjIUsWUD3gAyiRPWYCQ'
+      : 'https://eth-kovan.alchemyapi.io/v2/9e37toZE9l2XRTjIUsWUD3gAyiRPWYCQ',
     '0x': IS_PRODUCTION
       ? 'https://api.0x.org'
       : IS_TESTING_ON_ROPSTEN
