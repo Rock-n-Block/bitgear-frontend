@@ -145,7 +145,7 @@ export const PageMain: React.FC = () => {
     <div className={s.container}>
       <section className={s.containerTitle}>
         <h1>
-          Find the <span>best prices</span> across exchange networks
+          Gear up for <span>best prices</span> across exchanges
         </h1>
         <Search wide={isWide} />
       </section>
@@ -158,11 +158,11 @@ export const PageMain: React.FC = () => {
       <section className={s.containerLists}>
         <Link to="/lists/recently-added" className={s.cardList}>
           <img src={imageCoin} alt="" className={s.cardListImage} />
-          Recently Added
+          Hot and new
         </Link>
         <Link to="/lists/top-gainers" className={s.cardList}>
           <img src={imageRocket} alt="" className={s.cardListImage} />
-          Top Gainers
+          Top performers
         </Link>
       </section>
     </div>

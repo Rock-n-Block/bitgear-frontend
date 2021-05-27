@@ -109,7 +109,7 @@ export const Search: React.FC<TypeSearchProps> = React.memo(({ wide = true }) =>
             label={<Label />}
             labelInner={<SearchLabel />}
             dropdown={<SearchDropdown items={searchResult} search={searchValue} />}
-            placeholder="Search token or input token address..."
+            placeholder="Search or input token address"
           />
         </>
       ) : (
@@ -120,7 +120,7 @@ export const Search: React.FC<TypeSearchProps> = React.memo(({ wide = true }) =>
           label={<Label />}
           labelInner={<SearchLabel />}
           dropdown={<SearchDropdown items={searchResult} search={searchValue} />}
-          placeholder="Search token..."
+          placeholder="Search or input token"
         />
       )}
     </div>

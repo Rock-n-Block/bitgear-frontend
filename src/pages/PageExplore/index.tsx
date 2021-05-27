@@ -167,10 +167,10 @@ export const PageExplore: React.FC = () => {
       </section>
       <section className={s.containerButtons}>
         <Link className={s.containerButtonsItem} to="/lists/recently-added">
-          <img src={CoinIcon} alt="CoinIcon" /> <span> Recently Added</span>
+          <img src={CoinIcon} alt="CoinIcon" /> <span> Hot and new</span>
         </Link>
         <Link className={s.containerButtonsItem} to="/lists/top-gainers">
-          <img src={RocketIcon} alt="RocketIcon" /> <span> Top Gainers</span>
+          <img src={RocketIcon} alt="RocketIcon" /> <span> Top performers</span>
         </Link>
       </section>
       <section className={s.ExploreTable}>
