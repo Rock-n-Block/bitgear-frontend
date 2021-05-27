@@ -327,7 +327,7 @@ export const PageMarketsContent: React.FC = () => {
         newTokens = tokens;
       }
       setTokensFiltered(newTokens);
-      console.error('PageMarketsContent filterTokens:', newTokens);
+      console.log('PageMarketsContent filterTokens:', newTokens);
       return null;
     } catch (e) {
       console.error('PageMarketsContent filterTokens:', e);
@@ -1124,7 +1124,7 @@ export const PageMarketsContent: React.FC = () => {
     if (!symbolPay) return;
     getTokenPay();
     getPrices();
-
+    if (!symbolOne) return;
     switch (period) {
       case 1:
         getHistoryDay();
@@ -1152,6 +1152,8 @@ export const PageMarketsContent: React.FC = () => {
   }, [marketHistory]);
 
   React.useEffect(() => {
+    if (!tokens || tokens?.length === 0) return;
+    if (!tokensReceive || tokensReceive?.length === 0) return;
     switch (period) {
       case 1:
         getHistoryDay();
