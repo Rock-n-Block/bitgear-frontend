@@ -46,6 +46,24 @@ export const PageExplore: React.FC = () => {
     dispatch,
   ]);
 
+  const getHistoryCMC = React.useCallback(async (): Promise<any> => {
+    try {
+      const resultFromGetHistoryCMC = await CoinMarketCap.getAllCoinsHistoryDay(symbolsList);
+
+      return resultFromGetHistoryCMC;
+    } catch (e) {
+      console.error(e);
+      return {
+        status: 'ERROR',
+        data: undefined,
+      };
+    }
+  }, [symbolsList]);
+
+  React.useEffect(() => {
+    getHistoryCMC();
+  }, [getHistoryCMC]);
+
   const getAllCoinsInfo = async (symbols: any): Promise<any> => {
     try {
       let pairInfo: any;

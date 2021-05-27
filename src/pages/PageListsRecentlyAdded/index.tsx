@@ -96,7 +96,7 @@ export const PageListsRecentlyAdded: React.FC = React.memo(() => {
   return (
     <div className={s.container}>
       <section className={s.containerTitle}>
-        <h1>Recently Added</h1>
+        <h1>Hot and new</h1>
       </section>
       <section className={s.ExploreTable}>
         <MainTable data={dataForTable} dataForMobile={dataForTable.slice(0, 5)} />
