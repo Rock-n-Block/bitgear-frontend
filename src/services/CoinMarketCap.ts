@@ -80,9 +80,9 @@ export class CoinMarketCapService {
     }
   };
 
-  getAllCoinsHistoryDay = async (symbolList: string[]) => {
+  getAllCoinsHistoryDay = async (symbolsList: string[]) => {
     try {
-      const url = `/v1/cryptocurrency/ohlcv/historical?symbol=${symbolList}&time_period=hourly&count=24&interval=1h`;
+      const url = `/v1/cryptocurrency/ohlcv/historical?symbol=${symbolsList}&time_period=hourly&count=10&interval=2h`;
       const result = await this.axios.get(url);
       // console.log('CoinMarketCapService getTwoCoinsCoins:', result);
       if (result.data.Response === 'Error') {
