@@ -97,4 +97,58 @@ export class CoinMarketCapService {
       return { status: 'ERROR', data: undefined };
     }
   };
+
+  getHistoryDayForPair = async ({ symbolOne, symbolTwo }: getTwoCoinsProps) => {
+    try {
+      const url = `/v1/cryptocurrency/ohlcv/historical?symbol=${symbolOne}&convert=${symbolTwo}&time_period=hourly&count=24&interval=1h`;
+      const result = await this.axios.get(url);
+      console.log('CoinMarketCapService getHistoryDayForPair:', result);
+      if (result.data.Response === 'Error') {
+        return { status: 'ERROR', data: undefined };
+      }
+      return {
+        status: 'SUCCESS',
+        data: result.data.data.quotes,
+      };
+    } catch (e) {
+      console.error(e);
+      return { status: 'ERROR', data: undefined };
+    }
+  };
+
+  getHistoryWeekForPair = async ({ symbolOne, symbolTwo }: getTwoCoinsProps) => {
+    try {
+      const url = `/v1/cryptocurrency/ohlcv/historical?symbol=${symbolOne}&convert=${symbolTwo}&time_period=hourly&count=84&interval=2h`;
+      const result = await this.axios.get(url);
+      console.log('CoinMarketCapService getHistoryWeekForPair:', result);
+      if (result.data.Response === 'Error') {
+        return { status: 'ERROR', data: undefined };
+      }
+      return {
+        status: 'SUCCESS',
+        data: result.data.data.quotes,
+      };
+    } catch (e) {
+      console.error(e);
+      return { status: 'ERROR', data: undefined };
+    }
+  };
+
+  getHistoryMonthForPair = async ({ symbolOne, symbolTwo }: getTwoCoinsProps) => {
+    try {
+      const url = `/v1/cryptocurrency/ohlcv/historical?symbol=${symbolOne}&convert=${symbolTwo}&time_period=hourly&count=118&interval=6h`;
+      const result = await this.axios.get(url);
+      console.log('CoinMarketCapService getHistoryMonthForPair:', result);
+      if (result.data.Response === 'Error') {
+        return { status: 'ERROR', data: undefined };
+      }
+      return {
+        status: 'SUCCESS',
+        data: result.data.data.quotes,
+      };
+    } catch (e) {
+      console.error(e);
+      return { status: 'ERROR', data: undefined };
+    }
+  };
 }
