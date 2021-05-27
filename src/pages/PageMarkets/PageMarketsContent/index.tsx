@@ -538,10 +538,9 @@ export const PageMarketsContent: React.FC = () => {
       } else {
         pricePay = await getPricePay(amountPay);
       }
-      const newAmountReceive = String(pricePay * +amountPay);
+      const newAmountReceive = new BigNumber(pricePay).multipliedBy(amountPay).toString(10);
       // console.log('PageMarketsContent updateAmountReceive:', amountPay, newAmountReceive);
-      const newAmountReceiveFormatted = new BigNumber(newAmountReceive).toString();
-      setAmountReceive(newAmountReceiveFormatted);
+      setAmountReceive(newAmountReceive);
     } catch (e) {
       console.error('PageMarketsContent updateAmountReceive:', e);
     }
@@ -756,9 +755,8 @@ export const PageMarketsContent: React.FC = () => {
       } else {
         pricePay = await getPricePay(value);
       }
-      const newAmountReceive = String(pricePay * value);
-      // console.log('handleChangeAmountPay newAmountReceive:', newAmountReceive);
-      const newAmountReceiveFormatted = new BigNumber(newAmountReceive).toString(10);
+      const newAmountReceiveFormatted = new BigNumber(pricePay).multipliedBy(value).toString(10);
+      console.log('handleChangeAmountPay:', newAmountReceiveFormatted);
       setAmountReceive(newAmountReceiveFormatted);
     } catch (e) {
       console.error('handleChangeAmountPay:', e);
@@ -775,8 +773,9 @@ export const PageMarketsContent: React.FC = () => {
       } else {
         pricePay = await getPricePay(value);
       }
-      let newAmountPay = value / pricePay;
+      let newAmountPay = +new BigNumber(value).dividedBy(new BigNumber(pricePay)).toFixed();
       if (pricePay === 0) newAmountPay = 0;
+      console.log('handleChangeAmountPay:', newAmountPay);
       setAmountPay(String(newAmountPay));
     } catch (e) {
       console.error('handleChangeAmountReceive:', e);
