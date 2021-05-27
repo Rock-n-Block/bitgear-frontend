@@ -1,5 +1,6 @@
 const initialState = {
   loadingBalances: 'false',
+  messageYouPay: null,
 };
 
 export default (state = initialState, { type, payload }: any) => {

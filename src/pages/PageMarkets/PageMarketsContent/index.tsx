@@ -16,7 +16,7 @@ import Button from '../../../components/Button';
 import config from '../../../config';
 import { useWalletConnectorContext } from '../../../contexts/WalletConnect';
 import erc20Abi from '../../../data/erc20Abi.json';
-import { modalActions, walletActions } from '../../../redux/actions';
+import { modalActions, statusActions, walletActions } from '../../../redux/actions';
 import { Service0x } from '../../../services/0x';
 import { CoinMarketCapService } from '../../../services/CoinMarketCap';
 import { CryptoCompareService } from '../../../services/CryptoCompareService';
@@ -94,10 +94,14 @@ export const PageMarketsContent: React.FC = () => {
     (props: string) => dispatch(walletActions.setWalletType(props)),
     [dispatch],
   );
+  const setStatus = React.useCallback((props: any) => dispatch(statusActions.setStatus(props)), [
+    dispatch,
+  ]);
 
   const { address: userAddress, balances: userBalances } = useSelector(({ user }: any) => user);
   const { tokens } = useSelector(({ zx }: any) => zx);
   const { chainId } = useSelector(({ wallet }: any) => wallet);
+  const { messageYouPay } = useSelector(({ status }: any) => status);
 
   const { symbolOne, symbolTwo } = useParams<TypeUseParams>();
 
@@ -253,10 +257,11 @@ export const PageMarketsContent: React.FC = () => {
 
   const getPrices = React.useCallback(async () => {
     try {
+      setStatus({ messageYouPay: null });
       const { decimals, address: addressPay } = getTokenBySymbol(symbolPay);
       const { address: addressReceive } = getTokenBySymbol(symbolReceive);
       if (!decimals) return null;
-      if (!amountPay) return null;
+      if (!amountPay || amountPay === '' || amountPay === '0') return null;
       let newPrice = 0;
       if (symbolReceive && amountPay) {
         const result = await Zx.getPrice({
@@ -271,6 +276,14 @@ export const PageMarketsContent: React.FC = () => {
           newPrice = result.data.price;
           setPrice(newPrice);
         } else {
+          setStatus({
+            messageYouPay: (
+              <div>
+                Insufficient liquidity.
+                <br /> Decrease amount.
+              </div>
+            ),
+          });
           setPrice(0);
         }
       } else {
@@ -293,7 +306,7 @@ export const PageMarketsContent: React.FC = () => {
       console.error(e);
       return null;
     }
-  }, [amountPay, symbolPay, symbolReceive, getTokenBySymbol]);
+  }, [setStatus, amountPay, symbolPay, symbolReceive, getTokenBySymbol]);
 
   const getTokenPay = React.useCallback(async () => {
     try {
@@ -1614,6 +1627,7 @@ export const PageMarketsContent: React.FC = () => {
                   <span>{prettyBalance(String(balanceOfTokenPay))}</span>
                 </div>
               )}
+              {messageYouPay && <div className={s.error}>{messageYouPay}</div>}
             </div>
           </div>
           {isModeLimit && (

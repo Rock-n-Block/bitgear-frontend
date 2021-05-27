@@ -340,7 +340,7 @@
       margin: 11px 0 0 0;
       text-align: right;
       font-size: 16px;
-      line-height: 25px;
+      line-height: 1.1;
       font-weight: 400;
       color: $color-text-secondary;
 
@@ -678,4 +678,13 @@
 
 .symbolWide {
   margin-left: -36px;
+}
+
+.error {
+  margin: 2px 0;
+  color: $color-text-error;
+  font-size: 16px;
+  line-height: 1.1;
+  font-weight: 400;
+  text-align: right;
 }
