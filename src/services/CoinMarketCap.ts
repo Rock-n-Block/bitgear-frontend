@@ -25,17 +25,16 @@ export class CoinMarketCapService {
       const newSymbol = symbol.toUpperCase();
       const url = `/v1/cryptocurrency/info?symbol=${newSymbol}`;
       const result = await this.axios.get(url);
-      // console.log('CoinMarketCapService getCoinInfo:', result);
-      if (result.data.Response === 'Error') {
-        return { status: 'ERROR', data: undefined };
-      }
+      console.log('CoinMarketCapService getCoinInfo:', result);
+      if (result.data.Response === 'Error') return { status: 'ERROR', data: result.data };
       return {
         status: 'SUCCESS',
-        data: result.data.data[newSymbol],
+        data: result.data.data,
       };
+      return { status: 'ERROR', data: undefined };
     } catch (e) {
       console.error('CoinMarketCapService getCoinInfo:', e);
-      return { status: 'ERROR', data: undefined };
+      return { status: 'ERROR', data: undefined, error: JSON.parse(JSON.stringify(e)) };
     }
   };
 

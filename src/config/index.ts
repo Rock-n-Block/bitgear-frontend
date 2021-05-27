@@ -4,6 +4,7 @@ const IS_TESTING_ON_ROPSTEN = false;
 export default {
   IS_PRODUCTION,
   IS_TESTING_ON_ROPSTEN,
+  isMainnetOrTestnet: IS_PRODUCTION ? 'mainnet' : 'testnet',
   netType: IS_PRODUCTION ? 'mainnet' : IS_TESTING_ON_ROPSTEN ? 'ropsten' : 'kovan',
   links: {
     twitter: 'https://twitter.com/bitgeario',
@@ -18,9 +19,14 @@ export default {
   apis: {
     // 'cryptoCompare': 'https://min-api.cryptocompare.com',
     'cryptoCompare': 'https://crypto-api.mywish.io',
-    // 'coinMarketCap': 'https://cmc-api.mywish.io',
+    // 'coinMarketCap': 'https://pro-api.coinmarketcap.com',
     'coinMarketCap': 'https://cmc-api.mywish.io',
     'coinGecko': 'https://api.coingecko.com/api/v3',
+    'alchemy': IS_PRODUCTION
+      ? 'https://eth.alchemyapi.io/v2/'
+      : IS_TESTING_ON_ROPSTEN
+      ? 'https://eth-ropsten.alchemyapi.io/v2/'
+      : 'https://eth-kovan.alchemyapi.io/v2/',
     '0x': IS_PRODUCTION
       ? 'https://api.0x.org'
       : IS_TESTING_ON_ROPSTEN
@@ -37,6 +43,7 @@ export default {
     etherscan: 'VI2S1A8EBH54NNDH3Q4H2IFYJ4E85YDQEF',
     cryptoCompare: '64003a2defe5d1cd62c11cae1ed06c7248a0a985e63ce30fdd280c3855ae4dc3',
     coinMarketCap: '81020735-ae3c-4f94-ad58-89ffd839d328',
+    alchemy: '9e37toZE9l2XRTjIUsWUD3gAyiRPWYCQ',
   },
   chainIds: {
     mainnet: {

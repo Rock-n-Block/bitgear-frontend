@@ -820,7 +820,7 @@ export const PageMarketsContent: React.FC = () => {
         if (includesInSymbol || includesInName) return true;
         return false;
       });
-      console.log('matchSearch:', result);
+      // console.log('matchSearch:', result);
       setSearchTokensResultPay(result);
     } catch (e) {
       console.error(e);
@@ -836,7 +836,7 @@ export const PageMarketsContent: React.FC = () => {
         if (includesInSymbol || includesInName) return true;
         return false;
       });
-      console.log('matchSearch:', result);
+      // console.log('matchSearch:', result);
       setSearchTokensResultReceive(result);
     } catch (e) {
       console.error(e);
@@ -1281,9 +1281,10 @@ export const PageMarketsContent: React.FC = () => {
         />
       </div>
       <div className={s.containerTradingCardSearchItems}>
-        {searchTokensResultPay.map((token: any) => {
-          const { name: tokenName, symbol, image = imageTokenPay } = token;
-          const isBalanceZero = !userBalances[symbol] || +userBalances[symbol] === 0;
+        {searchTokensResultPay.map((token: any, it: number) => {
+          if (it > 30) return null;
+          const { name: tokenName, symbol, image = imageTokenPay, address } = token;
+          const isBalanceZero = !userBalances[address] || +userBalances[address] === 0;
           const balance = !isBalanceZero ? prettyPrice(userBalances[symbol]) : '';
           return (
             <div
@@ -1324,10 +1325,11 @@ export const PageMarketsContent: React.FC = () => {
         />
       </div>
       <div className={s.containerTradingCardSearchItems}>
-        {searchTokensResultReceive.map((token: any) => {
-          const { name: tokenName, symbol, image = imageTokenPay } = token;
-          const isBalanceZero = !userBalances[symbol] || userBalances[symbol] === 0;
-          const balance = !isBalanceZero ? prettyPrice(userBalances[symbol]) : '';
+        {searchTokensResultReceive.map((token: any, it: number) => {
+          if (it > 30) return null;
+          const { name: tokenName, symbol, image = imageTokenPay, address } = token;
+          const isBalanceZero = !userBalances[address];
+          const balance = !isBalanceZero ? prettyPrice(userBalances[address]) : '';
           return (
             <div
               role="button"

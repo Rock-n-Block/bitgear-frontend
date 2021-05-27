@@ -49,7 +49,7 @@ export const PageAccount: React.FC = () => {
   const [flagSort, setFlagSort] = React.useState<string>('');
   const [isAddressCopied, setIsAddressCopied] = React.useState<boolean>(false);
 
-  const { tokens } = useSelector(({ zx }: any) => zx);
+  const { tokens, tokensByAddress, tokensBySymbol } = useSelector(({ zx }: any) => zx);
   const { address: userAddress = 'Address', balance: userBalance = 0 } = useSelector(
     ({ user }: any) => user,
   );
@@ -93,9 +93,21 @@ export const PageAccount: React.FC = () => {
   );
 
   const filterAndSortUserBalances = React.useCallback(() => {
-    const newBalances = _.pickBy(userBalances, (v) => v !== null && v !== undefined && v !== 0);
-    setUserBalancesFiltered(newBalances);
-  }, [userBalances]);
+    try {
+      const newBalances = _.pickBy(userBalances, (v) => v !== null && v !== undefined && v !== 0);
+      const newBalancesWithSymbols: any = {};
+      Object.entries(newBalances).map((item) => {
+        const [address, balance] = item;
+        const { symbol, decimals } = tokensByAddress[address];
+        const newBalance = new BigNumber(balance).dividedBy(new BigNumber(10).pow(decimals));
+        newBalancesWithSymbols[symbol] = newBalance;
+        return null;
+      });
+      setUserBalancesFiltered(newBalancesWithSymbols);
+    } catch (e) {
+      console.error(e);
+    }
+  }, [tokensByAddress, userBalances]);
 
   const getExchangeOfPair = React.useCallback(
     async ({ symbolOne, symbolTwo }: any): Promise<any> => {
@@ -308,8 +320,8 @@ export const PageAccount: React.FC = () => {
             </Link>
             <Link key={uuid()} className={s.accountFundsCard} to="/markets/GEAR">
               <h3>Your balance:</h3>
-              <span>{prettyPrice(userBalances.GEAR || 0)} GEAR</span>
-              <img src={EthGlassIcon} alt="ehereum logo" />
+              <span>{prettyPrice(userBalancesFiltered.GEAR || 0)} GEAR</span>
+              <img src={tokensBySymbol?.GEAR?.image || imageTokenPay} alt="ehereum logo" />
             </Link>
             {isNoBalances && (
               <div>
@@ -323,6 +335,7 @@ export const PageAccount: React.FC = () => {
             {userBalancesAsArray.map((item: any) => {
               const [symbol, balance] = item;
               if (symbol === 'ETH' || symbol === 'GEAR') return null;
+              const image = tokensBySymbol[symbol]?.image || imageTokenPay;
               return (
                 <>
                   {balance > 0 ? (
@@ -331,7 +344,7 @@ export const PageAccount: React.FC = () => {
                       <span>
                         {prettyPrice(balance)} {symbol}
                       </span>
-                      <img src={EthGlassIcon} alt="ehereum logo" />
+                      <img className={s.accountFundsCardImage} src={image} alt="ehereum logo" />
                     </Link>
                   ) : null}
                 </>
