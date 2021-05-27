@@ -45,10 +45,6 @@ export const App: React.FC = () => {
   const setTokens = React.useCallback((props: any) => dispatch(zxActions.setTokens(props)), [
     dispatch,
   ]);
-  const setTokensByAddress = React.useCallback(
-    (props: any) => dispatch(zxActions.setTokensByAddress(props)),
-    [dispatch],
-  );
   const setUserData = React.useCallback((props: any) => dispatch(userActions.setUserData(props)), [
     dispatch,
   ]);
@@ -182,20 +178,25 @@ export const App: React.FC = () => {
         });
       console.log('App getTokens:', tokensAllSorted);
       const newTokensByAddress: any = {};
+      const newTokensBySymbol: any = {};
       const newTokenAddresses = tokensAllSorted.map((token: any) => {
-        const { address } = token;
+        const { address, symbol } = token;
         newTokensByAddress[address] = token;
+        newTokensBySymbol[symbol] = token;
         return address;
       });
       setTokenAddresses(newTokenAddresses);
-      setTokensByAddress({ tokensByAddress: newTokensByAddress });
+      setTokens({
+        tokensByAddress: newTokensByAddress,
+        tokensBySymbol: newTokensBySymbol,
+      });
       const tokensAllFormatted = await changeTokensInfo(tokensAllSorted);
       setTokens({ tokens: tokensAllFormatted });
       setTokens0x(newTokens0x);
     } catch (e) {
       console.error('App getTokens:', e);
     }
-  }, [setTokens, changeTokensInfo, tokensCryptoCompareFormatted, setTokensByAddress]);
+  }, [setTokens, changeTokensInfo, tokensCryptoCompareFormatted]);
 
   const getTokensBalancesFromAlchemy = React.useCallback(async () => {
     try {
