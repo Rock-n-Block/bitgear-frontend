@@ -1283,9 +1283,14 @@ export const PageMarketsContent: React.FC = () => {
       <div className={s.containerTradingCardSearchItems}>
         {searchTokensResultPay.map((token: any, it: number) => {
           if (it > 30) return null;
-          const { name: tokenName, symbol, image = imageTokenPay, address } = token;
-          const isBalanceZero = !userBalances[address] || +userBalances[address] === 0;
-          const balance = !isBalanceZero ? prettyPrice(userBalances[symbol]) : '';
+          const { name: tokenName, symbol, image = imageTokenPay, address, decimals } = token;
+          const isBalanceZero = !userBalances[address];
+          const newBalance = !isBalanceZero
+            ? new BigNumber(userBalances[address])
+                .dividedBy(new BigNumber(10).pow(decimals))
+                .toString(10)
+            : '0';
+          const balance = !isBalanceZero ? prettyPrice(newBalance) : '';
           return (
             <div
               role="button"
@@ -1327,9 +1332,14 @@ export const PageMarketsContent: React.FC = () => {
       <div className={s.containerTradingCardSearchItems}>
         {searchTokensResultReceive.map((token: any, it: number) => {
           if (it > 30) return null;
-          const { name: tokenName, symbol, image = imageTokenPay, address } = token;
+          const { name: tokenName, symbol, image = imageTokenPay, address, decimals } = token;
           const isBalanceZero = !userBalances[address];
-          const balance = !isBalanceZero ? prettyPrice(userBalances[address]) : '';
+          const newBalance = !isBalanceZero
+            ? new BigNumber(userBalances[address])
+                .dividedBy(new BigNumber(10).pow(decimals))
+                .toString(10)
+            : '0';
+          const balance = !isBalanceZero ? prettyPrice(newBalance) : '';
           return (
             <div
               role="button"
