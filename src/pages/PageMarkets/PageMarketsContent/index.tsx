@@ -1424,7 +1424,7 @@ export const PageMarketsContent: React.FC = () => {
           </div>
           <div className={s.containerTitlePrice}>
             {!symbolReceive && '$'}
-            {prettyPrice(marketPrice?.toString())} {symbolReceive}
+            {marketPrice ? prettyPrice(marketPrice?.toString()) : 0} {symbolReceive}
           </div>
           <div
             className={classPriceChange}
@@ -1432,7 +1432,7 @@ export const PageMarketsContent: React.FC = () => {
             data-negative={isPriceChangeNegative}
           >
             {isPriceChangePositive && '+'}
-            {priceChange}%
+            {priceChange || 0}%
           </div>
         </div>
         <div className={s.containerTitleSecond}>
@@ -1821,7 +1821,7 @@ export const PageMarketsContent: React.FC = () => {
               data-positive={isPriceChangePositive}
               data-negative={isPriceChangeNegative}
             >
-              {priceChange}%
+              {priceChange || 0}%
             </div>
           </div>
         </div>
