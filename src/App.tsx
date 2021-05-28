@@ -29,6 +29,7 @@ const tokenGear = {
     : config.IS_TESTING_ON_ROPSTEN
     ? '0xd46bccb05e6a41d97f166c0082c6729f1c6118bd'
     : '0x67a6a6cd58bb9617227dcf40bb35fc7f0839a658',
+  image: 'https://s2.coinmarketcap.com/static/img/coins/64x64/6593.png',
 };
 
 const Zx = new Service0x();
