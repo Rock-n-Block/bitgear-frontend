@@ -86,7 +86,7 @@ export const LineChart: React.FC<TypeLineChartProps> = React.memo(
               ${String(text).slice(0, 8)}
             </text>
             <text x={x + dx} y={y + dy}>
-              {String(moment(new Date(time.toString() * 1000)).format('MMMM Do YYYY, h:mm:ss a'))}
+              {String(moment(new Date(time.toString() * 1000)).format('MMMM Do YYYY, h:mm a'))}
             </text>
             <path d={pathLine.toString()} />
             <circle cx={x} cy={y} r={6} />

@@ -16,8 +16,9 @@ import Button from '../../../components/Button';
 import config from '../../../config';
 import { useWalletConnectorContext } from '../../../contexts/WalletConnect';
 import erc20Abi from '../../../data/erc20Abi.json';
-import { modalActions, walletActions } from '../../../redux/actions';
+import { modalActions, statusActions, walletActions } from '../../../redux/actions';
 import { Service0x } from '../../../services/0x';
+import { CoinMarketCapService } from '../../../services/CoinMarketCap';
 import { CryptoCompareService } from '../../../services/CryptoCompareService';
 import { EtherscanService } from '../../../services/Etherscan';
 import { getFromStorage, setToStorage } from '../../../utils/localStorage';
@@ -33,6 +34,7 @@ import s from './style.module.scss';
 const CryptoCompare = new CryptoCompareService();
 const Zx = new Service0x();
 const Etherscan = new EtherscanService();
+const CoinMarketCap = new CoinMarketCapService();
 
 const exchangesList: string[] = [
   '0x',
@@ -92,10 +94,14 @@ export const PageMarketsContent: React.FC = () => {
     (props: string) => dispatch(walletActions.setWalletType(props)),
     [dispatch],
   );
+  const setStatus = React.useCallback((props: any) => dispatch(statusActions.setStatus(props)), [
+    dispatch,
+  ]);
 
   const { address: userAddress, balances: userBalances } = useSelector(({ user }: any) => user);
   const { tokens } = useSelector(({ zx }: any) => zx);
   const { chainId } = useSelector(({ wallet }: any) => wallet);
+  const { messageYouPay } = useSelector(({ status }: any) => status);
 
   const { symbolOne, symbolTwo } = useParams<TypeUseParams>();
 
@@ -168,7 +174,8 @@ export const PageMarketsContent: React.FC = () => {
     ? +amountReceive === 0 || !balanceOfTokenPay || +balanceOfTokenPay < +amountPay
     : false;
 
-  const marketPrice = marketHistory && marketHistory[0] ? marketHistory[0]?.close : 0;
+  const marketPrice =
+    marketHistory && marketHistory[0] ? marketHistory[0]?.quote[symbolTwo || 'USD']?.close : 0;
 
   const getTokenBySymbol = React.useCallback(
     (symbol: string) => {
@@ -220,7 +227,7 @@ export const PageMarketsContent: React.FC = () => {
         };
         const result = await Zx.getPrice(props);
         console.log('PageMarketsContent getPricePayLimit:', props, result);
-        if (result.status === 'SUCCESS') return result.data.guaranteedPrice;
+        if (result.status === 'SUCCESS') return result.data.price;
         return marketPrice;
       } catch (e) {
         console.error(e);
@@ -250,10 +257,11 @@ export const PageMarketsContent: React.FC = () => {
 
   const getPrices = React.useCallback(async () => {
     try {
+      setStatus({ messageYouPay: null });
       const { decimals, address: addressPay } = getTokenBySymbol(symbolPay);
       const { address: addressReceive } = getTokenBySymbol(symbolReceive);
       if (!decimals) return null;
-      if (!amountPay) return null;
+      if (!amountPay || amountPay === '' || amountPay === '0') return null;
       let newPrice = 0;
       if (symbolReceive && amountPay) {
         const result = await Zx.getPrice({
@@ -268,6 +276,14 @@ export const PageMarketsContent: React.FC = () => {
           newPrice = result.data.price;
           setPrice(newPrice);
         } else {
+          setStatus({
+            messageYouPay: (
+              <div>
+                Insufficient liquidity.
+                <br /> Decrease amount.
+              </div>
+            ),
+          });
           setPrice(0);
         }
       } else {
@@ -290,7 +306,7 @@ export const PageMarketsContent: React.FC = () => {
       console.error(e);
       return null;
     }
-  }, [amountPay, symbolPay, symbolReceive, getTokenBySymbol]);
+  }, [setStatus, amountPay, symbolPay, symbolReceive, getTokenBySymbol]);
 
   const getTokenPay = React.useCallback(async () => {
     try {
@@ -311,7 +327,7 @@ export const PageMarketsContent: React.FC = () => {
         newTokens = tokens;
       }
       setTokensFiltered(newTokens);
-      console.error('PageMarketsContent filterTokens:', newTokens);
+      console.log('PageMarketsContent filterTokens:', newTokens);
       return null;
     } catch (e) {
       console.error('PageMarketsContent filterTokens:', e);
@@ -350,14 +366,59 @@ export const PageMarketsContent: React.FC = () => {
     }
   }, [symbolPay, tokensFiltered]);
 
+  // const getHistoryDay = React.useCallback(async () => {
+  //   try {
+  //     const result = await CryptoCompare.getHistoryMinute({
+  //       symbolOne,
+  //       symbolTwo: symbolTwo || 'USD',
+  //       limit: 96,
+  //       aggregate: 15,
+  //       // exchange: 'oneinch',
+  //     });
+  //     console.log('getHistoryDay:', result);
+  //     setMarketHistory(result.data);
+  //   } catch (e) {
+  //     console.error(e);
+  //   }
+  // }, [symbolOne, symbolTwo]);
+  //
+  // const getHistoryHourWeek = React.useCallback(async () => {
+  //   try {
+  //     const result = await CryptoCompare.getHistoryHour({
+  //       symbolOne,
+  //       symbolTwo: symbolTwo || 'USD',
+  //       limit: 168,
+  //       aggregate: 1,
+  //       // exchange: 'oneinch',
+  //     });
+  //     console.log('getHistoryWeek:', result);
+  //     setMarketHistory(result.data);
+  //   } catch (e) {
+  //     console.error(e);
+  //   }
+  // }, [symbolOne, symbolTwo]);
+  //
+  // const getHistoryHourMonth = React.useCallback(async () => {
+  //   try {
+  //     const result = await CryptoCompare.getHistoryHour({
+  //       symbolOne,
+  //       symbolTwo: symbolTwo || 'USD',
+  //       limit: 180,
+  //       aggregate: 4,
+  //       // exchange: 'oneinch',
+  //     });
+  //     console.log('getHistoryMonth:', result);
+  //     setMarketHistory(result.data);
+  //   } catch (e) {
+  //     console.error(e);
+  //   }
+  // }, [symbolOne, symbolTwo]);
+
   const getHistoryDay = React.useCallback(async () => {
     try {
-      const result = await CryptoCompare.getHistoryMinute({
+      const result = await CoinMarketCap.getHistoryDayForPair({
         symbolOne,
         symbolTwo: symbolTwo || 'USD',
-        limit: 96,
-        aggregate: 15,
-        // exchange: 'oneinch',
       });
       console.log('getHistoryDay:', result);
       setMarketHistory(result.data);
@@ -368,12 +429,9 @@ export const PageMarketsContent: React.FC = () => {
 
   const getHistoryHourWeek = React.useCallback(async () => {
     try {
-      const result = await CryptoCompare.getHistoryHour({
+      const result = await CoinMarketCap.getHistoryWeekForPair({
         symbolOne,
         symbolTwo: symbolTwo || 'USD',
-        limit: 168,
-        aggregate: 1,
-        // exchange: 'oneinch',
       });
       console.log('getHistoryWeek:', result);
       setMarketHistory(result.data);
@@ -384,12 +442,9 @@ export const PageMarketsContent: React.FC = () => {
 
   const getHistoryHourMonth = React.useCallback(async () => {
     try {
-      const result = await CryptoCompare.getHistoryHour({
+      const result = await CoinMarketCap.getHistoryMonthForPair({
         symbolOne,
         symbolTwo: symbolTwo || 'USD',
-        limit: 180,
-        aggregate: 4,
-        // exchange: 'oneinch',
       });
       console.log('getHistoryMonth:', result);
       setMarketHistory(result.data);
@@ -401,7 +456,7 @@ export const PageMarketsContent: React.FC = () => {
   const getPoints = React.useCallback(() => {
     try {
       const newPoints = marketHistory.map((item: any) => {
-        return item.close;
+        return item.quote[symbolTwo || 'USD'].close;
       });
       setPoints(newPoints);
       const newPointsLength = newPoints.length;
@@ -412,12 +467,12 @@ export const PageMarketsContent: React.FC = () => {
     } catch (e) {
       console.error(e);
     }
-  }, [marketHistory]);
+  }, [marketHistory, symbolTwo]);
 
   const getDateTime = React.useCallback(() => {
     try {
       const newDateTime = marketHistory.map((item: any) => {
-        return item.time;
+        return new Date(item.time_close).getTime() / 1000 + 1;
       });
       setDateTime(newDateTime);
     } catch (e) {
@@ -538,10 +593,9 @@ export const PageMarketsContent: React.FC = () => {
       } else {
         pricePay = await getPricePay(amountPay);
       }
-      const newAmountReceive = String(pricePay * +amountPay);
+      const newAmountReceive = new BigNumber(pricePay).multipliedBy(amountPay).toString(10);
       // console.log('PageMarketsContent updateAmountReceive:', amountPay, newAmountReceive);
-      const newAmountReceiveFormatted = new BigNumber(newAmountReceive).toString();
-      setAmountReceive(newAmountReceiveFormatted);
+      setAmountReceive(newAmountReceive);
     } catch (e) {
       console.error('PageMarketsContent updateAmountReceive:', e);
     }
@@ -756,9 +810,8 @@ export const PageMarketsContent: React.FC = () => {
       } else {
         pricePay = await getPricePay(value);
       }
-      const newAmountReceive = String(pricePay * value);
-      // console.log('handleChangeAmountPay newAmountReceive:', newAmountReceive);
-      const newAmountReceiveFormatted = new BigNumber(newAmountReceive).toString(10);
+      const newAmountReceiveFormatted = new BigNumber(pricePay).multipliedBy(value).toString(10);
+      console.log('handleChangeAmountPay:', newAmountReceiveFormatted);
       setAmountReceive(newAmountReceiveFormatted);
     } catch (e) {
       console.error('handleChangeAmountPay:', e);
@@ -775,8 +828,9 @@ export const PageMarketsContent: React.FC = () => {
       } else {
         pricePay = await getPricePay(value);
       }
-      let newAmountPay = value / pricePay;
+      let newAmountPay = +new BigNumber(value).dividedBy(new BigNumber(pricePay)).toFixed();
       if (pricePay === 0) newAmountPay = 0;
+      console.log('handleChangeAmountPay:', newAmountPay);
       setAmountPay(String(newAmountPay));
     } catch (e) {
       console.error('handleChangeAmountReceive:', e);
@@ -1067,9 +1121,10 @@ export const PageMarketsContent: React.FC = () => {
   }, []);
 
   React.useEffect(() => {
+    if (!symbolPay) return;
     getTokenPay();
     getPrices();
-
+    if (!symbolOne) return;
     switch (period) {
       case 1:
         getHistoryDay();
@@ -1084,7 +1139,7 @@ export const PageMarketsContent: React.FC = () => {
         break;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [symbolPay, symbolReceive]);
 
   React.useEffect(() => {
     filterTokens();
@@ -1097,6 +1152,8 @@ export const PageMarketsContent: React.FC = () => {
   }, [marketHistory]);
 
   React.useEffect(() => {
+    if (!tokens || tokens?.length === 0) return;
+    if (!tokensReceive || tokensReceive?.length === 0) return;
     switch (period) {
       case 1:
         getHistoryDay();
@@ -1135,12 +1192,21 @@ export const PageMarketsContent: React.FC = () => {
   }, [tokensFiltered, tokensReceive]);
 
   React.useEffect(() => {
+    if (!symbolPay && !symbolReceive) return;
     if (!web3Provider && !userAddress) return;
     console.log('PageMarketsContent useEffect web3provider:', web3Provider);
     getBalanceOfTokensPay();
     getBalanceOfTokensReceive();
     getGasPrice();
-  }, [web3Provider, getBalanceOfTokensPay, getBalanceOfTokensReceive, getGasPrice, userAddress]);
+  }, [
+    symbolPay,
+    symbolReceive,
+    web3Provider,
+    getBalanceOfTokensPay,
+    getBalanceOfTokensReceive,
+    getGasPrice,
+    userAddress,
+  ]);
 
   React.useEffect(() => {
     getTokenPay();
@@ -1283,9 +1349,14 @@ export const PageMarketsContent: React.FC = () => {
       <div className={s.containerTradingCardSearchItems}>
         {searchTokensResultPay.map((token: any, it: number) => {
           if (it > 30) return null;
-          const { name: tokenName, symbol, image = imageTokenPay, address } = token;
-          const isBalanceZero = !userBalances[address] || +userBalances[address] === 0;
-          const balance = !isBalanceZero ? prettyPrice(userBalances[symbol]) : '';
+          const { name: tokenName, symbol, image = imageTokenPay, address, decimals } = token;
+          const isBalanceZero = !userBalances[address];
+          const newBalance = !isBalanceZero
+            ? new BigNumber(userBalances[address])
+                .dividedBy(new BigNumber(10).pow(decimals))
+                .toString(10)
+            : '0';
+          const balance = !isBalanceZero ? prettyPrice(newBalance) : '';
           return (
             <div
               role="button"
@@ -1327,9 +1398,14 @@ export const PageMarketsContent: React.FC = () => {
       <div className={s.containerTradingCardSearchItems}>
         {searchTokensResultReceive.map((token: any, it: number) => {
           if (it > 30) return null;
-          const { name: tokenName, symbol, image = imageTokenPay, address } = token;
+          const { name: tokenName, symbol, image = imageTokenPay, address, decimals } = token;
           const isBalanceZero = !userBalances[address];
-          const balance = !isBalanceZero ? prettyPrice(userBalances[address]) : '';
+          const newBalance = !isBalanceZero
+            ? new BigNumber(userBalances[address])
+                .dividedBy(new BigNumber(10).pow(decimals))
+                .toString(10)
+            : '0';
+          const balance = !isBalanceZero ? prettyPrice(newBalance) : '';
           return (
             <div
               role="button"
@@ -1363,7 +1439,7 @@ export const PageMarketsContent: React.FC = () => {
           </div>
           <div className={s.containerTitlePrice}>
             {!symbolReceive && '$'}
-            {prettyPrice(marketPrice.toString())} {symbolReceive}
+            {marketPrice ? prettyPrice(marketPrice?.toString()) : 0} {symbolReceive}
           </div>
           <div
             className={classPriceChange}
@@ -1371,7 +1447,7 @@ export const PageMarketsContent: React.FC = () => {
             data-negative={isPriceChangeNegative}
           >
             {isPriceChangePositive && '+'}
-            {priceChange}%
+            {priceChange || 0}%
           </div>
         </div>
         <div className={s.containerTitleSecond}>
@@ -1553,6 +1629,7 @@ export const PageMarketsContent: React.FC = () => {
                   <span>{prettyBalance(String(balanceOfTokenPay))}</span>
                 </div>
               )}
+              {messageYouPay && <div className={s.error}>{messageYouPay}</div>}
             </div>
           </div>
           {isModeLimit && (
@@ -1760,7 +1837,7 @@ export const PageMarketsContent: React.FC = () => {
               data-positive={isPriceChangePositive}
               data-negative={isPriceChangeNegative}
             >
-              {priceChange}%
+              {priceChange || 0}%
             </div>
           </div>
         </div>
