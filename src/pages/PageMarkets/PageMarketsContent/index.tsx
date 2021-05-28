@@ -1121,6 +1121,11 @@ export const PageMarketsContent: React.FC = () => {
   }, []);
 
   React.useEffect(() => {
+    if (!openSettings) return;
+    getGasPrice();
+  }, [getGasPrice, openSettings]);
+
+  React.useEffect(() => {
     if (!symbolPay) return;
     getTokenPay();
     getPrices();
@@ -1197,15 +1202,13 @@ export const PageMarketsContent: React.FC = () => {
     console.log('PageMarketsContent useEffect web3provider:', web3Provider);
     getBalanceOfTokensPay();
     getBalanceOfTokensReceive();
-    getGasPrice();
   }, [
     symbolPay,
     symbolReceive,
+    userAddress,
     web3Provider,
     getBalanceOfTokensPay,
     getBalanceOfTokensReceive,
-    getGasPrice,
-    userAddress,
   ]);
 
   React.useEffect(() => {
