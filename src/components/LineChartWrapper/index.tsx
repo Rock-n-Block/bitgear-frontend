@@ -1,4 +1,5 @@
 import React from 'react';
+import { v1 as uuid } from 'uuid';
 
 import { LineChart } from '../LineChart';
 
@@ -13,7 +14,7 @@ export const LineChartWrapper: React.FC<any> = React.memo(({ points = [] }) => {
   }, [points]);
 
   return (
-    <div className={s.lineChartContainer}>
+    <div key={uuid()} className={s.lineChartContainer}>
       <LineChart data={data} />
     </div>
   );

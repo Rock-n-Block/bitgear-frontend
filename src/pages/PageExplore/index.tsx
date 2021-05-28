@@ -7,6 +7,7 @@ import CoinIcon from '../../assets/images/coin.png';
 import RocketIcon from '../../assets/images/rocket.png';
 import { MainTable, Pagination, Search } from '../../components';
 import excludedCoins from '../../data/excludedCoins';
+import excludedSymbols from '../../data/excludedSymbols';
 import { tableActions } from '../../redux/actions';
 import { CoinMarketCapService } from '../../services/CoinMarketCap';
 import { sortColumn } from '../../utils/sortColumn';
@@ -46,26 +47,9 @@ export const PageExplore: React.FC = () => {
     dispatch,
   ]);
 
-  const getHistoryCMC = React.useCallback(async (): Promise<any> => {
-    try {
-      const resultFromGetHistoryCMC = await CoinMarketCap.getAllCoinsHistoryDay(symbolsList);
-
-      return resultFromGetHistoryCMC;
-    } catch (e) {
-      console.error(e);
-      return {
-        status: 'ERROR',
-        data: undefined,
-      };
-    }
-  }, [symbolsList]);
-
-  React.useEffect(() => {
-    getHistoryCMC();
-  }, [getHistoryCMC]);
-
   const getAllCoinsInfo = async (symbols: any): Promise<any> => {
     try {
+      if (!symbols || symbols.length === 0) return [];
       let pairInfo: any;
       const result = await CoinMarketCap.getAllCoinsInfo(symbols);
       // console.log('App getTokensFromCoinMarketCap:', result.data);
@@ -148,9 +132,16 @@ export const PageExplore: React.FC = () => {
       return item.symbol.toUpperCase();
     });
 
-    const arrayOfSymbolsFiltered = tokens.filter((token: any) => {
-      return !arrayExcluded.includes(token.symbol.toUpperCase());
-    });
+    const arrayOfSymbolsFiltered = tokens
+      .filter((token: any) => {
+        return !arrayExcluded.includes(token.symbol.toUpperCase());
+      })
+      .filter((token: any) => {
+        if (!token.image) return false;
+        if (token.symbol.match(/[^A-Za-z0-9]+/gi)) return false;
+        if (excludedSymbols.includes(token.symbol)) return false;
+        return true;
+      });
 
     const listOfSymbols = arrayOfSymbolsFiltered.map((token: any) => {
       return token.symbol.toUpperCase();

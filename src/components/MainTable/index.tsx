@@ -55,6 +55,7 @@ export const MainTable: React.FC<TableTypeProps> = React.memo(
 
     const getHistoryCMC = React.useCallback(async (): Promise<any> => {
       try {
+        if (!symbols || symbols.length === 0) return [];
         setPoints([]);
         const resultFromGetHistoryCMC = await CoinMarketCap.getAllCoinsHistoryDay(symbols);
 

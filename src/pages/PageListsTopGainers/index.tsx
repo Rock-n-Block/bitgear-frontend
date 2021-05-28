@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { MainTable } from '../../components';
 import excludedCoins from '../../data/excludedCoins';
+import excludedSymbols from '../../data/excludedSymbols';
 import { CoinMarketCapService } from '../../services/CoinMarketCap';
 import { sortColumn } from '../../utils/sortColumn';
 import { TableType } from '../PageExplore';
@@ -19,6 +20,7 @@ export const PageListsTopGainers: React.FC = React.memo(() => {
 
   const getAllCoinsInfo = async (symbols: any): Promise<any> => {
     try {
+      if (!symbols || symbols.length === 0) return [];
       let pairInfo: any;
       const result = await CoinMarketCap.getAllCoinsInfo(symbols);
       // console.log('App getTokensFromCoinMarketCap:', result.data);
@@ -75,9 +77,16 @@ export const PageListsTopGainers: React.FC = React.memo(() => {
       return item.symbol.toUpperCase();
     });
 
-    const arrayOfSymbolsFiltered = tokens.filter((token: any) => {
-      return !arrayExcluded.includes(token.symbol.toUpperCase());
-    });
+    const arrayOfSymbolsFiltered = tokens
+      .filter((token: any) => {
+        return !arrayExcluded.includes(token.symbol.toUpperCase());
+      })
+      .filter((token: any) => {
+        if (!token.image) return false;
+        if (token.symbol.match(/[^A-Za-z0-9]+/gi)) return false;
+        if (excludedSymbols.includes(token.symbol)) return false;
+        return true;
+      });
 
     const listOfSymbols = arrayOfSymbolsFiltered.map((token: any) => {
       return token.symbol.toUpperCase();
