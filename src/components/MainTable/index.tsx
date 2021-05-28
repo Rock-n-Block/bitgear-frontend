@@ -240,8 +240,8 @@ export const MainTable: React.FC<TableTypeProps> = React.memo(
                     <td>{symbol}</td>
                     <td>${numberTransform(price)}</td>
                     {priceChangeModel}
-                    <td>{numberTransform(marketCap)}</td>
-                    <td>{numberTransform(volume)}</td>
+                    <td>{marketCap ? numberTransform(marketCap) : '-'}</td>
+                    <td>{volume ? numberTransform(volume) : '-'}</td>
                     <td>
                       <LineChartWrapper points={points[index]} />
                     </td>
