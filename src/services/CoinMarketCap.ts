@@ -64,7 +64,7 @@ export class CoinMarketCapService {
 
   getAllCoinsInfo = async (symbolsList: string[]) => {
     try {
-      const url = `/v1/cryptocurrency/quotes/latest?symbol=${symbolsList}`;
+      const url = `/v1/cryptocurrency/quotes/latest?symbol=${symbolsList}&skip_invalid=true`;
       const result = await this.axios.get(url);
       // console.log('CoinMarketCapService getTwoCoinsCoins:', result);
       if (result.data.Response === 'Error') {
@@ -82,7 +82,7 @@ export class CoinMarketCapService {
 
   getAllCoinsHistoryDay = async (symbolsList: string[]) => {
     try {
-      const url = `/v1/cryptocurrency/ohlcv/historical?symbol=${symbolsList}&time_period=hourly&count=10&interval=2h`;
+      const url = `/v1/cryptocurrency/ohlcv/historical?symbol=${symbolsList}&time_period=hourly&count=10&interval=2h&skip_invalid=true`;
       const result = await this.axios.get(url);
       // console.log('CoinMarketCapService getTwoCoinsCoins:', result);
       if (result.data.Response === 'Error') {
