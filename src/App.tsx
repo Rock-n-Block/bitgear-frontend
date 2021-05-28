@@ -166,7 +166,7 @@ export const App: React.FC = () => {
       console.log('App getTokens tokenGear:', tokenGear);
       newTokens0x = [tokenGear].concat(newTokens0x);
       const tokensAll = newTokens0x.concat(tokensCryptoCompareFormatted);
-      const tokensAllSorted = tokensAll
+      let tokensAllSorted = tokensAll
         // .filter((token) => {
         // if (token.symbol.match(/[^A-Za-z0-9]+/gi)) return false;
         // if (excludedSymbols.includes(token.symbol)) return false;
@@ -176,6 +176,15 @@ export const App: React.FC = () => {
         .sort((a: any, b: any) => {
           return a.symbol !== b.symbol ? (a.symbol < b.symbol ? -1 : 1) : 0;
         });
+      tokensAllSorted = tokensAllSorted.filter((token: any, index: number) => {
+        if (index < tokensAllSorted.length) {
+          return (
+            tokensAllSorted[index].symbol.toUpperCase() !==
+            tokensAllSorted[index + 1]?.symbol.toUpperCase()
+          );
+        }
+        return false;
+      });
       console.log('App getTokens:', tokensAllSorted);
       const newTokensByAddress: any = {};
       const newTokensBySymbol: any = {};
