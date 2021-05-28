@@ -39,8 +39,9 @@ export default {
       : 'https://api-kovan.etherscan.io/api',
   },
   keys: {
-    infura: 'd1bbf6a40e514be6878e06b2d01a7f41', // todo
-    etherscan: 'ANN5EICH9J3Y2VFXHEQV898DBPS9KT71BD', // ok
+    infura: '1964ef9a752c4405b7631cb49ab373fa', // ok
+    // ok. if limit for getGasPrice reaches, web3.getGasPrice works
+    etherscan: 'ANN5EICH9J3Y2VFXHEQV898DBPS9KT71BD',
     cryptoCompare: '', // ok
     coinMarketCap: '', // ok
     alchemy: '9e37toZE9l2XRTjIUsWUD3gAyiRPWYCQ', // ok
