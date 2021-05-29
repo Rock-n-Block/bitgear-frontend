@@ -168,7 +168,7 @@ export const PageMarketsContent: React.FC = () => {
   const isGasPriceTypeVeryFast = gasPriceType === 'veryFast';
   const isGasPriceTypeCustom = gasPriceType === 'custom';
 
-  const isAllowed = allowance > +amountPay;
+  const isAllowed = allowance >= +amountPay;
 
   const isTradeDisabled = userAddress
     ? +amountReceive === 0 || !balanceOfTokenPay || +balanceOfTokenPay < +amountPay
@@ -607,10 +607,10 @@ export const PageMarketsContent: React.FC = () => {
       if (!symbolPay || !symbolReceive || !amountPay || !userAddress) return;
       const { address: addressPay } = getTokenBySymbol(symbolPay);
       const { netType, addresses } = config as { [index: string]: any };
-      const { allowanceTarget } = addresses[netType];
+      const { allowanceTarget, allowanceTargetLimit } = addresses[netType];
       const propsGetAllowance = {
         userAddress,
-        allowanceTarget,
+        allowanceTarget: isModeLimit ? allowanceTargetLimit : allowanceTarget,
         contractAddress: addressPay,
         contractAbi: erc20Abi,
       };
@@ -620,7 +620,15 @@ export const PageMarketsContent: React.FC = () => {
     } catch (e) {
       console.error('PageMarketsContent getAllowance:', e);
     }
-  }, [getTokenBySymbol, symbolPay, symbolReceive, userAddress, web3Provider, amountPay]);
+  }, [
+    isModeLimit,
+    getTokenBySymbol,
+    symbolPay,
+    symbolReceive,
+    userAddress,
+    web3Provider,
+    amountPay,
+  ]);
 
   const trade = React.useCallback(async () => {
     try {
@@ -963,14 +971,14 @@ export const PageMarketsContent: React.FC = () => {
       setWaiting(true);
       const { address: contractAddress, decimals }: any = getTokenBySymbol(symbolPay);
       const { netType, addresses } = config as { [index: string]: any };
-      const { allowanceTarget } = addresses[netType];
+      const { allowanceTarget, allowanceTargetLimit } = addresses[netType];
       const amountInWei = new BigNumber(amountPay)
         .multipliedBy(new BigNumber(10).pow(decimals))
         .toString(10);
       const propsApprove: any = {
         amount: amountInWei,
         userAddress,
-        allowanceTarget,
+        allowanceTarget: isModeLimit ? allowanceTargetLimit : allowanceTarget,
         contractAbi: erc20Abi,
         contractAddress,
       };

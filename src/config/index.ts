@@ -87,14 +87,17 @@ export default {
     mainnet: {
       // allowanceTarget: '0xdef1c0ded9bec7f1a1670819833240f027b25eff',
       allowanceTarget: '0xf740b67da229f2f10bcbd38a7979992fcc71b8eb',
+      allowanceTargetLimit: '0xf740b67da229f2f10bcbd38a7979992fcc71b8eb',
     },
     kovan: {
       // allowanceTarget: '0xdef1c0ded9bec7f1a1670819833240f027b25eff',
       allowanceTarget: '0xf740b67da229f2f10bcbd38a7979992fcc71b8eb',
+      allowanceTargetLimit: '0xf740b67da229f2f10bcbd38a7979992fcc71b8eb',
     },
     ropsten: {
       // allowanceTarget: '0xdef1c0ded9bec7f1a1670819833240f027b25eff',
       allowanceTarget: '0xf740b67da229f2f10bcbd38a7979992fcc71b8eb',
+      allowanceTargetLimit: '0xf740b67da229f2f10bcbd38a7979992fcc71b8eb',
     },
   },
 };
