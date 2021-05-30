@@ -1,6 +1,7 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom';
+import { gql, useLazyQuery } from '@apollo/client';
 
 // import BigNumber from 'bignumber.js/bignumber';
 import imageTokenPay from './assets/images/token.png';
@@ -18,6 +19,19 @@ import { CryptoCompareService } from './services/CryptoCompareService';
 import * as Components from './components';
 import config from './config';
 import * as Pages from './pages';
+
+const GET_TOKENS = gql`
+  query Token($first: Int, $skip: Int) {
+    tokens(first: $first, skip: $skip) {
+      id
+      symbol
+      decimals
+      swapVolume
+      limitOrderVolume
+      rfqOrderVolume
+    }
+  }
+`;
 
 const tokenGear = {
   symbol: 'GEAR',
@@ -41,6 +55,8 @@ const Alchemy = new AlchemyService();
 
 export const App: React.FC = () => {
   // const { web3Provider } = useWalletConnectorContext();
+
+  const [getTokensFromGraph, { data: dataGetTokensFromGraph }] = useLazyQuery(GET_TOKENS);
 
   const dispatch = useDispatch();
   const setTokens = React.useCallback((props: any) => dispatch(zxActions.setTokens(props)), [
@@ -285,6 +301,9 @@ export const App: React.FC = () => {
   React.useEffect(() => {
     // getTokensFromCoinGecko();
     getTokensFromCryptoCompare();
+    getTokensFromGraph({
+      variables: { first: 1000, skip: 0 },
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -312,6 +331,12 @@ export const App: React.FC = () => {
     getTokensBalancesFromAlchemy();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tokens0x, userAddress, tokenAddresses]);
+
+  React.useEffect(() => {
+    if (!dataGetTokensFromGraph) return;
+    console.log('App useEffect dataGetTokensFromGraph:', dataGetTokensFromGraph);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dataGetTokensFromGraph]);
 
   return (
     <Router>
