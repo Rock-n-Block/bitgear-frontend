@@ -214,9 +214,7 @@
       tbody {
         tr {
           &:nth-child(odd) {
-            td {
-              background: #30335533;
-            }
+            background: #30335533;
           }
 
           td {
@@ -296,10 +294,10 @@
 
 .mobile {
   &Container{
-    height: 180px;
+    height: 100%;
     width: 100%;
     padding: 20px;
-    background: #30335533;
+    //background: #30335533;
     border-radius: 10px;
     margin: 0 9px 6px 0;
     @include flex(column);
