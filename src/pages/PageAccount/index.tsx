@@ -158,89 +158,106 @@ export const PageAccount: React.FC = () => {
 
   const findToken = React.useCallback(
     (tokenAddress: string) => {
-      return tokens.find((token: any) => {
-        return token.address.toLowerCase() === tokenAddress.toLowerCase();
-      });
+      try {
+        return tokens.find((token: any) => {
+          return token.address.toLowerCase() === tokenAddress.toLowerCase();
+        });
+      } catch (e) {
+        console.error(e);
+        return null;
+      }
     },
     [tokens],
   );
 
   const fillData = React.useCallback(async (): Promise<void> => {
-    setIsPending(true);
-    console.log('PageAccount fillData:', 'loading...');
-    const dataForTableLocal: any = [];
-    const arrOrders = [...orders];
+    try {
+      setIsPending(true);
+      console.log('PageAccount fillData:', 'loading...');
+      const dataForTableLocal: any = [];
+      const arrOrders = [...orders];
 
-    // eslint-disable-next-line no-restricted-syntax
-    for (const item of arrOrders) {
-      const symbolMaker = findToken(item.order.makerToken)?.symbol;
-      const symbolTaker = findToken(item.order.takerToken)?.symbol;
+      // eslint-disable-next-line no-restricted-syntax
+      for (const item of arrOrders) {
+        const symbolMaker = findToken(item.order.makerToken)?.symbol;
+        const symbolTaker = findToken(item.order.takerToken)?.symbol;
 
-      if (!symbolTaker || !symbolTaker) {
+        if (!symbolTaker || !symbolTaker) {
+          return;
+        }
+
+        // eslint-disable-next-line no-await-in-loop
+        const resultGetExchangeOfPair = await getExchangeOfPair({
+          symbolOne: symbolMaker,
+          symbolTwo: symbolTaker,
+        });
+
+        let exchange;
+        if (resultGetExchangeOfPair.status === 'SUCCESS') {
+          [exchange] = resultGetExchangeOfPair.data;
+        }
+        // eslint-disable-next-line no-await-in-loop
+        const resultOfGetHistory = await getHistory({
+          symbolOne: symbolMaker,
+          symbolTwo: symbolTaker,
+          limit: '1',
+          aggregate: '1',
+          exchange,
+        });
+
+        const price = resultOfGetHistory[1]?.close - resultOfGetHistory[0]?.close;
+        const amount = new BigNumber(item.order.takerAmount)
+          .dividedBy(10 ** findToken(item.order.takerToken).decimals)
+          .toString();
+        dataForTableLocal.push({
+          orderCreate: moment(item.metaData.createdAt).format('yyyy.MM.DD hh:mm').split(' ')[0],
+          timeCreate: moment(item.metaData.createdAt).format('yyyy.MM.DD hh:mm').split(' ')[1],
+          orderExpire: moment(new Date(+item.order.expiry).toString())
+            .format('yyyy.MM.DD hh:mm')
+            .split(' ')[0],
+          timeExpire: moment(new Date(+item.order.expiry).toString())
+            .format('yyyy.MM.DD hh:mm')
+            .split(' ')[1],
+          tradingPair: {
+            symbolMaker,
+            symbolTaker,
+          },
+          price,
+          market: exchange,
+          amount,
+        });
+      }
+      setIsPending(false);
+      console.log('PageAccount fillData:', 'loaded');
+      setData([...dataForTableLocal]);
+      setDataForTableMobile([...dataForTableLocal.slice(0, 5)]);
+      setDataForTable([...dataForTableLocal].slice(0, 12));
+    } catch (e) {
+      console.error(e);
+    }
+  }, [findToken, getExchangeOfPair, getHistory, orders]);
+
+  const onSort = (param: string): void => {
+    try {
+      if (isPending) {
         return;
       }
-
-      // eslint-disable-next-line no-await-in-loop
-      const resultGetExchangeOfPair = await getExchangeOfPair({
-        symbolOne: symbolMaker,
-        symbolTwo: symbolTaker,
-      });
-
-      const market = resultGetExchangeOfPair.data[0];
-      // eslint-disable-next-line no-await-in-loop
-      const resultOfGetHistory = await getHistory({
-        symbolOne: symbolMaker,
-        symbolTwo: symbolTaker,
-        limit: '1',
-        aggregate: '1',
-        exchange: market,
-      });
-
-      const price = resultOfGetHistory[1]?.close - resultOfGetHistory[0]?.close;
-      const amount = new BigNumber(item.order.takerAmount)
-        .dividedBy(10 ** findToken(item.order.takerToken).decimals)
-        .toString();
-      dataForTableLocal.push({
-        orderCreate: moment(item.metaData.createdAt).format('yyyy.MM.DD hh:mm').split(' ')[0],
-        timeCreate: moment(item.metaData.createdAt).format('yyyy.MM.DD hh:mm').split(' ')[1],
-        orderExpire: moment(new Date(+item.order.expiry).toString())
-          .format('yyyy.MM.DD hh:mm')
-          .split(' ')[0],
-        timeExpire: moment(new Date(+item.order.expiry).toString())
-          .format('yyyy.MM.DD hh:mm')
-          .split(' ')[1],
-        tradingPair: {
-          symbolMaker,
-          symbolTaker,
-        },
-        price,
-        market,
-        amount,
-      });
+      if (param !== activeColumn) {
+        setIsArrowUp(true);
+        setSortFlagChanged(!sortFlagChanged);
+      }
+      if (param === activeColumn) {
+        setIsArrowUp(!isArrowUp);
+        setSortFlagChanged(!sortFlagChanged);
+      }
+      setData(sortColumn(param, data, flagSort));
+      setDataForTable(sortColumn(param, data, flagSort).slice(0, 12));
+      setDataForTableMobile(sortColumn(param, data, flagSort).slice(0, 5));
+      setFlagSort(param);
+      setActiveColumn(param);
+    } catch (e) {
+      console.log('PageAccount onSort:', e);
     }
-    setIsPending(false);
-    console.log('PageAccount fillData:', 'loaded');
-    setData([...dataForTableLocal]);
-    setDataForTableMobile([...dataForTableLocal.slice(0, 5)]);
-    setDataForTable([...dataForTableLocal].slice(0, 12));
-  }, [findToken, getExchangeOfPair, getHistory, orders]);
-  const onSort = (param: string): void => {
-    if (isPending) {
-      return;
-    }
-    if (param !== activeColumn) {
-      setIsArrowUp(true);
-      setSortFlagChanged(!sortFlagChanged);
-    }
-    if (param === activeColumn) {
-      setIsArrowUp(!isArrowUp);
-      setSortFlagChanged(!sortFlagChanged);
-    }
-    setData(sortColumn(param, data, flagSort));
-    setDataForTable(sortColumn(param, data, flagSort).slice(0, 12));
-    setDataForTableMobile(sortColumn(param, data, flagSort).slice(0, 5));
-    setFlagSort(param);
-    setActiveColumn(param);
   };
 
   const emitChanges = (arg: any) => {
