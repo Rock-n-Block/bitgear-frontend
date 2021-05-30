@@ -99,7 +99,7 @@ export const PageMarketsContent: React.FC = () => {
   ]);
 
   const { address: userAddress, balances: userBalances } = useSelector(({ user }: any) => user);
-  const { tokens } = useSelector(({ zx }: any) => zx);
+  const { tokens, tokensBySymbol } = useSelector(({ zx }: any) => zx);
   const { chainId } = useSelector(({ wallet }: any) => wallet);
   const { messageYouPay } = useSelector(({ status }: any) => status);
 
@@ -168,7 +168,13 @@ export const PageMarketsContent: React.FC = () => {
   const isGasPriceTypeVeryFast = gasPriceType === 'veryFast';
   const isGasPriceTypeCustom = gasPriceType === 'custom';
 
-  const isAllowed = allowance >= +amountPay;
+  let isAllowed;
+  if (tokensBySymbol && tokensBySymbol[symbolPay]) {
+    const decimals10 = new BigNumber(10).pow(tokensBySymbol[symbolPay].decimals).toFixed();
+    const amountPayInWei = new BigNumber(amountPay).multipliedBy(decimals10).toFixed();
+    isAllowed = allowance >= +amountPayInWei;
+    console.log('PageMarketsContent:', symbolPay, allowance, decimals10, amountPayInWei);
+  }
 
   const isTradeDisabled = userAddress
     ? +amountReceive === 0 || !balanceOfTokenPay || +balanceOfTokenPay < +amountPay
