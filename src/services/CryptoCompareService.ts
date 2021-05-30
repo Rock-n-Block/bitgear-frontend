@@ -46,9 +46,12 @@ export class CryptoCompareService {
 
   getMarketData = async ({ symbolOne, symbolTwo }: TypeGetPriceProps) => {
     try {
-      const url = `/data/pricemultifull?fsyms=${symbolOne.toUpperCase()}&tsyms=${symbolTwo.toUpperCase()}&api_key=${
-        config.keys.cryptoCompare
-      }`;
+      const query = qs.stringify({
+        fsyms: symbolOne.toUpperCase(),
+        tsyms: symbolTwo.toUpperCase(),
+        api_key: config.keys.cryptoCompare,
+      });
+      const url = `/data/pricemultifull?${query}`;
       const result = await this.axios.get(url);
       // console.log('CryptoCompareService getMarketData:', result);
       if (result.data.Response === 'Error') {
@@ -66,9 +69,11 @@ export class CryptoCompareService {
 
   getExchangeOfPair = async ({ symbolOne, symbolTwo }: TypeGetPriceProps) => {
     try {
-      const url = `/data/v2/pair/mapping/fsym?fsym=${symbolOne.toUpperCase()}&api_key=${
-        config.keys.cryptoCompare
-      }`;
+      const query = qs.stringify({
+        fsym: symbolOne.toUpperCase(),
+        api_key: config.keys.cryptoCompare,
+      });
+      const url = `/data/v2/pair/mapping/fsym?${query}`;
       const result = await this.axios.get(url);
       if (result.data.Response === 'Error') {
         // console.error('CryptoCompareService getPairMapping:', result);

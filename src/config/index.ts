@@ -42,7 +42,7 @@ export default {
     infura: '1964ef9a752c4405b7631cb49ab373fa', // ok
     // ok. if limit for getGasPrice reaches, web3.getGasPrice works
     etherscan: 'ANN5EICH9J3Y2VFXHEQV898DBPS9KT71BD',
-    cryptoCompare: '', // ok
+    cryptoCompare: '64003a2defe5d1cd62c11cae1ed06c7248a0a985e63ce30fdd280c3855ae4dc3', // todo
     coinMarketCap: '', // ok
     alchemy: '9e37toZE9l2XRTjIUsWUD3gAyiRPWYCQ', // ok
   },

@@ -205,7 +205,7 @@ export const PageAccount: React.FC = () => {
           exchange,
         });
 
-        const price = resultOfGetHistory[1]?.close - resultOfGetHistory[0]?.close;
+        const price = resultOfGetHistory[0]?.close;
         const amount = new BigNumber(item.order.takerAmount)
           .dividedBy(10 ** findToken(item.order.takerToken).decimals)
           .toString();
@@ -417,19 +417,19 @@ export const PageAccount: React.FC = () => {
                       } = item;
                       let priceChangeModel = (
                         <td>
-                          <img src={ArrowUpIcon} alt="arrow up" /> {`$${numberTransform(price)}`}
+                          <img src={ArrowUpIcon} alt="arrow up" /> {`${numberTransform(price)}`}
                         </td>
                       );
                       if (price < 0) {
                         priceChangeModel = (
                           <td className={`${s.accountTradeTableDown}`}>
                             <img src={ArrowDownIcon} alt="arrow down" />
-                            {`$${numberTransform(price)}`}
+                            {`${numberTransform(price)}`}
                           </td>
                         );
                       }
                       if (price === 0) {
-                        priceChangeModel = <td>{`$${numberTransform(price)}`}</td>;
+                        priceChangeModel = <td>{`${numberTransform(price)}`}</td>;
                       }
                       return (
                         <tr key={uuid()}>
@@ -472,19 +472,19 @@ export const PageAccount: React.FC = () => {
                       } = item;
                       let priceChangeModel = (
                         <div className={s.mobilePriceChangeModel}>
-                          <img src={ArrowUpIcon} alt="arrow up" /> {`$${numberTransform(price)}`}
+                          <img src={ArrowUpIcon} alt="arrow up" /> {`${numberTransform(price)}`}
                         </div>
                       );
                       if (price < 0) {
                         priceChangeModel = (
                           <div className={s.mobilePriceChangeModelDown}>
                             <img src={ArrowDownIcon} alt="arrow down" />{' '}
-                            {`$${numberTransform(price)}`}
+                            {`${numberTransform(price)}`}
                           </div>
                         );
                       }
                       if (price === 0) {
-                        priceChangeModel = <div>{`$${price}`}</div>;
+                        priceChangeModel = <div>{`${price}`}</div>;
                       }
                       return (
                         <tr key={uuid()}>
