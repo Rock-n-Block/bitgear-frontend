@@ -146,6 +146,7 @@ export const Header: React.FC = () => {
   const [openMenu, setOpenMenu] = React.useState<boolean>(false);
   const [openDropdown, setOpenDropdown] = React.useState<boolean>(false);
   const [isAddressCopied, setIsAddressCopied] = React.useState<boolean>(false);
+  const [dropdownMenuMobile, setDropdownmenuMobile] = React.useState<boolean>(true);
 
   const walletType = getFromStorage('walletType');
   const isMetamask = walletType === 'metamask';
@@ -192,6 +193,14 @@ export const Header: React.FC = () => {
     }
   };
 
+  const handleDropdownMenuMobile = () => {
+    setDropdownmenuMobile(!dropdownMenuMobile);
+  };
+
+  const handleCloseDropdownMenuMobile = () => {
+    setDropdownmenuMobile(true);
+  };
+
   React.useEffect(() => {
     document.addEventListener('click', (e) => {
       handleClickOutsideDropdown(e);
@@ -217,7 +226,10 @@ export const Header: React.FC = () => {
             role="button"
             className={s.headerMenuBtnWrapper}
             tabIndex={0}
-            onClick={() => setOpenMenu(!openMenu)}
+            onClick={() => {
+              setOpenMenu(!openMenu);
+              handleCloseDropdownMenuMobile();
+            }}
             onKeyDown={() => setOpenMenu(!openMenu)}
           >
             {!openMenu ? 'Menu' : 'Close'}
@@ -233,76 +245,178 @@ export const Header: React.FC = () => {
               : s.headerRightGroup
           }
         >
-          <div className={s.headerItem}>
+          <div
+            className={s.headerItem}
+            role="button"
+            tabIndex={0}
+            onKeyDown={() => {}}
+            onClick={handleCloseDropdownMenuMobile}
+          >
             <Link to="/" onClick={() => setOpenMenu(false)}>
               Home
             </Link>
           </div>
-
-          <div className={s.headerItem}>
+          <div
+            className={s.headerItem}
+            role="button"
+            tabIndex={0}
+            onKeyDown={() => {}}
+            onClick={handleCloseDropdownMenuMobile}
+          >
             <Link to="/explore" onClick={() => setOpenMenu(false)}>
               Explore
             </Link>
           </div>
-
-          <div className={s.headerItem}>
+          <div
+            className={s.headerItem}
+            role="button"
+            tabIndex={0}
+            onKeyDown={() => {}}
+            onClick={handleCloseDropdownMenuMobile}
+          >
             <a href="https://farm.bitgear.io" target="_blank" rel="noreferrer">
               Farm
             </a>
           </div>
-
-          {userAddress ? (
-            <Dropdown
-              right
-              open={openDropdown}
-              label={DropdownLabel}
-              classNameDropdown={s.headerDropdown}
-              classNameDropdownInner={s.headerDropdownInner}
-            >
-              <div ref={refDropdown}>
-                <div className={s.headerDropdownItem}>
-                  <span>
-                    {userBalance?.toString().slice(0, 8)} ETH ({`${userAddress.slice(0, 8)}...`})
-                  </span>
-                  <Link to="/account" onClick={() => setOpenMenu(false)}>
-                    Your account
-                  </Link>
+          {userAddress && isMobile ? (
+            <>
+              {dropdownMenuMobile ? (
+                <div
+                  className={s.headerItemBtn}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={() => {}}
+                  onClick={handleDropdownMenuMobile}
+                >
+                  {isMetamask && <IconMetamask className={s.headerWalletLogo} />}
+                  {isWalletConnect && <IconWalletConnect className={s.headerWalletLogo} />}
+                  {`${userAddress?.slice(0, 12)}...`}
                 </div>
+              ) : (
+                <div className={s.dropdownMobile} ref={refDropdown}>
+                  <div className={s.headerDropdownItem}>
+                    <span>
+                      {userBalance?.toString().slice(0, 8)} ETH ({`${userAddress.slice(0, 8)}...`})
+                    </span>
+                    <Link
+                      to="/account"
+                      onClick={() => {
+                        setOpenMenu(false);
+                        handleCloseDropdownMenuMobile();
+                      }}
+                    >
+                      Your account
+                    </Link>
+                  </div>
 
-                <div className={s.headerDropdownItemLabel}>Your balance</div>
-                <ListOfTokenBalances />
+                  <div className={s.headerDropdownItemLabel}>Your balance</div>
+                  <ListOfTokenBalances />
 
-                <CopyToClipboard text={userAddress} onCopy={handleCopyAddress}>
+                  <CopyToClipboard text={userAddress} onCopy={handleCopyAddress}>
+                    <div
+                      role="button"
+                      tabIndex={0}
+                      onKeyDown={() => {}}
+                      className={s.headerDropdownItem}
+                      onClick={() => {}}
+                    >
+                      <IconCopy />
+                      {isAddressCopied ? 'Copied!' : 'Copy address'}
+                    </div>
+                  </CopyToClipboard>
                   <div
                     role="button"
                     tabIndex={0}
                     onKeyDown={() => {}}
                     className={s.headerDropdownItem}
-                    onClick={() => {}}
+                    onClick={handleDisconnect}
                   >
-                    <IconCopy />
-                    {isAddressCopied ? 'Copied!' : 'Copy address'}
+                    <IconExit />
+                    Disconnect
                   </div>
-                </CopyToClipboard>
-                <div
-                  role="button"
-                  tabIndex={0}
-                  onKeyDown={() => {}}
-                  className={s.headerDropdownItem}
-                  onClick={handleDisconnect}
-                >
-                  <IconExit />
-                  Disconnect
+                  <div
+                    onClick={handleDropdownMenuMobile}
+                    tabIndex={0}
+                    onKeyDown={() => {}}
+                    role="button"
+                  >
+                    Close
+                  </div>
                 </div>
-              </div>
-            </Dropdown>
+              )}
+            </>
           ) : (
-            <div className={s.headerItemBtn}>
-              <Link to={`/login?back=${pathname}`} onClick={() => setOpenMenu(false)}>
-                Connect Wallet
-              </Link>
-            </div>
+            <>
+              {isMobile ? (
+                <div className={s.headerItemBtn}>
+                  <Link to={`/login?back=${pathname}`} onClick={() => setOpenMenu(false)}>
+                    Connect Wallet
+                  </Link>
+                </div>
+              ) : null}
+            </>
           )}
+          {!isMobile ? (
+            <>
+              {userAddress ? (
+                <Dropdown
+                  right
+                  open={openDropdown}
+                  label={DropdownLabel}
+                  classNameDropdown={s.headerDropdown}
+                  classNameDropdownInner={s.headerDropdownInner}
+                >
+                  <div ref={refDropdown}>
+                    <div className={s.headerDropdownItem}>
+                      <span>
+                        {userBalance?.toString().slice(0, 8)} ETH ({`${userAddress.slice(0, 8)}...`}
+                        )
+                      </span>
+                      <Link to="/account" onClick={() => setOpenMenu(false)}>
+                        Your account
+                      </Link>
+                    </div>
+
+                    <div className={s.headerDropdownItemLabel}>Your balance</div>
+                    <ListOfTokenBalances />
+
+                    <CopyToClipboard text={userAddress} onCopy={handleCopyAddress}>
+                      <div
+                        role="button"
+                        tabIndex={0}
+                        onKeyDown={() => {}}
+                        className={s.headerDropdownItem}
+                        onClick={() => {}}
+                      >
+                        <IconCopy />
+                        {isAddressCopied ? 'Copied!' : 'Copy address'}
+                      </div>
+                    </CopyToClipboard>
+                    <div
+                      role="button"
+                      tabIndex={0}
+                      onKeyDown={() => {}}
+                      className={s.headerDropdownItem}
+                      onClick={handleDisconnect}
+                    >
+                      <IconExit />
+                      Disconnect
+                    </div>
+                  </div>
+                </Dropdown>
+              ) : (
+                <>
+                  {!isMobile ? (
+                    <div className={s.headerItemBtn}>
+                      <Link to={`/login?back=${pathname}`} onClick={() => setOpenMenu(false)}>
+                        Connect Wallet
+                      </Link>
+                    </div>
+                  ) : null}
+                </>
+              )}
+            </>
+          ) : null}
 
           {isMobile && (
             <div className={s.headerMenuFooter}>
