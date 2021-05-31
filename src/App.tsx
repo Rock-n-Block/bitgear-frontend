@@ -238,7 +238,7 @@ export const App: React.FC = () => {
         }
         return false;
       });
-      console.log('App getTokens:', tokensAllSorted);
+      console.log('App getTokens tokensAllSorted:', tokensAllSorted);
       const newTokensByAddress: any = {};
       const newTokensBySymbol: any = {};
       const newTokenAddresses = tokensAllSorted.map((token: any) => {

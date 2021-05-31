@@ -1140,4 +1140,5 @@ export default [
   'ZION',
   'ZSD',
   'ZUSDC',
+  'FATE',
 ];
