@@ -1141,4 +1141,6 @@ export default [
   'ZSD',
   'ZUSDC',
   'FATE',
+  'BOOKS',
+  'RFBTC',
 ];

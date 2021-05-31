@@ -232,8 +232,8 @@ export const App: React.FC = () => {
       tokensAllSorted = tokensAllSorted.filter((token: any, index: number) => {
         if (index < tokensAllSorted.length) {
           return (
-            tokensAllSorted[index].symbol.toUpperCase() !==
-            tokensAllSorted[index + 1]?.symbol.toUpperCase()
+            tokensAllSorted[index].address.toUpperCase() !==
+            tokensAllSorted[index + 1]?.address.toUpperCase()
           );
         }
         return false;
