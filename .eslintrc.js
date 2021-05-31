@@ -124,6 +124,8 @@ module.exports = {
     'no-console': 'warn',
     'no-unused-vars': 'warn',
     'no-nested-ternary': 'off',
+    'no-continue': 'warn',
+    'no-await-in-loop': 'warn',
   },
   settings: {
     'import/resolver': {
