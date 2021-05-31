@@ -65,7 +65,20 @@ export const MainTable: React.FC<TableTypeProps> = React.memo(
           },
         );
 
-        setMarketHistory(marketHistoryArray);
+        const marketHistoryArraySorted: any = [];
+
+        symbols.forEach((symbol: any) => {
+          // eslint-disable-next-line array-callback-return
+          marketHistoryArray.find((token) => {
+            if (symbol.toUpperCase() === token.symbol.toUpperCase()) {
+              marketHistoryArraySorted.push(token);
+            }
+          });
+        });
+
+        setMarketHistory(marketHistoryArraySorted);
+
+        console.log(marketHistoryArraySorted);
 
         return resultFromGetHistoryCMC;
       } catch (e) {
