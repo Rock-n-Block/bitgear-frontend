@@ -117,6 +117,7 @@ export const PageMarketsContent: React.FC = () => {
 
   const [tokensFiltered, setTokensFiltered] = React.useState<any[]>(tokens);
   const [price, setPrice] = React.useState<number>(0);
+  const [priceMarket, setPriceMarket] = React.useState<number>(0);
   const [priceChange, setPriceChange] = React.useState<number>(0);
   const [priceChart, setPriceChart] = React.useState<string | null>();
   const [marketHistory, setMarketHistory] = React.useState<any[]>([]);
@@ -260,6 +261,30 @@ export const PageMarketsContent: React.FC = () => {
     if (!gasPrice) return undefined;
     return gasPrice * 10e8;
   }, [gasPrice, gasPriceCustom, isGasPriceTypeCustom]);
+
+  const getPriceMarket = React.useCallback(async () => {
+    try {
+      if (!symbolPay || !symbolReceive) return;
+      console.log('PageMarketsContent getPriceMarket:', symbolPay, symbolReceive, tokens);
+      const { decimals, address: addressPay } = getTokenBySymbol(symbolPay);
+      const { address: addressReceive } = getTokenBySymbol(symbolReceive);
+      const result = await Zx.getPrice({
+        buyToken: addressReceive,
+        sellToken: addressPay,
+        sellAmount: '1',
+        skipValidation: true,
+        decimals,
+      });
+      console.log('PageMarketsContent getPriceMarket:', result);
+      let newPrice = 0;
+      if (result.status === 'SUCCESS') {
+        newPrice = result.data.price;
+        setPriceMarket(newPrice);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }, [getTokenBySymbol, symbolPay, symbolReceive, tokens]);
 
   const getPrices = React.useCallback(async () => {
     try {
@@ -1161,6 +1186,14 @@ export const PageMarketsContent: React.FC = () => {
   }, [symbolPay, symbolReceive]);
 
   React.useEffect(() => {
+    if (!tokens || tokens?.length === 0) return;
+    if (!symbolPay) return;
+    if (!symbolReceive) return;
+    getPriceMarket();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [symbolPay, symbolReceive, tokens]);
+
+  React.useEffect(() => {
     filterTokens();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mode]);
@@ -1456,7 +1489,7 @@ export const PageMarketsContent: React.FC = () => {
           </div>
           <div className={s.containerTitlePrice}>
             {!symbolReceive && '$'}
-            {marketPrice ? prettyPrice(marketPrice?.toString()) : 0} {symbolReceive}
+            {priceMarket ? prettyPrice(priceMarket?.toString()) : '-'} {symbolReceive}
           </div>
           <div
             className={classPriceChange}
@@ -1464,7 +1497,14 @@ export const PageMarketsContent: React.FC = () => {
             data-negative={isPriceChangeNegative}
           >
             {isPriceChangePositive && '+'}
-            {priceChange || 0}%
+            {priceChange ? `${priceChange}%` : '-'}{' '}
+            {period === 1
+              ? 'past 24 hours'
+              : period === 7
+              ? 'past week'
+              : period === 30
+              ? 'past month'
+              : ''}
           </div>
         </div>
         <div className={s.containerTitleSecond}>
@@ -1816,7 +1856,7 @@ export const PageMarketsContent: React.FC = () => {
             <div className={s.chartDataPriceName}>Current price</div>
             <div className={s.chartDataPrice}>
               {!symbolTwo && '$'}
-              {prettyPrice(priceChart || price.toString())} {symbolTwo}
+              {prettyPrice(priceChart || price.toString() || '-')} {symbolTwo}
             </div>
           </div>
           <div className={s.chartDataSecond}>
