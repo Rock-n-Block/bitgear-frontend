@@ -16,7 +16,14 @@ export const PageListsRecentlyAdded: React.FC = React.memo(() => {
   const { tokens } = useSelector(({ zx }: any) => zx);
   const [data, setData] = React.useState([] as any);
   const [dataForTable, setDataForTable] = React.useState<TableType[]>([] as any);
+  const [dataForTableMobile, setDataForTableMobile] = React.useState<TableType[]>([] as any);
   const [symbolsList, setSymbolsList] = React.useState([] as any);
+
+  const [activeColumn, setActiveColumn] = React.useState<string>('');
+  const [isArrowUp, setIsArrowUp] = React.useState<boolean>(true);
+  const [flagSort, setFlagSort] = React.useState<string>('');
+  const [sortFlagChanged, setSortFlagChanged] = React.useState<boolean>(false);
+  const [isPending, setIsPending] = React.useState<boolean>(true);
 
   const getAllCoinsInfo = async (symbols: any): Promise<any> => {
     try {
@@ -36,6 +43,7 @@ export const PageListsRecentlyAdded: React.FC = React.memo(() => {
 
   const fillData = React.useCallback(async () => {
     try {
+      setIsPending(true);
       console.log('Loading *explore table data*...');
       const dataForTableLocal: any = [];
 
@@ -57,6 +65,7 @@ export const PageListsRecentlyAdded: React.FC = React.memo(() => {
         });
       });
 
+      setIsPending(false);
       console.log('DONE! *explore table data*');
       console.log('DATA', dataForTableLocal);
       setDataForTable(
@@ -65,11 +74,36 @@ export const PageListsRecentlyAdded: React.FC = React.memo(() => {
           .slice(0, 12)
           .filter((token) => token.genesisDate !== null),
       );
+      setDataForTableMobile(
+        sortColumn('genesisDate', dataForTableLocal, '')
+          .reverse()
+          .slice(0, 5)
+          .filter((token) => token.genesisDate !== null),
+      );
       setData(dataForTableLocal);
     } catch (e) {
       console.error('Page Explorer fillData', e);
     }
   }, [symbolsList]);
+
+  const emitSorting = (param: any) => {
+    if (isPending) {
+      return;
+    }
+    if (param !== activeColumn) {
+      setIsArrowUp(true);
+      setSortFlagChanged(!sortFlagChanged);
+    }
+    if (param === activeColumn) {
+      setIsArrowUp(!isArrowUp);
+      setSortFlagChanged(!sortFlagChanged);
+    }
+    setData(sortColumn(param, dataForTable, flagSort));
+    setDataForTable(sortColumn(param, dataForTable, flagSort));
+    setDataForTableMobile(sortColumn(param, dataForTableMobile, flagSort));
+    setFlagSort(param);
+    setActiveColumn(param);
+  };
 
   React.useEffect(() => {
     const arrayExcluded = excludedCoins.map((item: any) => {
@@ -108,7 +142,13 @@ export const PageListsRecentlyAdded: React.FC = React.memo(() => {
         <h1>Hot and new</h1>
       </section>
       <section className={s.ExploreTable}>
-        <MainTable data={dataForTable} dataForMobile={dataForTable.slice(0, 5)} />
+        <MainTable
+          data={dataForTable}
+          emitSorting={emitSorting}
+          activeColumn={activeColumn}
+          isArrowUp={isArrowUp}
+          dataForMobile={dataForTableMobile}
+        />
       </section>
     </div>
   );
