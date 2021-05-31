@@ -92,9 +92,9 @@ export const Search: React.FC<TypeSearchProps> = React.memo(({ wide = true }) =>
   };
 
   const handleSearch = (e: string) => {
-    setSearchValue(e);
+    setSearchValue(e.trim());
     if (e.length < 2) return;
-    matchSearch(e);
+    matchSearch(e.trim());
   };
 
   return (
