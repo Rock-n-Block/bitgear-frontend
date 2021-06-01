@@ -264,10 +264,10 @@ export const PageMarketsContent: React.FC = () => {
 
   const getPriceMarket = React.useCallback(async () => {
     try {
-      if (!symbolPay || !symbolReceive) return;
-      console.log('PageMarketsContent getPriceMarket:', symbolPay, symbolReceive, tokens);
+      if (!symbolPay) return;
+      // console.log('PageMarketsContent getPriceMarket:', symbolPay, symbolReceive, tokens);
       const { decimals, address: addressPay } = getTokenBySymbol(symbolPay);
-      const { address: addressReceive } = getTokenBySymbol(symbolReceive);
+      const { address: addressReceive } = getTokenBySymbol(symbolReceive || 'USDC');
       const result = await Zx.getPrice({
         buyToken: addressReceive,
         sellToken: addressPay,
@@ -284,7 +284,7 @@ export const PageMarketsContent: React.FC = () => {
     } catch (e) {
       console.error(e);
     }
-  }, [getTokenBySymbol, symbolPay, symbolReceive, tokens]);
+  }, [getTokenBySymbol, symbolPay, symbolReceive]);
 
   const getPrices = React.useCallback(async () => {
     try {
@@ -491,10 +491,10 @@ export const PageMarketsContent: React.FC = () => {
       });
       setPoints(newPoints);
       const newPointsLength = newPoints.length;
-      const newPriceChange = newPoints[newPointsLength - 1] - newPoints[newPointsLength - 2];
+      const newPriceChange = ((newPoints[newPointsLength - 1] - newPoints[0]) / newPoints[0]) * 100;
       const prettyNewPriceChange = prettyPriceChange(newPriceChange.toString());
       setPriceChange(+prettyNewPriceChange);
-      // console.log('getPoints:', newPoints);
+      // console.log('PageMarketsContent getPoints:', newPriceChange, prettyNewPriceChange);
     } catch (e) {
       console.error(e);
     }
@@ -1188,7 +1188,6 @@ export const PageMarketsContent: React.FC = () => {
   React.useEffect(() => {
     if (!tokens || tokens?.length === 0) return;
     if (!symbolPay) return;
-    if (!symbolReceive) return;
     getPriceMarket();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [symbolPay, symbolReceive, tokens]);
