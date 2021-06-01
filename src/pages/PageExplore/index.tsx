@@ -50,11 +50,17 @@ export const PageExplore: React.FC = () => {
   const getAllCoinsInfo = async (symbols: any): Promise<any> => {
     try {
       if (!symbols || symbols.length === 0) return [];
-      let pairInfo: any;
-      const result = await CoinMarketCap.getAllCoinsInfo(symbols);
-      // console.log('App getTokensFromCoinMarketCap:', result.data);
-      if (result.status === 'SUCCESS') {
-        pairInfo = result.data;
+      const interval = 1000;
+      const count = symbols.length / interval;
+      // get tokens info
+      let pairInfo: any = {};
+      for (let ir = 0; ir < count; ir += 1) {
+        const newSymbols = symbols.slice(interval * ir, interval * ir + interval).join(',');
+        const resultGetCoinInfo = await CoinMarketCap.getAllCoinsInfo(newSymbols);
+        console.log('PageExplore getAllCoinsInfo:', ir, resultGetCoinInfo);
+        if (resultGetCoinInfo.status === 'SUCCESS') {
+          pairInfo = Object.assign(pairInfo, resultGetCoinInfo.data);
+        }
       }
       return pairInfo;
     } catch (e) {
