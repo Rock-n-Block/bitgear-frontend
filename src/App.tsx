@@ -220,6 +220,7 @@ export const App: React.FC = () => {
 
   const changeTokensInfo = React.useCallback(async (data) => {
     const newData = [...data];
+    // todo get from CMC all coins and filter, then remove excludedCoins
     const symbolsWithNoImage = data
       .filter((token: any) => {
         if (token.image) return false;
@@ -230,12 +231,13 @@ export const App: React.FC = () => {
       })
       .map((item: any) => item.symbol);
     console.log('App changeTokensInfo symbolsWithNoImage:', symbolsWithNoImage);
-    const count = symbolsWithNoImage.length / 1000;
+    const interval = 1000;
+    const count = symbolsWithNoImage.length / interval;
     // get tokens info
     let tokensInfo: any = {};
     for (let ir = 0; ir < count; ir += 1) {
       const resultGetCoinInfo = await CoinMarketCap.getCoinInfo({
-        symbol: symbolsWithNoImage.slice(1000 * ir, 1000 * ir + 1000).join(','),
+        symbol: symbolsWithNoImage.slice(interval * ir, interval * ir + interval).join(','),
       });
       console.log('App changeTokensInfo resultGetCoinInfo:', ir, resultGetCoinInfo);
       if (resultGetCoinInfo.status === 'SUCCESS') {
