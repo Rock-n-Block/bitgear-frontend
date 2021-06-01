@@ -1389,6 +1389,7 @@ export const PageMarketsContent: React.FC = () => {
     <div ref={refDropdownPay}>
       <div className={s.containerTradingCardSearchInput}>
         <Input
+          autoFocus={openDropdownPay}
           placeholder="Search"
           label={<IconSearchWhite />}
           value={searchValuePay}
@@ -1438,6 +1439,7 @@ export const PageMarketsContent: React.FC = () => {
     <div ref={refDropdownReceive}>
       <div className={s.containerTradingCardSearchInput}>
         <Input
+          autoFocus={openDropdownReceive}
           placeholder="Search"
           label={<IconSearchWhite />}
           value={searchValueReceive}

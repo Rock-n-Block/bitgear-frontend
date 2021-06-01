@@ -5,6 +5,7 @@ import { v1 as uuid } from 'uuid';
 import s from './style.module.scss';
 
 type TypeInputProps = {
+  autoFocus?: boolean;
   value: string;
   placeholder?: string;
   label?: React.ReactElement;
@@ -14,6 +15,7 @@ type TypeInputProps = {
 };
 
 export const Input: React.FC<TypeInputProps> = ({
+  autoFocus = false,
   value = '',
   placeholder = '',
   type = 'text',
@@ -22,6 +24,15 @@ export const Input: React.FC<TypeInputProps> = ({
   inline = false,
 }) => {
   const id = uuid();
+
+  const refInput = React.useCallback(
+    (e) => {
+      if (e && autoFocus) {
+        setTimeout(() => e.focus(), 10);
+      }
+    },
+    [autoFocus],
+  );
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onChange(e.target.value);
@@ -35,7 +46,9 @@ export const Input: React.FC<TypeInputProps> = ({
           {label}
         </label>
       )}
+      {/* eslint-disable */}
       <input
+        ref={refInput}
         className={cns(s.input, inline && s.inline)}
         id={id}
         type={type}
@@ -43,6 +56,7 @@ export const Input: React.FC<TypeInputProps> = ({
         value={value}
         onChange={handleChange}
       />
+      {/* eslint-enable */}
     </div>
   );
 };
