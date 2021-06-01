@@ -17,11 +17,14 @@ export default {
     policy: '',
   },
   apis: {
+    // 'theGraph': 'https://api.thegraph.com/subgraphs/name/gundamdweeb/bifrost',
+    'theGraph': 'https://api.thegraph.com/subgraphs/name/dekz/zeroex_exchangeproxy',
     // 'cryptoCompare': 'https://min-api.cryptocompare.com',
     'cryptoCompare': 'https://crypto-api.mywish.io',
     // 'coinMarketCap': 'https://pro-api.coinmarketcap.com',
     'coinMarketCap': 'https://cmc-api.mywish.io',
     'coinGecko': 'https://api.coingecko.com/api/v3',
+    'covalent': 'https://api.covalenthq.com/v1',
     'alchemy': IS_PRODUCTION
       ? 'https://eth.alchemyapi.io/v2/'
       : IS_TESTING_ON_ROPSTEN
@@ -45,6 +48,7 @@ export default {
     cryptoCompare: '64003a2defe5d1cd62c11cae1ed06c7248a0a985e63ce30fdd280c3855ae4dc3', // todo
     coinMarketCap: '', // ok
     alchemy: '9e37toZE9l2XRTjIUsWUD3gAyiRPWYCQ', // ok
+    covalent: 'ckey_d3c7bc2ea7be4f5691de44dfbfa', // todo
   },
   chainIds: {
     mainnet: {

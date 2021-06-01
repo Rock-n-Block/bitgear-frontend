@@ -8,7 +8,7 @@ import imageTokenPay from './assets/images/token.png';
 // import { useWalletConnectorContext } from './contexts/WalletConnect';
 import tokensListData from './data/coinlist.json';
 // import erc20Abi from './data/erc20Abi.json';
-import excludedSymbols from './data/excludedSymbols';
+// import excludedSymbols from './data/excludedSymbols';
 import { statusActions, userActions, zxActions } from './redux/actions';
 import { Service0x } from './services/0x';
 import { AlchemyService } from './services/Alchemy';
@@ -20,15 +20,25 @@ import * as Components from './components';
 import config from './config';
 import * as Pages from './pages';
 
+// const GET_TOKENS = gql`
+//   query Token($first: Int, $skip: Int) {
+//     tokens(first: $first, skip: $skip) {
+//       id
+//       symbol
+//       decimals
+//       swapVolume
+//       limitOrderVolume
+//       rfqOrderVolume
+//     }
+//   }
+// `;
+
 const GET_TOKENS = gql`
   query Token($first: Int, $skip: Int) {
     tokens(first: $first, skip: $skip) {
       id
       symbol
       decimals
-      swapVolume
-      limitOrderVolume
-      rfqOrderVolume
     }
   }
 `;
@@ -78,6 +88,9 @@ export const App: React.FC = () => {
   const [tokensCryptoCompare, setTokensCryptoCompare] = React.useState<any[]>([]);
   const [tokensCryptoCompareFormatted, setTokensCryptoCompareFormatted] = React.useState<any[]>([]);
   const [tokensFromGraphFormatted, setTokensFromGraphFormatted] = React.useState<any[]>([]);
+  // const [tokensCoinMarketCap, setTokensCoinMarketCap] = React.useState<any[]>([]);
+  const [symbolsCoinMarketCap, setSymbolsCoinMarketCap] = React.useState<any[]>([]);
+  const [addressesCoinMarketCap, setAddressesCoinMarketCap] = React.useState<any[]>([]);
   // const [tokensCoinGecko, setTokensCoinGecko] = React.useState<any[]>([]);
 
   const getTokensFromCryptoCompare = async () => {
@@ -145,6 +158,50 @@ export const App: React.FC = () => {
     }
   };
 
+  const getTokensFromCoinMarketCap = async () => {
+    try {
+      const result = await CoinMarketCap.getAllCoins();
+      let newTokens;
+      if (result.status === 'SUCCESS') {
+        newTokens = result.data;
+        // setTokensCoinMarketCap(newTokens);
+      }
+      // console.log('App getTokensFromCoinMarketCap:', newTokens);
+      const newTokensFormatted = [];
+      const newSymbolsCMC = [];
+      const newAddressesCMC = [];
+      for (let i = 0; i < newTokens.length; i += 1) {
+        const token = newTokens[i];
+        const { name, symbol, platform } = token;
+        if (!platform) continue;
+        if (platform.symbol !== 'ETH') continue;
+        const { token_address: address } = platform;
+        newTokensFormatted.push({
+          name,
+          symbol,
+          address,
+        });
+        newSymbolsCMC.push(symbol.toUpperCase());
+        newAddressesCMC.push(address.toLowerCase());
+      }
+      // todo get decimals from web3, theGraph or Alchemy/Etherscan
+      // web3 not working without infura/metamask
+      // const newTokensDecimals = await Promise.all(
+      //   newTokensFormatted.map((token) => {
+      //     const { address: contractAddress } = token;
+      //     return web3Provider.decimals({ contractAddress, contractAbi: erc20Abi });
+      //   }),
+      // );
+      // console.log('App getTokensFromCoinMarketCap:', await newTokensDecimals);
+      console.log('App getTokensFromCoinMarketCap:', newTokensFormatted);
+      // setTokensCoinMarketCap(newTokensFormatted);
+      setSymbolsCoinMarketCap(newSymbolsCMC);
+      setAddressesCoinMarketCap(newAddressesCMC);
+    } catch (e) {
+      console.error('App getTokensFromCoinMarketCap:', e);
+    }
+  };
+
   // const getTokensFromCoinGecko = async () => {
   //   try {
   //     const result = await CoinGecko.getAllCoins();
@@ -171,55 +228,59 @@ export const App: React.FC = () => {
   //   }
   // };
 
-  const changeTokensInfo = React.useCallback(async (data) => {
-    const newData = [...data];
-    const symbolsWithNoImage = data
-      .filter((token: any) => {
-        if (token.image) return false;
-        if (token.symbol.match(/[^A-Za-z0-9]+/gi)) return false;
-        if (excludedSymbols.includes(token.symbol)) return false;
-        if (excludedSymbols.includes(token.symbol.toUpperCase())) return false;
-        return true;
-      })
-      .map((item: any) => item.symbol);
-    console.log('App changeTokensInfo symbolsWithNoImage:', symbolsWithNoImage);
-    const count = symbolsWithNoImage.length / 1000;
-    // get tokens info
-    let tokensInfo: any = {};
-    for (let ir = 0; ir < count; ir += 1) {
-      const resultGetCoinInfo = await CoinMarketCap.getCoinInfo({
-        symbol: symbolsWithNoImage.slice(1000 * ir, 1000 * ir + 1000).join(','),
-      });
-      console.log('App changeTokensInfo resultGetCoinInfo:', ir, resultGetCoinInfo);
-      if (resultGetCoinInfo.status === 'SUCCESS') {
-        tokensInfo = Object.assign(tokensInfo, resultGetCoinInfo.data);
-      }
-    }
-    console.log('App changeTokensInfo tokensInfo:', tokensInfo);
-    // set images to array
-    for (let i = 0; i < data.length; i += 1) {
-      const token = data[i];
-      const { image, symbol } = token;
-      const tokensInfoToken = tokensInfo[symbol];
-      if (!image) {
-        if (tokensInfoToken) {
-          newData[i].image = tokensInfoToken.logo;
-        } else {
-          newData[i].image = imageTokenPay;
+  const changeTokensInfo = React.useCallback(
+    async (data) => {
+      const newData = [...data];
+      const symbolsWithNoImage = data
+        .filter((token: any) => {
+          if (token.image) return false;
+          if (token.symbol.match(/[^A-Za-z0-9]+/gi)) return false;
+          if (!symbolsCoinMarketCap.includes(token.symbol)) return false;
+          if (!symbolsCoinMarketCap.includes(token.symbol.toUpperCase())) return false;
+          return true;
+        })
+        .map((item: any) => item.symbol);
+      console.log('App changeTokensInfo symbolsWithNoImage:', symbolsWithNoImage);
+      const interval = 1000;
+      const count = symbolsWithNoImage.length / interval;
+      // get tokens info
+      let tokensInfo: any = {};
+      for (let ir = 0; ir < count; ir += 1) {
+        const resultGetCoinInfo = await CoinMarketCap.getCoinInfo({
+          symbol: symbolsWithNoImage.slice(interval * ir, interval * ir + interval).join(','),
+        });
+        console.log('App changeTokensInfo resultGetCoinInfo:', ir, resultGetCoinInfo);
+        if (resultGetCoinInfo.status === 'SUCCESS') {
+          tokensInfo = Object.assign(tokensInfo, resultGetCoinInfo.data);
         }
       }
-    }
-    return newData;
-  }, []);
+      console.log('App changeTokensInfo tokensInfo:', tokensInfo);
+      // set images to array
+      for (let i = 0; i < data.length; i += 1) {
+        const token = data[i];
+        const { image, symbol } = token;
+        const tokensInfoToken = tokensInfo[symbol];
+        if (!image) {
+          if (tokensInfoToken) {
+            newData[i].image = tokensInfoToken.logo;
+          } else {
+            newData[i].image = imageTokenPay;
+          }
+        }
+      }
+      return newData;
+    },
+    [symbolsCoinMarketCap],
+  );
 
   const getTokens = React.useCallback(async () => {
     try {
       const resultGetTokens0x = await Zx.getTokens();
-      let newTokens0x = resultGetTokens0x.data;
+      const newTokens0x = resultGetTokens0x.data;
       // eslint-disable-next-line no-confusing-arrow
       newTokens0x.sort((a: any, b: any) => (a.name !== b.name ? (a.name < b.name ? -1 : 1) : 0));
       console.log('App getTokens tokenGear:', tokenGear);
-      newTokens0x = [tokenGear].concat(newTokens0x);
+      // newTokens0x = [tokenGear].concat(newTokens0x);
       const tokensAll = newTokens0x
         .concat(tokensCryptoCompareFormatted)
         .concat(tokensFromGraphFormatted);
@@ -230,10 +291,11 @@ export const App: React.FC = () => {
           return a.symbol !== b.symbol ? (a.symbol < b.symbol ? -1 : 1) : 0;
         });
       tokensAllSorted = tokensAllSorted.filter((token: any, index: number) => {
+        if (!addressesCoinMarketCap.includes(token.address.toLowerCase())) return false;
         if (index < tokensAllSorted.length) {
           return (
-            tokensAllSorted[index].symbol.toUpperCase() !==
-            tokensAllSorted[index + 1]?.symbol.toUpperCase()
+            tokensAllSorted[index].address.toLowerCase() !==
+            tokensAllSorted[index + 1]?.address.toLowerCase()
           );
         }
         return false;
@@ -259,7 +321,13 @@ export const App: React.FC = () => {
     } catch (e) {
       console.error('App getTokens:', e);
     }
-  }, [setTokens, changeTokensInfo, tokensCryptoCompareFormatted, tokensFromGraphFormatted]);
+  }, [
+    setTokens,
+    changeTokensInfo,
+    tokensCryptoCompareFormatted,
+    tokensFromGraphFormatted,
+    addressesCoinMarketCap,
+  ]);
 
   const getTokensBalancesFromAlchemy = React.useCallback(async () => {
     try {
@@ -339,6 +407,7 @@ export const App: React.FC = () => {
     // getTokensFromCoinGecko();
     getTokensFromCryptoCompare();
     getTokensFromGraph();
+    getTokensFromCoinMarketCap();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

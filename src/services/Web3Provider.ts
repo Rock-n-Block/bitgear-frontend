@@ -119,6 +119,12 @@ export default class Web3Provider {
     return +new BigNumber(balance).dividedBy(new BigNumber(10).pow(decimals)).toFixed();
   };
 
+  public decimals = async ({ contractAddress, contractAbi }: any) => {
+    const contract = new this.web3Provider.eth.Contract(contractAbi, contractAddress);
+    const decimals = await contract.methods.decimals().call();
+    return +decimals;
+  };
+
   public allowance = async ({
     userAddress,
     allowanceTarget,
