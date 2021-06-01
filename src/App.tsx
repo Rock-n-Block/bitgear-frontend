@@ -8,7 +8,7 @@ import imageTokenPay from './assets/images/token.png';
 // import { useWalletConnectorContext } from './contexts/WalletConnect';
 import tokensListData from './data/coinlist.json';
 // import erc20Abi from './data/erc20Abi.json';
-import excludedSymbols from './data/excludedSymbols';
+// import excludedSymbols from './data/excludedSymbols';
 import { statusActions, userActions, zxActions } from './redux/actions';
 import { Service0x } from './services/0x';
 import { AlchemyService } from './services/Alchemy';
@@ -88,6 +88,8 @@ export const App: React.FC = () => {
   const [tokensCryptoCompare, setTokensCryptoCompare] = React.useState<any[]>([]);
   const [tokensCryptoCompareFormatted, setTokensCryptoCompareFormatted] = React.useState<any[]>([]);
   const [tokensFromGraphFormatted, setTokensFromGraphFormatted] = React.useState<any[]>([]);
+  // const [tokensCoinMarketCap, setTokensCoinMarketCap] = React.useState<any[]>([]);
+  const [symbolsCoinMarketCap, setSymbolsCoinMarketCap] = React.useState<any[]>([]);
   // const [tokensCoinGecko, setTokensCoinGecko] = React.useState<any[]>([]);
 
   const getTokensFromCryptoCompare = async () => {
@@ -165,6 +167,7 @@ export const App: React.FC = () => {
       }
       // console.log('App getTokensFromCoinMarketCap:', newTokens);
       const newTokensFormatted = [];
+      const newSymbolsCMC = [];
       for (let i = 0; i < newTokens.length; i += 1) {
         const token = newTokens[i];
         const { name, symbol, platform } = token;
@@ -176,6 +179,7 @@ export const App: React.FC = () => {
           symbol,
           address,
         });
+        newSymbolsCMC.push(symbol.toUpperCase());
       }
       // todo get decimals from web3, theGraph or Alchemy/Etherscan
       // web3 not working without infura/metamask
@@ -187,6 +191,8 @@ export const App: React.FC = () => {
       // );
       // console.log('App getTokensFromCoinMarketCap:', await newTokensDecimals);
       console.log('App getTokensFromCoinMarketCap:', newTokensFormatted);
+      // setTokensCoinMarketCap(newTokensFormatted);
+      setSymbolsCoinMarketCap(newSymbolsCMC);
     } catch (e) {
       console.error('App getTokensFromCoinMarketCap:', e);
     }
@@ -218,48 +224,50 @@ export const App: React.FC = () => {
   //   }
   // };
 
-  const changeTokensInfo = React.useCallback(async (data) => {
-    const newData = [...data];
-    // todo get from CMC all coins and filter, then remove excludedCoins
-    const symbolsWithNoImage = data
-      .filter((token: any) => {
-        if (token.image) return false;
-        if (token.symbol.match(/[^A-Za-z0-9]+/gi)) return false;
-        if (excludedSymbols.includes(token.symbol)) return false;
-        if (excludedSymbols.includes(token.symbol.toUpperCase())) return false;
-        return true;
-      })
-      .map((item: any) => item.symbol);
-    console.log('App changeTokensInfo symbolsWithNoImage:', symbolsWithNoImage);
-    const interval = 1000;
-    const count = symbolsWithNoImage.length / interval;
-    // get tokens info
-    let tokensInfo: any = {};
-    for (let ir = 0; ir < count; ir += 1) {
-      const resultGetCoinInfo = await CoinMarketCap.getCoinInfo({
-        symbol: symbolsWithNoImage.slice(interval * ir, interval * ir + interval).join(','),
-      });
-      console.log('App changeTokensInfo resultGetCoinInfo:', ir, resultGetCoinInfo);
-      if (resultGetCoinInfo.status === 'SUCCESS') {
-        tokensInfo = Object.assign(tokensInfo, resultGetCoinInfo.data);
-      }
-    }
-    console.log('App changeTokensInfo tokensInfo:', tokensInfo);
-    // set images to array
-    for (let i = 0; i < data.length; i += 1) {
-      const token = data[i];
-      const { image, symbol } = token;
-      const tokensInfoToken = tokensInfo[symbol];
-      if (!image) {
-        if (tokensInfoToken) {
-          newData[i].image = tokensInfoToken.logo;
-        } else {
-          newData[i].image = imageTokenPay;
+  const changeTokensInfo = React.useCallback(
+    async (data) => {
+      const newData = [...data];
+      const symbolsWithNoImage = data
+        .filter((token: any) => {
+          if (token.image) return false;
+          if (token.symbol.match(/[^A-Za-z0-9]+/gi)) return false;
+          if (!symbolsCoinMarketCap.includes(token.symbol)) return false;
+          if (!symbolsCoinMarketCap.includes(token.symbol.toUpperCase())) return false;
+          return true;
+        })
+        .map((item: any) => item.symbol);
+      console.log('App changeTokensInfo symbolsWithNoImage:', symbolsWithNoImage);
+      const interval = 1000;
+      const count = symbolsWithNoImage.length / interval;
+      // get tokens info
+      let tokensInfo: any = {};
+      for (let ir = 0; ir < count; ir += 1) {
+        const resultGetCoinInfo = await CoinMarketCap.getCoinInfo({
+          symbol: symbolsWithNoImage.slice(interval * ir, interval * ir + interval).join(','),
+        });
+        console.log('App changeTokensInfo resultGetCoinInfo:', ir, resultGetCoinInfo);
+        if (resultGetCoinInfo.status === 'SUCCESS') {
+          tokensInfo = Object.assign(tokensInfo, resultGetCoinInfo.data);
         }
       }
-    }
-    return newData;
-  }, []);
+      console.log('App changeTokensInfo tokensInfo:', tokensInfo);
+      // set images to array
+      for (let i = 0; i < data.length; i += 1) {
+        const token = data[i];
+        const { image, symbol } = token;
+        const tokensInfoToken = tokensInfo[symbol];
+        if (!image) {
+          if (tokensInfoToken) {
+            newData[i].image = tokensInfoToken.logo;
+          } else {
+            newData[i].image = imageTokenPay;
+          }
+        }
+      }
+      return newData;
+    },
+    [symbolsCoinMarketCap],
+  );
 
   const getTokens = React.useCallback(async () => {
     try {
