@@ -442,6 +442,9 @@ export const App: React.FC = () => {
       <div className="App">
         <Components.Header />
         <main className="container-App">
+          <div className="app-version">
+            <div className="app-version-text">{config.version}</div>
+          </div>
           <Switch>
             <Route path="/" exact>
               <Pages.PageMain />
