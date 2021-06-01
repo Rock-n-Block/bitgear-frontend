@@ -90,6 +90,7 @@ export const App: React.FC = () => {
   const [tokensFromGraphFormatted, setTokensFromGraphFormatted] = React.useState<any[]>([]);
   // const [tokensCoinMarketCap, setTokensCoinMarketCap] = React.useState<any[]>([]);
   const [symbolsCoinMarketCap, setSymbolsCoinMarketCap] = React.useState<any[]>([]);
+  const [addressesCoinMarketCap, setAddressesCoinMarketCap] = React.useState<any[]>([]);
   // const [tokensCoinGecko, setTokensCoinGecko] = React.useState<any[]>([]);
 
   const getTokensFromCryptoCompare = async () => {
@@ -168,6 +169,7 @@ export const App: React.FC = () => {
       // console.log('App getTokensFromCoinMarketCap:', newTokens);
       const newTokensFormatted = [];
       const newSymbolsCMC = [];
+      const newAddressesCMC = [];
       for (let i = 0; i < newTokens.length; i += 1) {
         const token = newTokens[i];
         const { name, symbol, platform } = token;
@@ -180,6 +182,7 @@ export const App: React.FC = () => {
           address,
         });
         newSymbolsCMC.push(symbol.toUpperCase());
+        newAddressesCMC.push(address.toLowerCase());
       }
       // todo get decimals from web3, theGraph or Alchemy/Etherscan
       // web3 not working without infura/metamask
@@ -193,6 +196,7 @@ export const App: React.FC = () => {
       console.log('App getTokensFromCoinMarketCap:', newTokensFormatted);
       // setTokensCoinMarketCap(newTokensFormatted);
       setSymbolsCoinMarketCap(newSymbolsCMC);
+      setAddressesCoinMarketCap(newAddressesCMC);
     } catch (e) {
       console.error('App getTokensFromCoinMarketCap:', e);
     }
@@ -272,11 +276,11 @@ export const App: React.FC = () => {
   const getTokens = React.useCallback(async () => {
     try {
       const resultGetTokens0x = await Zx.getTokens();
-      let newTokens0x = resultGetTokens0x.data;
+      const newTokens0x = resultGetTokens0x.data;
       // eslint-disable-next-line no-confusing-arrow
       newTokens0x.sort((a: any, b: any) => (a.name !== b.name ? (a.name < b.name ? -1 : 1) : 0));
       console.log('App getTokens tokenGear:', tokenGear);
-      newTokens0x = [tokenGear].concat(newTokens0x);
+      // newTokens0x = [tokenGear].concat(newTokens0x);
       const tokensAll = newTokens0x
         .concat(tokensCryptoCompareFormatted)
         .concat(tokensFromGraphFormatted);
@@ -287,10 +291,11 @@ export const App: React.FC = () => {
           return a.symbol !== b.symbol ? (a.symbol < b.symbol ? -1 : 1) : 0;
         });
       tokensAllSorted = tokensAllSorted.filter((token: any, index: number) => {
+        if (!addressesCoinMarketCap.includes(token.address.toLowerCase())) return false;
         if (index < tokensAllSorted.length) {
           return (
-            tokensAllSorted[index].address.toUpperCase() !==
-            tokensAllSorted[index + 1]?.address.toUpperCase()
+            tokensAllSorted[index].address.toLowerCase() !==
+            tokensAllSorted[index + 1]?.address.toLowerCase()
           );
         }
         return false;
@@ -316,7 +321,13 @@ export const App: React.FC = () => {
     } catch (e) {
       console.error('App getTokens:', e);
     }
-  }, [setTokens, changeTokensInfo, tokensCryptoCompareFormatted, tokensFromGraphFormatted]);
+  }, [
+    setTokens,
+    changeTokensInfo,
+    tokensCryptoCompareFormatted,
+    tokensFromGraphFormatted,
+    addressesCoinMarketCap,
+  ]);
 
   const getTokensBalancesFromAlchemy = React.useCallback(async () => {
     try {
