@@ -20,15 +20,25 @@ import * as Components from './components';
 import config from './config';
 import * as Pages from './pages';
 
+// const GET_TOKENS = gql`
+//   query Token($first: Int, $skip: Int) {
+//     tokens(first: $first, skip: $skip) {
+//       id
+//       symbol
+//       decimals
+//       swapVolume
+//       limitOrderVolume
+//       rfqOrderVolume
+//     }
+//   }
+// `;
+
 const GET_TOKENS = gql`
   query Token($first: Int, $skip: Int) {
     tokens(first: $first, skip: $skip) {
       id
       symbol
       decimals
-      swapVolume
-      limitOrderVolume
-      rfqOrderVolume
     }
   }
 `;
@@ -167,7 +177,15 @@ export const App: React.FC = () => {
           address,
         });
       }
-      // todo get decimals from theGraph and Alchemy/Etherscan
+      // todo get decimals from web3, theGraph or Alchemy/Etherscan
+      // web3 not working without infura/metamask
+      // const newTokensDecimals = await Promise.all(
+      //   newTokensFormatted.map((token) => {
+      //     const { address: contractAddress } = token;
+      //     return web3Provider.decimals({ contractAddress, contractAbi: erc20Abi });
+      //   }),
+      // );
+      // console.log('App getTokensFromCoinMarketCap:', await newTokensDecimals);
       console.log('App getTokensFromCoinMarketCap:', newTokensFormatted);
     } catch (e) {
       console.error('App getTokensFromCoinMarketCap:', e);

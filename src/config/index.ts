@@ -17,6 +17,8 @@ export default {
     policy: '',
   },
   apis: {
+    // 'theGraph': 'https://api.thegraph.com/subgraphs/name/gundamdweeb/bifrost',
+    'theGraph': 'https://api.thegraph.com/subgraphs/name/dekz/zeroex_exchangeproxy',
     // 'cryptoCompare': 'https://min-api.cryptocompare.com',
     'cryptoCompare': 'https://crypto-api.mywish.io',
     // 'coinMarketCap': 'https://pro-api.coinmarketcap.com',

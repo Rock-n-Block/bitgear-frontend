@@ -7,11 +7,12 @@ import { ApolloProvider } from '@apollo/client/react';
 import Connector from './contexts/WalletConnect';
 import store from './redux/store';
 import { App } from './App';
+import config from './config';
 
 import './index.scss';
 
 const client = new ApolloClient({
-  uri: 'https://api.thegraph.com/subgraphs/name/gundamdweeb/bifrost',
+  uri: config.apis.theGraph,
   cache: new InMemoryCache(),
 });
 
