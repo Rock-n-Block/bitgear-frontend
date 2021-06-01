@@ -174,7 +174,7 @@ export const PageMarketsContent: React.FC = () => {
     const decimals10 = new BigNumber(10).pow(tokensBySymbol[symbolPay].decimals).toFixed();
     const amountPayInWei = new BigNumber(amountPay).multipliedBy(decimals10).toFixed();
     isAllowed = allowance >= +amountPayInWei;
-    console.log('PageMarketsContent:', symbolPay, allowance, decimals10, amountPayInWei);
+    // console.log('PageMarketsContent:', symbolPay, allowance, decimals10, amountPayInWei);
   }
 
   const isTradeDisabled = userAddress
