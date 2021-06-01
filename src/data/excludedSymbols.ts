@@ -1143,4 +1143,5 @@ export default [
   'FATE',
   'BOOKS',
   'RFBTC',
+  'WIPC',
 ];

@@ -20,6 +20,24 @@ export class CoinMarketCapService {
     });
   }
 
+  getAllCoins = async () => {
+    try {
+      const url = `/v1/cryptocurrency/map?aux=platform,is_active`;
+      const result = await this.axios.get(url);
+      // console.log('CoinMarketCapService getTwoCoinsCoins:', result);
+      if (result.data.Response === 'Error') {
+        return { status: 'ERROR', data: undefined };
+      }
+      return {
+        status: 'SUCCESS',
+        data: result.data.data,
+      };
+    } catch (e) {
+      console.error('CoinMarketCapService getTwoCoinsInfo:', e);
+      return { status: 'ERROR', data: undefined };
+    }
+  };
+
   getCoinInfo = async ({ symbol }: TypeGetCoinInfoProps) => {
     try {
       const newSymbol = symbol.toUpperCase();

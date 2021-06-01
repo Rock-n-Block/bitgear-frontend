@@ -145,6 +145,35 @@ export const App: React.FC = () => {
     }
   };
 
+  const getTokensFromCoinMarketCap = async () => {
+    try {
+      const result = await CoinMarketCap.getAllCoins();
+      let newTokens;
+      if (result.status === 'SUCCESS') {
+        newTokens = result.data;
+        // setTokensCoinMarketCap(newTokens);
+      }
+      // console.log('App getTokensFromCoinMarketCap:', newTokens);
+      const newTokensFormatted = [];
+      for (let i = 0; i < newTokens.length; i += 1) {
+        const token = newTokens[i];
+        const { name, symbol, platform } = token;
+        if (!platform) continue;
+        if (platform.symbol !== 'ETH') continue;
+        const { token_address: address } = platform;
+        newTokensFormatted.push({
+          name,
+          symbol,
+          address,
+        });
+      }
+      // todo get decimals from theGraph and Alchemy/Etherscan
+      console.log('App getTokensFromCoinMarketCap:', newTokensFormatted);
+    } catch (e) {
+      console.error('App getTokensFromCoinMarketCap:', e);
+    }
+  };
+
   // const getTokensFromCoinGecko = async () => {
   //   try {
   //     const result = await CoinGecko.getAllCoins();
@@ -339,6 +368,7 @@ export const App: React.FC = () => {
     // getTokensFromCoinGecko();
     getTokensFromCryptoCompare();
     getTokensFromGraph();
+    getTokensFromCoinMarketCap();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
