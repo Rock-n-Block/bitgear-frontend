@@ -173,9 +173,14 @@ export const App: React.FC = () => {
       for (let i = 0; i < newTokens.length; i += 1) {
         const token = newTokens[i];
         const { name, symbol, platform } = token;
-        if (!platform) continue;
-        if (platform.symbol !== 'ETH') continue;
-        const { token_address: address } = platform;
+        let address;
+        if (symbol !== 'ETH') {
+          if (!platform) continue;
+          if (platform.symbol !== 'ETH') continue;
+          address = platform.token_address;
+        } else {
+          address = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee';
+        }
         newTokensFormatted.push({
           name,
           symbol,

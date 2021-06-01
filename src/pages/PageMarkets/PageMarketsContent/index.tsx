@@ -1397,7 +1397,7 @@ export const PageMarketsContent: React.FC = () => {
       </div>
       <div className={s.containerTradingCardSearchItems}>
         {searchTokensResultPay.map((token: any, it: number) => {
-          if (it > 30) return null;
+          if (it > 50) return null;
           const { name: tokenName, symbol, image = imageTokenPay, address, decimals } = token;
           const isBalanceZero = !userBalances[address];
           const newBalance = !isBalanceZero
@@ -1446,7 +1446,7 @@ export const PageMarketsContent: React.FC = () => {
       </div>
       <div className={s.containerTradingCardSearchItems}>
         {searchTokensResultReceive.map((token: any, it: number) => {
-          if (it > 30) return null;
+          if (it > 50) return null;
           const { name: tokenName, symbol, image = imageTokenPay, address, decimals } = token;
           const isBalanceZero = !userBalances[address];
           const newBalance = !isBalanceZero
