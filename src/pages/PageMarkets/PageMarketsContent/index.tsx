@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { LegacyRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
 import BigNumber from 'bignumber.js/bignumber';
@@ -80,6 +80,80 @@ type TypeModalParams = {
   header?: string | React.ReactElement;
   delay?: number;
 };
+
+type TypeDropdownItemsParams = {
+  refContainer?: LegacyRef<HTMLDivElement>;
+  open?: boolean;
+  label?: React.ReactElement | string;
+  searchValue?: string;
+  onChangeSearch?: (value: string) => void;
+  children?: any[];
+};
+
+export const DropdownItems: React.FC<TypeDropdownItemsParams> = React.memo(
+  ({
+    refContainer = null,
+    open = false,
+    label = 'Search',
+    searchValue = '',
+    onChangeSearch = () => {},
+    children = [],
+  }) => {
+    const countChildrenInPage = 30;
+
+    const refScrollContainer = React.useRef<HTMLDivElement>(null);
+
+    const [page, setPage] = React.useState<number>(0);
+    const [childrenShown, setChildrenShown] = React.useState<any[]>(
+      children.slice(0, countChildrenInPage),
+    );
+
+    const handleScroll = React.useCallback(() => {
+      if (!refScrollContainer?.current) return;
+      const { scrollHeight, clientHeight, scrollTop } = refScrollContainer.current;
+      const isBottomReached = +scrollHeight - clientHeight - scrollTop < 100;
+      // console.log('DropdownItems handleScroll:', {
+      //   scrollTop,
+      //   scrollHeight,
+      //   clientHeight,
+      //   isBottomReached,
+      //   page,
+      // });
+      if (isBottomReached) setPage(page + 1);
+    }, [page]);
+
+    React.useEffect(() => {
+      // console.log('DropdownItems useEffect:', { children, childrenShown, page });
+      setChildrenShown(children.slice(0, countChildrenInPage * (page + 1)));
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [page, children]);
+
+    React.useEffect(() => {
+      setPage(1);
+    }, [open]);
+
+    return (
+      <div ref={refContainer}>
+        <div className={s.containerTradingCardSearchInput}>
+          <Input
+            autoFocus={open}
+            placeholder="Search"
+            label={label}
+            value={searchValue}
+            onChange={onChangeSearch}
+          />
+        </div>
+        <div
+          ref={refScrollContainer}
+          className={s.containerTradingCardSearchItems}
+          onScroll={handleScroll}
+        >
+          {childrenShown}
+        </div>
+      </div>
+    );
+  },
+);
 
 export const PageMarketsContent: React.FC = () => {
   const history = useHistory();
@@ -1507,102 +1581,6 @@ export const PageMarketsContent: React.FC = () => {
     </div>
   );
 
-  const DropdownItemsPay = (
-    <div ref={refDropdownPay}>
-      <div className={s.containerTradingCardSearchInput}>
-        <Input
-          autoFocus={openDropdownPay}
-          placeholder="Search"
-          label={<IconSearchWhite />}
-          value={searchValuePay}
-          onChange={handleChangeSearchPay}
-        />
-      </div>
-      <div className={s.containerTradingCardSearchItems}>
-        {searchTokensResultPay.map((token: any, it: number) => {
-          if (it > 50) return null;
-          const { name: tokenName, symbol, image = imageTokenPay, address, decimals } = token;
-          const isBalanceZero = !userBalances[address];
-          const newBalance = !isBalanceZero
-            ? new BigNumber(userBalances[address])
-                .dividedBy(new BigNumber(10).pow(decimals))
-                .toString(10)
-            : '0';
-          const balance = !isBalanceZero ? prettyPrice(newBalance) : '';
-          return (
-            <div
-              role="button"
-              key={uuid()}
-              tabIndex={0}
-              className={s.containerTradingCardSearchItem}
-              onClick={() => handleSelectSymbolPay(symbol)}
-              onKeyDown={() => {}}
-            >
-              <img src={image} alt="" className={s.containerTradingCardSearchItemImage} />
-              <div className={s.containerTradingCardSearchItemFirst}>
-                <div className={s.containerTradingCardSearchItemName}>{tokenName}</div>
-                <div className={s.containerTradingCardSearchItemPrice}>{balance}</div>
-              </div>
-              <div className={s.containerTradingCardSearchItemSymbol}>
-                {symbol.length < 4 ? (
-                  <div>{symbol}</div>
-                ) : (
-                  <div className={s.symbolWide}>{symbol}</div>
-                )}
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-
-  const DropdownItemsReceive = (
-    <div ref={refDropdownReceive}>
-      <div className={s.containerTradingCardSearchInput}>
-        <Input
-          autoFocus={openDropdownReceive}
-          placeholder="Search"
-          label={<IconSearchWhite />}
-          value={searchValueReceive}
-          onChange={handleChangeSearchReceive}
-        />
-      </div>
-      <div className={s.containerTradingCardSearchItems}>
-        {searchTokensResultReceive.map((token: any, it: number) => {
-          if (it > 50) return null;
-          const { name: tokenName, symbol, image = imageTokenPay, address, decimals } = token;
-          const isBalanceZero = !userBalances[address];
-          const newBalance = !isBalanceZero
-            ? new BigNumber(userBalances[address])
-                .dividedBy(new BigNumber(10).pow(decimals))
-                .toString(10)
-            : '0';
-          const balance = !isBalanceZero ? prettyPrice(newBalance) : '';
-          return (
-            <div
-              role="button"
-              key={uuid()}
-              tabIndex={0}
-              className={s.containerTradingCardSearchItem}
-              onClick={() => handleSelectSymbolReceive(symbol)}
-              onKeyDown={() => {}}
-            >
-              <img src={image} alt="" className={s.containerTradingCardSearchItemImage} />
-              <div className={s.containerTradingCardSearchItemFirst}>
-                <div className={s.containerTradingCardSearchItemName}>{tokenName}</div>
-                <div className={s.containerTradingCardSearchItemPrice}>{balance}</div>
-              </div>
-              <div className={s.containerTradingCardSearchItemSymbol}>
-                <div>{symbol}</div>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-
   return (
     <div className={s.container}>
       <section className={s.containerTitle}>
@@ -1785,7 +1763,58 @@ export const PageMarketsContent: React.FC = () => {
             <div className={s.containerTradingCardContainer}>
               <div className={s.containerTradingCardContainerInner}>
                 <Dropdown open={openDropdownPay} label={DropdownLabelPay}>
-                  {DropdownItemsPay}
+                  <DropdownItems
+                    refContainer={refDropdownPay}
+                    open={openDropdownPay}
+                    label={<IconSearchWhite />}
+                    searchValue={searchValuePay}
+                    onChangeSearch={handleChangeSearchPay}
+                  >
+                    {searchTokensResultPay.map((token: any) => {
+                      // if (it > 50) return null;
+                      const {
+                        name: tokenName,
+                        symbol,
+                        image = imageTokenPay,
+                        address,
+                        decimals,
+                      } = token;
+                      const isBalanceZero = !userBalances[address];
+                      const newBalance = !isBalanceZero
+                        ? new BigNumber(userBalances[address])
+                            .dividedBy(new BigNumber(10).pow(decimals))
+                            .toString(10)
+                        : '0';
+                      const balance = !isBalanceZero ? prettyPrice(newBalance) : '';
+                      return (
+                        <div
+                          role="button"
+                          key={uuid()}
+                          tabIndex={0}
+                          className={s.containerTradingCardSearchItem}
+                          onClick={() => handleSelectSymbolPay(symbol)}
+                          onKeyDown={() => {}}
+                        >
+                          <img
+                            src={image}
+                            alt=""
+                            className={s.containerTradingCardSearchItemImage}
+                          />
+                          <div className={s.containerTradingCardSearchItemFirst}>
+                            <div className={s.containerTradingCardSearchItemName}>{tokenName}</div>
+                            <div className={s.containerTradingCardSearchItemPrice}>{balance}</div>
+                          </div>
+                          <div className={s.containerTradingCardSearchItemSymbol}>
+                            {symbol.length < 4 ? (
+                              <div>{symbol}</div>
+                            ) : (
+                              <div className={s.symbolWide}>{symbol}</div>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </DropdownItems>
                 </Dropdown>
                 <div className={s.containerTradingCardSymbol}>
                   {getTokenBySymbol(symbolPay).symbol}
@@ -1917,7 +1946,57 @@ export const PageMarketsContent: React.FC = () => {
             <div className={s.containerTradingCardContainer}>
               <div className={s.containerTradingCardContainerInner}>
                 <Dropdown open={openDropdownReceive} label={DropdownLabelReceive}>
-                  {DropdownItemsReceive}
+                  <DropdownItems
+                    refContainer={refDropdownReceive}
+                    open={openDropdownReceive}
+                    label={<IconSearchWhite />}
+                    searchValue={searchValueReceive}
+                    onChangeSearch={handleChangeSearchReceive}
+                  >
+                    {searchTokensResultReceive.map((token: any) => {
+                      const {
+                        name: tokenName,
+                        symbol,
+                        image = imageTokenPay,
+                        address,
+                        decimals,
+                      } = token;
+                      const isBalanceZero = !userBalances[address];
+                      const newBalance = !isBalanceZero
+                        ? new BigNumber(userBalances[address])
+                            .dividedBy(new BigNumber(10).pow(decimals))
+                            .toString(10)
+                        : '0';
+                      const balance = !isBalanceZero ? prettyPrice(newBalance) : '';
+                      return (
+                        <div
+                          role="button"
+                          key={uuid()}
+                          tabIndex={0}
+                          className={s.containerTradingCardSearchItem}
+                          onClick={() => handleSelectSymbolReceive(symbol)}
+                          onKeyDown={() => {}}
+                        >
+                          <img
+                            src={image}
+                            alt=""
+                            className={s.containerTradingCardSearchItemImage}
+                          />
+                          <div className={s.containerTradingCardSearchItemFirst}>
+                            <div className={s.containerTradingCardSearchItemName}>{tokenName}</div>
+                            <div className={s.containerTradingCardSearchItemPrice}>{balance}</div>
+                          </div>
+                          <div className={s.containerTradingCardSearchItemSymbol}>
+                            {symbol.length < 4 ? (
+                              <div>{symbol}</div>
+                            ) : (
+                              <div className={s.symbolWide}>{symbol}</div>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </DropdownItems>
                 </Dropdown>
                 <div className={s.containerTradingCardSymbol}>
                   {getTokenBySymbol(symbolReceive).symbol}

@@ -8,7 +8,7 @@ type TypeInputProps = {
   autoFocus?: boolean;
   value: string;
   placeholder?: string;
-  label?: React.ReactElement;
+  label?: React.ReactElement | string;
   type?: string;
   onChange?: (e: string) => void;
   inline?: boolean;
