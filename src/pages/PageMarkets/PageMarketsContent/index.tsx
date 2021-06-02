@@ -16,6 +16,7 @@ import Button from '../../../components/Button';
 import config from '../../../config';
 import { useWalletConnectorContext } from '../../../contexts/WalletConnect';
 import erc20Abi from '../../../data/erc20Abi.json';
+import useDebounce from '../../../hooks/useDebounce';
 import { modalActions, statusActions, walletActions } from '../../../redux/actions';
 import { Service0x } from '../../../services/0x';
 import { CoinMarketCapService } from '../../../services/CoinMarketCap';
@@ -142,6 +143,7 @@ export const PageMarketsContent: React.FC = () => {
   const [tokenNamePay, setTokenNamePay] = React.useState<string>('');
   const [symbolPay, setSymbolPay] = React.useState<string>(symbolOne.toUpperCase());
   const [symbolReceive, setSymbolReceive] = React.useState<string>(symbolTwo?.toUpperCase() || '');
+  const [inputChanged, setInputChanged] = React.useState<string>();
   const [amountPay, setAmountPay] = React.useState<string>('0');
   const [amountReceive, setAmountReceive] = React.useState<string>('0');
   const [waiting, setWaiting] = React.useState<boolean>(false);
@@ -155,6 +157,9 @@ export const PageMarketsContent: React.FC = () => {
   const [gasPriceType, setGasPriceType] = React.useState<string>('');
   const [gasPriceCustom, setGasPriceCustom] = React.useState<number>(0);
   const [allowance, setAllowance] = React.useState<number>(0);
+
+  const amountPayDebounced = useDebounce(amountPay, 300);
+  const amountReceiveDebounced = useDebounce(amountReceive, 300);
 
   const isSymbolPayETH = symbolPay === 'ETH';
 
@@ -198,51 +203,173 @@ export const PageMarketsContent: React.FC = () => {
     [tokens],
   );
 
-  const getPricePay = React.useCallback(
-    async (amountToPay: string) => {
+  const getQuoteBuy = React.useCallback(
+    async ({ amount }) => {
       try {
+        console.log('PageMarketsContent getQuoteBuy:', amount);
+        if (!amount) return null;
+        if (!symbolReceive) return null;
         const { decimals, address: addressPay } = getTokenBySymbol(symbolPay);
         const { address: addressReceive } = getTokenBySymbol(symbolReceive);
         const props = {
           buyToken: addressReceive,
           sellToken: addressPay,
-          sellAmount: amountToPay,
+          sellAmount: amount,
           decimals,
         };
         const result = await Zx.getQuote(props);
-        console.log('PageMarketsContent getPricePay:', props, result);
+        console.log('PageMarketsContent getQuoteBuy:', props, result);
         if (result.status === 'SUCCESS') return result.data.guaranteedPrice;
-        return 0;
+        return null;
       } catch (e) {
-        console.error(e);
-        return 0;
+        console.error('PageMarketsContent getQuoteBuy:', e);
+        return null;
       }
     },
     [getTokenBySymbol, symbolPay, symbolReceive],
   );
 
-  const getPricePayLimit = React.useCallback(
-    async (amountToPay: string) => {
+  const getPriceBuy = React.useCallback(
+    async ({ amount }) => {
       try {
+        console.log('PageMarketsContent getPriceBuy:', amount);
+        if (!amount) return null;
+        if (!symbolReceive) return null;
         const { decimals, address: addressPay } = getTokenBySymbol(symbolPay);
         const { address: addressReceive } = getTokenBySymbol(symbolReceive);
         const props = {
           buyToken: addressReceive,
           sellToken: addressPay,
-          sellAmount: amountToPay,
+          sellAmount: amount,
           decimals,
         };
         const result = await Zx.getPrice(props);
-        console.log('PageMarketsContent getPricePayLimit:', props, result);
+        console.log('PageMarketsContent getPriceBuy:', props, result);
         if (result.status === 'SUCCESS') return result.data.price;
-        return marketPrice;
+        return null;
       } catch (e) {
-        console.error(e);
-        return 0;
+        console.error('PageMarketsContent getPriceBuy:', e);
+        return null;
       }
     },
-    [getTokenBySymbol, marketPrice, symbolPay, symbolReceive],
+    [getTokenBySymbol, symbolPay, symbolReceive],
   );
+
+  // const getQuoteSell = React.useCallback(
+  //   async ({ amount }) => {
+  //     try {
+  //       console.log('PageMarketsContent getQuoteSell:', amount);
+  //       if (!amount) return null;
+  //       if (!symbolReceive) return null;
+  //       const { decimals, address: addressPay } = getTokenBySymbol(symbolPay);
+  //       const { address: addressReceive } = getTokenBySymbol(symbolReceive);
+  //       const props = {
+  //         buyToken: addressReceive,
+  //         sellToken: addressPay,
+  //         sellAmount: amount,
+  //         decimals,
+  //       };
+  //       const result = await Zx.getQuote(props);
+  //       console.log('PageMarketsContent getQuoteSell:', props, result);
+  //       if (result.status === 'SUCCESS') return result.data.guaranteedPrice;
+  //       return null;
+  //     } catch (e) {
+  //       console.error('PageMarketsContent getQuoteSell:', e);
+  //       return null;
+  //     }
+  //   },
+  //   [getTokenBySymbol, symbolPay, symbolReceive],
+  // );
+  //
+  // const getPriceSell = React.useCallback(
+  //   async ({ amount }) => {
+  //     try {
+  //       console.log('PageMarketsContent getPriceSell:', amount);
+  //       if (!amount) return null;
+  //       if (!symbolReceive) return null;
+  //       const { decimals, address: addressPay } = getTokenBySymbol(symbolPay);
+  //       const { address: addressReceive } = getTokenBySymbol(symbolReceive);
+  //       const props = {
+  //         buyToken: addressReceive,
+  //         sellToken: addressPay,
+  //         sellAmount: amount,
+  //         decimals,
+  //       };
+  //       const result = await Zx.getPrice(props);
+  //       console.log('PageMarketsContent getPriceSell:', props, result);
+  //       if (result.status === 'SUCCESS') return result.data.price;
+  //       return null;
+  //     } catch (e) {
+  //       console.error('PageMarketsContent getPrice:', e);
+  //       return null;
+  //     }
+  //   },
+  //   [getTokenBySymbol, symbolPay, symbolReceive],
+  // );
+
+  const getPricePay = React.useCallback(async () => {
+    try {
+      if (!amountPayDebounced || amountPayDebounced === '0') return;
+      if (!symbolReceive) return;
+      const resultGetQuote = await getQuoteBuy({ amount: amountPayDebounced });
+      if (!resultGetQuote) return;
+      const newAmountFormatted = new BigNumber(amountPayDebounced)
+        .multipliedBy(resultGetQuote)
+        .toString(10);
+      setAmountReceive(newAmountFormatted);
+      console.log('PageMarketsContent getPricePay:', newAmountFormatted);
+    } catch (e) {
+      console.error('PageMarketsContent getPricePay:', e);
+    }
+  }, [getQuoteBuy, amountPayDebounced, symbolReceive]);
+
+  const getPricePayLimit = React.useCallback(async () => {
+    try {
+      if (!amountPayDebounced || amountPayDebounced === '0') return;
+      if (!symbolReceive) return;
+      const resultGetPrice = await getPriceBuy({ amount: amountPayDebounced });
+      if (!resultGetPrice) return;
+      const newAmountFormatted = new BigNumber(amountPayDebounced)
+        .multipliedBy(resultGetPrice || marketPrice)
+        .toString(10);
+      setAmountReceive(newAmountFormatted);
+      console.log('PageMarketsContent getPricePayLimit:', newAmountFormatted);
+    } catch (e) {
+      console.error('PageMarketsContent getPricePayLimit:', e);
+    }
+  }, [getPriceBuy, amountPayDebounced, marketPrice, symbolReceive]);
+
+  const getPriceReceive = React.useCallback(async () => {
+    try {
+      if (!amountReceiveDebounced || amountReceiveDebounced === '0') return;
+      if (!symbolReceive) return;
+      const resultGetQuote = await getQuoteBuy({ amount: amountReceiveDebounced });
+      if (!resultGetQuote) return;
+      const newAmountFormatted = new BigNumber(amountReceiveDebounced)
+        .dividedBy(resultGetQuote)
+        .toString(10);
+      setAmountPay(newAmountFormatted);
+      console.log('PageMarketsContent getPriceReceive:', newAmountFormatted);
+    } catch (e) {
+      console.error('PageMarketsContent getPriceReceive:', e);
+    }
+  }, [getQuoteBuy, amountReceiveDebounced, symbolReceive]);
+
+  const getPriceReceiveLimit = React.useCallback(async () => {
+    try {
+      if (!amountReceiveDebounced || amountReceiveDebounced === '0') return;
+      if (!symbolReceive) return;
+      const resultGetPrice = await getPriceBuy({ amount: amountReceiveDebounced });
+      if (!resultGetPrice) return;
+      const newAmountFormatted = new BigNumber(amountReceiveDebounced)
+        .dividedBy(resultGetPrice || marketPrice)
+        .toString(10);
+      setAmountPay(newAmountFormatted);
+      console.log('PageMarketsContent getPriceReceiveLimit:', newAmountFormatted);
+    } catch (e) {
+      console.error('PageMarketsContent getPriceReceiveLimit:', e);
+    }
+  }, [getPriceBuy, amountReceiveDebounced, marketPrice, symbolReceive]);
 
   const getGasPrice = React.useCallback(async () => {
     const resultGetGasPrice = await Etherscan.getGasPrice();
@@ -292,13 +419,14 @@ export const PageMarketsContent: React.FC = () => {
       const { decimals, address: addressPay } = getTokenBySymbol(symbolPay);
       const { address: addressReceive } = getTokenBySymbol(symbolReceive);
       if (!decimals) return null;
-      if (!amountPay || amountPay === '' || amountPay === '0') return null;
+      if (!amountPayDebounced || amountPayDebounced === '' || amountPayDebounced === '0')
+        return null;
       let newPrice = 0;
-      if (symbolReceive && amountPay) {
+      if (symbolReceive && amountPayDebounced) {
         const result = await Zx.getPrice({
           buyToken: addressReceive,
           sellToken: addressPay,
-          sellAmount: amountPay,
+          sellAmount: amountPayDebounced,
           skipValidation: true,
           decimals,
         });
@@ -337,7 +465,7 @@ export const PageMarketsContent: React.FC = () => {
       console.error(e);
       return null;
     }
-  }, [setStatus, amountPay, symbolPay, symbolReceive, getTokenBySymbol]);
+  }, [setStatus, amountPayDebounced, symbolPay, symbolReceive, getTokenBySymbol]);
 
   const getTokenPay = React.useCallback(async () => {
     try {
@@ -616,22 +744,6 @@ export const PageMarketsContent: React.FC = () => {
     }
   }, [toggleModal]);
 
-  const updateAmountReceive = React.useCallback(async () => {
-    try {
-      let pricePay = 0;
-      if (isModeLimit) {
-        pricePay = await getPricePayLimit(amountPay);
-      } else {
-        pricePay = await getPricePay(amountPay);
-      }
-      const newAmountReceive = new BigNumber(pricePay).multipliedBy(amountPay).toString(10);
-      // console.log('PageMarketsContent updateAmountReceive:', amountPay, newAmountReceive);
-      setAmountReceive(newAmountReceive);
-    } catch (e) {
-      console.error('PageMarketsContent updateAmountReceive:', e);
-    }
-  }, [amountPay, getPricePay, getPricePayLimit, isModeLimit]);
-
   const getAllowance = React.useCallback(async () => {
     try {
       // console.log('PageMarketsContent getAllowance:', symbolPay, symbolReceive, amountPay);
@@ -840,18 +952,9 @@ export const PageMarketsContent: React.FC = () => {
 
   const handleChangeAmountPay = async (event: any) => {
     try {
+      setInputChanged('pay');
       const { value } = event.target;
-      // console.log('handleChangeAmountPay value:', value);
       setAmountPay(value);
-      let pricePay = 0;
-      if (isModeLimit) {
-        pricePay = await getPricePayLimit(value);
-      } else {
-        pricePay = await getPricePay(value);
-      }
-      const newAmountReceiveFormatted = new BigNumber(pricePay).multipliedBy(value).toString(10);
-      console.log('handleChangeAmountPay:', newAmountReceiveFormatted);
-      setAmountReceive(newAmountReceiveFormatted);
     } catch (e) {
       console.error('handleChangeAmountPay:', e);
     }
@@ -859,18 +962,9 @@ export const PageMarketsContent: React.FC = () => {
 
   const handleChangeAmountReceive = async (event: any) => {
     try {
+      setInputChanged('receive');
       const { value } = event.target;
       setAmountReceive(value);
-      let pricePay = 0;
-      if (isModeLimit) {
-        pricePay = await getPricePayLimit(value);
-      } else {
-        pricePay = await getPricePay(value);
-      }
-      let newAmountPay = +new BigNumber(value).dividedBy(new BigNumber(pricePay)).toFixed();
-      if (pricePay === 0) newAmountPay = 0;
-      console.log('handleChangeAmountPay:', newAmountPay);
-      setAmountPay(String(newAmountPay));
     } catch (e) {
       console.error('handleChangeAmountReceive:', e);
     }
@@ -878,6 +972,7 @@ export const PageMarketsContent: React.FC = () => {
 
   const handleChangeAmountReceiveLimit = async (event: any) => {
     try {
+      setInputChanged('receiveLimit');
       const { value } = event.target;
       setAmountReceive(value);
     } catch (e) {
@@ -1160,6 +1255,26 @@ export const PageMarketsContent: React.FC = () => {
   }, []);
 
   React.useEffect(() => {
+    if (!amountPayDebounced) return;
+    if (!amountReceiveDebounced) return;
+    if (!inputChanged) return;
+    if (inputChanged === 'pay') {
+      if (isModeLimit) {
+        getPricePayLimit();
+      } else {
+        getPricePay();
+      }
+    } else if (inputChanged === 'receive') {
+      if (isModeLimit) {
+        getPriceReceiveLimit();
+      } else {
+        getPriceReceive();
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [inputChanged, amountPayDebounced, amountReceiveDebounced, isModeLimit]);
+
+  React.useEffect(() => {
     if (!openSettings) return;
     getGasPrice();
   }, [getGasPrice, openSettings]);
@@ -1194,6 +1309,9 @@ export const PageMarketsContent: React.FC = () => {
 
   React.useEffect(() => {
     filterTokens();
+    if (!isModeLimit) {
+      getPricePay();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mode]);
 
@@ -1271,7 +1389,11 @@ export const PageMarketsContent: React.FC = () => {
 
   React.useEffect(() => {
     if (!symbolReceive) return;
-    updateAmountReceive();
+    if (isModeLimit) {
+      getPricePayLimit();
+    } else {
+      getPricePay();
+    }
     if (!symbolPay) return;
     if (symbolPay === 'ETH') return;
     getAllowance();
@@ -1281,13 +1403,13 @@ export const PageMarketsContent: React.FC = () => {
   React.useEffect(() => {
     if (!symbolReceive) return;
     if (!symbolPay) return;
-    if (!amountPay) return;
+    if (!amountPayDebounced) return;
     if (!userAddress) return;
     if (waiting) return;
     if (symbolPay === 'ETH') return;
     getAllowance();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [symbolReceive, symbolPay, amountPay, userAddress, waiting]);
+  }, [symbolReceive, symbolPay, amountPayDebounced, userAddress, waiting]);
 
   React.useEffect(() => {
     // setApproved(false);

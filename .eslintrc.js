@@ -126,7 +126,6 @@ module.exports = {
     'no-nested-ternary': 'off',
     'no-continue': 'warn',
     'no-await-in-loop': 'warn',
-    'no-autofocus': 'warn',
   },
   settings: {
     'import/resolver': {

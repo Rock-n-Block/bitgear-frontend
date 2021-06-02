@@ -99,8 +99,8 @@ export class Service0x {
       // eslint-disable-next-line no-param-reassign
       props.sellAmount = new BigNumber(sellAmount)
         .multipliedBy(new BigNumber(10).pow(decimals))
-        .toString(10);
-      console.log('Service0x getQuote:', props);
+        .toFixed(0);
+      // console.log('Service0x getQuote:', props);
       const url = `/swap/v1/quote?${qs.stringify(props)}`;
       const result = await this.axios.get(url);
       // console.log('Service0x getQuote:', result);
@@ -120,7 +120,7 @@ export class Service0x {
       // eslint-disable-next-line no-param-reassign
       props.sellAmount = new BigNumber(sellAmount)
         .multipliedBy(new BigNumber(10).pow(decimals))
-        .toString(10);
+        .toFixed(0);
       // console.log('Service0x getPrice:', props);
       const url = `/swap/v1/price?${qs.stringify(props)}`;
       let result;
@@ -129,7 +129,7 @@ export class Service0x {
       } else {
         result = await this.axios.get(url);
       }
-      console.log('Service0x getPrice:', result);
+      // console.log('Service0x getPrice:', result);
       return {
         status: 'SUCCESS',
         data: result.data,
@@ -229,36 +229,6 @@ export class Service0x {
         provider.provider,
         utils.SignatureType.EIP712,
       );
-      // chainId: 42
-      // expiry: BigNumber {s: 1, e: 12, c: Array(1)}
-      // feeRecipient: "0x0000000000000000000000000000000000000000"
-      // maker: "0x9641494bfb611b7348c10ee7f57805cf4aca0e09"
-      // makerAmount: BigNumber {s: 1, e: 0, c: Array(1)}
-      // makerToken: "0xd0a1e359811322d97991e03f863a0c30c2cf029c"
-      // pool: "0x0000000000000000000000000000000000000000000000000000000000000000"
-      // salt: BigNumber {s: 1, e: 38, c: Array(3)}
-      // sender: "0x0000000000000000000000000000000000000000"
-      // signature: {r: "0x039247fc00c055211244856b3ef82a75501d0ecdabc147587b06640751b05d6e", s: "0x2553125be79ba015facefb46c5d5eb60f120fe17e874aeef3c1742b9bab37498", v: 28, signatureType: 2}
-      // taker: "0x0000000000000000000000000000000000000000"
-      // takerAmount: BigNumber {s: 1, e: 2, c: Array(2)}
-      // takerToken: "0x4f96fe3b7a6cf9725f59d353f723c1bdb64ca6aa"
-      // takerTokenFeeAmount: BigNumber {s: 1, e: 0, c: Array(1)}
-      // verifyingContract: "0xdef1c0ded9bec7f1a1670819833240f027b25eff"
-
-      // то чего не хватает для v3
-      // "field": "senderAddress",
-      // "field": "makerAddress",
-      // "field": "takerAddress",
-      // "field": "makerFee",
-      // "field": "takerFee",
-      // "field": "makerAssetAmount",
-      // "field": "makerAssetData",
-      // "field": "takerAssetData",
-      // "field": "exchangeAddress",
-      // "field": "feeRecipientAddress",
-      // "field": "expirationTimeSeconds",
-      // "field": "makerFeeAssetData",
-      // "field": "takerFeeAssetData",
       order.signature = signature;
       order.expiry = order.expiry.toString();
       order.salt = order.salt.toString();
