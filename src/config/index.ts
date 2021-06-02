@@ -4,6 +4,7 @@ const IS_TESTING_ON_ROPSTEN = false;
 export default {
   IS_PRODUCTION,
   IS_TESTING_ON_ROPSTEN,
+  version: IS_PRODUCTION ? 'Mainnet beta' : IS_TESTING_ON_ROPSTEN ? 'Ropsten beta' : 'Kovan beta',
   isMainnetOrTestnet: IS_PRODUCTION ? 'mainnet' : 'testnet',
   netType: IS_PRODUCTION ? 'mainnet' : IS_TESTING_ON_ROPSTEN ? 'ropsten' : 'kovan',
   links: {
@@ -45,10 +46,12 @@ export default {
     infura: '1964ef9a752c4405b7631cb49ab373fa', // ok
     // ok. if limit for getGasPrice reaches, web3.getGasPrice works
     etherscan: 'ANN5EICH9J3Y2VFXHEQV898DBPS9KT71BD',
-    cryptoCompare: '64003a2defe5d1cd62c11cae1ed06c7248a0a985e63ce30fdd280c3855ae4dc3', // todo
+    // cryptoCompare: '64003a2defe5d1cd62c11cae1ed06c7248a0a985e63ce30fdd280c3855ae4dc3', // todo
+    cryptoCompare: '', // todo check if works
     coinMarketCap: '', // ok
     alchemy: '9e37toZE9l2XRTjIUsWUD3gAyiRPWYCQ', // ok
-    covalent: 'ckey_d3c7bc2ea7be4f5691de44dfbfa', // todo
+    // covalent: 'ckey_d3c7bc2ea7be4f5691de44dfbfa', // todo
+    covalent: '',
   },
   chainIds: {
     mainnet: {
