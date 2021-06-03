@@ -271,7 +271,7 @@ export const MainTable: React.FC<TableTypeProps> = React.memo(
             <tbody>
               {dataForMobile.map((token: any, index: number) => {
                 const { symbol, name, price, priceChange } = token;
-
+                const link = `/markets/${symbol}`;
                 let priceChangeModel = (
                   <div className={`${s.mobilePriceChangeModel}`}>
                     <div className={s.flexContainerRow}>
@@ -299,10 +299,12 @@ export const MainTable: React.FC<TableTypeProps> = React.memo(
                   <>
                     <tr key={uuid()}>
                       <td>
-                        <div>
-                          {name}
-                          <div className={s.mobileSymbol}>{symbol}</div>
-                        </div>
+                        <Link to={link}>
+                          <div>
+                            {name}
+                            <div className={s.mobileSymbol}>{symbol}</div>
+                          </div>
+                        </Link>
                       </td>
                       <td>
                         <LineChartWrapper points={points[index]} />
