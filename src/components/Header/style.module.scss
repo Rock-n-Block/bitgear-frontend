@@ -58,7 +58,15 @@ $fs: 16px;
     padding: 20px 25px;
     font-size: $fs;
     border-radius: 5px;
+
+    @include b('mobile') {
+      width: 100%;
+      padding: 8px 25px;
+    }
+
     a {
+      width: 100%;
+      text-align: center;
       font-size: $fs;
       text-decoration: none;
       color: $color-text-header;
@@ -86,6 +94,12 @@ $fs: 16px;
     padding: 20px 25px;
     font-size: $fs;
     border-radius: 5px;
+
+    @include b('mobile') {
+      width: 100%;
+      padding: 8px 25px;
+    }
+
     a {
       color: $color-text-link;
       transition: color 200ms ease;
@@ -105,7 +119,7 @@ $fs: 16px;
     display: none;
   }
   &MenuMobileOpen {
-    @include flex(column, center, flex-start);
+    @include flex(column, center, flex-start, nowrap);
     box-sizing: border-box;
     position: fixed;
     height: 100vh;
@@ -196,6 +210,10 @@ $fs: 16px;
     cursor: pointer;
     padding: 10px 0px;
 
+    @include b('mobile') {
+      padding: 5px 0px;
+    }
+
     span {
       cursor: auto;
     }
@@ -218,6 +236,10 @@ $fs: 16px;
     padding: 0;
     max-height: 300px;
     overflow: auto;
+
+    @include b('mobile') {
+      max-height: 100px;
+    }
   }
 
   &ItemTokens {
@@ -286,7 +308,12 @@ $fs: 16px;
 }
 
 .dropdownMobile {
+  position: absolute;
+  top: 120px;
   padding: 16px;
+  margin: 10px;
+  height: 340px;
   border: 3px solid rgba(1, 151, 226, 0.5);
   border-radius: 10px;
+  z-index: 99999;
 }
