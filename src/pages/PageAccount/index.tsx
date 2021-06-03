@@ -243,9 +243,9 @@ export const PageAccount: React.FC = () => {
         }
         dataForTableLocal.push({
           orderCreate: moment(item.metaData.createdAt).format('yyyy.MM.DD'),
-          timeCreate: moment(item.metaData.createdAt).format('hh:mm a'),
+          timeCreate: moment(item.metaData.createdAt).format('HH:MM'),
           orderExpire: moment(new Date(+item.order.expiry).toString()).format('yyyy.MM.DD'),
-          timeExpire: moment(new Date(+item.order.expiry).toString()).format('hh:mm a'),
+          timeExpire: moment(new Date(+item.order.expiry).toString()).format('HH:MM'),
           tradingPair: {
             symbolMaker,
             symbolTaker,
@@ -538,30 +538,32 @@ export const PageAccount: React.FC = () => {
                                   {tradingPair.symbolMaker} / {tradingPair.symbolTaker}
                                 </Link>
                               </div>
-                              <div className={s.mobileTime}>
-                                <div className={s.flexContainerColumn}>
-                                  <div className={s.mobileColumnTitle}>TIME START</div>
-                                  <div>
-                                    {orderCreate}
-                                    <span className={s.time}>{timeCreate}</span>
+                              <div>
+                                <div className={s.mobileTime}>
+                                  <div className={s.flexContainerColumn}>
+                                    <div className={s.mobileColumnTitle}>TIME START</div>
+                                    <div>
+                                      {orderCreate}
+                                      <span className={s.time}>{timeCreate}</span>
+                                    </div>
+                                  </div>
+                                  <div className={s.flexContainerColumn}>
+                                    <div className={s.mobileColumnTitle}>TIME END</div>
+                                    <div>
+                                      {orderExpire}
+                                      <span className={s.time}>{timeExpire}</span>
+                                    </div>
                                   </div>
                                 </div>
-                                <div className={s.flexContainerColumn}>
-                                  <div className={s.mobileColumnTitle}>TIME END</div>
-                                  <div>
-                                    {orderExpire}
-                                    <span className={s.time}>{timeExpire}</span>
+                                <div className={s.mobileAmountPrice}>
+                                  <div className={s.flexContainerColumn}>
+                                    <div className={s.mobileColumnTitle}>AMOUNT</div>
+                                    <div>{numberTransform(amount)}</div>
                                   </div>
-                                </div>
-                              </div>
-                              <div className={s.mobileAmountPrice}>
-                                <div className={s.flexContainerColumn}>
-                                  <div className={s.mobileColumnTitle}>AMOUNT</div>
-                                  <div>{numberTransform(amount)}</div>
-                                </div>
-                                <div className={s.flexContainerColumn}>
-                                  <div className={s.mobileColumnTitle}>PRICE</div>
-                                  <div>{priceChangeModel}</div>
+                                  <div className={s.flexContainerColumn}>
+                                    <div className={s.mobileColumnTitle}>PRICE</div>
+                                    <div>{priceChangeModel}</div>
+                                  </div>
                                 </div>
                               </div>
                             </div>
