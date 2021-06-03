@@ -335,6 +335,7 @@ export const Header: React.FC = () => {
                     Disconnect
                   </div>
                   <div
+                    className={s.headerDropdownItem}
                     onClick={handleDropdownMenuMobile}
                     tabIndex={0}
                     onKeyDown={() => {}}

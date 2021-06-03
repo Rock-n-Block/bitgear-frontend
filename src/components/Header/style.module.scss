@@ -169,9 +169,8 @@ $fs: 16px;
 }
 
 .headerDropdown {
-  position: fixed;
-  top: $height-header;
-  right: 20px;
+  top: $height-header - 22px;
+  right: 25px;
   min-width: 370px;
   padding: 0;
   z-index: 1000000;
