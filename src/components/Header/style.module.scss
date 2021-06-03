@@ -163,6 +163,11 @@ $fs: 16px;
     font-size: 16px;
     line-height: 26px;
     user-select: none;
+    @include b('mobile') {
+      bottom: $height-header - 10px;
+      line-height: 20px;
+      z-index: 997;
+    }
     &LogoGroup {
       @include flex(row, center, center);
     }
@@ -238,7 +243,7 @@ $fs: 16px;
     overflow: auto;
 
     @include b('mobile') {
-      max-height: 100px;
+      max-height: 20vh;
     }
   }
 
@@ -312,8 +317,9 @@ $fs: 16px;
   top: 120px;
   padding: 16px;
   margin: 10px;
-  height: 340px;
+  height: 58vh;
   border: 3px solid rgba(1, 151, 226, 0.5);
+  background: $color-bg-dropdown;
   border-radius: 10px;
   z-index: 99999;
 }
