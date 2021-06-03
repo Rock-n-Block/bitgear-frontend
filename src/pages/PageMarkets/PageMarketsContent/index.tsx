@@ -559,6 +559,16 @@ export const PageMarketsContent: React.FC = () => {
       } else {
         newTokens = tokens;
       }
+      if (userBalances) {
+        // eslint-disable-next-line no-confusing-arrow
+        newTokens = newTokens.sort((a: any) =>
+          userBalances[a.address] && +userBalances[a.address] > 0 ? -1 : 0,
+        );
+      }
+      // eslint-disable-next-line no-confusing-arrow
+      newTokens = newTokens.sort((a: any) => (a.symbol === 'GEAR' ? -1 : 0));
+      // eslint-disable-next-line no-confusing-arrow
+      newTokens = newTokens.sort((a: any) => (a.symbol === 'ETH' ? -1 : 0));
       setTokensFiltered(newTokens);
       console.log('PageMarketsContent filterTokens:', newTokens);
       return null;
@@ -566,7 +576,7 @@ export const PageMarketsContent: React.FC = () => {
       console.error('PageMarketsContent filterTokens:', e);
       return null;
     }
-  }, [isModeLimit, tokens]);
+  }, [isModeLimit, tokens, userBalances]);
 
   const getTokensSymbolsReceive = async () => {
     try {
@@ -586,18 +596,28 @@ export const PageMarketsContent: React.FC = () => {
 
   const getTokensReceive = React.useCallback(async () => {
     try {
-      const newTokensReceive = tokensFiltered.filter((item: any) => item.symbol !== symbolPay);
+      let newTokensReceive = tokensFiltered.filter((item: any) => item.symbol !== symbolPay);
       if (newTokensReceive.length === 0) {
         setSymbolReceive('');
         setTokensReceive([]);
         return;
       }
+      if (userBalances) {
+        // eslint-disable-next-line no-confusing-arrow
+        newTokensReceive = newTokensReceive.sort((a: any) =>
+          userBalances[a.address] && +userBalances[a.address] > 0 ? -1 : 0,
+        );
+      }
+      // eslint-disable-next-line no-confusing-arrow
+      newTokensReceive = newTokensReceive.sort((a: any) => (a.symbol === 'GEAR' ? -1 : 0));
+      // eslint-disable-next-line no-confusing-arrow
+      newTokensReceive = newTokensReceive.sort((a: any) => (a.symbol === 'ETH' ? -1 : 0));
       setTokensReceive(newTokensReceive);
       console.log('getTokensReceive:', newTokensReceive);
     } catch (e) {
       console.error(e);
     }
-  }, [symbolPay, tokensFiltered]);
+  }, [userBalances, symbolPay, tokensFiltered]);
 
   // const getHistoryDay = React.useCallback(async () => {
   //   try {
