@@ -502,8 +502,7 @@ export const PageAccount: React.FC = () => {
                         timeCreate,
                         timeExpire,
                       } = item;
-                      const linkMakerToken = `/markets/${tradingPair.symbolMaker}`;
-                      const linkTakerToken = `/markets/${tradingPair.symbolTaker}`;
+                      const link = `/markets/${tradingPair.symbolMaker}/${tradingPair.symbolTaker}`;
                       let priceChangeModel = (
                         <div className={s.mobilePriceChangeModel}>
                           <img src={ArrowUpIcon} alt="arrow up" /> {`${numberTransform(price)}`}
@@ -525,21 +524,19 @@ export const PageAccount: React.FC = () => {
                           <td>
                             <div className={s.mobileContainer}>
                               <div className={s.mobilePair}>
-                                <Link to={linkMakerToken}>
+                                <Link to={link}>
                                   <img
                                     className={s.tokenImageMaker}
                                     src={getTokenBySymbol(tradingPair.symbolMaker).image}
                                     alt=""
                                   />
-                                </Link>
-                                <Link to={linkTakerToken}>
                                   <img
                                     className={s.tokenImageTaker}
                                     src={getTokenBySymbol(tradingPair.symbolTaker).image}
                                     alt=""
                                   />
+                                  {tradingPair.symbolMaker} / {tradingPair.symbolTaker}
                                 </Link>
-                                {tradingPair.symbolMaker} / {tradingPair.symbolTaker}
                               </div>
                               <div className={s.mobileTime}>
                                 <div className={s.flexContainerColumn}>
