@@ -443,6 +443,7 @@ export const PageAccount: React.FC = () => {
                         timeCreate,
                         timeExpire,
                       } = item;
+                      const link = `/markets/${tradingPair.symbolMaker}/${tradingPair.symbolTaker}`;
                       let priceChangeModel = (
                         <td>
                           <img src={ArrowUpIcon} alt="arrow up" />{' '}
@@ -469,17 +470,19 @@ export const PageAccount: React.FC = () => {
                             {orderExpire} <span className={s.time}>{timeExpire}</span>
                           </td>
                           <td>
-                            <img
-                              className={s.tokenImageMaker}
-                              src={getTokenBySymbol(tradingPair.symbolMaker).image}
-                              alt=""
-                            />
-                            <img
-                              className={s.tokenImageTaker}
-                              src={getTokenBySymbol(tradingPair.symbolTaker).image}
-                              alt=""
-                            />
-                            {tradingPair.symbolMaker} / {tradingPair.symbolTaker}
+                            <Link to={link}>
+                              <img
+                                className={s.tokenImageMaker}
+                                src={getTokenBySymbol(tradingPair.symbolMaker).image}
+                                alt=""
+                              />
+                              <img
+                                className={s.tokenImageTaker}
+                                src={getTokenBySymbol(tradingPair.symbolTaker).image}
+                                alt=""
+                              />
+                              {tradingPair.symbolMaker} / {tradingPair.symbolTaker}
+                            </Link>
                           </td>
                           <td>{amount}</td>
                           {priceChangeModel}
@@ -499,6 +502,8 @@ export const PageAccount: React.FC = () => {
                         timeCreate,
                         timeExpire,
                       } = item;
+                      const linkMakerToken = `/markets/${tradingPair.symbolMaker}`;
+                      const linkTakerToken = `/markets/${tradingPair.symbolTaker}`;
                       let priceChangeModel = (
                         <div className={s.mobilePriceChangeModel}>
                           <img src={ArrowUpIcon} alt="arrow up" /> {`${numberTransform(price)}`}
@@ -520,16 +525,20 @@ export const PageAccount: React.FC = () => {
                           <td>
                             <div className={s.mobileContainer}>
                               <div className={s.mobilePair}>
-                                <img
-                                  className={s.tokenImageMaker}
-                                  src={getTokenBySymbol(tradingPair.symbolMaker).image}
-                                  alt=""
-                                />
-                                <img
-                                  className={s.tokenImageTaker}
-                                  src={getTokenBySymbol(tradingPair.symbolTaker).image}
-                                  alt=""
-                                />
+                                <Link to={linkMakerToken}>
+                                  <img
+                                    className={s.tokenImageMaker}
+                                    src={getTokenBySymbol(tradingPair.symbolMaker).image}
+                                    alt=""
+                                  />
+                                </Link>
+                                <Link to={linkTakerToken}>
+                                  <img
+                                    className={s.tokenImageTaker}
+                                    src={getTokenBySymbol(tradingPair.symbolTaker).image}
+                                    alt=""
+                                  />
+                                </Link>
                                 {tradingPair.symbolMaker} / {tradingPair.symbolTaker}
                               </div>
                               <div className={s.mobileTime}>

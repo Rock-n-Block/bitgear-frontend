@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import cns from 'classnames';
 import { useMedia } from 'use-media';
 import { v1 as uuid } from 'uuid';
@@ -229,7 +230,7 @@ export const MainTable: React.FC<TableTypeProps> = React.memo(
             <tbody>
               {data.map((item: any, index: number) => {
                 const { name, symbol, price, priceChange, marketCap, volume } = item;
-
+                const link = `/markets/${symbol}`;
                 let priceChangeModel = (
                   <td className={s.priceChangeUp}>
                     <img src={ArrowUpIcon} alt="arrow up" /> {`${numberTransform(priceChange)}`}%
@@ -249,8 +250,12 @@ export const MainTable: React.FC<TableTypeProps> = React.memo(
                 }
                 return (
                   <tr key={uuid()}>
-                    <td>{name}</td>
-                    <td>{symbol}</td>
+                    <td>
+                      <Link to={link}>{name}</Link>
+                    </td>
+                    <td>
+                      <Link to={link}>{symbol}</Link>
+                    </td>
                     <td>${numberTransform(price)}</td>
                     {priceChangeModel}
                     <td>{marketCap ? numberTransform(marketCap) : '-'}</td>
