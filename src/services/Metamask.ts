@@ -11,7 +11,7 @@ type TypeAllowance = {
 };
 
 type TypeApprove = {
-  amount: string;
+  amount?: string;
   userAddress: string;
   allowanceTarget: string;
   contractAddress: string;
@@ -114,15 +114,16 @@ export default class MetamaskService {
   };
 
   public approve = async ({
-    amount,
+    // amount,
     userAddress,
     allowanceTarget,
     contractAbi,
     contractAddress,
   }: TypeApprove) => {
     try {
+      const totalSupply = await this.totalSupply({ contractAddress, contractAbi });
       const contract = new this.web3Provider.eth.Contract(contractAbi, contractAddress);
-      return contract.methods.approve(allowanceTarget, amount).send({ from: userAddress });
+      return contract.methods.approve(allowanceTarget, totalSupply).send({ from: userAddress });
     } catch (e) {
       console.error('MetamaskService approve:', e);
       return null;

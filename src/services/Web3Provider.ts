@@ -13,7 +13,7 @@ type TypeAllowance = {
 };
 
 type TypeApprove = {
-  amount: string;
+  amount?: string;
   userAddress: string;
   allowanceTarget: string;
   contractAddress: string;
@@ -125,6 +125,17 @@ export default class Web3Provider {
     return +decimals;
   };
 
+  public totalSupply = async ({ contractAddress, contractAbi }: any) => {
+    try {
+      const contract = new this.web3Provider.eth.Contract(contractAbi, contractAddress);
+      const totalSupply = await contract.methods.totalSupply().call();
+      return new BigNumber(totalSupply).toString(10);
+    } catch (e) {
+      console.error('Web3Provider totalSupply:', e);
+      return '0';
+    }
+  };
+
   public allowance = async ({
     userAddress,
     allowanceTarget,
@@ -148,15 +159,16 @@ export default class Web3Provider {
   };
 
   public approve = async ({
-    amount,
+    // amount,
     userAddress,
     allowanceTarget,
     contractAbi,
     contractAddress,
   }: TypeApprove) => {
     try {
+      const totalSupply = await this.totalSupply({ contractAddress, contractAbi });
       const contract = new this.web3Provider.eth.Contract(contractAbi, contractAddress);
-      return contract.methods.approve(allowanceTarget, amount).send({ from: userAddress });
+      return contract.methods.approve(allowanceTarget, totalSupply).send({ from: userAddress });
     } catch (e) {
       console.error('Web3Provider approve:', e);
       return null;
