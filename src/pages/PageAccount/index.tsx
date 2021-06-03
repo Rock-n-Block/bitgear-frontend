@@ -125,24 +125,45 @@ export const PageAccount: React.FC = () => {
     [],
   );
 
-  const getHistory = React.useCallback(
-    async ({ symbolOne, symbolTwo, limit, aggregate, exchange }: any): Promise<any> => {
+  const getPriceOfPairFrom0x = React.useCallback(
+    async ({ symbolOne, symbolTwo, amount }: any): Promise<any> => {
       try {
-        const resultGetHistory = await CryptoCompare.getHistory({
-          symbolOne,
-          symbolTwo,
-          limit,
-          aggregate,
-          exchange,
+        const { address: sellToken, decimals } = tokensBySymbol[symbolOne];
+        const { address: buyToken } = tokensBySymbol[symbolTwo];
+        const resultGetPriceOfPairFrom0x = await Zx.getPrice({
+          buyToken,
+          sellToken,
+          sellAmount: amount,
+          decimals,
         });
-        return resultGetHistory.data;
+        console.log('PageAccount getPriceOfPairFrom0x', resultGetPriceOfPairFrom0x);
+        return resultGetPriceOfPairFrom0x;
       } catch (e) {
-        console.error('getHistory', e);
+        console.error('PageAccount getPriceOfPairFrom0x', e);
         return { status: 'ERROR', data: undefined };
       }
     },
-    [],
+    [tokensBySymbol],
   );
+
+  // const getHistory = React.useCallback(
+  //   async ({ symbolOne, symbolTwo, limit, aggregate, exchange }: any): Promise<any> => {
+  //     try {
+  //       const resultGetHistory = await CryptoCompare.getHistory({
+  //         symbolOne,
+  //         symbolTwo,
+  //         limit,
+  //         aggregate,
+  //         exchange,
+  //       });
+  //       return resultGetHistory.data;
+  //     } catch (e) {
+  //       console.error('getHistory', e);
+  //       return { status: 'ERROR', data: undefined };
+  //     }
+  //   },
+  //   [],
+  // );
 
   const getOrders = React.useCallback(async (props: any) => {
     try {
@@ -151,8 +172,9 @@ export const PageAccount: React.FC = () => {
       });
       const newOrders = resultGetOrdersMaker.data.records;
       setOrders(newOrders);
+      console.error('PageAccount getOrders', resultGetOrdersMaker);
     } catch (e) {
-      console.error('getOrders', e);
+      console.error('PageAccount getOrders', e);
     }
   }, []);
 
@@ -197,27 +219,33 @@ export const PageAccount: React.FC = () => {
           [exchange] = resultGetExchangeOfPair.data;
         }
         // eslint-disable-next-line no-await-in-loop
-        const resultOfGetHistory = await getHistory({
+        // const resultOfGetHistory = await getHistory({
+        //   symbolOne: symbolMaker,
+        //   symbolTwo: symbolTaker,
+        //   limit: '1',
+        //   aggregate: '1',
+        //   exchange,
+        // });
+
+        // const price = resultOfGetHistory[0]?.close;
+        const amount = new BigNumber(item.order.makerAmount)
+          .dividedBy(10 ** findToken(item.order.makerToken).decimals)
+          .toString();
+        // eslint-disable-next-line no-await-in-loop
+        const resultGetPriceOfPairFrom0x = await getPriceOfPairFrom0x({
           symbolOne: symbolMaker,
           symbolTwo: symbolTaker,
-          limit: '1',
-          aggregate: '1',
-          exchange,
+          amount,
         });
-
-        const price = resultOfGetHistory[0]?.close;
-        const amount = new BigNumber(item.order.takerAmount)
-          .dividedBy(10 ** findToken(item.order.takerToken).decimals)
-          .toString();
+        let price;
+        if (resultGetPriceOfPairFrom0x.status === 'SUCCESS') {
+          price = resultGetPriceOfPairFrom0x.data.price;
+        }
         dataForTableLocal.push({
-          orderCreate: moment(item.metaData.createdAt).format('yyyy.MM.DD hh:mm').split(' ')[0],
-          timeCreate: moment(item.metaData.createdAt).format('yyyy.MM.DD hh:mm').split(' ')[1],
-          orderExpire: moment(new Date(+item.order.expiry).toString())
-            .format('yyyy.MM.DD hh:mm')
-            .split(' ')[0],
-          timeExpire: moment(new Date(+item.order.expiry).toString())
-            .format('yyyy.MM.DD hh:mm')
-            .split(' ')[1],
+          orderCreate: moment(item.metaData.createdAt).format('yyyy.MM.DD'),
+          timeCreate: moment(item.metaData.createdAt).format('hh:mm a'),
+          orderExpire: moment(new Date(+item.order.expiry).toString()).format('yyyy.MM.DD'),
+          timeExpire: moment(new Date(+item.order.expiry).toString()).format('hh:mm a'),
           tradingPair: {
             symbolMaker,
             symbolTaker,
@@ -235,7 +263,7 @@ export const PageAccount: React.FC = () => {
     } catch (e) {
       console.error(e);
     }
-  }, [findToken, getExchangeOfPair, getHistory, orders]);
+  }, [findToken, getExchangeOfPair, getPriceOfPairFrom0x, orders]);
 
   const onSort = (param: string): void => {
     try {
@@ -417,7 +445,8 @@ export const PageAccount: React.FC = () => {
                       } = item;
                       let priceChangeModel = (
                         <td>
-                          <img src={ArrowUpIcon} alt="arrow up" /> {`${numberTransform(price)}`}
+                          <img src={ArrowUpIcon} alt="arrow up" />{' '}
+                          {`${price ? numberTransform(price) : '-'}`}
                         </td>
                       );
                       if (price < 0) {
@@ -452,7 +481,7 @@ export const PageAccount: React.FC = () => {
                             />
                             {tradingPair.symbolMaker} / {tradingPair.symbolTaker}
                           </td>
-                          <td>{numberTransform(amount)}</td>
+                          <td>{amount}</td>
                           {priceChangeModel}
                         </tr>
                       );
