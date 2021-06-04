@@ -178,7 +178,7 @@ export const PageMarketsContent: React.FC = () => {
   const { chainId } = useSelector(({ wallet }: any) => wallet);
   const { messageYouPay } = useSelector(({ status }: any) => status);
 
-  const { symbolOne, symbolTwo } = useParams<TypeUseParams>();
+  const { symbolOne, symbolTwo = 'ETH' } = useParams<TypeUseParams>();
 
   const refDropdownPay = React.useRef<HTMLDivElement>(null);
   const refDropdownReceive = React.useRef<HTMLDivElement>(null);
