@@ -1620,7 +1620,12 @@ export const PageMarketsContent: React.FC = () => {
           </div>
           <div className={s.containerTitlePrice}>
             {!symbolReceive && '$'}
-            {priceMarket ? prettyPrice(priceMarket?.toString()) : '-'} {symbolReceive}
+            {priceMarket
+              ? prettyPrice(priceMarket?.toString())
+              : symbolPay === 'USDC' && !symbolReceive
+              ? marketHistory[0]?.quote?.USD?.close
+              : '-'}{' '}
+            {symbolReceive}
           </div>
           <div
             className={classPriceChange}
