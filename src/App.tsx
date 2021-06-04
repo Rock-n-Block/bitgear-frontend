@@ -2,10 +2,10 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom';
 import { gql, useQuery } from '@apollo/client';
+import BigNumber from 'bignumber.js/bignumber';
 
-// import BigNumber from 'bignumber.js/bignumber';
 import imageTokenPay from './assets/images/token.png';
-// import { useWalletConnectorContext } from './contexts/WalletConnect';
+import { useWalletConnectorContext } from './contexts/WalletConnect';
 import tokensListData from './data/coinlist.json';
 // import erc20Abi from './data/erc20Abi.json';
 // import excludedSymbols from './data/excludedSymbols';
@@ -64,7 +64,7 @@ const CoinMarketCap = new CoinMarketCapService();
 const Alchemy = new AlchemyService();
 
 export const App: React.FC = () => {
-  // const { web3Provider } = useWalletConnectorContext();
+  const { web3Provider } = useWalletConnectorContext();
 
   // const [getTokensFromGraphQuery, { data: dataGetTokensFromGraphQuery }] = useLazyQuery(GET_TOKENS);
   const { fetchMore: fetchMoreGetTokensFromGraphQuery } = useQuery(GET_TOKENS, {
@@ -345,6 +345,17 @@ export const App: React.FC = () => {
       if (resultGetBalances.status === 'SUCCESS') {
         const newBalances = resultGetBalances.data;
         console.log('App getTokenBalancesFromAlchemy newBalances:', newBalances);
+        try {
+          const resultGetBalance = await web3Provider.getBalance(userAddress);
+          if (resultGetBalance) {
+            const newResultGetBalance = new BigNumber(resultGetBalance)
+              .multipliedBy(new BigNumber(10).pow(18))
+              .toString(10);
+            newBalances['0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'] = newResultGetBalance;
+          }
+        } catch (e) {
+          console.error(e);
+        }
         setUserData({ balances: newBalances });
       }
       setStatus({ loadingBalances: 'done' });
@@ -352,7 +363,7 @@ export const App: React.FC = () => {
       console.error('App getTokensBalancesFromAlchemy:', e);
       setStatus({ loadingBalances: 'error' });
     }
-  }, [userAddress, tokenAddresses, setUserData, setStatus]);
+  }, [userAddress, tokenAddresses, setUserData, setStatus, web3Provider]);
 
   // const getTokensBalances = React.useCallback(async () => {
   //   try {
