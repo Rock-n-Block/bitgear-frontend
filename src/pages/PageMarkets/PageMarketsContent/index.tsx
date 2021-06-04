@@ -1633,8 +1633,8 @@ export const PageMarketsContent: React.FC = () => {
             data-negative={isPriceChangeNegative}
           >
             {isPriceChangePositive && '+'}
-            {priceChange ? `${priceChange}%` : '-'}{' '}
-            {period === 1
+            {!!priceChange && `${priceChange}%`}{' '}
+            {!!priceChange && period === 1
               ? 'past 24 hours'
               : period === 7
               ? 'past week'
@@ -2096,7 +2096,7 @@ export const PageMarketsContent: React.FC = () => {
 
       <section className={s.containerChart}>
         <div className={s.chart}>
-          {points.length > 0 && (
+          {points.length > 0 && points[0] !== null && points[0] !== undefined ? (
             <LineChart
               interactive
               data={points}
@@ -2105,6 +2105,10 @@ export const PageMarketsContent: React.FC = () => {
               padding={20}
               onHover={handleHoverChart}
             />
+          ) : (
+            <div className={s.chartWithoutData}>
+              <div>No data yet</div>
+            </div>
           )}
         </div>
         <div className={s.chartData}>
