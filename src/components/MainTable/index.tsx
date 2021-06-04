@@ -38,6 +38,7 @@ export const MainTable: React.FC<TableTypeProps> = React.memo(
     const [points, setPoints] = React.useState<number[]>([]);
 
     const isActiveColumnName = activeColumn === 'name';
+    const isActiveColumnSymbol = activeColumn === 'symbol';
     const isActiveColumnPrice = activeColumn === 'price';
     const isActiveColumnPriceChange = activeColumn === 'priceChange';
     const isActiveColumnMarketCap = activeColumn === 'marketCap';
@@ -142,7 +143,18 @@ export const MainTable: React.FC<TableTypeProps> = React.memo(
                     />
                   ) : null}
                 </th>
-                <th>Symbol</th>
+                <th
+                  className={cns(isActiveColumnSymbol ? s.ExploreTableActive : null)}
+                  onClick={() => onSort('symbol')}
+                >
+                  Symbol
+                  {activeColumn === 'symbol' ? (
+                    <IconArrowDownWhite
+                      fill="#0197E2"
+                      className={cns(isArrowUp ? s.arrowSortUp : s.arrowSort)}
+                    />
+                  ) : null}
+                </th>
                 <th
                   className={cns(isActiveColumnPrice ? s.ExploreTableActive : null)}
                   onClick={() => onSort('price')}
