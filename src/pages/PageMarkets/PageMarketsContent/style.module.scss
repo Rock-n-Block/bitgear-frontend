@@ -516,6 +516,20 @@
       grid-row: 2;
     }
 
+    &Top {
+      @include flex(row, center, space-between, nowrap);
+
+      &Button, &Button:active, &Button:focus, &Button:hover {
+        padding: 0 10px;
+        margin: 0;
+        font-size: 16px;
+        line-height: 25px;
+        background: none !important;
+        transition: none !important;
+        transform: none !important;
+      }
+    }
+
     &Inner {
       @include flex(column, normal, normal, wrap);
       height: calc(100% - 40px);

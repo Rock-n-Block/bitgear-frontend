@@ -201,7 +201,7 @@ export const PageMarketsContent: React.FC = () => {
   const [period, setPeriod] = React.useState<number>(periodDefault > 0 ? periodDefault : 1);
   const [searchValuePay, setSearchValuePay] = React.useState<string>('');
   const [searchValueReceive, setSearchValueReceive] = React.useState<string>('');
-  const [exchanges, setExchanges] = React.useState<any>([]);
+  const [exchanges, setExchanges] = React.useState<any>([...exchangesList]);
   const [exchangesExcluded, setExchangesExcluded] = React.useState<string[]>([]);
   const [openDropdownPay, setOpenDropdownPay] = React.useState<boolean>(false);
   const [openDropdownReceive, setOpenDropdownReceive] = React.useState<boolean>(false);
@@ -1084,7 +1084,7 @@ export const PageMarketsContent: React.FC = () => {
     }
     console.log('handleChangeExchanges:', newExchanges);
     setExchanges(newExchanges);
-    const newExchangesExcluded: string[] = _.difference(exchangesList, newExchanges);
+    const newExchangesExcluded: string[] = _.difference([...exchangesList], newExchanges);
     console.log('handleChangeExchanges newExchangesExcluded:', newExchangesExcluded);
     setExchangesExcluded(newExchangesExcluded);
   };
@@ -1276,6 +1276,16 @@ export const PageMarketsContent: React.FC = () => {
   const handleSelectExpiration = (minutes: number) => {
     setExpiration(minutes);
     setOpenSelect(false);
+  };
+
+  const handleSelectAllExchanges = () => {
+    setExchanges([...exchangesList]);
+    setExchangesExcluded([]);
+  };
+
+  const handleDeselectAllExchanges = () => {
+    setExchanges([]);
+    setExchangesExcluded([...exchangesList]);
   };
 
   const handleResetSettings = () => {
@@ -1692,7 +1702,26 @@ export const PageMarketsContent: React.FC = () => {
               </Select>
             </div>
             <div className={s.containerSettingsExchanges}>
-              <h2>Exchanges</h2>
+              <div className={s.containerSettingsExchangesTop}>
+                <h2>Exchanges</h2>
+                {exchanges.length === exchangesList.length ? (
+                  <Button
+                    normal
+                    classNameCustom={s.containerSettingsExchangesTopButton}
+                    onClick={() => handleDeselectAllExchanges()}
+                  >
+                    Deselect all
+                  </Button>
+                ) : (
+                  <Button
+                    normal
+                    classNameCustom={s.containerSettingsExchangesTopButton}
+                    onClick={() => handleSelectAllExchanges()}
+                  >
+                    Select all
+                  </Button>
+                )}
+              </div>
               <div className={s.containerSettingsExchangesInner}>
                 {exchangesList?.map((exchange) => {
                   const checked = exchanges.includes(exchange);
