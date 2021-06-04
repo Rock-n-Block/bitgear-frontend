@@ -557,7 +557,8 @@
   }
 
   &Buttons {
-    @include flex(row, flex-end);
+    @include flex(row, flex-end, normal, nowrap);
+    width: 100%;
     grid-column: 1;
     grid-row: 2;
 
@@ -566,13 +567,24 @@
       grid-row: 4;
     }
 
-    &Button {
+    &ButtonSelectAll, &ButtonSelectAll:focus, &ButtonSelectAll:active {
+      width: 120px;
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 26px;
+      padding: 8px 12px;
+      margin: 5px 10px 5px 0;
+      background: none !important;
+    }
+
+    &Button, &Button:focus, &Button:active {
       width: 60px;
       font-weight: 500;
       font-size: 14px;
       line-height: 26px;
       padding: 8px 12px;
-      margin: 5px 15px 5px 0;
+      margin: 5px 10px 5px 0;
+      background: none !important;
     }
   }
 }

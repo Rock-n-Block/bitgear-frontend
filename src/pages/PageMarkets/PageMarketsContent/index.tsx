@@ -1709,23 +1709,6 @@ export const PageMarketsContent: React.FC = () => {
             <div className={s.containerSettingsExchanges}>
               <div className={s.containerSettingsExchangesTop}>
                 <h2>Exchanges</h2>
-                {exchanges.length === exchangesList.length ? (
-                  <Button
-                    normal
-                    classNameCustom={s.containerSettingsExchangesTopButton}
-                    onClick={() => handleDeselectAllExchanges()}
-                  >
-                    Deselect all
-                  </Button>
-                ) : (
-                  <Button
-                    normal
-                    classNameCustom={s.containerSettingsExchangesTopButton}
-                    onClick={() => handleSelectAllExchanges()}
-                  >
-                    Select all
-                  </Button>
-                )}
               </div>
               <div className={s.containerSettingsExchangesInner}>
                 {exchangesList?.map((exchange) => {
@@ -1801,6 +1784,23 @@ export const PageMarketsContent: React.FC = () => {
               >
                 Reset
               </Button>
+              {exchanges.length === exchangesList.length ? (
+                <Button
+                  normal
+                  classNameCustom={s.containerSettingsButtonsButtonSelectAll}
+                  onClick={() => handleDeselectAllExchanges()}
+                >
+                  Deselect all
+                </Button>
+              ) : (
+                <Button
+                  normal
+                  classNameCustom={s.containerSettingsButtonsButtonSelectAll}
+                  onClick={() => handleSelectAllExchanges()}
+                >
+                  Select all
+                </Button>
+              )}
             </div>
           </div>
         </section>
