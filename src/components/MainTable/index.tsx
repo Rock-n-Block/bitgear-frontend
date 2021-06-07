@@ -241,8 +241,8 @@ export const MainTable: React.FC<TableTypeProps> = React.memo(
           {isWide ? (
             <tbody>
               {data.map((item: any, index: number) => {
-                const { name, symbol, price, priceChange, marketCap, volume } = item;
-                const link = `/markets/${symbol}`;
+                const { name, symbol, address, price, priceChange, marketCap, volume } = item;
+                const link = `/markets/${address}`;
                 let priceChangeModel = (
                   <td className={s.priceChangeUp}>
                     <img src={ArrowUpIcon} alt="arrow up" /> {`${numberTransform(priceChange)}`}%
@@ -282,8 +282,8 @@ export const MainTable: React.FC<TableTypeProps> = React.memo(
           ) : (
             <tbody>
               {dataForMobile.map((token: any, index: number) => {
-                const { symbol, name, price, priceChange } = token;
-                const link = `/markets/${symbol}`;
+                const { symbol, name, address, price, priceChange } = token;
+                const link = `/markets/${address}`;
                 let priceChangeModel = (
                   <div className={`${s.mobilePriceChangeModel}`}>
                     <div className={s.flexContainerRow}>
