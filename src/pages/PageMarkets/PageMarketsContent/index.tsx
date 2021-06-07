@@ -70,8 +70,8 @@ type TypeToken = {
 };
 
 type TypeUseParams = {
-  symbolOne: string;
-  symbolTwo?: string;
+  addressOne: string;
+  addressTwo?: string;
 };
 
 type TypeModalParams = {
@@ -155,7 +155,7 @@ export const DropdownItems: React.FC<TypeDropdownItemsParams> = React.memo(
   },
 );
 
-export const PageMarketsContent: React.FC = () => {
+export const PageMarketsContent: React.FC = React.memo(() => {
   const history = useHistory();
 
   const periodDefault = Number(getFromStorage('chartPeriod'));
@@ -174,11 +174,16 @@ export const PageMarketsContent: React.FC = () => {
   ]);
 
   const { address: userAddress, balances: userBalances } = useSelector(({ user }: any) => user);
-  const { tokens, tokensBySymbol } = useSelector(({ zx }: any) => zx);
+  const { tokens, tokensBySymbol, tokensByAddress } = useSelector(({ zx }: any) => zx);
   const { chainId } = useSelector(({ wallet }: any) => wallet);
   const { messageYouPay } = useSelector(({ status }: any) => status);
 
-  const { symbolOne, symbolTwo = 'ETH' } = useParams<TypeUseParams>();
+  let {
+    addressOne = '',
+    addressTwo = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+  } = useParams<TypeUseParams>();
+  addressOne = addressOne.toLowerCase();
+  addressTwo = addressTwo.toLowerCase();
 
   const refDropdownPay = React.useRef<HTMLDivElement>(null);
   const refDropdownReceive = React.useRef<HTMLDivElement>(null);
@@ -214,9 +219,11 @@ export const PageMarketsContent: React.FC = () => {
   const [searchTokensResultReceive, setSearchTokensResultReceive] = React.useState<TypeToken[]>(
     tokensReceive,
   );
-  const [tokenNamePay, setTokenNamePay] = React.useState<string>('');
-  const [symbolPay, setSymbolPay] = React.useState<string>(symbolOne.toUpperCase());
-  const [symbolReceive, setSymbolReceive] = React.useState<string>(symbolTwo?.toUpperCase() || '');
+  // const [tokenNamePay, setTokenNamePay] = React.useState<string>('');
+  const [addressPay, setAddressPay] = React.useState<string>(addressOne.toUpperCase());
+  const [addressReceive, setAddressReceive] = React.useState<string>(
+    addressTwo?.toUpperCase() || '',
+  );
   const [inputChanged, setInputChanged] = React.useState<string>();
   const [amountPay, setAmountPay] = React.useState<string>('0');
   const [amountReceive, setAmountReceive] = React.useState<string>('0');
@@ -235,7 +242,7 @@ export const PageMarketsContent: React.FC = () => {
   const amountPayDebounced = useDebounce(amountPay, 300);
   const amountReceiveDebounced = useDebounce(amountReceive, 300);
 
-  const isSymbolPayETH = symbolPay === 'ETH';
+  const isAddressPayETH = addressPay === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee';
 
   const isModeMarket = mode === 'market';
   const isModeLimit = mode === 'limit';
@@ -248,9 +255,22 @@ export const PageMarketsContent: React.FC = () => {
   const isGasPriceTypeVeryFast = gasPriceType === 'veryFast';
   const isGasPriceTypeCustom = gasPriceType === 'custom';
 
+  const tokenOne = tokensByAddress && tokensByAddress[addressOne];
+  const tokenTwo = tokensByAddress && tokensByAddress[addressTwo];
+  const tokenPay = tokensByAddress && tokensByAddress[addressPay];
+  const tokenReceive = tokensByAddress && tokensByAddress[addressReceive];
+  // console.log(
+  //   'PageMarketsContent tokens:',
+  //   tokensByAddress,
+  //   tokenOne,
+  //   tokenTwo,
+  //   tokenPay,
+  //   tokenReceive,
+  // );
+
   let isAllowed;
-  if (tokensBySymbol && tokensBySymbol[symbolPay]) {
-    const decimals10 = new BigNumber(10).pow(tokensBySymbol[symbolPay].decimals).toFixed();
+  if (tokensBySymbol && tokensByAddress[addressPay]) {
+    const decimals10 = new BigNumber(10).pow(tokenPay?.decimals).toFixed();
     const amountPayInWei = new BigNumber(amountPay).multipliedBy(decimals10).toFixed();
     isAllowed = allowance >= +amountPayInWei;
     // console.log('PageMarketsContent:', symbolPay, allowance, decimals10, amountPayInWei);
@@ -260,31 +280,21 @@ export const PageMarketsContent: React.FC = () => {
     ? +amountReceive === 0 || !balanceOfTokenPay || +balanceOfTokenPay < +amountPay
     : false;
 
-  const marketPrice =
-    marketHistory && marketHistory[0] ? marketHistory[0]?.quote[symbolTwo || 'USD']?.close : 0;
-
-  const getTokenBySymbol = React.useCallback(
-    (symbol: string) => {
-      const tokenEmpty = { name: 'Currency', symbol: null, image: imageTokenPay };
-      try {
-        const token = tokens.filter((item: any) => item.symbol === symbol);
-        return token.length > 0 ? token[0] : tokenEmpty;
-      } catch (e) {
-        console.error(e);
-        return tokenEmpty;
-      }
-    },
-    [tokens],
-  );
+  let marketPrice = '-';
+  if (tokensByAddress) {
+    const symbolTwo = tokenTwo?.symbol;
+    marketPrice =
+      marketHistory && marketHistory[0] ? marketHistory[0]?.quote[symbolTwo || 'USD']?.close : 0;
+  }
 
   const getQuoteBuy = React.useCallback(
     async ({ amount }) => {
       try {
-        console.log('PageMarketsContent getQuoteBuy:', amount);
+        if (!tokenPay) return null;
         if (!amount) return null;
-        if (!symbolReceive) return null;
-        const { decimals, address: addressPay } = getTokenBySymbol(symbolPay);
-        const { address: addressReceive } = getTokenBySymbol(symbolReceive);
+        if (!addressReceive) return null;
+        console.log('PageMarketsContent getQuoteBuy:', amount);
+        const { decimals } = tokenPay;
         const props = {
           buyToken: addressReceive,
           sellToken: addressPay,
@@ -300,17 +310,17 @@ export const PageMarketsContent: React.FC = () => {
         return null;
       }
     },
-    [getTokenBySymbol, symbolPay, symbolReceive],
+    [tokenPay, addressPay, addressReceive],
   );
 
   const getPriceBuy = React.useCallback(
     async ({ amount }) => {
       try {
-        console.log('PageMarketsContent getPriceBuy:', amount);
+        if (!tokenPay) return null;
         if (!amount) return null;
-        if (!symbolReceive) return null;
-        const { decimals, address: addressPay } = getTokenBySymbol(symbolPay);
-        const { address: addressReceive } = getTokenBySymbol(symbolReceive);
+        if (!addressReceive) return null;
+        console.log('PageMarketsContent getPriceBuy:', amount);
+        const { decimals } = tokenPay;
         const props = {
           buyToken: addressReceive,
           sellToken: addressPay,
@@ -326,7 +336,7 @@ export const PageMarketsContent: React.FC = () => {
         return null;
       }
     },
-    [getTokenBySymbol, symbolPay, symbolReceive],
+    [tokenPay, addressPay, addressReceive],
   );
 
   // const getQuoteSell = React.useCallback(
@@ -384,7 +394,7 @@ export const PageMarketsContent: React.FC = () => {
   const getPricePay = React.useCallback(async () => {
     try {
       if (!amountPayDebounced || amountPayDebounced === '0') return;
-      if (!symbolReceive) return;
+      if (!addressReceive) return;
       const resultGetQuote = await getQuoteBuy({ amount: amountPayDebounced });
       if (!resultGetQuote) return;
       const newAmountFormatted = new BigNumber(amountPayDebounced)
@@ -395,12 +405,12 @@ export const PageMarketsContent: React.FC = () => {
     } catch (e) {
       console.error('PageMarketsContent getPricePay:', e);
     }
-  }, [getQuoteBuy, amountPayDebounced, symbolReceive]);
+  }, [getQuoteBuy, amountPayDebounced, addressReceive]);
 
   const getPricePayLimit = React.useCallback(async () => {
     try {
       if (!amountPayDebounced || amountPayDebounced === '0') return;
-      if (!symbolReceive) return;
+      if (!addressReceive) return;
       const resultGetPrice = await getPriceBuy({ amount: amountPayDebounced });
       if (!resultGetPrice) return;
       const newAmountFormatted = new BigNumber(amountPayDebounced)
@@ -411,12 +421,12 @@ export const PageMarketsContent: React.FC = () => {
     } catch (e) {
       console.error('PageMarketsContent getPricePayLimit:', e);
     }
-  }, [getPriceBuy, amountPayDebounced, marketPrice, symbolReceive]);
+  }, [getPriceBuy, amountPayDebounced, marketPrice, addressReceive]);
 
   const getPriceReceive = React.useCallback(async () => {
     try {
       if (!amountReceiveDebounced || amountReceiveDebounced === '0') return;
-      if (!symbolReceive) return;
+      if (!addressReceive) return;
       const resultGetQuote = await getQuoteBuy({ amount: amountReceiveDebounced });
       if (!resultGetQuote) return;
       const newAmountFormatted = new BigNumber(amountReceiveDebounced)
@@ -427,12 +437,12 @@ export const PageMarketsContent: React.FC = () => {
     } catch (e) {
       console.error('PageMarketsContent getPriceReceive:', e);
     }
-  }, [getQuoteBuy, amountReceiveDebounced, symbolReceive]);
+  }, [getQuoteBuy, amountReceiveDebounced, addressReceive]);
 
   const getPriceReceiveLimit = React.useCallback(async () => {
     try {
       if (!amountReceiveDebounced || amountReceiveDebounced === '0') return;
-      if (!symbolReceive) return;
+      if (!addressReceive) return;
       const resultGetPrice = await getPriceBuy({ amount: amountReceiveDebounced });
       if (!resultGetPrice) return;
       const newAmountFormatted = new BigNumber(amountReceiveDebounced)
@@ -443,7 +453,7 @@ export const PageMarketsContent: React.FC = () => {
     } catch (e) {
       console.error('PageMarketsContent getPriceReceiveLimit:', e);
     }
-  }, [getPriceBuy, amountReceiveDebounced, marketPrice, symbolReceive]);
+  }, [getPriceBuy, amountReceiveDebounced, marketPrice, addressReceive]);
 
   const getGasPrice = React.useCallback(async () => {
     const resultGetGasPrice = await Etherscan.getGasPrice();
@@ -465,12 +475,14 @@ export const PageMarketsContent: React.FC = () => {
 
   const getPriceMarket = React.useCallback(async () => {
     try {
-      if (!symbolPay) return;
+      if (!addressPay) return;
+      if (!tokenPay) return;
+      if (!tokensBySymbol) return;
       // console.log('PageMarketsContent getPriceMarket:', symbolPay, symbolReceive, tokens);
-      const { decimals, address: addressPay } = getTokenBySymbol(symbolPay);
-      const { address: addressReceive } = getTokenBySymbol(symbolReceive || 'USDC');
+      const { decimals } = tokenPay;
+      const { address: addressUSDC } = tokensBySymbol.USDC;
       const result = await Zx.getPrice({
-        buyToken: addressReceive,
+        buyToken: addressReceive || addressUSDC,
         sellToken: addressPay,
         sellAmount: '1',
         skipValidation: true,
@@ -485,18 +497,18 @@ export const PageMarketsContent: React.FC = () => {
     } catch (e) {
       console.error(e);
     }
-  }, [getTokenBySymbol, symbolPay, symbolReceive]);
+  }, [tokenPay, tokensBySymbol, addressPay, addressReceive]);
 
   const getPrices = React.useCallback(async () => {
     try {
       setStatus({ messageYouPay: null });
-      const { decimals, address: addressPay } = getTokenBySymbol(symbolPay);
-      const { address: addressReceive } = getTokenBySymbol(symbolReceive);
+      if (!tokenPay) return null;
+      const { decimals } = tokenPay;
       if (!decimals) return null;
       if (!amountPayDebounced || amountPayDebounced === '' || amountPayDebounced === '0')
         return null;
       let newPrice = 0;
-      if (symbolReceive && amountPayDebounced) {
+      if (addressReceive && amountPayDebounced) {
         const result = await Zx.getPrice({
           buyToken: addressReceive,
           sellToken: addressPay,
@@ -521,7 +533,7 @@ export const PageMarketsContent: React.FC = () => {
         }
       } else {
         const result = await CryptoCompare.getMarketData({
-          symbolOne: symbolPay,
+          symbolOne: addressPay,
           symbolTwo: 'USD',
         });
         console.log('PageMarketsContent getPrices:', result);
@@ -539,17 +551,17 @@ export const PageMarketsContent: React.FC = () => {
       console.error(e);
       return null;
     }
-  }, [setStatus, amountPayDebounced, symbolPay, symbolReceive, getTokenBySymbol]);
+  }, [tokenPay, setStatus, amountPayDebounced, addressPay, addressReceive]);
 
-  const getTokenPay = React.useCallback(async () => {
-    try {
-      const token = getTokenBySymbol(symbolPay);
-      const { name } = token;
-      setTokenNamePay(name);
-    } catch (e) {
-      console.error(e);
-    }
-  }, [getTokenBySymbol, symbolPay]);
+  // const getTokenPay = React.useCallback(async () => {
+  //   try {
+  //     if (!tokenPay) return;
+  //     const { name } = tokenPay;
+  //     setTokenNamePay(name);
+  //   } catch (e) {
+  //     console.error(e);
+  //   }
+  // }, [tokenPay]);
 
   const filterTokens = React.useCallback(() => {
     try {
@@ -570,7 +582,7 @@ export const PageMarketsContent: React.FC = () => {
       // eslint-disable-next-line no-confusing-arrow
       newTokens = newTokens.sort((a: any) => (a.symbol === 'ETH' ? -1 : 0));
       setTokensFiltered(newTokens);
-      console.log('PageMarketsContent filterTokens:', newTokens);
+      console.log('PageMarketsContent', 'filterTokens:', newTokens);
       return null;
     } catch (e) {
       console.error('PageMarketsContent filterTokens:', e);
@@ -580,25 +592,24 @@ export const PageMarketsContent: React.FC = () => {
 
   const getTokensSymbolsReceive = async () => {
     try {
-      const { address: addressPay } = getTokenBySymbol(symbolPay);
       const result = await Zx.getPrices({
         sellToken: addressPay,
       });
       const prices = result.data.records;
       const newPricesSymbols = prices.map((item: any) => item.symbol);
-      console.log('getTokensSymbolsReceive:', newPricesSymbols);
+      console.log('PageMarketsContent getTokensSymbolsReceive:', newPricesSymbols);
       return newPricesSymbols;
     } catch (e) {
-      console.error('getTokensSymbolsReceive:', e);
+      console.error('PageMarketsContent getTokensSymbolsReceive:', e);
       return [];
     }
   };
 
   const getTokensReceive = React.useCallback(async () => {
     try {
-      let newTokensReceive = tokensFiltered.filter((item: any) => item.symbol !== symbolPay);
+      let newTokensReceive = tokensFiltered.filter((item: any) => item.address !== addressPay);
       if (newTokensReceive.length === 0) {
-        setSymbolReceive('');
+        setAddressReceive('');
         setTokensReceive([]);
         return;
       }
@@ -613,11 +624,11 @@ export const PageMarketsContent: React.FC = () => {
       // eslint-disable-next-line no-confusing-arrow
       newTokensReceive = newTokensReceive.sort((a: any) => (a.symbol === 'ETH' ? -1 : 0));
       setTokensReceive(newTokensReceive);
-      console.log('getTokensReceive:', newTokensReceive);
+      console.log('PageMarketsContent getTokensReceive:', newTokensReceive);
     } catch (e) {
       console.error(e);
     }
-  }, [userBalances, symbolPay, tokensFiltered]);
+  }, [userBalances, addressPay, tokensFiltered]);
 
   // const getHistoryDay = React.useCallback(async () => {
   //   try {
@@ -669,6 +680,10 @@ export const PageMarketsContent: React.FC = () => {
 
   const getHistoryDay = React.useCallback(async () => {
     try {
+      if (!tokenOne) return;
+      if (!tokenTwo) return;
+      const { symbol: symbolOne } = tokenOne;
+      const { symbol: symbolTwo } = tokenTwo;
       const result = await CoinMarketCap.getHistoryDayForPair({
         symbolOne,
         symbolTwo: symbolTwo || 'USD',
@@ -678,10 +693,14 @@ export const PageMarketsContent: React.FC = () => {
     } catch (e) {
       console.error(e);
     }
-  }, [symbolOne, symbolTwo]);
+  }, [tokenOne, tokenTwo]);
 
   const getHistoryHourWeek = React.useCallback(async () => {
     try {
+      if (!tokenOne) return;
+      if (!tokenTwo) return;
+      const { symbol: symbolOne } = tokenOne;
+      const { symbol: symbolTwo } = tokenTwo;
       const result = await CoinMarketCap.getHistoryWeekForPair({
         symbolOne,
         symbolTwo: symbolTwo || 'USD',
@@ -691,10 +710,14 @@ export const PageMarketsContent: React.FC = () => {
     } catch (e) {
       console.error(e);
     }
-  }, [symbolOne, symbolTwo]);
+  }, [tokenOne, tokenTwo]);
 
   const getHistoryHourMonth = React.useCallback(async () => {
     try {
+      if (!tokenOne) return;
+      if (!tokenTwo) return;
+      const { symbol: symbolOne } = tokenOne;
+      const { symbol: symbolTwo } = tokenTwo;
       const result = await CoinMarketCap.getHistoryMonthForPair({
         symbolOne,
         symbolTwo: symbolTwo || 'USD',
@@ -704,10 +727,12 @@ export const PageMarketsContent: React.FC = () => {
     } catch (e) {
       console.error(e);
     }
-  }, [symbolOne, symbolTwo]);
+  }, [tokenOne, tokenTwo]);
 
   const getPoints = React.useCallback(() => {
     try {
+      if (!tokenTwo) return;
+      const { symbol: symbolTwo } = tokenTwo;
       const newPoints = marketHistory.map((item: any) => {
         return item.quote[symbolTwo || 'USD'].close;
       });
@@ -720,7 +745,7 @@ export const PageMarketsContent: React.FC = () => {
     } catch (e) {
       console.error(e);
     }
-  }, [marketHistory, symbolTwo]);
+  }, [marketHistory, tokenTwo]);
 
   const getDateTime = React.useCallback(() => {
     try {
@@ -736,13 +761,14 @@ export const PageMarketsContent: React.FC = () => {
   const getBalanceOfTokensPay = React.useCallback(async () => {
     try {
       if (!userAddress) return;
-      if (symbolPay === 'ETH') {
+      if (!tokenPay) return;
+      const { symbol, address: contractAddressPay } = tokenPay;
+      if (symbol === 'ETH') {
         const balancePay = await web3Provider.getBalance(userAddress);
         const balancePayFormatted = new BigNumber(balancePay).toString(10);
         setBalanceOfTokenPay(balancePayFormatted);
         return;
       }
-      const contractAddressPay = getTokenBySymbol(symbolPay).address;
       const resultBalanceOfPay = await web3Provider.balanceOf({
         address: userAddress,
         contractAddress: contractAddressPay,
@@ -754,18 +780,19 @@ export const PageMarketsContent: React.FC = () => {
     } catch (e) {
       console.error(e);
     }
-  }, [userAddress, web3Provider, symbolPay, getTokenBySymbol]);
+  }, [userAddress, web3Provider, tokenPay]);
 
   const getBalanceOfTokensReceive = React.useCallback(async () => {
     try {
       if (!userAddress) return;
-      if (symbolReceive === 'ETH') {
+      if (!tokenReceive) return;
+      const { symbol, address: contractAddressReceive } = tokenReceive;
+      if (symbol === 'ETH') {
         const balanceReceive = await web3Provider.getBalance(userAddress);
         const balanceReceiveFormatted = new BigNumber(balanceReceive).toString(10);
         setBalanceOfTokenReceive(balanceReceiveFormatted);
         return;
       }
-      const contractAddressReceive = getTokenBySymbol(symbolReceive).address;
       const resultBalanceOfReceive = await web3Provider.balanceOf({
         address: userAddress,
         contractAddress: contractAddressReceive,
@@ -777,7 +804,7 @@ export const PageMarketsContent: React.FC = () => {
     } catch (e) {
       console.error(e);
     }
-  }, [userAddress, web3Provider, symbolReceive, getTokenBySymbol]);
+  }, [userAddress, web3Provider, tokenReceive]);
 
   const validateTradeErrors = React.useCallback(
     (error) => {
@@ -801,14 +828,14 @@ export const PageMarketsContent: React.FC = () => {
 
   const verifyForm = React.useCallback(() => {
     try {
-      if (!symbolPay) {
+      if (!addressPay) {
         toggleModal({
           open: true,
           text: `Please, choose token to pay`,
         });
         return false;
       }
-      if (!symbolReceive) {
+      if (!addressReceive) {
         toggleModal({
           open: true,
           text: `Please, choose token to receive`,
@@ -820,7 +847,7 @@ export const PageMarketsContent: React.FC = () => {
       console.error(e);
       return false;
     }
-  }, [symbolPay, symbolReceive, toggleModal]);
+  }, [addressPay, addressReceive, toggleModal]);
 
   const rejectUsingEthForLimit = React.useCallback(() => {
     try {
@@ -841,8 +868,7 @@ export const PageMarketsContent: React.FC = () => {
   const getAllowance = React.useCallback(async () => {
     try {
       // console.log('PageMarketsContent getAllowance:', symbolPay, symbolReceive, amountPay);
-      if (!symbolPay || !symbolReceive || !amountPay || !userAddress) return;
-      const { address: addressPay } = getTokenBySymbol(symbolPay);
+      if (!addressPay || !addressReceive || !amountPay || !userAddress) return;
       const { netType, addresses } = config as { [index: string]: any };
       const { allowanceTarget, allowanceTargetLimit } = addresses[netType];
       const propsGetAllowance = {
@@ -857,24 +883,16 @@ export const PageMarketsContent: React.FC = () => {
     } catch (e) {
       console.error('PageMarketsContent getAllowance:', e);
     }
-  }, [
-    isModeLimit,
-    getTokenBySymbol,
-    symbolPay,
-    symbolReceive,
-    userAddress,
-    web3Provider,
-    amountPay,
-  ]);
+  }, [isModeLimit, addressPay, addressReceive, userAddress, web3Provider, amountPay]);
 
   const trade = React.useCallback(async () => {
     try {
+      if (!tokensByAddress) return null;
       if (!verifyForm()) {
         setWaiting(false);
         return null;
       }
-      const { decimals, address: addressPay } = getTokenBySymbol(symbolPay);
-      const { address: addressReceive } = getTokenBySymbol(symbolReceive);
+      const { decimals } = tokensByAddress(addressPay);
       const excludedSources = exchangesExcluded.join(',');
       const gasPriceSetting = getGasPriceSetting();
       const slippagePercentage = slippage / 100;
@@ -911,31 +929,30 @@ export const PageMarketsContent: React.FC = () => {
       return null;
     }
   }, [
+    tokensByAddress,
     verifyForm,
     slippage,
     getGasPriceSetting,
-    symbolPay,
-    symbolReceive,
+    addressPay,
+    addressReceive,
     amountPay,
     validateTradeErrors,
     web3Provider,
     userAddress,
     getBalanceOfTokensPay,
     getBalanceOfTokensReceive,
-    getTokenBySymbol,
     exchangesExcluded,
   ]);
 
   const tradeLimit = React.useCallback(async () => {
     try {
+      if (!tokensByAddress) return null;
       if (!verifyForm()) {
         setWaiting(false);
         return null;
       }
-      const { address: addressPay, decimals: decimalsPay }: any = getTokenBySymbol(symbolPay);
-      const { address: addressReceive, decimals: decimalsReceive }: any = getTokenBySymbol(
-        symbolReceive,
-      );
+      const { decimals: decimalsPay }: any = tokensByAddress(addressPay);
+      const { decimals: decimalsReceive }: any = tokensByAddress(addressReceive);
       const newExpiration = new Date().getTime() + expiration * 60 * 1000;
       const props = {
         provider: web3Provider,
@@ -990,10 +1007,10 @@ export const PageMarketsContent: React.FC = () => {
       return null;
     }
   }, [
+    tokensByAddress,
     verifyForm,
-    getTokenBySymbol,
-    symbolPay,
-    symbolReceive,
+    addressPay,
+    addressReceive,
     web3Provider,
     amountPay,
     amountReceive,
@@ -1143,7 +1160,7 @@ export const PageMarketsContent: React.FC = () => {
   };
 
   const handleSetMode = (newMode: string) => {
-    if (symbolPay === 'ETH') {
+    if (addressPay === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee') {
       rejectUsingEthForLimit();
       return;
     }
@@ -1189,7 +1206,7 @@ export const PageMarketsContent: React.FC = () => {
   const handleApprove = async () => {
     try {
       setWaiting(true);
-      const { address: contractAddress, decimals }: any = getTokenBySymbol(symbolPay);
+      const { decimals }: any = tokenPay;
       const { netType, addresses } = config as { [index: string]: any };
       const { allowanceTarget, allowanceTargetLimit } = addresses[netType];
       const amountInWei = new BigNumber(amountPay)
@@ -1200,9 +1217,9 @@ export const PageMarketsContent: React.FC = () => {
         userAddress,
         allowanceTarget: isModeLimit ? allowanceTargetLimit : allowanceTarget,
         contractAbi: erc20Abi,
-        contractAddress,
+        contractAddress: addressPay,
       };
-      if (isSymbolPayETH) {
+      if (isAddressPayETH) {
         // propsApprove.amount = new BigNumber(amountPay)
         //   .multipliedBy(new BigNumber(10).pow(decimals))
         //   .toString(10);
@@ -1242,30 +1259,30 @@ export const PageMarketsContent: React.FC = () => {
     }
   };
 
-  const handleSelectSymbolPay = async (symbol: string) => {
-    console.log('handleSelectSymbolPay:', symbol);
+  const handleSelectSymbolPay = async (address: string) => {
+    console.log('handleSelectSymbolPay:', address);
     // setAmountPay(0);
     // setAmountReceive(0);
-    setSymbolPay(symbol);
+    setAddressPay(address);
     setOpenDropdownPay(false);
     const tokensSymbolsReceive = await getTokensSymbolsReceive();
-    let newSymbolReceive = symbolReceive;
-    if (symbol === newSymbolReceive) {
-      newSymbolReceive = '';
-      setSymbolReceive('');
+    let newAddressReceive = addressReceive;
+    if (address === newAddressReceive) {
+      newAddressReceive = '';
+      setAddressReceive('');
       setAmountReceive('0');
     }
-    if (!tokensSymbolsReceive.includes(symbolReceive)) newSymbolReceive = '';
-    history.push(`/markets/${symbol}/${newSymbolReceive}`);
+    if (!tokensSymbolsReceive.includes(addressReceive)) newAddressReceive = '';
+    history.push(`/markets/${address}/${newAddressReceive}`);
   };
 
-  const handleSelectSymbolReceive = (symbol: string) => {
-    console.log('handleSelectSymbolReceive:', symbol);
+  const handleSelectSymbolReceive = (address: string) => {
+    console.log('handleSelectSymbolReceive:', address);
     // setAmountPay('0');
     // setAmountReceive('0');
-    setSymbolReceive(symbol);
+    setAddressReceive(address);
     setOpenDropdownReceive(false);
-    history.push(`/markets/${symbolPay}/${symbol}`);
+    history.push(`/markets/${addressPay}/${address}`);
   };
 
   const handleSelectSlippage = (value: number) => {
@@ -1296,12 +1313,12 @@ export const PageMarketsContent: React.FC = () => {
   };
 
   const switchPayAndReceive = () => {
-    if (!symbolReceive) return;
-    setSymbolPay(symbolReceive);
-    setSymbolReceive(symbolPay);
+    if (!addressReceive) return;
+    setAddressPay(addressReceive);
+    setAddressReceive(addressPay);
     setAmountPay(amountReceive);
     setAmountReceive(amountPay);
-    history.push(`/markets/${symbolReceive}/${symbolPay}`);
+    history.push(`/markets/${addressReceive}/${addressPay}`);
   };
 
   const handleHoverChart = (value: string | null) => {
@@ -1384,10 +1401,10 @@ export const PageMarketsContent: React.FC = () => {
   }, [getGasPrice, openSettings]);
 
   React.useEffect(() => {
-    if (!symbolPay) return;
-    getTokenPay();
+    if (!addressPay) return;
+    // getTokenPay();
     getPrices();
-    if (!symbolOne) return;
+    if (!addressOne) return;
     switch (period) {
       case 1:
         getHistoryDay();
@@ -1402,14 +1419,14 @@ export const PageMarketsContent: React.FC = () => {
         break;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [symbolPay, symbolReceive]);
+  }, [addressPay, addressReceive]);
 
   React.useEffect(() => {
     if (!tokens || tokens?.length === 0) return;
-    if (!symbolPay) return;
+    if (!addressPay) return;
     getPriceMarket();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [symbolPay, symbolReceive, tokens]);
+  }, [addressPay, addressReceive, tokens]);
 
   React.useEffect(() => {
     filterTokens();
@@ -1465,14 +1482,14 @@ export const PageMarketsContent: React.FC = () => {
   }, [tokensFiltered, tokensReceive]);
 
   React.useEffect(() => {
-    if (!symbolPay && !symbolReceive) return;
+    if (!addressPay && !addressReceive) return;
     if (!web3Provider && !userAddress) return;
     console.log('PageMarketsContent useEffect web3provider:', web3Provider);
     getBalanceOfTokensPay();
     getBalanceOfTokensReceive();
   }, [
-    symbolPay,
-    symbolReceive,
+    addressPay,
+    addressReceive,
     userAddress,
     web3Provider,
     getBalanceOfTokensPay,
@@ -1480,45 +1497,35 @@ export const PageMarketsContent: React.FC = () => {
   ]);
 
   React.useEffect(() => {
-    getTokenPay();
-    getPrices();
-  }, [symbolPay, getPrices, getTokenPay]);
-
-  React.useEffect(() => {
-    setSymbolPay(symbolOne);
+    setAddressPay(addressOne);
     filterTokens();
-    if (!symbolTwo) return;
-    setSymbolReceive(symbolTwo);
-  }, [symbolOne, symbolTwo, filterTokens]);
+    if (!addressTwo) return;
+    setAddressReceive(addressTwo);
+  }, [addressOne, addressTwo, filterTokens]);
 
   React.useEffect(() => {
-    if (!symbolReceive) return;
+    if (!addressReceive) return;
     if (isModeLimit) {
       getPricePayLimit();
     } else {
       getPricePay();
     }
-    if (!symbolPay) return;
-    if (symbolPay === 'ETH') return;
+    if (!addressPay) return;
+    if (addressPay === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee') return;
     getAllowance();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [symbolReceive, symbolPay]);
+  }, [addressReceive, addressPay]);
 
   React.useEffect(() => {
-    if (!symbolReceive) return;
-    if (!symbolPay) return;
+    if (!addressReceive) return;
+    if (!addressPay) return;
     if (!amountPayDebounced) return;
     if (!userAddress) return;
     if (waiting) return;
-    if (symbolPay === 'ETH') return;
+    if (addressPay === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee') return;
     getAllowance();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [symbolReceive, symbolPay, amountPayDebounced, userAddress, waiting]);
-
-  React.useEffect(() => {
-    // setApproved(false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [symbolPay]);
+  }, [addressReceive, addressPay, amountPayDebounced, userAddress, waiting]);
 
   const RadioLabelFast = (
     <div className={s.radioLabelGas}>
@@ -1592,7 +1599,7 @@ export const PageMarketsContent: React.FC = () => {
       tabIndex={0}
       onKeyDown={() => {}}
     >
-      <div className={s.containerTradingCardSearchName}>{getTokenBySymbol(symbolPay).name}</div>
+      <div className={s.containerTradingCardSearchName}>{tokenPay?.name}</div>
       <IconArrowDownWhite className={s.containerTradingCardSearchArrowDown} />
     </div>
   );
@@ -1606,7 +1613,7 @@ export const PageMarketsContent: React.FC = () => {
       tabIndex={0}
       onKeyDown={() => {}}
     >
-      <div className={s.containerTradingCardSearchName}>{getTokenBySymbol(symbolReceive).name}</div>
+      <div className={s.containerTradingCardSearchName}>{tokenReceive?.name}</div>
       <IconArrowDownWhite className={s.containerTradingCardSearchArrowDown} />
     </div>
   );
@@ -1616,16 +1623,16 @@ export const PageMarketsContent: React.FC = () => {
       <section className={s.containerTitle}>
         <div className={s.containerTitleFirst}>
           <div className={s.containerTitleName}>
-            {tokenNamePay} ({symbolPay})
+            {tokenPay?.name} ({tokenPay?.symbol})
           </div>
           <div className={s.containerTitlePrice}>
-            {!symbolReceive && '$'}
+            {!tokenReceive?.symbol && '$'}
             {priceMarket
               ? prettyPrice(priceMarket?.toString())
-              : symbolPay === 'USDC' && !symbolReceive
+              : tokenReceive?.symbol === 'USDC' && !addressReceive
               ? marketHistory[0]?.quote?.USD?.close
               : '-'}{' '}
-            {symbolReceive}
+            {tokenReceive?.symbol}
           </div>
           <div
             className={classPriceChange}
@@ -1812,7 +1819,7 @@ export const PageMarketsContent: React.FC = () => {
           <div className={s.containerTradingCardLabel}>You Pay</div>
           <div className={s.containerTradingCardInner}>
             <div className={s.containerTradingCardImage}>
-              <img src={getTokenBySymbol(symbolPay).image} alt="" />
+              <img src={tokenPay?.image} alt="" />
             </div>
             <div className={s.containerTradingCardContainer}>
               <div className={s.containerTradingCardContainerInner}>
@@ -1846,7 +1853,7 @@ export const PageMarketsContent: React.FC = () => {
                           key={uuid()}
                           tabIndex={0}
                           className={s.containerTradingCardSearchItem}
-                          onClick={() => handleSelectSymbolPay(symbol)}
+                          onClick={() => handleSelectSymbolPay(address)}
                           onKeyDown={() => {}}
                         >
                           <img
@@ -1870,9 +1877,7 @@ export const PageMarketsContent: React.FC = () => {
                     })}
                   </DropdownItems>
                 </Dropdown>
-                <div className={s.containerTradingCardSymbol}>
-                  {getTokenBySymbol(symbolPay).symbol}
-                </div>
+                <div className={s.containerTradingCardSymbol}>{tokenPay?.symbol}</div>
               </div>
               <div className={s.containerTradingCardInput}>
                 {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
@@ -1886,9 +1891,9 @@ export const PageMarketsContent: React.FC = () => {
                   onBlur={handleBlurAmountPay}
                 />
               </div>
-              {symbolPay && (
+              {addressPay && (
                 <div className={s.containerTradingCardBalance}>
-                  Current balance ({getTokenBySymbol(symbolPay).symbol})
+                  Current balance ({tokenPay?.symbol})
                   <span>{prettyBalance(String(balanceOfTokenPay))}</span>
                 </div>
               )}
@@ -1899,12 +1904,12 @@ export const PageMarketsContent: React.FC = () => {
             <div className={s.containerTradingCardLimit}>
               <div className={s.containerTradingCardLimitInner}>
                 <div className={s.containerTradingCardLimitLabel}>
-                  <div>{symbolPay} Price</div>
+                  <div>{tokenPay?.symbol} Price</div>
                 </div>
                 <div className={s.containerTradingCardLimitInput}>
                   {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
                   <label htmlFor="inputPay">
-                    <div>{symbolReceive}</div>
+                    <div>{tokenReceive?.symbol}</div>
                   </label>
                   <input
                     id="inputPay"
@@ -1980,7 +1985,7 @@ export const PageMarketsContent: React.FC = () => {
         <div className={cns(s.containerTradingDivider, s.containerTradingCardLimitOpen)}>
           <div
             role="button"
-            title={!symbolReceive ? 'Select receive currency to switch' : ''}
+            title={!addressReceive ? 'Select receive currency to switch' : ''}
             tabIndex={0}
             className={s.containerTradingDividerInner}
             onClick={switchPayAndReceive}
@@ -1995,7 +2000,7 @@ export const PageMarketsContent: React.FC = () => {
           <div className={s.containerTradingCardLabel}>You Receive</div>
           <div className={s.containerTradingCardInner}>
             <div className={s.containerTradingCardImage}>
-              <img src={getTokenBySymbol(symbolReceive).image} alt="" />
+              <img src={tokenReceive?.image} alt="" />
             </div>
             <div className={s.containerTradingCardContainer}>
               <div className={s.containerTradingCardContainerInner}>
@@ -2028,7 +2033,7 @@ export const PageMarketsContent: React.FC = () => {
                           key={uuid()}
                           tabIndex={0}
                           className={s.containerTradingCardSearchItem}
-                          onClick={() => handleSelectSymbolReceive(symbol)}
+                          onClick={() => handleSelectSymbolReceive(address)}
                           onKeyDown={() => {}}
                         >
                           <img
@@ -2052,9 +2057,7 @@ export const PageMarketsContent: React.FC = () => {
                     })}
                   </DropdownItems>
                 </Dropdown>
-                <div className={s.containerTradingCardSymbol}>
-                  {getTokenBySymbol(symbolReceive).symbol}
-                </div>
+                <div className={s.containerTradingCardSymbol}>{tokenReceive?.symbol}</div>
               </div>
               <div className={s.containerTradingCardInput}>
                 {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
@@ -2068,9 +2071,9 @@ export const PageMarketsContent: React.FC = () => {
                   onBlur={handleBlurAmountReceive}
                 />
               </div>
-              {symbolReceive && (
+              {addressReceive && (
                 <div className={s.containerTradingCardBalance}>
-                  Current balance ({getTokenBySymbol(symbolReceive).symbol})
+                  Current balance ({tokenReceive?.symbol})
                   <span>{prettyBalance(String(balanceOfTokenReceive))}</span>
                 </div>
               )}
@@ -2079,7 +2082,7 @@ export const PageMarketsContent: React.FC = () => {
         </div>
         <div className={s.containerTradingButton}>
           {userAddress ? (
-            isAllowed || isSymbolPayETH ? (
+            isAllowed || isAddressPayETH ? (
               <Button onClick={handleTrade} disabled={isTradeDisabled || waiting}>
                 {waiting ? 'Waiting...' : 'Trade'}
               </Button>
@@ -2115,8 +2118,8 @@ export const PageMarketsContent: React.FC = () => {
           <div className={s.chartDataFirst}>
             <div className={s.chartDataPriceName}>Current price</div>
             <div className={s.chartDataPrice}>
-              {!symbolTwo && '$'}
-              {prettyPrice(priceChart || price.toString() || '-')} {symbolTwo}
+              {!addressTwo && '$'}
+              {prettyPrice(priceChart || price.toString() || '-')} {tokenReceive?.symbol}
             </div>
           </div>
           <div className={s.chartDataSecond}>
@@ -2161,4 +2164,4 @@ export const PageMarketsContent: React.FC = () => {
       </section>
     </div>
   );
-};
+});

@@ -306,9 +306,11 @@ export const App: React.FC = () => {
         return false;
       });
       console.log('App getTokens tokensAllSorted:', tokensAllSorted);
+      const newTokensAllSorted = [...tokensAllSorted];
+      const tokensAllFormatted = await changeTokensInfo(newTokensAllSorted);
       const newTokensByAddress: any = {};
       const newTokensBySymbol: any = {};
-      const newTokenAddresses = tokensAllSorted.map((token: any) => {
+      const newTokenAddresses = tokensAllFormatted.map((token: any) => {
         const { address, symbol } = token;
         newTokensByAddress[address] = token;
         newTokensBySymbol[symbol] = token;
@@ -316,12 +318,10 @@ export const App: React.FC = () => {
       });
       setTokenAddresses(newTokenAddresses);
       setTokens({
+        tokens: tokensAllFormatted,
         tokensByAddress: newTokensByAddress,
         tokensBySymbol: newTokensBySymbol,
       });
-      const newTokensAllSorted = [...tokensAllSorted];
-      const tokensAllFormatted = await changeTokensInfo(newTokensAllSorted);
-      setTokens({ tokens: tokensAllFormatted });
       setTokens0x(newTokens0x);
     } catch (e) {
       console.error('App getTokens:', e);

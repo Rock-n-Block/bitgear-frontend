@@ -1,6 +1,6 @@
 const initialState = {
   tokens: [],
-  tokensByAddress: [],
+  tokensByAddress: null,
 };
 
 export default (state = initialState, params: any) => {
