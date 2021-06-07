@@ -19,6 +19,7 @@ const CoinMarketCap = new CoinMarketCapService();
 type TypeToken = {
   symbol: string;
   name: string;
+  address: string;
   price?: number;
   priceChange?: string | number;
   image?: string;
@@ -151,8 +152,8 @@ export const PageMain: React.FC = () => {
       </section>
       <section className={s.containerCards}>
         {tokensList.map((token: TypeToken) => {
-          const { symbol } = token;
-          return <CardToken key={uuid()} to={`/markets/${symbol}`} token={token} />;
+          const { address } = token;
+          return <CardToken key={uuid()} to={`/markets/${address}`} token={token} />;
         })}
       </section>
       <section className={s.containerLists}>
