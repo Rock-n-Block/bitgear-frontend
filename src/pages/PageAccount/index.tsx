@@ -16,6 +16,8 @@ import { ReactComponent as IconCopy } from '../../assets/icons/copy-icon.svg';
 import EthGlassIcon from '../../assets/images/logo/eth-glass-icon.svg';
 import imageTokenPay from '../../assets/images/token.png';
 import { Pagination } from '../../components';
+import ethToken from '../../data/ethToken';
+import gearToken from '../../data/gearToken';
 import { Service0x } from '../../services/0x';
 import { CryptoCompareService } from '../../services/CryptoCompareService';
 import { numberTransform } from '../../utils/numberTransform';
@@ -98,9 +100,9 @@ export const PageAccount: React.FC = () => {
       const newBalancesWithSymbols: any = {};
       Object.entries(newBalances).map((item) => {
         const [address, balance] = item;
-        const { symbol, decimals } = tokensByAddress[address];
+        const { decimals } = tokensByAddress[address];
         const newBalance = new BigNumber(balance).dividedBy(new BigNumber(10).pow(decimals));
-        newBalancesWithSymbols[symbol] = newBalance;
+        newBalancesWithSymbols[address] = newBalance;
         return null;
       });
       setUserBalancesFiltered(newBalancesWithSymbols);
@@ -172,7 +174,7 @@ export const PageAccount: React.FC = () => {
       });
       const newOrders = resultGetOrdersMaker.data.records;
       setOrders(newOrders);
-      console.error('PageAccount getOrders', resultGetOrdersMaker);
+      console.log('PageAccount getOrders', resultGetOrdersMaker);
     } catch (e) {
       console.error('PageAccount getOrders', e);
     }
@@ -203,11 +205,9 @@ export const PageAccount: React.FC = () => {
       for (const item of arrOrders) {
         const symbolMaker = findToken(item.order.makerToken)?.symbol;
         const symbolTaker = findToken(item.order.takerToken)?.symbol;
-
-        if (!symbolTaker || !symbolTaker) {
-          return;
-        }
-
+        const addressMaker = findToken(item.order.makerToken)?.address;
+        const addressTaker = findToken(item.order.takerToken)?.address;
+        if (!addressMaker || !addressTaker) return;
         // eslint-disable-next-line no-await-in-loop
         const resultGetExchangeOfPair = await getExchangeOfPair({
           symbolOne: symbolMaker,
@@ -250,6 +250,8 @@ export const PageAccount: React.FC = () => {
             symbolMaker,
             symbolTaker,
           },
+          addressMaker,
+          addressTaker,
           price,
           market: exchange,
           amount,
@@ -358,12 +360,12 @@ export const PageAccount: React.FC = () => {
       <Switch>
         <Route path={match.path} exact>
           <section className={s.accountFunds}>
-            <Link to="/markets/ETH" className={s.accountFundsCard}>
+            <Link to={`/markets/${ethToken.address}`} className={s.accountFundsCard}>
               <h3>Your balance:</h3>
               <span>{prettyPrice(userBalance)} ETH</span>
               <img src={EthGlassIcon} alt="ehereum logo" />
             </Link>
-            <Link key={uuid()} className={s.accountFundsCard} to="/markets/GEAR">
+            <Link key={uuid()} className={s.accountFundsCard} to={`/markets/${gearToken.address}`}>
               <h3>Your balance:</h3>
               <span>{prettyPrice(userBalancesFiltered.GEAR || 0)} GEAR</span>
               <img src={tokensBySymbol?.GEAR?.image || imageTokenPay} alt="ehereum logo" />
@@ -378,13 +380,18 @@ export const PageAccount: React.FC = () => {
               </div>
             )}
             {userBalancesAsArray.map((item: any) => {
-              const [symbol, balance] = item;
-              if (symbol === 'ETH' || symbol === 'GEAR') return null;
-              const image = tokensBySymbol[symbol]?.image || imageTokenPay;
+              const [address, balance] = item;
+              if (
+                address.toLowerCase() === ethToken.address.toLowerCase() ||
+                address.toLowerCase() === gearToken.address.toLowerCase()
+              )
+                return null;
+              const image = (tokensByAddress && tokensByAddress[address]?.image) || imageTokenPay;
+              const symbol = tokensByAddress && tokensByAddress[address]?.symbol;
               return (
                 <>
                   {balance > 0 ? (
-                    <Link key={uuid()} className={s.accountFundsCard} to={`/markets/${symbol}`}>
+                    <Link key={uuid()} className={s.accountFundsCard} to={`/markets/${address}`}>
                       <h3>Your balance:</h3>
                       <span>
                         {prettyPrice(balance)} {symbol}
@@ -442,8 +449,10 @@ export const PageAccount: React.FC = () => {
                         amount,
                         timeCreate,
                         timeExpire,
+                        addressMaker,
+                        addressTaker,
                       } = item;
-                      const link = `/markets/${tradingPair.symbolMaker}/${tradingPair.symbolTaker}`;
+                      const link = `/markets/${addressMaker}/${addressTaker}`;
                       let priceChangeModel = (
                         <td>
                           <img src={ArrowUpIcon} alt="arrow up" />{' '}
@@ -501,8 +510,10 @@ export const PageAccount: React.FC = () => {
                         amount,
                         timeCreate,
                         timeExpire,
+                        addressMaker,
+                        addressTaker,
                       } = item;
-                      const link = `/markets/${tradingPair.symbolMaker}/${tradingPair.symbolTaker}`;
+                      const link = `/markets/${addressMaker}/${addressTaker}`;
                       let priceChangeModel = (
                         <div className={s.mobilePriceChangeModel}>
                           <img src={ArrowUpIcon} alt="arrow up" /> {`${numberTransform(price)}`}
