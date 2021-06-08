@@ -88,7 +88,7 @@ export const App: React.FC = () => {
   const [tokensCryptoCompare, setTokensCryptoCompare] = React.useState<any[]>([]);
   const [tokensCryptoCompareFormatted, setTokensCryptoCompareFormatted] = React.useState<any[]>([]);
   const [tokensFromGraphFormatted, setTokensFromGraphFormatted] = React.useState<any[]>([]);
-  // const [tokensCoinMarketCap, setTokensCoinMarketCap] = React.useState<any[]>([]);
+  const [tokensCMCByAddress, setTokensCMCByAddress] = React.useState<any>();
   const [symbolsCoinMarketCap, setSymbolsCoinMarketCap] = React.useState<any[]>([]);
   const [addressesCoinMarketCap, setAddressesCoinMarketCap] = React.useState<any[]>([]);
   // const [tokensCoinGecko, setTokensCoinGecko] = React.useState<any[]>([]);
@@ -167,25 +167,26 @@ export const App: React.FC = () => {
         // setTokensCoinMarketCap(newTokens);
       }
       // console.log('App getTokensFromCoinMarketCap:', newTokens);
-      const newTokensFormatted = [];
+      const newTokensByAddress: any = {};
       const newSymbolsCMC = [];
       const newAddressesCMC = [];
       for (let i = 0; i < newTokens.length; i += 1) {
         const token = newTokens[i];
-        const { name, symbol, platform } = token;
+        const { id: idCMC, name, symbol, platform } = token;
         let address;
         if (symbol !== 'ETH') {
           if (!platform) continue;
           if (platform.symbol !== 'ETH') continue;
-          address = platform.token_address;
+          address = platform.token_address.toLowerCase();
         } else {
           address = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee';
         }
-        newTokensFormatted.push({
+        newTokensByAddress[address] = {
+          idCMC,
           name,
           symbol,
           address,
-        });
+        };
         newSymbolsCMC.push(symbol.toUpperCase());
         newAddressesCMC.push(address.toLowerCase());
       }
@@ -198,8 +199,8 @@ export const App: React.FC = () => {
       //   }),
       // );
       // console.log('App getTokensFromCoinMarketCap:', await newTokensDecimals);
-      console.log('App getTokensFromCoinMarketCap:', newTokensFormatted);
-      // setTokensCoinMarketCap(newTokensFormatted);
+      console.log('App getTokensFromCoinMarketCap:', newTokensByAddress);
+      setTokensCMCByAddress(newTokensByAddress);
       setSymbolsCoinMarketCap(newSymbolsCMC);
       setAddressesCoinMarketCap(newAddressesCMC);
     } catch (e) {
@@ -244,15 +245,20 @@ export const App: React.FC = () => {
           if (!symbolsCoinMarketCap.includes(token.symbol.toUpperCase())) return false;
           return true;
         })
-        .map((item: any) => item.symbol);
+        .map((token: any) => {
+          if (tokensCMCByAddress && tokensCMCByAddress[token.address.toLowerCase()])
+            return tokensCMCByAddress[token.address.toLowerCase()].idCMC;
+          return null;
+        })
+        .filter((item: any) => item);
       console.log('App changeTokensInfo symbolsWithNoImage:', symbolsWithNoImage);
       const interval = 1000;
       const count = symbolsWithNoImage.length / interval;
       // get tokens info
       let tokensInfo: any = {};
-      for (let ir = 0; ir < count; ir += 1) {
+      for (let ir = 0; ir <= count; ir += 1) {
         const resultGetCoinInfo = await CoinMarketCap.getCoinInfo({
-          symbol: symbolsWithNoImage.slice(interval * ir, interval * ir + interval).join(','),
+          id: symbolsWithNoImage.slice(interval * ir, interval * ir + interval).join(','),
         });
         console.log('App changeTokensInfo resultGetCoinInfo:', ir, resultGetCoinInfo);
         if (resultGetCoinInfo.status === 'SUCCESS') {
@@ -263,11 +269,12 @@ export const App: React.FC = () => {
       // set images to array
       for (let i = 0; i < data.length; i += 1) {
         const token = data[i];
-        const { image, symbol } = token;
-        const tokensInfoToken = tokensInfo[symbol];
+        const { idCMC, image } = token;
+        const tokensInfoToken = tokensInfo[idCMC];
         if (!image) {
           if (tokensInfoToken) {
             newData[i].image = tokensInfoToken.logo;
+            newData[i].name = tokensInfoToken.name;
           } else {
             newData[i].image = imageTokenPay;
           }
@@ -275,7 +282,7 @@ export const App: React.FC = () => {
       }
       return newData;
     },
-    [symbolsCoinMarketCap],
+    [symbolsCoinMarketCap, tokensCMCByAddress],
   );
 
   const getTokens = React.useCallback(async () => {
@@ -305,6 +312,15 @@ export const App: React.FC = () => {
         }
         return false;
       });
+      tokensAllSorted = tokensAllSorted.map((token: any) => {
+        const { address } = token;
+        const newToken = token;
+        newToken.idCMC =
+          tokensCMCByAddress &&
+          tokensCMCByAddress[address.toLowerCase()] &&
+          tokensCMCByAddress[address.toLowerCase()].idCMC;
+        return newToken;
+      });
       console.log('App getTokens tokensAllSorted:', tokensAllSorted);
       const newTokensAllSorted = [...tokensAllSorted];
       const tokensAllFormatted = await changeTokensInfo(newTokensAllSorted);
@@ -327,6 +343,7 @@ export const App: React.FC = () => {
       console.error('App getTokens:', e);
     }
   }, [
+    tokensCMCByAddress,
     setTokens,
     changeTokensInfo,
     tokensCryptoCompareFormatted,
