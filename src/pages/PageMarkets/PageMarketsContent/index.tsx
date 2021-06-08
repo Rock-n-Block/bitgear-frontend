@@ -887,12 +887,12 @@ export const PageMarketsContent: React.FC = React.memo(() => {
 
   const trade = React.useCallback(async () => {
     try {
-      if (!tokensByAddress) return null;
+      if (!tokenPay) return null;
       if (!verifyForm()) {
         setWaiting(false);
         return null;
       }
-      const { decimals } = tokensByAddress(addressPay);
+      const { decimals } = tokenPay;
       const excludedSources = exchangesExcluded.join(',');
       const gasPriceSetting = getGasPriceSetting();
       const slippagePercentage = slippage / 100;
@@ -929,7 +929,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
       return null;
     }
   }, [
-    tokensByAddress,
+    tokenPay,
     verifyForm,
     slippage,
     getGasPriceSetting,
@@ -946,13 +946,14 @@ export const PageMarketsContent: React.FC = React.memo(() => {
 
   const tradeLimit = React.useCallback(async () => {
     try {
-      if (!tokensByAddress) return null;
+      if (!tokenPay) return null;
+      if (!tokenReceive) return null;
       if (!verifyForm()) {
         setWaiting(false);
         return null;
       }
-      const { decimals: decimalsPay }: any = tokensByAddress(addressPay);
-      const { decimals: decimalsReceive }: any = tokensByAddress(addressReceive);
+      const { decimals: decimalsPay }: any = tokenPay;
+      const { decimals: decimalsReceive }: any = tokenReceive;
       const newExpiration = new Date().getTime() + expiration * 60 * 1000;
       const props = {
         provider: web3Provider,
@@ -1007,7 +1008,8 @@ export const PageMarketsContent: React.FC = React.memo(() => {
       return null;
     }
   }, [
-    tokensByAddress,
+    tokenPay,
+    tokenReceive,
     verifyForm,
     addressPay,
     addressReceive,
