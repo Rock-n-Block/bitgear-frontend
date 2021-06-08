@@ -49,9 +49,9 @@ const SearchDropdown: React.FC<TypeSearchDropdownProps> = ({ items = [], search 
     <div className={s.dropdownSearch}>
       {items && items.length > 0 ? (
         items.map((item: TypeToken) => {
-          const { symbol, name, image } = item;
+          const { symbol, address, name, image } = item;
           return (
-            <Link to={`/markets/${symbol}`} key={uuid()} className={s.dropdownSearchItem}>
+            <Link to={`/markets/${address}`} key={uuid()} className={s.dropdownSearchItem}>
               <img src={image} alt="" className={s.dropdownSearchItemImage} />
               <div className={s.dropdownSearchItemName}>{name}</div>
               <div className={s.dropdownSearchItemSymbol}>{symbol}</div>

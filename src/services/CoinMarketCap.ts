@@ -1,9 +1,11 @@
 import axios from 'axios';
+import qs from 'query-string';
 
 import config from '../config';
 
 type TypeGetCoinInfoProps = {
-  symbol: string;
+  id?: number;
+  symbol?: string;
 };
 
 type getTwoCoinsProps = {
@@ -38,10 +40,9 @@ export class CoinMarketCapService {
     }
   };
 
-  getCoinInfo = async ({ symbol }: TypeGetCoinInfoProps) => {
+  getCoinInfo = async (props: TypeGetCoinInfoProps) => {
     try {
-      const newSymbol = symbol.toUpperCase();
-      const url = `/v1/cryptocurrency/info?symbol=${newSymbol}`;
+      const url = `/v1/cryptocurrency/info?${qs.stringify(props)}`;
       const result = await this.axios.get(url);
       console.log('CoinMarketCapService getCoinInfo:', result);
       if (result.data.Response === 'Error') return { status: 'ERROR', data: result.data };

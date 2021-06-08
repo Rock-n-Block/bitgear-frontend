@@ -66,6 +66,7 @@ export const PageListsTopGainers: React.FC = React.memo(() => {
         dataForTableLocal.push({
           name: token.name || token[0].name,
           symbol: token.symbol || token[1].symbol,
+          address: token.platform?.token_address,
           marketCap: token.quote.USD.market_cap ?? '-',
           price: token.quote.USD.price ?? '-',
           priceChange: token.quote.USD.percent_change_24h ?? '-',

@@ -82,14 +82,15 @@ export const PageExplore: React.FC = () => {
 
       const resultGetAllCoinsInfo = await getAllCoinsInfo(symbolsList);
 
-      const arrayOfTOkens = Object.keys(resultGetAllCoinsInfo).map((key) => {
+      const arrayOfTokens = Object.keys(resultGetAllCoinsInfo).map((key) => {
         return resultGetAllCoinsInfo[key];
       });
 
-      arrayOfTOkens.forEach((token: any) => {
+      arrayOfTokens.forEach((token: any) => {
         dataForTableLocal.push({
           name: token.name || token[0].name,
-          symbol: token.symbol || token[1].symbol,
+          symbol: token.symbol || token[0].symbol,
+          address: token.platform?.token_address,
           marketCap: token.quote.USD.market_cap ?? '-',
           price: token.quote.USD.price ?? '-',
           priceChange: token.quote.USD.percent_change_24h ?? '-',
@@ -99,8 +100,8 @@ export const PageExplore: React.FC = () => {
       });
 
       setIsPending(false);
-      console.log('DONE! *explore table data*');
-      console.log('DATA', dataForTableLocal);
+      console.log('PageExplore fillData dataForTableLocal:', dataForTableLocal);
+      console.log('PageExplore fillData arrayOfTokens:', arrayOfTokens);
       setDataForTable([...dataForTableLocal].slice(0, 12));
       setDataForTableMobile([...dataForTableLocal].slice(0, 5));
       setData(dataForTableLocal);

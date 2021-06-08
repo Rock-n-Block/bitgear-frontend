@@ -6,10 +6,13 @@ import { ApolloProvider } from '@apollo/client/react';
 
 import Connector from './contexts/WalletConnect';
 import store from './redux/store';
+import { stylizeConsole } from './utils/console';
 import { App } from './App';
 import config from './config';
 
 import './index.scss';
+
+stylizeConsole();
 
 const client = new ApolloClient({
   uri: config.apis.theGraph,

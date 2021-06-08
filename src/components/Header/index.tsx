@@ -25,40 +25,44 @@ import { Dropdown } from '../Dropdown';
 import s from './style.module.scss';
 
 type TypeItemTokenBalanceProps = {
-  symbol: string;
+  address: string;
   balance: string;
 };
 
-export const ItemTokenBalance: React.FC<TypeItemTokenBalanceProps> = ({ symbol, balance }) => {
+export const ItemTokenBalance: React.FC<TypeItemTokenBalanceProps> = ({ address, balance }) => {
   const history = useHistory();
-  const { tokens } = useSelector(({ zx }: any) => zx);
 
-  const getTokenBySymbol = React.useCallback(
-    (symbolInner: string) => {
-      const tokenEmpty = { name: 'Currency', symbol: null, image: imageTokenPay };
-      try {
-        const token = tokens.filter((item: any) => item.symbol === symbolInner);
-        // console.log('Header getTokenBySymbol:', token);
-        return token.length > 0 ? token[0] : tokenEmpty;
-      } catch (e) {
-        console.error('Header getTokenBySymbol:', e);
-        return tokenEmpty;
-      }
-    },
-    [tokens],
-  );
+  const [image, setImage] = React.useState<any>(imageTokenPay);
+  const [symbol, setSymbol] = React.useState<string>('');
+
+  const { tokensByAddress } = useSelector(({ zx }: any) => zx);
 
   const handleClick = () => {
-    history.push(`/markets/${symbol}`);
+    history.push(`/markets/${address}`);
   };
 
-  const { image } = getTokenBySymbol(symbol);
+  const getTokenInfo = React.useCallback(() => {
+    console.log('ItemTokenBalance:', tokensByAddress, address);
+    const newImage =
+      tokensByAddress && tokensByAddress[address] ? tokensByAddress[address].image : imageTokenPay;
+    const newSymbol =
+      tokensByAddress && tokensByAddress[address] && tokensByAddress[address].symbol;
+    setImage(newImage);
+    setSymbol(newSymbol);
+  }, [tokensByAddress, address]);
+
   const balancePrettified = prettyAmount((+balance).toFixed(9));
+
+  React.useEffect(() => {
+    if (!tokensByAddress) return;
+    getTokenInfo();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tokensByAddress]);
 
   return (
     <Link
       className={s.headerDropdownItemToken}
-      to={`/markets/${symbol}`}
+      to={`/markets/${address}`}
       // role="button"
       // tabIndex={0}
       // onKeyDown={() => {}}
@@ -90,9 +94,9 @@ export const ListOfTokenBalances: React.FC = () => {
       console.log('Header filterAndSortUserBalances:', userBalances);
       const newBalances = Object.entries(userBalances).map((item) => {
         const [address, balance]: any = item;
-        const { symbol, decimals } = tokensByAddress[address];
+        const { decimals } = tokensByAddress[address];
         const newBalance = new BigNumber(balance).dividedBy(new BigNumber(10).pow(decimals));
-        return { symbol, balance: newBalance };
+        return { address, balance: newBalance };
       });
       console.log('Header filterAndSortUserBalances:', newBalances);
       setUserBalancesFiltered(newBalances);
@@ -121,9 +125,9 @@ export const ListOfTokenBalances: React.FC = () => {
   return (
     <div className={s.headerDropdownItemTokensList}>
       {userBalancesFiltered.map((item: any) => {
-        const { symbol, balance } = item;
+        const { address, balance } = item;
         if (+balance === 0) return null;
-        return <ItemTokenBalance key={uuid()} symbol={symbol} balance={balance} />;
+        return <ItemTokenBalance key={uuid()} address={address} balance={balance} />;
       })}
     </div>
   );
