@@ -4,6 +4,7 @@ import { useHistory, useParams } from 'react-router-dom';
 import BigNumber from 'bignumber.js/bignumber';
 import cns from 'classnames';
 import _ from 'lodash';
+import { useMedia } from 'use-media';
 import { v1 as uuid } from 'uuid';
 
 import { ReactComponent as IconArrowDownWhite } from '../../../assets/icons/arrow-down-white.svg';
@@ -13,6 +14,7 @@ import { ReactComponent as IconSearchWhite } from '../../../assets/icons/search-
 import imageTokenPay from '../../../assets/images/token.png';
 import { Checkbox, Dropdown, Input, LineChart, Select } from '../../../components';
 import Button from '../../../components/Button';
+import ModalContentQuotes from '../../../components/ModalContentQuotes';
 import config from '../../../config';
 import { useWalletConnectorContext } from '../../../contexts/WalletConnect';
 import erc20Abi from '../../../data/erc20Abi.json';
@@ -76,6 +78,8 @@ type TypeUseParams = {
 
 type TypeModalParams = {
   open: boolean;
+  noCloseButton?: boolean;
+  fullPage?: boolean;
   text?: string | React.ReactElement;
   header?: string | React.ReactElement;
   delay?: number;
@@ -238,6 +242,8 @@ export const PageMarketsContent: React.FC = React.memo(() => {
   const [gasPriceType, setGasPriceType] = React.useState<string>('');
   const [gasPriceCustom, setGasPriceCustom] = React.useState<number>(0);
   const [allowance, setAllowance] = React.useState<number>(0);
+
+  const isWide = useMedia({ minWidth: '767px' });
 
   const amountPayDebounced = useDebounce(amountPay, 300);
   const amountReceiveDebounced = useDebounce(amountReceive, 300);
@@ -1376,6 +1382,28 @@ export const PageMarketsContent: React.FC = React.memo(() => {
       });
     };
   }, []);
+
+  React.useEffect(() => {
+    if (!amountPay) return;
+    if (!amountReceive) return;
+    if (!tokenPay) return;
+    if (!tokenReceive) return;
+    if (!userBalances) return;
+    toggleModal({
+      open: true,
+      text: (
+        <ModalContentQuotes
+          amountPay={amountPay}
+          amountReceive={amountReceive}
+          tokenPay={tokenPay}
+          tokenReceive={tokenReceive}
+          balances={userBalances}
+        />
+      ),
+      noCloseButton: true,
+      fullPage: !isWide,
+    });
+  }, [toggleModal, isWide, amountPay, amountReceive, tokenPay, tokenReceive, userBalances]);
 
   React.useEffect(() => {
     if (!amountPayDebounced) return;
