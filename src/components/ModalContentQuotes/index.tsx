@@ -372,11 +372,13 @@ const ModalContentQuotes: React.FC<TypeButtonProps> = ({
         </div>
       </section>
 
-      <div className={s.messageBestPrice}>
-        <div>
-          We got the best price for you from <span>{exchange}</span>
+      {exchange && (
+        <div className={s.messageBestPrice}>
+          <div>
+            We got the best price for you from <span>{exchange}</span>
+          </div>
         </div>
-      </div>
+      )}
 
       <div className={s.containerButton}>
         {isNeedToRefresh ? (
