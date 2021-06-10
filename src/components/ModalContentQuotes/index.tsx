@@ -20,6 +20,7 @@ import s from './style.module.scss';
 const Zx = new Service0x();
 
 type TypeButtonProps = {
+  open?: boolean;
   onClose?: () => void;
   onButtonClick?: () => void;
   tokenPay?: any;

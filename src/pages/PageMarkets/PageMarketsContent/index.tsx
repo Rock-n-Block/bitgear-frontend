@@ -243,6 +243,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
   const [gasPriceType, setGasPriceType] = React.useState<string>('');
   const [gasPriceCustom, setGasPriceCustom] = React.useState<number>(0);
   const [allowance, setAllowance] = React.useState<number>(0);
+  const [openQuotes, setOpenQuotes] = React.useState<boolean>(false);
 
   const isWide = useMedia({ minWidth: '767px' });
 
@@ -919,7 +920,8 @@ export const PageMarketsContent: React.FC = React.memo(() => {
   }, [isModeLimit, addressPay, addressReceive, userAddress, web3Provider, amountPay]);
 
   const handleCloseQuotes = React.useCallback(() => {
-    toggleModal({ open: false });
+    setOpenQuotes(false);
+    toggleModal({ open: false, text: '' });
     setWaiting(false);
   }, [toggleModal]);
 
@@ -950,10 +952,12 @@ export const PageMarketsContent: React.FC = React.memo(() => {
       props.includePriceComparisons = true;
       console.log('trade props:', props);
       setWaiting(false);
+      setOpenQuotes(true);
       return toggleModal({
         open: true,
         text: (
           <ModalContentQuotes
+            open={openQuotes}
             amountPay={amountPay}
             amountReceive={amountReceive}
             tokenPay={tokenPay}
@@ -988,6 +992,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
       return null;
     }
   }, [
+    openQuotes,
     handleCloseQuotes,
     userBalances,
     isWide,
