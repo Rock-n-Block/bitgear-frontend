@@ -11,6 +11,7 @@ type TypeGetQuoteProps = {
   sellToken: string;
   sellAmount: string;
   decimals: number;
+  includePriceComparisons?: boolean;
 };
 
 type TypeGetPriceProps = {
@@ -19,6 +20,7 @@ type TypeGetPriceProps = {
   sellAmount: string;
   skipValidation?: boolean;
   decimals: number;
+  includePriceComparisons?: boolean;
 };
 
 type TypeGetPricesProps = {
@@ -95,13 +97,14 @@ export class Service0x {
 
   getQuote = async (props: TypeGetQuoteProps) => {
     try {
-      const { decimals, sellAmount } = props;
+      const newProps = { ...props };
+      const { decimals, sellAmount } = newProps;
       // eslint-disable-next-line no-param-reassign
-      props.sellAmount = new BigNumber(sellAmount)
+      newProps.sellAmount = new BigNumber(sellAmount)
         .multipliedBy(new BigNumber(10).pow(decimals))
         .toFixed(0);
       // console.log('Service0x getQuote:', props);
-      const url = `/swap/v1/quote?${qs.stringify(props)}`;
+      const url = `/swap/v1/quote?${qs.stringify(newProps)}`;
       const result = await this.axios.get(url);
       // console.log('Service0x getQuote:', result);
       return {
@@ -116,13 +119,13 @@ export class Service0x {
 
   getPrice = async (props: TypeGetPriceProps) => {
     try {
-      const { decimals, sellAmount } = props;
-      // eslint-disable-next-line no-param-reassign
-      props.sellAmount = new BigNumber(sellAmount)
+      const newProps = { ...props };
+      const { decimals, sellAmount } = newProps;
+      newProps.sellAmount = new BigNumber(sellAmount)
         .multipliedBy(new BigNumber(10).pow(decimals))
         .toFixed(0);
       // console.log('Service0x getPrice:', props);
-      const url = `/swap/v1/price?${qs.stringify(props)}`;
+      const url = `/swap/v1/price?${qs.stringify(newProps)}`;
       let result;
       if (!config.IS_PRODUCTION && config.IS_TESTING_ON_ROPSTEN) {
         result = await this.axiosMainnet.get(url);

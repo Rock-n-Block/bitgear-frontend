@@ -1,4 +1,5 @@
 import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import BigNumber from 'bignumber.js/bignumber';
 import { useMedia } from 'use-media';
 
@@ -7,18 +8,34 @@ import { ReactComponent as IconArrowLeft } from '../../assets/icons/arrow-left-b
 import { ReactComponent as IconClose } from '../../assets/icons/close.svg';
 import Logo from '../../assets/images/logo/HQ2.png';
 import imageTokenPay from '../../assets/images/token.png';
+import { useWalletConnectorContext } from '../../contexts/WalletConnect';
+import ethToken from '../../data/ethToken';
+import { modalActions } from '../../redux/actions';
+import { Service0x } from '../../services/0x';
 import { prettyPrice } from '../../utils/prettifiers';
 import Button from '../Button';
 
 import s from './style.module.scss';
 
+const Zx = new Service0x();
+
 type TypeButtonProps = {
   onClose?: () => void;
+  onButtonClick?: () => void;
   tokenPay?: any;
   tokenReceive?: any;
   amountPay?: string;
   amountReceive?: string;
-  balances?: any;
+  tradeProps?: any;
+};
+
+type TypeModalParams = {
+  open: boolean;
+  noCloseButton?: boolean;
+  fullPage?: boolean;
+  text?: string | React.ReactElement;
+  header?: string | React.ReactElement;
+  delay?: number;
 };
 
 const ModalContentQuotes: React.FC<TypeButtonProps> = ({
@@ -27,8 +44,27 @@ const ModalContentQuotes: React.FC<TypeButtonProps> = ({
   tokenReceive,
   amountPay = '',
   amountReceive = '',
-  balances = {},
+  tradeProps = {},
 }) => {
+  const { web3Provider } = useWalletConnectorContext();
+
+  const dispatch = useDispatch();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const toggleModal = (props: TypeModalParams) => dispatch(modalActions.toggleModal(props));
+
+  const { address: userAddress, balances: userBalances } = useSelector(({ user }: any) => user);
+
+  const [blockInterval, setBlockInterval] = React.useState<number>();
+  const [timeToNextBlock, setTimeToNextBlock] = React.useState<number>();
+  const [isNeedToRefresh, setIsNeedToRefresh] = React.useState<boolean>(false);
+  const [fee, setFee] = React.useState<string>('0');
+  const [quote, setQuote] = React.useState<any>();
+  const [exchange, setExchange] = React.useState<string>('...');
+  const [secondExchange, setSecondExchange] = React.useState<string>();
+  const [priceDifference, setPriceDifference] = React.useState<string>();
+  const [intervalId, setIntervalId] = React.useState<any>();
+  const [amountReceiveNew, setAmountReceiveNew] = React.useState<string>();
+
   const {
     address: addressPay,
     symbol: symbolPay,
@@ -43,10 +79,9 @@ const ModalContentQuotes: React.FC<TypeButtonProps> = ({
     image: imageReceive = imageTokenPay,
     decimals: decimalsReceive,
   } = tokenReceive || {};
-  console.log('ModalContentQuotes balances:', balances);
 
-  const balancePay = balances[addressPay] || 0;
-  const balanceReceive = balances[addressReceive] || 0;
+  const balancePay = userBalances[addressPay] || 0;
+  const balanceReceive = userBalances[addressReceive] || 0;
 
   const newBalancePay = balancePay
     ? new BigNumber(balancePay).dividedBy(new BigNumber(10).pow(decimalsPay)).toString(10)
@@ -58,10 +93,199 @@ const ModalContentQuotes: React.FC<TypeButtonProps> = ({
 
   const isWide = useMedia({ minWidth: '767px' });
 
+  const getPriceInUSDC = async (tokenAddress: string) => {
+    try {
+      const newTradeProps = {
+        buyToken: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+        sellToken: tokenAddress,
+        sellAmount: '1',
+        decimals: 18,
+      };
+      const resultGetQuote = await Zx.getPrice(newTradeProps);
+      console.log('ModalContentQuotes getExchangesPriceDifference:', resultGetQuote);
+      let priceInUSDC = 0;
+      if (resultGetQuote.status === 'SUCCESS') priceInUSDC = resultGetQuote.data.buyTokenToEthRate;
+      return priceInUSDC;
+    } catch (e) {
+      console.error('ModalContentQuotes getExchangesPriceDifference:', e);
+      return 0;
+    }
+  };
+
+  const validateTradeErrors = React.useCallback(
+    (error) => {
+      const { code } = error.validationErrors[0];
+      let text: string | React.ReactElement = 'Something gone wrong';
+      if (code === 1001) {
+        text = 'Please, enter amount to pay or select token to receive';
+      } else if (code === 1004) {
+        text = (
+          <div>
+            <p>Insufficicent liquidity.</p>
+            <p>Please, decrease amount.</p>
+          </div>
+        );
+      }
+      toggleModal({ open: true, text });
+    },
+    [toggleModal],
+  );
+
+  const getBlockInterval = async () => {
+    try {
+      if (!web3Provider) return null;
+      const resultLastBlockInterval = await web3Provider.getLastBlockInverval();
+      console.log('ModalContentQuotes getBlockInterval:', resultLastBlockInterval);
+      let newBlockInterval = 30000;
+      if (resultLastBlockInterval.status === 'SUCCESS') {
+        const modulo = resultLastBlockInterval.data % 1000;
+        newBlockInterval = resultLastBlockInterval.data - modulo;
+      }
+      if (newBlockInterval <= 15000) newBlockInterval = 15000;
+      console.log('ModalContentQuotes getBlockInterval:', newBlockInterval);
+      setBlockInterval(newBlockInterval);
+      return null;
+    } catch (e) {
+      console.error('ModalContentQuotes getBlockInterval:', e);
+      return null;
+    }
+  };
+
+  const getQuote = async () => {
+    try {
+      setTimeToNextBlock(undefined);
+      setIsNeedToRefresh(false);
+      const resultGetQuote = await Zx.getQuote(tradeProps);
+      console.log('ModalContentQuotes getQuote:', resultGetQuote);
+      if (resultGetQuote.status === 'SUCCESS') {
+        const newQuote = { ...resultGetQuote.data };
+        setQuote(newQuote);
+      } else {
+        return validateTradeErrors(resultGetQuote.error);
+      }
+      getBlockInterval();
+      return null;
+    } catch (e) {
+      console.error('ModalContentQuotes getQuote:', e);
+      return null;
+    }
+  };
+
+  const trade = async () => {
+    try {
+      if (!userAddress) return;
+      const newQuote = { ...quote };
+      newQuote.from = userAddress;
+      const { estimatedGas } = newQuote;
+      const newEstimatedGas = +new BigNumber(estimatedGas).multipliedBy(1.2).toFixed();
+      newQuote.gas = String(newEstimatedGas);
+      const resultSendTx = await web3Provider.sendTx(newQuote);
+      console.log('trade resultSendTx:', resultSendTx);
+      if (resultSendTx.status === 'SUCCESS') {
+        toggleModal({ open: false });
+      }
+      return;
+    } catch (e) {
+      console.error('ModalContentQuotes getQuote:', e);
+    }
+  };
+
+  const updateAmountReceive = async () => {
+    try {
+      if (!quote) return;
+      const amountReceiveNewNew = new BigNumber(amountPay)
+        .multipliedBy(new BigNumber(quote.guaranteedPrice))
+        .toString(10);
+      setAmountReceiveNew(amountReceiveNewNew);
+    } catch (e) {
+      console.error('ModalContentQuotes getFee:', e);
+    }
+  };
+
+  const getFee = async () => {
+    try {
+      const { gasPrice, estimatedGas } = quote;
+      const gasPriceNew = +new BigNumber(gasPrice).dividedBy(new BigNumber(10).pow(18));
+      const feeNew = +new BigNumber(estimatedGas)
+        .multipliedBy(gasPriceNew)
+        .multipliedBy(1.2)
+        .toFixed();
+      const priceInUSDC = await getPriceInUSDC(ethToken.address);
+      const feeNewInUSDC = feeNew * priceInUSDC;
+      setFee(String(feeNewInUSDC));
+    } catch (e) {
+      console.error('ModalContentQuotes getFee:', e);
+    }
+  };
+
+  const getExchange = async () => {
+    try {
+      const { sources } = quote;
+      const source = sources.filter((item: any) => item.proportion !== '0')[0];
+      setExchange(source?.name);
+    } catch (e) {
+      console.error('ModalContentQuotes getExchange:', e);
+    }
+  };
+
+  const getExchangesPriceDifference = async () => {
+    try {
+      const priceInUSDC = await getPriceInUSDC(ethToken.address);
+      const { priceComparisons } = quote;
+      const secondExchangeNew = priceComparisons[0];
+      setSecondExchange(secondExchangeNew?.name);
+      const priceDifferenceNew = -secondExchangeNew?.savingsInEth * priceInUSDC;
+      setPriceDifference(String(priceDifferenceNew));
+    } catch (e) {
+      console.error('ModalContentQuotes getExchangesPriceDifference:', e);
+    }
+  };
+
+  const timer = () => {
+    if (timeToNextBlock) {
+      setTimeToNextBlock(timeToNextBlock - 1000);
+    } else if (timeToNextBlock !== undefined && timeToNextBlock <= 0) {
+      clearInterval(intervalId);
+    } else {
+      setTimeToNextBlock(blockInterval);
+    }
+  };
+
   const handleClose = () => {
     if (!onClose) return;
     onClose();
   };
+
+  React.useEffect(() => {
+    getQuote();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  React.useEffect(() => {
+    if (!quote) return;
+    getFee();
+    getExchange();
+    getExchangesPriceDifference();
+    updateAmountReceive();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [quote]);
+
+  React.useEffect(() => {
+    if (!quote) return;
+    if (!blockInterval) return;
+    const intervalIdNew = setInterval(timer, 1000);
+    setIntervalId(intervalIdNew);
+    // eslint-disable-next-line consistent-return
+    return () => clearInterval(intervalId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [timeToNextBlock, blockInterval, quote]);
+
+  React.useEffect(() => {
+    if (timeToNextBlock !== undefined && timeToNextBlock <= 0) {
+      setIsNeedToRefresh(true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [timeToNextBlock]);
 
   return (
     <div className={s.container}>
@@ -83,16 +307,20 @@ const ModalContentQuotes: React.FC<TypeButtonProps> = ({
         Back
       </div>
 
-      <div className={s.title}>
-        Quote expires in<span>18</span>seconds
-      </div>
+      {timeToNextBlock === undefined || timeToNextBlock === 0 ? (
+        <div className={s.title}>Quote</div>
+      ) : (
+        <div className={s.title}>
+          Quote expires in<span>{timeToNextBlock ? timeToNextBlock / 1000 : '...'}</span>seconds
+        </div>
+      )}
 
       <div className={s.label}>You pay</div>
       <section className={s.section}>
         <img src={imagePay} alt="" />
         <div>
           <div className={s.tokenName}>{namePay}</div>
-          <div className={s.tokenPrice}>0.00</div>
+          <div className={s.tokenPrice}>{amountPay}</div>
           <div className={s.tokenBalance}>
             Current balance ({symbolPay})<span>{prettyPrice(newBalancePay)}</span>
           </div>
@@ -104,7 +332,7 @@ const ModalContentQuotes: React.FC<TypeButtonProps> = ({
         <img src={imageReceive} alt="" />
         <div>
           <div className={s.tokenName}>{nameReceive}</div>
-          <div className={s.tokenPrice}>0.00</div>
+          <div className={s.tokenPrice}>{amountReceiveNew || amountReceive}</div>
           <div className={s.tokenBalance}>
             Current balance ({symbolReceive})<span>{prettyPrice(newBalanceReceive)}</span>
           </div>
@@ -113,12 +341,20 @@ const ModalContentQuotes: React.FC<TypeButtonProps> = ({
 
       <div className={s.messageBestPrice}>
         <div>
-          We got the best price for you from <span>Exchange</span>
+          We got the best price for you from <span>{exchange}</span>
         </div>
       </div>
 
       <div className={s.containerButton}>
-        <Button primary>Place order</Button>
+        {isNeedToRefresh ? (
+          <Button primary onClick={getQuote}>
+            Quote expired. Refresh.
+          </Button>
+        ) : (
+          <Button primary onClick={trade}>
+            Place order
+          </Button>
+        )}
       </div>
 
       <div className={s.labelSecondary}>Rate</div>
@@ -138,15 +374,19 @@ const ModalContentQuotes: React.FC<TypeButtonProps> = ({
       <div className={s.labelSecondary}>Estimated fee</div>
       <div className={s.containerFee}>
         <div>Ethereum network</div>
-        <span>$13.31</span>
+        <span>${prettyPrice(fee)}</span>
       </div>
-      <div className={s.divider} />
 
-      <div className={s.labelSecondary}>You save</div>
-      <div className={s.containerYouSave}>
-        <div>Compared to Uniswap</div>
-        <span>$44</span>
-      </div>
+      {secondExchange && priceDifference !== '0' && (
+        <>
+          <div className={s.divider} />
+          <div className={s.labelSecondary}>You save</div>
+          <div className={s.containerYouSave}>
+            <div>Compared to {secondExchange}</div>
+            <span>${prettyPrice(priceDifference || '0')}</span>
+          </div>
+        </>
+      )}
     </div>
   );
 };

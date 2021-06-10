@@ -2,6 +2,7 @@ const styles = {
   App: 'color: black; font-weight: bold;',
   PageMarketsContent: 'color: #065a66; font-weight: bold;',
   CoinMarketCapService: 'color: grey; font-weight: bold;',
+  ModalContentQuotes: 'color: #996655; font-weight: bold;',
 };
 
 export const stylizeConsole = () => {

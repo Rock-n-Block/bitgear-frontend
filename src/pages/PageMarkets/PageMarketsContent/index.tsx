@@ -83,6 +83,7 @@ type TypeModalParams = {
   text?: string | React.ReactElement;
   header?: string | React.ReactElement;
   delay?: number;
+  onClose?: () => void;
 };
 
 type TypeDropdownItemsParams = {
@@ -306,6 +307,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
           sellToken: addressPay,
           sellAmount: amount,
           decimals,
+          includePriceComparisons: true,
         };
         const result = await Zx.getQuote(props);
         console.log('PageMarketsContent getQuoteBuy:', props, result);
@@ -332,6 +334,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
           sellToken: addressPay,
           sellAmount: amount,
           decimals,
+          includePriceComparisons: true,
         };
         const result = await Zx.getPrice(props);
         console.log('PageMarketsContent getPriceBuy:', props, result);
@@ -385,6 +388,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
   //         sellAmount: amount,
   //         decimals,
   //       };
+  // props.includePriceComparisons = true;
   //       const result = await Zx.getPrice(props);
   //       console.log('PageMarketsContent getPriceSell:', props, result);
   //       if (result.status === 'SUCCESS') return result.data.price;
@@ -521,6 +525,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
           sellAmount: amountPayDebounced,
           skipValidation: true,
           decimals,
+          includePriceComparisons: true,
         });
         console.log('PageMarketsContent getPrices:', result);
         if (result.status === 'SUCCESS') {
@@ -812,25 +817,25 @@ export const PageMarketsContent: React.FC = React.memo(() => {
     }
   }, [userAddress, web3Provider, tokenReceive]);
 
-  const validateTradeErrors = React.useCallback(
-    (error) => {
-      const { code } = error.validationErrors[0];
-      let text: string | React.ReactElement = 'Something gone wrong';
-      if (code === 1001) {
-        text = 'Please, enter amount to pay or select token to receive';
-      } else if (code === 1004) {
-        text = (
-          <div>
-            <p>Insufficicent liquidity.</p>
-            <p>Please, decrease amount.</p>
-          </div>
-        );
-      }
-      toggleModal({ open: true, text });
-      setWaiting(false);
-    },
-    [toggleModal],
-  );
+  // const validateTradeErrors = React.useCallback(
+  //   (error) => {
+  //     const { code } = error.validationErrors[0];
+  //     let text: string | React.ReactElement = 'Something gone wrong';
+  //     if (code === 1001) {
+  //       text = 'Please, enter amount to pay or select token to receive';
+  //     } else if (code === 1004) {
+  //       text = (
+  //         <div>
+  //           <p>Insufficicent liquidity.</p>
+  //           <p>Please, decrease amount.</p>
+  //         </div>
+  //       );
+  //     }
+  //     toggleModal({ open: true, text });
+  //     setWaiting(false);
+  //   },
+  //   [toggleModal],
+  // );
 
   const verifyForm = React.useCallback(() => {
     try {
@@ -891,9 +896,18 @@ export const PageMarketsContent: React.FC = React.memo(() => {
     }
   }, [isModeLimit, addressPay, addressReceive, userAddress, web3Provider, amountPay]);
 
+  const handleCloseQuotes = React.useCallback(() => {
+    toggleModal({ open: false });
+    setWaiting(false);
+  }, [toggleModal]);
+
   const trade = React.useCallback(async () => {
     try {
       if (!tokenPay) return null;
+      if (!tokenReceive) return null;
+      if (!amountPay) return null;
+      if (!amountReceive) return null;
+      if (!userBalances) return null;
       if (!verifyForm()) {
         setWaiting(false);
         return null;
@@ -911,21 +925,38 @@ export const PageMarketsContent: React.FC = React.memo(() => {
       if (gasPriceSetting) props.gasPrice = gasPriceSetting;
       if (slippagePercentage) props.slippagePercentage = slippagePercentage;
       if (excludedSources) props.excludedSources = excludedSources;
+      props.includePriceComparisons = true;
       console.log('trade props:', props);
-      const result = await Zx.getQuote(props);
-      console.log('trade getQuote:', result);
-      if (result.status === 'ERROR') return validateTradeErrors(result.error);
-      result.data.from = userAddress;
-      const { estimatedGas } = result.data;
-      const newEstimatedGas = +estimatedGas * 2;
-      result.data.gas = String(newEstimatedGas);
-      const resultSendTx = await web3Provider.sendTx(result.data);
-      console.log('trade resultSendTx:', resultSendTx);
-      if (resultSendTx.status === 'SUCCESS') {
-        setAmountPay('0');
-        setAmountReceive('0');
-      }
       setWaiting(false);
+      return toggleModal({
+        open: true,
+        text: (
+          <ModalContentQuotes
+            amountPay={amountPay}
+            amountReceive={amountReceive}
+            tokenPay={tokenPay}
+            tokenReceive={tokenReceive}
+            tradeProps={props}
+            onClose={handleCloseQuotes}
+          />
+        ),
+        noCloseButton: true,
+        fullPage: !isWide,
+        onClose: handleCloseQuotes,
+      });
+      // const resultGetQuote = await Zx.getQuote(props);
+      // console.log('trade getQuote:', resultGetQuote);
+      // if (resultGetQuote.status === 'ERROR') return validateTradeErrors(resultGetQuote.error);
+      // resultGetQuote.data.from = userAddress;
+      // const { estimatedGas } = resultGetQuote.data;
+      // const newEstimatedGas = +estimatedGas * 2;
+      // resultGetQuote.data.gas = String(newEstimatedGas);
+      // const resultSendTx = await web3Provider.sendTx(resultGetQuote.data);
+      // console.log('trade resultSendTx:', resultSendTx);
+      // if (resultSendTx.status === 'SUCCESS') {
+      // setAmountPay('0');
+      // setAmountReceive('0');
+      // }
       getBalanceOfTokensPay();
       getBalanceOfTokensReceive();
       return null;
@@ -935,16 +966,22 @@ export const PageMarketsContent: React.FC = React.memo(() => {
       return null;
     }
   }, [
+    handleCloseQuotes,
+    userBalances,
+    isWide,
+    toggleModal,
     tokenPay,
+    tokenReceive,
     verifyForm,
     slippage,
     getGasPriceSetting,
     addressPay,
     addressReceive,
     amountPay,
-    validateTradeErrors,
-    web3Provider,
-    userAddress,
+    amountReceive,
+    // validateTradeErrors,
+    // web3Provider,
+    // userAddress,
     getBalanceOfTokensPay,
     getBalanceOfTokensReceive,
     exchangesExcluded,
@@ -1382,28 +1419,6 @@ export const PageMarketsContent: React.FC = React.memo(() => {
       });
     };
   }, []);
-
-  React.useEffect(() => {
-    if (!amountPay) return;
-    if (!amountReceive) return;
-    if (!tokenPay) return;
-    if (!tokenReceive) return;
-    if (!userBalances) return;
-    toggleModal({
-      open: true,
-      text: (
-        <ModalContentQuotes
-          amountPay={amountPay}
-          amountReceive={amountReceive}
-          tokenPay={tokenPay}
-          tokenReceive={tokenReceive}
-          balances={userBalances}
-        />
-      ),
-      noCloseButton: true,
-      fullPage: !isWide,
-    });
-  }, [toggleModal, isWide, amountPay, amountReceive, tokenPay, tokenReceive, userBalances]);
 
   React.useEffect(() => {
     if (!amountPayDebounced) return;

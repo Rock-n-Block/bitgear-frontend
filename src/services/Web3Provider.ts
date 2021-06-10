@@ -175,9 +175,18 @@ export default class Web3Provider {
     }
   };
 
-  public getGasPrice = async () => {
-    const price = await this.web3Provider.eth.getGasPrice();
-    // console.log('Web3Provider getGasPrice:', price);
-    return +new BigNumber(price).dividedBy(new BigNumber(10).pow(9)).toFixed();
+  public getLastBlockInverval = async () => {
+    try {
+      const latestBlock = await this.web3Provider.eth.getBlock('latest');
+      const prevBlock = await this.web3Provider.eth.getBlock(latestBlock.number - 1);
+      const prevPrevBlock = await this.web3Provider.eth.getBlock(latestBlock.number - 2);
+      const interval1 = latestBlock.timestamp - prevBlock.timestamp;
+      const interval2 = prevBlock.timestamp - prevPrevBlock.timestamp;
+      console.log('MetamaskService getLastBlockInverval:', latestBlock, prevBlock);
+      return { status: 'SUCCESS', data: ((interval1 + interval2) / 2) * 1000 };
+    } catch (e) {
+      console.error('MetamaskService getLastBlockInverval:', e);
+      return { status: 'ERROR', data: null };
+    }
   };
 }

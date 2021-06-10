@@ -15,26 +15,33 @@ type TypeModalParams = {
     text?: React.ReactChild;
     header?: string | React.ReactChild;
     delay?: number;
+    onClose?: () => void;
   };
 };
 
 export const Modal: React.FC = React.memo(() => {
   const ref = React.useRef<HTMLDivElement>(null);
 
-  const { open, text, header, delay, noCloseButton, fullPage } = useSelector(
+  const { open, text, header, delay, noCloseButton, fullPage, onClose } = useSelector(
     ({ modal }: TypeModalParams) => modal,
   );
 
   const dispatch = useDispatch();
-  const handleClose = React.useCallback(() => dispatch(modalActions.toggleModal({ open: false })), [
-    dispatch,
-  ]);
+  const handleClose = React.useCallback(() => {
+    dispatch(modalActions.toggleModal({ open: false }));
+    if (!onClose) return;
+    onClose();
+  }, [dispatch, onClose]);
 
   const handleClickOutside = React.useCallback(
     (e) => {
-      if (e.target === ref.current) dispatch(modalActions.toggleModal({ open: false }));
+      if (e.target === ref.current) {
+        dispatch(modalActions.toggleModal({ open: false }));
+        if (!onClose) return;
+        onClose();
+      }
     },
-    [dispatch],
+    [dispatch, onClose],
   );
 
   React.useEffect(() => {
