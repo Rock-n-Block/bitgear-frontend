@@ -115,14 +115,45 @@ const ModalContentQuotes: React.FC<TypeButtonProps> = ({
   const validateTradeErrors = React.useCallback(
     (error) => {
       const { code } = error.validationErrors[0];
-      let text: string | React.ReactElement = 'Something gone wrong';
+      let text: string | React.ReactElement = (
+        <div
+          style={{
+            height: '100%',
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+          }}
+        >
+          <div>Something gone wrong</div>
+        </div>
+      );
       if (code === 1001) {
-        text = 'Please, enter amount to pay or select token to receive';
+        text = (
+          <div
+            style={{
+              height: '100%',
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}
+          >
+            <div>Please, enter amount to pay or select token to receive</div>
+          </div>
+        );
       } else if (code === 1004) {
         text = (
-          <div>
-            <p>Insufficicent liquidity.</p>
-            <p>Please, decrease amount.</p>
+          <div
+            style={{
+              height: '100%',
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}
+          >
+            <div>
+              <p>Insufficicent liquidity.</p>
+              <p>Please, decrease amount.</p>
+            </div>
           </div>
         );
       }
@@ -155,6 +186,7 @@ const ModalContentQuotes: React.FC<TypeButtonProps> = ({
     try {
       setTimeToNextBlock(undefined);
       setIsNeedToRefresh(false);
+      console.log('ModalContentQuotes getQuote tradeProps:', tradeProps);
       const resultGetQuote = await Zx.getQuote(tradeProps);
       console.log('ModalContentQuotes getQuote:', resultGetQuote);
       if (resultGetQuote.status === 'SUCCESS') {

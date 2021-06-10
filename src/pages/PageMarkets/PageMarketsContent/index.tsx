@@ -842,14 +842,36 @@ export const PageMarketsContent: React.FC = React.memo(() => {
       if (!addressPay) {
         toggleModal({
           open: true,
-          text: `Please, choose token to pay`,
+          text: (
+            <div
+              style={{
+                height: '100%',
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+              }}
+            >
+              <div>Please, choose token to pay</div>
+            </div>
+          ),
         });
         return false;
       }
       if (!addressReceive) {
         toggleModal({
           open: true,
-          text: `Please, choose token to receive`,
+          text: (
+            <div
+              style={{
+                height: '100%',
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+              }}
+            >
+              <div>Please, choose token to receive</div>
+            </div>
+          ),
         });
         return false;
       }
