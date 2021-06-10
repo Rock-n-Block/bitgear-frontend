@@ -367,7 +367,9 @@ export const PageAccount: React.FC = () => {
             </Link>
             <Link key={uuid()} className={s.accountFundsCard} to={`/markets/${gearToken.address}`}>
               <h3>Your balance:</h3>
-              <span>{prettyPrice(userBalancesFiltered.GEAR || 0)} GEAR</span>
+              <span>
+                {prettyPrice(userBalancesFiltered[gearToken.address.toLowerCase()] || 0)} GEAR
+              </span>
               <img src={tokensBySymbol?.GEAR?.image || imageTokenPay} alt="ehereum logo" />
             </Link>
             {isNoBalances && (
