@@ -34,7 +34,12 @@ export const Checkbox: React.FC<TypeButtonProps> = React.memo(
 
     return (
       <div className={s.container}>
-        {left && (label || <label htmlFor={id}>{text}</label>)}
+        {left &&
+          (label || (
+            <label className={disabled ? s.disabled : ''} htmlFor={id}>
+              {text}
+            </label>
+          ))}
         <input
           id={id}
           type="checkbox"
@@ -43,7 +48,13 @@ export const Checkbox: React.FC<TypeButtonProps> = React.memo(
           checked={checkedDefault || checked}
           onChange={(e) => handleChange(e.target.checked)}
         />
-        {!left && right && (label || <label htmlFor={id}>{text}</label>)}
+        {!left &&
+          right &&
+          (label || (
+            <label className={disabled ? s.disabled : ''} htmlFor={id}>
+              {text}
+            </label>
+          ))}
       </div>
     );
   },
