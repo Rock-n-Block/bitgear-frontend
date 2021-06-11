@@ -5,6 +5,7 @@ import s from './style.module.scss';
 
 type TypeButtonProps = {
   checkedDefault?: boolean;
+  disabled?: boolean;
   text?: string;
   label?: React.ReactElement;
   left?: boolean;
@@ -13,7 +14,15 @@ type TypeButtonProps = {
 };
 
 export const Checkbox: React.FC<TypeButtonProps> = React.memo(
-  ({ checkedDefault, left = false, right = true, label, text, onChange = () => {} }) => {
+  ({
+    checkedDefault,
+    disabled = false,
+    left = false,
+    right = true,
+    label,
+    text,
+    onChange = () => {},
+  }) => {
     const id = uuid();
 
     const [checked, setChecked] = React.useState<boolean>(false);
@@ -29,6 +38,7 @@ export const Checkbox: React.FC<TypeButtonProps> = React.memo(
         <input
           id={id}
           type="checkbox"
+          disabled={disabled}
           className={s.checkbox}
           checked={checkedDefault || checked}
           onChange={(e) => handleChange(e.target.checked)}

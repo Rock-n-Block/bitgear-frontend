@@ -278,6 +278,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
   const [gasPriceCustom, setGasPriceCustom] = React.useState<number>(0);
   const [allowance, setAllowance] = React.useState<number>(0);
   const [openQuotes, setOpenQuotes] = React.useState<boolean>(false);
+  const [exchangesWithLiquidity, setExchangesWithLiquidity] = React.useState<string[]>();
 
   const isWide = useMedia({ minWidth: '767px' });
 
@@ -341,13 +342,13 @@ export const PageMarketsContent: React.FC = React.memo(() => {
         });
         priceComparisonsWithoutExcluded.sort((a: any, b: any) => b.price - a.price);
         console.log(
-          'PageMarketsContent chooseExchangeWithBestPrice:',
+          'PageMarketsContent chooseExchangesWithBestPrice:',
           exchangesExcluded,
           priceComparisonsWithoutExcluded,
         );
         return [...priceComparisonsWithoutExcluded];
       } catch (e) {
-        console.error('PageMarketsContent chooseExchangeWithBestPrice:', e);
+        console.error('PageMarketsContent chooseExchangesWithBestPrice:', e);
         return null;
       }
     },
@@ -373,7 +374,14 @@ export const PageMarketsContent: React.FC = React.memo(() => {
         console.log('PageMarketsContent getQuoteBuy:', props, resultGetQuote);
         if (resultGetQuote.status === 'SUCCESS') {
           const newQuote = { ...resultGetQuote.data };
-          const exchangesWithBestPrice = chooseExchangesWithBestPrice(newQuote.priceComparisons);
+          const exchangesWithBestPrice =
+            chooseExchangesWithBestPrice(newQuote.priceComparisons) || [];
+          let exchangesWithLiquidityNew = exchangesWithBestPrice.map((item) => item.name);
+          if (!exchangesWithBestPrice.length) {
+            const source = newQuote.sources.filter((item: any) => item.proportion === '1')[0];
+            exchangesWithLiquidityNew = [source.name];
+          }
+          setExchangesWithLiquidity(exchangesWithLiquidityNew);
           if (exchangesWithBestPrice) {
             for (let i = 0; i < exchangesWithBestPrice.length; i += 1) {
               const newTradeProps: any = { ...props };
@@ -1868,12 +1876,16 @@ export const PageMarketsContent: React.FC = React.memo(() => {
               </div>
               <div className={s.containerSettingsExchangesInner}>
                 {exchangesList?.map((exchange) => {
-                  const checked = exchanges.includes(exchange);
+                  const enabled = exchangesWithLiquidity
+                    ? exchangesWithLiquidity.includes(exchange)
+                    : false;
+                  const checked = enabled && exchanges.includes(exchange);
                   return (
                     <Checkbox
                       key={uuid()}
                       text={exchange}
                       checkedDefault={checked}
+                      disabled={!enabled}
                       onChange={(e: boolean) => handleChangeExchanges(e, exchange)}
                     />
                   );

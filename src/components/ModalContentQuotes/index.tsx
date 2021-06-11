@@ -302,7 +302,7 @@ const ModalContentQuotes: React.FC<TypeButtonProps> = ({
 
   const getExchangesPriceDifference = async () => {
     try {
-      const { sources, priceComparisons } = quote;
+      const { sources, priceComparisons = [] } = quote;
       const priceComparisonsWithoutExcluded = priceComparisons.filter(
         (item: any) => !excludedSources?.toLowerCase().includes(item.name.toLowerCase()),
       );
