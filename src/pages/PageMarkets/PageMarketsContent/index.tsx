@@ -31,6 +31,7 @@ import {
   prettyPrice,
   prettyPriceChange,
 } from '../../../utils/prettifiers';
+import { sleep } from '../../../utils/promises';
 
 import s from './style.module.scss';
 
@@ -295,6 +296,30 @@ export const PageMarketsContent: React.FC = React.memo(() => {
       marketHistory && marketHistory[0] ? marketHistory[0]?.quote[symbolTwo || 'USD']?.close : 0;
   }
 
+  const chooseExchangesWithBestPrice = React.useCallback(
+    (exchangesToSort: any) => {
+      try {
+        if (!exchangesToSort) return null;
+        const excludedSources = exchangesExcluded.join(',');
+        const priceComparisonsWithoutExcluded = exchangesToSort.filter((item: any) => {
+          if (excludedSources?.toLowerCase().includes(item.name.toLowerCase())) return false;
+          if (!item.price) return false;
+          return true;
+        });
+        priceComparisonsWithoutExcluded.sort((a: any, b: any) => b.price - a.price);
+        console.log(
+          'PageMarketsContent chooseExchangeWithBestPrice:',
+          priceComparisonsWithoutExcluded,
+        );
+        return [...priceComparisonsWithoutExcluded];
+      } catch (e) {
+        console.error('PageMarketsContent chooseExchangeWithBestPrice:', e);
+        return null;
+      }
+    },
+    [exchangesExcluded],
+  );
+
   const getQuoteBuy = React.useCallback(
     async ({ amount }) => {
       try {
@@ -310,16 +335,33 @@ export const PageMarketsContent: React.FC = React.memo(() => {
           decimals,
           includePriceComparisons: true,
         };
-        const result = await Zx.getQuote(props);
-        console.log('PageMarketsContent getQuoteBuy:', props, result);
-        if (result.status === 'SUCCESS') return result.data.guaranteedPrice;
+        const resultGetQuote = await Zx.getQuote(props);
+        console.log('PageMarketsContent getQuoteBuy:', props, resultGetQuote);
+        if (resultGetQuote.status === 'SUCCESS') {
+          const newQuote = { ...resultGetQuote.data };
+          const exchangesWithBestPrice = chooseExchangesWithBestPrice(newQuote.priceComparisons);
+          if (exchangesWithBestPrice) {
+            for (let i = 0; i < exchangesWithBestPrice.length; i += 1) {
+              const newTradeProps: any = { ...props };
+              newTradeProps.excludedSources = '';
+              newTradeProps.includedSources = exchangesWithBestPrice[i].name;
+              const resultGetQuoteNew = await Zx.getQuote(newTradeProps);
+              console.log('PageMarketsContent getQuoteBuy resultGetQuoteNew:', resultGetQuoteNew);
+              if (resultGetQuoteNew.status === 'SUCCESS') {
+                return resultGetQuoteNew.data.guaranteedPrice;
+              }
+              await sleep(100);
+            }
+          }
+          return resultGetQuote.data.guaranteedPrice;
+        }
         return null;
       } catch (e) {
         console.error('PageMarketsContent getQuoteBuy:', e);
         return null;
       }
     },
-    [tokenPay, addressPay, addressReceive],
+    [tokenPay, addressPay, addressReceive, chooseExchangesWithBestPrice],
   );
 
   const getPriceBuy = React.useCallback(
@@ -964,6 +1006,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
             tokenReceive={tokenReceive}
             tradeProps={props}
             onClose={handleCloseQuotes}
+            excludedSources={excludedSources}
           />
         ),
         noCloseButton: true,

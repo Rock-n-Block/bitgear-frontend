@@ -13,6 +13,7 @@ import ethToken from '../../data/ethToken';
 import { modalActions } from '../../redux/actions';
 import { Service0x } from '../../services/0x';
 import { prettyPrice } from '../../utils/prettifiers';
+import { sleep } from '../../utils/promises';
 import Button from '../Button';
 
 import s from './style.module.scss';
@@ -28,6 +29,7 @@ type TypeButtonProps = {
   amountPay?: string;
   amountReceive?: string;
   tradeProps?: any;
+  excludedSources: string;
 };
 
 type TypeModalParams = {
@@ -46,6 +48,7 @@ const ModalContentQuotes: React.FC<TypeButtonProps> = ({
   amountPay = '',
   amountReceive = '',
   tradeProps = {},
+  excludedSources,
 }) => {
   const { web3Provider } = useWalletConnectorContext();
 
@@ -103,12 +106,12 @@ const ModalContentQuotes: React.FC<TypeButtonProps> = ({
         decimals: 18,
       };
       const resultGetQuote = await Zx.getPrice(newTradeProps);
-      console.log('ModalContentQuotes getExchangesPriceDifference:', resultGetQuote);
+      console.log('ModalContentQuotes getPriceInUSDC:', resultGetQuote);
       let priceInUSDC = 0;
       if (resultGetQuote.status === 'SUCCESS') priceInUSDC = resultGetQuote.data.buyTokenToEthRate;
       return priceInUSDC;
     } catch (e) {
-      console.error('ModalContentQuotes getExchangesPriceDifference:', e);
+      console.error('ModalContentQuotes getPriceInUSDC:', e);
       return 0;
     }
   };
@@ -165,20 +168,40 @@ const ModalContentQuotes: React.FC<TypeButtonProps> = ({
 
   const getBlockInterval = async () => {
     try {
-      if (!web3Provider) return null;
-      const resultLastBlockInterval = await web3Provider.getLastBlockInverval();
-      console.log('ModalContentQuotes getBlockInterval:', resultLastBlockInterval);
-      let newBlockInterval = 30000;
-      if (resultLastBlockInterval.status === 'SUCCESS') {
-        const modulo = resultLastBlockInterval.data % 1000;
-        newBlockInterval = resultLastBlockInterval.data - modulo;
-      }
-      if (newBlockInterval <= 15000) newBlockInterval = 15000;
-      console.log('ModalContentQuotes getBlockInterval:', newBlockInterval);
+      // if (!web3Provider) return null;
+      // const resultLastBlockInterval = await web3Provider.getLastBlockInverval();
+      // console.log('ModalContentQuotes getBlockInterval:', resultLastBlockInterval);
+      const newBlockInterval = 30000;
+      // if (resultLastBlockInterval.status === 'SUCCESS') {
+      //   const modulo = resultLastBlockInterval.data % 1000;
+      //   newBlockInterval = resultLastBlockInterval.data - modulo;
+      // }
+      // if (newBlockInterval <= 15000) newBlockInterval = 15000;
+      // console.log('ModalContentQuotes getBlockInterval:', newBlockInterval);
       setBlockInterval(newBlockInterval);
       return null;
     } catch (e) {
       console.error('ModalContentQuotes getBlockInterval:', e);
+      return null;
+    }
+  };
+
+  const chooseExchangesWithBestPrice = (exchanges: any) => {
+    try {
+      if (!exchanges) return null;
+      const priceComparisonsWithoutExcluded = exchanges.filter((item: any) => {
+        if (excludedSources?.toLowerCase().includes(item.name.toLowerCase())) return false;
+        if (!item.price) return false;
+        return true;
+      });
+      priceComparisonsWithoutExcluded.sort((a: any, b: any) => b.price - a.price);
+      console.log(
+        'ModalContentQuotes chooseExchangeWithBestPrice:',
+        priceComparisonsWithoutExcluded,
+      );
+      return [...priceComparisonsWithoutExcluded];
+    } catch (e) {
+      console.error('ModalContentQuotes chooseExchangeWithBestPrice:', e);
       return null;
     }
   };
@@ -192,6 +215,22 @@ const ModalContentQuotes: React.FC<TypeButtonProps> = ({
       console.log('ModalContentQuotes getQuote:', resultGetQuote);
       if (resultGetQuote.status === 'SUCCESS') {
         const newQuote = { ...resultGetQuote.data };
+        const exchanges = chooseExchangesWithBestPrice(newQuote.priceComparisons);
+        if (exchanges) {
+          for (let i = 0; i < exchanges.length; i += 1) {
+            const newTradeProps = { ...tradeProps };
+            newTradeProps.excludedSources = '';
+            newTradeProps.includedSources = exchanges[i].name;
+            const resultGetQuoteNew = await Zx.getQuote(newTradeProps);
+            console.log('ModalContentQuotes getQuote resultGetQuoteNew:', resultGetQuoteNew);
+            if (resultGetQuoteNew.status === 'SUCCESS') {
+              const newNewQuote = { ...resultGetQuoteNew.data };
+              return setQuote(newNewQuote);
+              break;
+            }
+            await sleep(100);
+          }
+        }
         setQuote(newQuote);
       } else {
         return validateTradeErrors(resultGetQuote.error);
@@ -263,11 +302,26 @@ const ModalContentQuotes: React.FC<TypeButtonProps> = ({
 
   const getExchangesPriceDifference = async () => {
     try {
-      const priceInUSDC = await getPriceInUSDC(ethToken.address);
-      const { priceComparisons } = quote;
-      const secondExchangeNew = priceComparisons[0];
+      const { sources, priceComparisons } = quote;
+      const priceComparisonsWithoutExcluded = priceComparisons.filter(
+        (item: any) => !excludedSources?.toLowerCase().includes(item.name.toLowerCase()),
+      );
+      const source = sources.filter((item: any) => item.proportion !== '0')[0];
+      const priceComparisonIndex = priceComparisonsWithoutExcluded
+        .map((item: any, ii: number) => {
+          if (item.name === source.name) return ii;
+          return undefined;
+        })
+        .filter((item: any) => item);
+      const secondExchangeNew = priceComparisons[priceComparisonIndex[0] + 1];
+      console.log(
+        'ModalContentQuotes getExchangesPriceDifference:',
+        priceComparisonIndex,
+        secondExchangeNew,
+      );
       setSecondExchange(secondExchangeNew?.name);
-      const priceDifferenceNew = -secondExchangeNew?.savingsInEth * priceInUSDC;
+      const priceInUSDC = await getPriceInUSDC(ethToken.address);
+      const priceDifferenceNew = secondExchangeNew?.savingsInEth * priceInUSDC;
       setPriceDifference(String(priceDifferenceNew));
     } catch (e) {
       console.error('ModalContentQuotes getExchangesPriceDifference:', e);
@@ -401,7 +455,7 @@ const ModalContentQuotes: React.FC<TypeButtonProps> = ({
           <IconArrowFilledRight />
         </div>
         <div>
-          {amountReceive} {symbolReceive}
+          {amountReceiveNew || amountReceive} {symbolReceive}
         </div>
       </div>
       <div className={s.divider} />

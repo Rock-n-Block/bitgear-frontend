@@ -12,7 +12,7 @@ import config from './config';
 
 import './index.scss';
 
-stylizeConsole();
+stylizeConsole({ showConsoleLog: config.SHOW_CONSOLE_LOGS });
 
 const client = new ApolloClient({
   uri: config.apis.theGraph,

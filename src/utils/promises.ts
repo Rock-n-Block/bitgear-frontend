@@ -8,3 +8,7 @@ export const race = async (promise: any, time: number) => {
     throw new Error(error);
   }
 };
+
+export const sleep = (ms: number) => {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+};

@@ -42,7 +42,7 @@ export const ItemTokenBalance: React.FC<TypeItemTokenBalanceProps> = ({ address,
   };
 
   const getTokenInfo = React.useCallback(() => {
-    console.log('ItemTokenBalance:', tokensByAddress, address);
+    // console.log('ItemTokenBalance:', tokensByAddress, address);
     const newImage =
       tokensByAddress && tokensByAddress[address] ? tokensByAddress[address].image : imageTokenPay;
     const newSymbol =

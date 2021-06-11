@@ -12,6 +12,8 @@ type TypeGetQuoteProps = {
   sellAmount: string;
   decimals: number;
   includePriceComparisons?: boolean;
+  excludedSources?: string;
+  includedSources?: string;
 };
 
 type TypeGetPriceProps = {
@@ -21,6 +23,8 @@ type TypeGetPriceProps = {
   skipValidation?: boolean;
   decimals: number;
   includePriceComparisons?: boolean;
+  excludedSources?: string;
+  includedSources?: string;
 };
 
 type TypeGetPricesProps = {
