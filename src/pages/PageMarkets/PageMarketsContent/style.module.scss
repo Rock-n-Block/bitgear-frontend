@@ -492,14 +492,14 @@
   }
 
   &Inner {
-    @include grid(1fr 2fr 250px, 100px 180px, 50px);
+    @include grid(1fr 2fr 250px, 260px 180px, 50px);
 
     @include b('1000') {
-      @include grid(150px 2fr 250px, 220px 180px, 50px);
+      @include grid(150px 2fr 250px, 480px 180px, 50px);
     }
 
     @include b('850') {
-      @include grid(1fr, 100px 420px 200px 100px, 10px);
+      @include grid(1fr, 100px 660px 200px 100px, 10px);
     }
   }
 
