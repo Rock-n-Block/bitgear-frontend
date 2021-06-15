@@ -84,7 +84,7 @@ export const PageListsRecentlyAdded: React.FC = React.memo(() => {
       setDataForTableMobile(
         sortColumn('genesisDate', dataForTableLocal, '')
           .reverse()
-          .slice(0, 5)
+          .slice(0, 12)
           .filter((token) => token.genesisDate !== null),
       );
       setData(dataForTableLocal);

@@ -85,7 +85,7 @@ export const PageListsTopGainers: React.FC = React.memo(() => {
       setDataForTableMobile(
         sortColumn('priceChange', dataForTableLocal, '')
           .reverse()
-          .slice(0, 5)
+          .slice(0, 12)
           .filter((token) => token.priceChange >= 0),
       );
 
