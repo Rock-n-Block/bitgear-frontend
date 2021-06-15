@@ -379,7 +379,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
           let exchangesWithLiquidityNew = exchangesWithBestPrice.map((item) => item.name);
           if (!exchangesWithBestPrice.length) {
             const source = newQuote.sources.filter((item: any) => item.proportion === '1')[0];
-            exchangesWithLiquidityNew = [source.name];
+            exchangesWithLiquidityNew = source ? [source.name] : [];
           }
           setExchangesWithLiquidity(exchangesWithLiquidityNew);
           if (exchangesWithBestPrice) {
