@@ -10,6 +10,7 @@ import { v1 as uuid } from 'uuid';
 import { ReactComponent as IconArrowDownWhite } from '../../../assets/icons/arrow-down-white.svg';
 import { ReactComponent as IconExchange } from '../../../assets/icons/exchange.svg';
 import { ReactComponent as IconGear } from '../../../assets/icons/gear.svg';
+import { ReactComponent as IconLink } from '../../../assets/icons/link.svg';
 import { ReactComponent as IconSearchWhite } from '../../../assets/icons/search-white.svg';
 import imageTokenPay from '../../../assets/images/token.png';
 import { Checkbox, Dropdown, Input, LineChart, Select } from '../../../components';
@@ -2256,6 +2257,25 @@ export const PageMarketsContent: React.FC = React.memo(() => {
             <Button onClick={handleConnect}>Connect wallet</Button>
           )}
         </div>
+      </section>
+
+      <section className={s.containerTokenInfo}>
+        <a
+          href={`https://etherscan.io/token/${tokenPay?.address}`}
+          target="_blank"
+          rel="noreferrer"
+          className={s.tokenInfo}
+        >
+          <img src={tokenPay?.image} alt="" />
+          <div>
+            <span>{tokenPay?.name}</span>
+            <div>{`${tokenPay?.address.slice(0, 6)}...${tokenPay?.address.slice(-4)}`}</div>
+          </div>
+          <div className={s.etherscan}>
+            Etherscan
+            <IconLink />
+          </div>
+        </a>
       </section>
 
       <section className={s.containerChart}>
