@@ -929,14 +929,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
         toggleModal({
           open: true,
           text: (
-            <div
-              style={{
-                height: '100%',
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
-              }}
-            >
+            <div className={s.messageContent}>
               <div>Please, choose token to pay</div>
             </div>
           ),
@@ -947,14 +940,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
         toggleModal({
           open: true,
           text: (
-            <div
-              style={{
-                height: '100%',
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
-              }}
-            >
+            <div className={s.messageContent}>
               <div>Please, choose token to receive</div>
             </div>
           ),
@@ -973,7 +959,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
       return toggleModal({
         open: true,
         text: (
-          <div>
+          <div className={s.messageContent}>
             <p>Unavailable on ETH-based pairs. Use WETH for limit orders.</p>
           </div>
         ),
@@ -1129,7 +1115,11 @@ export const PageMarketsContent: React.FC = React.memo(() => {
         setWaiting(false);
         toggleModal({
           open: true,
-          text: `Something gone wrong. Order was not signed`,
+          text: (
+            <div className={s.messageContent}>
+              <div>Something gone wrong. Order was not signed</div>
+            </div>
+          ),
         });
         return null;
       }
@@ -1141,13 +1131,21 @@ export const PageMarketsContent: React.FC = React.memo(() => {
         setWaiting(false);
         toggleModal({
           open: true,
-          text: `Something gone wrong. Order was not placed`,
+          text: (
+            <div className={s.messageContent}>
+              <div>Something gone wrong. Order was not placed</div>
+            </div>
+          ),
         });
         return null;
       }
       toggleModal({
         open: true,
-        text: `Order was successfully placed`,
+        text: (
+          <div className={s.messageContent}>
+            <div>Order was successfully placed</div>
+          </div>
+        ),
       });
       setAmountPay('0');
       setAmountReceive('0');
@@ -1159,7 +1157,11 @@ export const PageMarketsContent: React.FC = React.memo(() => {
       setWaiting(false);
       toggleModal({
         open: true,
-        text: `Something gone wrong. Order was not placed`,
+        text: (
+          <div className={s.messageContent}>
+            <div>Something gone wrong. Order was not placed</div>
+          </div>
+        ),
       });
       return null;
     }
@@ -1333,7 +1335,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
         return toggleModal({
           open: true,
           text: (
-            <div>
+            <div className={s.messageContent}>
               <p>Please, connect wallet</p>
               <Button
                 secondary

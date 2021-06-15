@@ -207,13 +207,13 @@ export const PageAccount: React.FC = () => {
         const symbolTaker = findToken(item.order.takerToken)?.symbol;
         const addressMaker = findToken(item.order.makerToken)?.address;
         const addressTaker = findToken(item.order.takerToken)?.address;
-        if (!addressMaker || !addressTaker) return;
+        if (!addressMaker || !addressTaker) continue;
         // eslint-disable-next-line no-await-in-loop
         const resultGetExchangeOfPair = await getExchangeOfPair({
           symbolOne: symbolMaker,
           symbolTwo: symbolTaker,
         });
-
+        console.log('PageAccount fillData resultGetExchangeOfPair:', resultGetExchangeOfPair);
         let exchange;
         if (resultGetExchangeOfPair.status === 'SUCCESS') {
           [exchange] = resultGetExchangeOfPair.data;
