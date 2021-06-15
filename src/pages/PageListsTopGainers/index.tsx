@@ -1,4 +1,5 @@
 import React from 'react';
+import { Helmet } from 'react-helmet';
 import { useSelector } from 'react-redux';
 
 import { MainTable } from '../../components';
@@ -147,6 +148,12 @@ export const PageListsTopGainers: React.FC = React.memo(() => {
 
   return (
     <div className={s.container}>
+      <Helmet>
+        <title>Bitgear | Top performers</title>
+        <meta name="description" content="Find the best prices across exchange networks" />
+        <meta name="keywords" content="exchange, blockchain, crypto" />
+      </Helmet>
+
       <section className={s.containerTitle}>
         <h1>Top performers</h1>
       </section>

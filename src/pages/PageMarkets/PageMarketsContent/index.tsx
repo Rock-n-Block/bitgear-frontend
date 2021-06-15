@@ -1,4 +1,5 @@
 import React, { LegacyRef } from 'react';
+import { Helmet } from 'react-helmet';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
 import BigNumber from 'bignumber.js/bignumber';
@@ -1780,6 +1781,26 @@ export const PageMarketsContent: React.FC = React.memo(() => {
 
   return (
     <div className={s.container}>
+      <Helmet>
+        <title>
+          {tokenPay?.symbol || '-'}/{tokenReceive?.symbol || '-'} | Bitgear
+        </title>
+        <meta
+          name="description"
+          content={`Find the best prices across exchange networks. Swap erc20 tokens: ${
+            tokenPay?.symbol || ''
+          } (${tokenPay?.name || ''}) and ${tokenReceive?.symbol || ''} (${
+            tokenReceive?.name || ''
+          })`}
+        />
+        <meta
+          name="keywords"
+          content={`exchange, blockchain, crypto, ${tokenPay?.symbol || ''}, ${
+            tokenPay?.name || ''
+          }, ${tokenReceive?.symbol || ''}, ${tokenReceive?.name || ''}`}
+        />
+      </Helmet>
+
       <section className={s.containerTitle}>
         <div className={s.containerTitleFirst}>
           <div className={s.containerTitleName}>
