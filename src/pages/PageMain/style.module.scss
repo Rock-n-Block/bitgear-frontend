@@ -99,19 +99,23 @@
   background: $color-bg-card;
 
   @include b('mobile') {
-    height: 128px;
+    height: 140px;
     padding: 20px;
   }
 
   &ContainerFirst {
     @include flex(column);
+
+    @include b('mobile') {
+      @include flex(column, normal, center);
+    }
   }
 
   &ContainerSecond {
     @include flex(column, flex-end);
 
     @include b('mobile') {
-      @include flex(column, center);
+      @include flex(column, flex-end);
     }
   }
 
@@ -189,16 +193,15 @@
 .containerCards {
   @include grid(repeat(2, 1fr), 1fr, 20px);
   margin: 40px 160px 0 160px;
-  @include b('mobile'){
-    margin: 40px 0px 0 0px;
-  }
 
   @include b('tablet') {
     @include grid(repeat(2, 1fr), 1fr, 20px);
+    margin: 40px 80px 0 80px;
   }
 
   @include b('mobile') {
     @include grid(repeat(1, 1fr), 1fr);
+    margin: 40px 0px 0 0px;
   }
 }
 
