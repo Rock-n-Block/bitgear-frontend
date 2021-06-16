@@ -458,13 +458,23 @@ const ModalContentQuotes: React.FC<TypeButtonProps> = ({
           {amountReceiveNew || amountReceive} {symbolReceive}
         </div>
       </div>
-      <div className={s.divider} />
 
+      <div className={s.divider} />
       <div className={s.labelSecondary}>Estimated fee</div>
       <div className={s.containerFee}>
         <div>Ethereum network</div>
         <span>${prettyPrice(fee)}</span>
       </div>
+
+      {tradeProps?.slippagePercentage && (
+        <>
+          <div className={s.divider} />
+          <div className={s.containerFee} style={{ margin: '15px 0 0 0' }}>
+            <div>Max slippage</div>
+            <span>{tradeProps?.slippagePercentage * 100}%</span>
+          </div>
+        </>
+      )}
 
       {secondExchange && priceDifference !== '0' && (
         <>
