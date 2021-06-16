@@ -688,20 +688,20 @@ export const PageMarketsContent: React.FC = React.memo(() => {
     }
   }, [isModeLimit, tokens, userBalances]);
 
-  const getTokensSymbolsReceive = async () => {
-    try {
-      const result = await Zx.getPrices({
-        sellToken: addressPay,
-      });
-      const prices = result.data.records;
-      const newPricesSymbols = prices.map((item: any) => item.symbol);
-      console.log('PageMarketsContent getTokensSymbolsReceive:', newPricesSymbols);
-      return newPricesSymbols;
-    } catch (e) {
-      console.error('PageMarketsContent getTokensSymbolsReceive:', e);
-      return [];
-    }
-  };
+  // const getTokensSymbolsReceive = async () => {
+  //   try {
+  //     const result = await Zx.getPrices({
+  //       sellToken: addressPay,
+  //     });
+  //     const prices = result.data.records;
+  //     const newPricesSymbols = prices.map((item: any) => item.address);
+  //     console.log('PageMarketsContent getTokensSymbolsReceive:', newPricesSymbols);
+  //     return newPricesSymbols;
+  //   } catch (e) {
+  //     console.error('PageMarketsContent getTokensSymbolsReceive:', e);
+  //     return [];
+  //   }
+  // };
 
   const getTokensReceive = React.useCallback(async () => {
     try {
@@ -1421,19 +1421,19 @@ export const PageMarketsContent: React.FC = React.memo(() => {
   };
 
   const handleSelectSymbolPay = async (address: string) => {
-    console.log('handleSelectSymbolPay:', address);
+    console.log('handleSelectSymbolPay:', { address, addressReceive });
     // setAmountPay(0);
     // setAmountReceive(0);
     setAddressPay(address);
     setOpenDropdownPay(false);
-    const tokensSymbolsReceive = await getTokensSymbolsReceive();
+    // const tokensSymbolsReceive = await getTokensSymbolsReceive();
     let newAddressReceive = addressReceive;
     if (address === newAddressReceive) {
       newAddressReceive = '';
       setAddressReceive('');
       setAmountReceive('0');
     }
-    if (!tokensSymbolsReceive.includes(addressReceive)) newAddressReceive = '';
+    // if (!tokensSymbolsReceive.includes(addressReceive)) newAddressReceive = '';
     history.push(`/markets/${address}/${newAddressReceive}`);
   };
 
