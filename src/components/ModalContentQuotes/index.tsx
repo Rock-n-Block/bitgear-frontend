@@ -225,8 +225,8 @@ const ModalContentQuotes: React.FC<TypeButtonProps> = ({
             console.log('ModalContentQuotes getQuote resultGetQuoteNew:', resultGetQuoteNew);
             if (resultGetQuoteNew.status === 'SUCCESS') {
               const newNewQuote = { ...resultGetQuoteNew.data };
+              getBlockInterval();
               return setQuote(newNewQuote);
-              break;
             }
             await sleep(100);
           }
@@ -363,7 +363,7 @@ const ModalContentQuotes: React.FC<TypeButtonProps> = ({
     const intervalIdNew = setInterval(timer, 1000);
     setIntervalId(intervalIdNew);
     // eslint-disable-next-line consistent-return
-    return () => clearInterval(intervalId);
+    return () => clearInterval(intervalIdNew);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timeToNextBlock, blockInterval, quote]);
 
