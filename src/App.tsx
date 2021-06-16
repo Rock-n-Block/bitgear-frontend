@@ -199,7 +199,8 @@ export const App: React.FC = () => {
       //   }),
       // );
       // console.log('App getTokensFromCoinMarketCap:', await newTokensDecimals);
-      console.log('App getTokensFromCoinMarketCap:', newTokensByAddress);
+      // console.log('App getTokensFromCoinMarketCap:', newTokens);
+      // console.log('App getTokensFromCoinMarketCap newAddressesCMC:', newAddressesCMC);
       setTokensCMCByAddress(newTokensByAddress);
       setSymbolsCoinMarketCap(newSymbolsCMC);
       setAddressesCoinMarketCap(newAddressesCMC);
@@ -241,7 +242,6 @@ export const App: React.FC = () => {
         .filter((token: any) => {
           if (token.image) return false;
           if (token.symbol.match(/[^A-Za-z0-9]+/gi)) return false;
-          if (!symbolsCoinMarketCap.includes(token.symbol)) return false;
           if (!symbolsCoinMarketCap.includes(token.symbol.toUpperCase())) return false;
           return true;
         })
@@ -302,15 +302,17 @@ export const App: React.FC = () => {
         .sort((a: any, b: any) => {
           return a.symbol !== b.symbol ? (a.symbol < b.symbol ? -1 : 1) : 0;
         });
+      console.log('App getTokens tokensAllSorted:', tokensAllSorted);
       tokensAllSorted = tokensAllSorted.filter((token: any, index: number) => {
         if (!addressesCoinMarketCap.includes(token.address.toLowerCase())) return false;
         if (index < tokensAllSorted.length) {
-          return (
-            tokensAllSorted[index].address.toLowerCase() !==
+          if (
+            tokensAllSorted[index].address.toLowerCase() ===
             tokensAllSorted[index + 1]?.address.toLowerCase()
-          );
+          )
+            return false;
         }
-        return false;
+        return true;
       });
       tokensAllSorted = tokensAllSorted.map((token: any) => {
         const { address } = token;

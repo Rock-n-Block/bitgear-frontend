@@ -38,7 +38,7 @@ export const PageListsRecentlyAdded: React.FC = React.memo(() => {
       let pairInfo: any = {};
       for (let ir = 0; ir < count; ir += 1) {
         const newSymbols = symbols.slice(interval * ir, interval * ir + interval).join(',');
-        const resultGetCoinInfo = await CoinMarketCap.getAllCoinsInfo(newSymbols);
+        const resultGetCoinInfo = await CoinMarketCap.getAllCoinsInfoByIds(newSymbols);
         console.log('PageExplore getAllCoinsInfo:', ir, resultGetCoinInfo);
         if (resultGetCoinInfo.status === 'SUCCESS') {
           pairInfo = Object.assign(pairInfo, resultGetCoinInfo.data);
@@ -133,7 +133,7 @@ export const PageListsRecentlyAdded: React.FC = React.memo(() => {
       });
 
     const listOfSymbols = arrayOfSymbolsFiltered.map((token: any) => {
-      return token.symbol.toUpperCase();
+      return token.idCMC;
     });
 
     setSymbolsList(listOfSymbols);

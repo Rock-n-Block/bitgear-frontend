@@ -7,8 +7,8 @@ import { useMedia } from 'use-media';
 import CoinIcon from '../../assets/images/coin.png';
 import RocketIcon from '../../assets/images/rocket.png';
 import { MainTable, Pagination, Search } from '../../components';
-import excludedCoins from '../../data/excludedCoins';
-import excludedSymbols from '../../data/excludedSymbols';
+// import excludedCoins from '../../data/excludedCoins';
+// import excludedSymbols from '../../data/excludedSymbols';
 import { tableActions } from '../../redux/actions';
 import { CoinMarketCapService } from '../../services/CoinMarketCap';
 import { sortColumn } from '../../utils/sortColumn';
@@ -57,7 +57,7 @@ export const PageExplore: React.FC = () => {
       let pairInfo: any = {};
       for (let ir = 0; ir < count; ir += 1) {
         const newSymbols = symbols.slice(interval * ir, interval * ir + interval).join(',');
-        const resultGetCoinInfo = await CoinMarketCap.getAllCoinsInfo(newSymbols);
+        const resultGetCoinInfo = await CoinMarketCap.getAllCoinsInfoByIds(newSymbols);
         console.log('PageExplore getAllCoinsInfo:', ir, resultGetCoinInfo);
         if (resultGetCoinInfo.status === 'SUCCESS') {
           pairInfo = Object.assign(pairInfo, resultGetCoinInfo.data);
@@ -82,6 +82,7 @@ export const PageExplore: React.FC = () => {
       const dataForTableLocal: any = [];
 
       const resultGetAllCoinsInfo = await getAllCoinsInfo(symbolsList);
+      console.log('PageExplore resultGetAllCoinsInfo:', resultGetAllCoinsInfo);
 
       const arrayOfTokens = Object.keys(resultGetAllCoinsInfo).map((key) => {
         return resultGetAllCoinsInfo[key];
@@ -136,23 +137,23 @@ export const PageExplore: React.FC = () => {
   };
 
   React.useEffect(() => {
-    const arrayExcluded = excludedCoins.map((item: any) => {
-      return item.symbol.toUpperCase();
-    });
+    // const arrayExcluded = excludedCoins.map((item: any) => {
+    //   return item.symbol.toUpperCase();
+    // });
 
     const arrayOfSymbolsFiltered = tokens
+      // .filter((token: any) => {
+      //   return !arrayExcluded.includes(token.symbol.toUpperCase());
+      // })
       .filter((token: any) => {
-        return !arrayExcluded.includes(token.symbol.toUpperCase());
-      })
-      .filter((token: any) => {
-        if (!token.image) return false;
+        // if (!token.image) return false;
         if (token.symbol.match(/[^A-Za-z0-9]+/gi)) return false;
-        if (excludedSymbols.includes(token.symbol)) return false;
+        // if (excludedSymbols.includes(token.symbol)) return false;
         return true;
       });
 
     const listOfSymbols = arrayOfSymbolsFiltered.map((token: any) => {
-      return token.symbol.toUpperCase();
+      return token.idCMC;
     });
 
     setSymbolsList(listOfSymbols);

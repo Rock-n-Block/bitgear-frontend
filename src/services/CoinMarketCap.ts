@@ -99,6 +99,24 @@ export class CoinMarketCapService {
     }
   };
 
+  getAllCoinsInfoByIds = async (ids: number[]) => {
+    try {
+      const url = `/v1/cryptocurrency/quotes/latest?id=${ids}&skip_invalid=true`;
+      const result = await this.axios.get(url);
+      // console.log('CoinMarketCapService getTwoCoinsCoins:', result);
+      if (result.data.Response === 'Error') {
+        return { status: 'ERROR', data: undefined };
+      }
+      return {
+        status: 'SUCCESS',
+        data: result.data.data,
+      };
+    } catch (e) {
+      console.error('CoinMarketCapService getTwoCoinsInfo:', e);
+      return { status: 'ERROR', data: undefined };
+    }
+  };
+
   getAllCoinsHistoryDay = async (symbolsList: string[]) => {
     try {
       const url = `/v1/cryptocurrency/ohlcv/historical?symbol=${symbolsList}&time_period=hourly&count=10&interval=2h&skip_invalid=true`;

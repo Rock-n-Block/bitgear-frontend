@@ -38,12 +38,13 @@ export const PageListsTopGainers: React.FC = React.memo(() => {
       let pairInfo: any = {};
       for (let ir = 0; ir < count; ir += 1) {
         const newSymbols = symbols.slice(interval * ir, interval * ir + interval).join(',');
-        const resultGetCoinInfo = await CoinMarketCap.getAllCoinsInfo(newSymbols);
-        console.log('PageExplore getAllCoinsInfo:', ir, resultGetCoinInfo);
+        const resultGetCoinInfo = await CoinMarketCap.getAllCoinsInfoByIds(newSymbols);
+        console.log('PageExplore getAllCoinsInfo:', ir, { ...resultGetCoinInfo });
         if (resultGetCoinInfo.status === 'SUCCESS') {
           pairInfo = Object.assign(pairInfo, resultGetCoinInfo.data);
         }
       }
+      console.log('PageExplore getAllCoinsInfo:', pairInfo);
       return pairInfo;
     } catch (e) {
       return e;
@@ -54,13 +55,9 @@ export const PageListsTopGainers: React.FC = React.memo(() => {
   const fillData = React.useCallback(async () => {
     try {
       setIsPending(true);
-      console.log('Loading *explore table data*...');
       const dataForTableLocal: any = [];
-
-      console.log('DONE! *explore table data*');
-      console.log('DATA', dataForTableLocal);
-
       const resultGetAllCoinsInfo = await getAllCoinsInfo(symbolsList);
+      console.log('PageListsTopGainers fillData:', resultGetAllCoinsInfo);
 
       const arrayOfTOkens = Object.keys(resultGetAllCoinsInfo).map((key) => {
         return resultGetAllCoinsInfo[key];
@@ -135,8 +132,9 @@ export const PageListsTopGainers: React.FC = React.memo(() => {
       });
 
     const listOfSymbols = arrayOfSymbolsFiltered.map((token: any) => {
-      return token.symbol.toUpperCase();
+      return token.idCMC;
     });
+    console.log('PageListsTopGainers listOfSymbols:', listOfSymbols);
 
     setSymbolsList(listOfSymbols);
   }, [tokens]);

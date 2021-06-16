@@ -84,7 +84,7 @@ export const Search: React.FC<TypeSearchProps> = React.memo(({ wide = true }) =>
         return false;
       });
       result = result.slice(0, 50);
-      // console.log('matchSearch:', result);
+      console.log('matchSearch:', tokens, result);
       setSearchResult(result);
     } catch (e) {
       console.error(e);
@@ -99,7 +99,6 @@ export const Search: React.FC<TypeSearchProps> = React.memo(({ wide = true }) =>
 
   return (
     <div>
-      {wide}
       {wide ? (
         <>
           <InputWithDropdown
