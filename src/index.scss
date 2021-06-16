@@ -65,6 +65,8 @@ svg {
   box-sizing: content-box;
 }
 
+img:not([src]) { visibility: hidden }
+
 h1 {
   font-size: 64px;
   font-weight: 700;

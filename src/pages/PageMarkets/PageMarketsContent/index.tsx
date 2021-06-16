@@ -2292,7 +2292,11 @@ export const PageMarketsContent: React.FC = React.memo(() => {
           <img src={tokenPay?.image} alt="" />
           <div>
             <span>{tokenPay?.name}</span>
-            <div>{`${tokenPay?.address.slice(0, 6)}...${tokenPay?.address.slice(-4)}`}</div>
+            <div>
+              {tokenPay?.address
+                ? `${tokenPay?.address.slice(0, 6)}...${tokenPay?.address.slice(-4)}`
+                : ''}
+            </div>
           </div>
           <div className={s.etherscan}>
             Etherscan
