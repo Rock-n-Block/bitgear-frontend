@@ -1,8 +1,9 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
 import { useSelector } from 'react-redux';
+import { useMedia } from 'use-media';
 
-import { MainTable } from '../../components';
+import { MainTable, Search } from '../../components';
 import excludedCoins from '../../data/excludedCoins';
 import excludedSymbols from '../../data/excludedSymbols';
 import { CoinMarketCapService } from '../../services/CoinMarketCap';
@@ -25,6 +26,8 @@ export const PageListsTopGainers: React.FC = React.memo(() => {
   const [flagSort, setFlagSort] = React.useState<string>('');
   const [sortFlagChanged, setSortFlagChanged] = React.useState<boolean>(false);
   const [isPending, setIsPending] = React.useState<boolean>(true);
+
+  const isWide = useMedia({ minWidth: '767px' });
 
   const getAllCoinsInfo = async (symbols: any): Promise<any> => {
     try {
@@ -157,6 +160,11 @@ export const PageListsTopGainers: React.FC = React.memo(() => {
       <section className={s.containerTitle}>
         <h1>Top performers</h1>
       </section>
+
+      <section className={s.containerSearch}>
+        <Search wide={isWide} />
+      </section>
+
       <section className={s.ExploreTable}>
         <MainTable
           data={dataForTable}
