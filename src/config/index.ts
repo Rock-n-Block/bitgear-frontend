@@ -1,9 +1,11 @@
 const IS_PRODUCTION = true;
 const IS_TESTING_ON_ROPSTEN = false;
+const SHOW_CONSOLE_LOGS = true;
 
 export default {
   IS_PRODUCTION,
   IS_TESTING_ON_ROPSTEN,
+  SHOW_CONSOLE_LOGS,
   version: IS_PRODUCTION ? 'Mainnet beta' : IS_TESTING_ON_ROPSTEN ? 'Ropsten beta' : 'Kovan beta',
   isMainnetOrTestnet: IS_PRODUCTION ? 'mainnet' : 'testnet',
   netType: IS_PRODUCTION ? 'mainnet' : IS_TESTING_ON_ROPSTEN ? 'ropsten' : 'kovan',

@@ -1,18 +1,22 @@
 import React, { LegacyRef } from 'react';
+import { Helmet } from 'react-helmet';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
 import BigNumber from 'bignumber.js/bignumber';
 import cns from 'classnames';
 import _ from 'lodash';
+import { useMedia } from 'use-media';
 import { v1 as uuid } from 'uuid';
 
 import { ReactComponent as IconArrowDownWhite } from '../../../assets/icons/arrow-down-white.svg';
 import { ReactComponent as IconExchange } from '../../../assets/icons/exchange.svg';
 import { ReactComponent as IconGear } from '../../../assets/icons/gear.svg';
+import { ReactComponent as IconLink } from '../../../assets/icons/link.svg';
 import { ReactComponent as IconSearchWhite } from '../../../assets/icons/search-white.svg';
 import imageTokenPay from '../../../assets/images/token.png';
 import { Checkbox, Dropdown, Input, LineChart, Select } from '../../../components';
 import Button from '../../../components/Button';
+import ModalContentQuotes from '../../../components/ModalContentQuotes';
 import config from '../../../config';
 import { useWalletConnectorContext } from '../../../contexts/WalletConnect';
 import erc20Abi from '../../../data/erc20Abi.json';
@@ -29,6 +33,7 @@ import {
   prettyPrice,
   prettyPriceChange,
 } from '../../../utils/prettifiers';
+import { sleep } from '../../../utils/promises';
 
 import s from './style.module.scss';
 
@@ -39,27 +44,60 @@ const CoinMarketCap = new CoinMarketCapService();
 
 const exchangesList: string[] = [
   '0x',
-  'Native',
+  'Balancer',
+  'Balancer_V2',
+  'Bancor',
+  'Component',
+  'CREAM',
+  'CryptoCom',
+  'Curve',
+  'DODO',
+  'DODO_V2',
+  'Eth2Dai',
+  'Kyber',
+  'KyberDMM',
+  'LiquidityProvider',
+  'Linkswap',
+  'MakerPsm',
+  'Mooniswap',
+  'MultiHop',
+  'mStable',
+  'Saddle',
+  'Shell',
+  'Smoothy',
+  'SnowSwap',
+  'SushiSwap',
+  'Swerve',
   'Uniswap',
   'Uniswap_V2',
   'Uniswap_V3',
-  'Eth2Dai',
-  'Kyber',
-  'Curve',
-  'LiquidityProvider',
-  'MultiBridge',
-  'Balancer',
-  'Cream',
-  'Bancor',
-  'MStable',
-  'Mooniswap',
-  'MultiHop',
-  'Shell',
-  'Swerve',
-  'SnowSwap',
-  'SushiSwap',
-  'Dodo',
+  'xSigma',
 ];
+
+// const exchangesListOld: string[] = [
+//   '0x',
+//   'Native',
+//   'Uniswap',
+//   'Uniswap_V2',
+//   'Uniswap_V3',
+//   'Eth2Dai',
+//   'Kyber',
+//   'KyberDMM',
+//   'Curve',
+//   'LiquidityProvider',
+//   'MultiBridge',
+//   'Balancer',
+//   'Cream',
+//   'Bancor',
+//   'MStable',
+//   'Mooniswap',
+//   'MultiHop',
+//   'Shell',
+//   'Swerve',
+//   'SnowSwap',
+//   'SushiSwap',
+//   'Dodo',
+// ];
 
 type TypeToken = {
   symbol: string;
@@ -76,9 +114,12 @@ type TypeUseParams = {
 
 type TypeModalParams = {
   open: boolean;
+  noCloseButton?: boolean;
+  fullPage?: boolean;
   text?: string | React.ReactElement;
   header?: string | React.ReactElement;
   delay?: number;
+  onClose?: () => void;
 };
 
 type TypeDropdownItemsParams = {
@@ -238,6 +279,10 @@ export const PageMarketsContent: React.FC = React.memo(() => {
   const [gasPriceType, setGasPriceType] = React.useState<string>('');
   const [gasPriceCustom, setGasPriceCustom] = React.useState<number>(0);
   const [allowance, setAllowance] = React.useState<number>(0);
+  const [openQuotes, setOpenQuotes] = React.useState<boolean>(false);
+  const [exchangesWithLiquidity, setExchangesWithLiquidity] = React.useState<string[]>();
+
+  const isWide = useMedia({ minWidth: '767px' });
 
   const amountPayDebounced = useDebounce(amountPay, 300);
   const amountReceiveDebounced = useDebounce(amountReceive, 300);
@@ -287,6 +332,31 @@ export const PageMarketsContent: React.FC = React.memo(() => {
       marketHistory && marketHistory[0] ? marketHistory[0]?.quote[symbolTwo || 'USD']?.close : 0;
   }
 
+  const chooseExchangesWithBestPrice = React.useCallback(
+    (exchangesToSort: any) => {
+      try {
+        if (!exchangesToSort) return null;
+        const excludedSources = exchangesExcluded.join(',');
+        const priceComparisonsWithoutExcluded = exchangesToSort.filter((item: any) => {
+          if (excludedSources?.toLowerCase().includes(item.name.toLowerCase())) return false;
+          if (!item.price) return false;
+          return true;
+        });
+        priceComparisonsWithoutExcluded.sort((a: any, b: any) => b.price - a.price);
+        console.log(
+          'PageMarketsContent chooseExchangesWithBestPrice:',
+          exchangesExcluded,
+          priceComparisonsWithoutExcluded,
+        );
+        return [...priceComparisonsWithoutExcluded];
+      } catch (e) {
+        console.error('PageMarketsContent chooseExchangesWithBestPrice:', e);
+        return null;
+      }
+    },
+    [exchangesExcluded],
+  );
+
   const getQuoteBuy = React.useCallback(
     async ({ amount }) => {
       try {
@@ -300,17 +370,42 @@ export const PageMarketsContent: React.FC = React.memo(() => {
           sellToken: addressPay,
           sellAmount: amount,
           decimals,
+          includePriceComparisons: true,
         };
-        const result = await Zx.getQuote(props);
-        console.log('PageMarketsContent getQuoteBuy:', props, result);
-        if (result.status === 'SUCCESS') return result.data.guaranteedPrice;
+        const resultGetQuote = await Zx.getQuote(props);
+        console.log('PageMarketsContent getQuoteBuy:', props, resultGetQuote);
+        if (resultGetQuote.status === 'SUCCESS') {
+          const newQuote = { ...resultGetQuote.data };
+          const exchangesWithBestPrice =
+            chooseExchangesWithBestPrice(newQuote.priceComparisons) || [];
+          let exchangesWithLiquidityNew = exchangesWithBestPrice.map((item) => item.name);
+          if (!exchangesWithBestPrice.length) {
+            const source = newQuote.sources.filter((item: any) => item.proportion === '1')[0];
+            exchangesWithLiquidityNew = source ? [source.name] : [];
+          }
+          setExchangesWithLiquidity(exchangesWithLiquidityNew);
+          if (exchangesWithBestPrice) {
+            for (let i = 0; i < exchangesWithBestPrice.length; i += 1) {
+              const newTradeProps: any = { ...props };
+              newTradeProps.excludedSources = '';
+              newTradeProps.includedSources = exchangesWithBestPrice[i].name;
+              const resultGetQuoteNew = await Zx.getQuote(newTradeProps);
+              console.log('PageMarketsContent getQuoteBuy resultGetQuoteNew:', resultGetQuoteNew);
+              if (resultGetQuoteNew.status === 'SUCCESS') {
+                return resultGetQuoteNew.data.guaranteedPrice;
+              }
+              await sleep(100);
+            }
+          }
+          return resultGetQuote.data.guaranteedPrice;
+        }
         return null;
       } catch (e) {
         console.error('PageMarketsContent getQuoteBuy:', e);
         return null;
       }
     },
-    [tokenPay, addressPay, addressReceive],
+    [tokenPay, addressPay, addressReceive, chooseExchangesWithBestPrice],
   );
 
   const getPriceBuy = React.useCallback(
@@ -326,6 +421,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
           sellToken: addressPay,
           sellAmount: amount,
           decimals,
+          includePriceComparisons: true,
         };
         const result = await Zx.getPrice(props);
         console.log('PageMarketsContent getPriceBuy:', props, result);
@@ -379,6 +475,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
   //         sellAmount: amount,
   //         decimals,
   //       };
+  // props.includePriceComparisons = true;
   //       const result = await Zx.getPrice(props);
   //       console.log('PageMarketsContent getPriceSell:', props, result);
   //       if (result.status === 'SUCCESS') return result.data.price;
@@ -515,6 +612,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
           sellAmount: amountPayDebounced,
           skipValidation: true,
           decimals,
+          includePriceComparisons: true,
         });
         console.log('PageMarketsContent getPrices:', result);
         if (result.status === 'SUCCESS') {
@@ -590,20 +688,20 @@ export const PageMarketsContent: React.FC = React.memo(() => {
     }
   }, [isModeLimit, tokens, userBalances]);
 
-  const getTokensSymbolsReceive = async () => {
-    try {
-      const result = await Zx.getPrices({
-        sellToken: addressPay,
-      });
-      const prices = result.data.records;
-      const newPricesSymbols = prices.map((item: any) => item.symbol);
-      console.log('PageMarketsContent getTokensSymbolsReceive:', newPricesSymbols);
-      return newPricesSymbols;
-    } catch (e) {
-      console.error('PageMarketsContent getTokensSymbolsReceive:', e);
-      return [];
-    }
-  };
+  // const getTokensSymbolsReceive = async () => {
+  //   try {
+  //     const result = await Zx.getPrices({
+  //       sellToken: addressPay,
+  //     });
+  //     const prices = result.data.records;
+  //     const newPricesSymbols = prices.map((item: any) => item.address);
+  //     console.log('PageMarketsContent getTokensSymbolsReceive:', newPricesSymbols);
+  //     return newPricesSymbols;
+  //   } catch (e) {
+  //     console.error('PageMarketsContent getTokensSymbolsReceive:', e);
+  //     return [];
+  //   }
+  // };
 
   const getTokensReceive = React.useCallback(async () => {
     try {
@@ -806,39 +904,47 @@ export const PageMarketsContent: React.FC = React.memo(() => {
     }
   }, [userAddress, web3Provider, tokenReceive]);
 
-  const validateTradeErrors = React.useCallback(
-    (error) => {
-      const { code } = error.validationErrors[0];
-      let text: string | React.ReactElement = 'Something gone wrong';
-      if (code === 1001) {
-        text = 'Please, enter amount to pay or select token to receive';
-      } else if (code === 1004) {
-        text = (
-          <div>
-            <p>Insufficicent liquidity.</p>
-            <p>Please, decrease amount.</p>
-          </div>
-        );
-      }
-      toggleModal({ open: true, text });
-      setWaiting(false);
-    },
-    [toggleModal],
-  );
+  // const validateTradeErrors = React.useCallback(
+  //   (error) => {
+  //     const { code } = error.validationErrors[0];
+  //     let text: string | React.ReactElement = 'Something gone wrong';
+  //     if (code === 1001) {
+  //       text = 'Please, enter amount to pay or select token to receive';
+  //     } else if (code === 1004) {
+  //       text = (
+  //         <div>
+  //           <p>Insufficicent liquidity.</p>
+  //           <p>Please, decrease amount.</p>
+  //         </div>
+  //       );
+  //     }
+  //     toggleModal({ open: true, text });
+  //     setWaiting(false);
+  //   },
+  //   [toggleModal],
+  // );
 
   const verifyForm = React.useCallback(() => {
     try {
       if (!addressPay) {
         toggleModal({
           open: true,
-          text: `Please, choose token to pay`,
+          text: (
+            <div className={s.messageContent}>
+              <div>Please, choose token to pay</div>
+            </div>
+          ),
         });
         return false;
       }
       if (!addressReceive) {
         toggleModal({
           open: true,
-          text: `Please, choose token to receive`,
+          text: (
+            <div className={s.messageContent}>
+              <div>Please, choose token to receive</div>
+            </div>
+          ),
         });
         return false;
       }
@@ -854,7 +960,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
       return toggleModal({
         open: true,
         text: (
-          <div>
+          <div className={s.messageContent}>
             <p>Unavailable on ETH-based pairs. Use WETH for limit orders.</p>
           </div>
         ),
@@ -885,9 +991,19 @@ export const PageMarketsContent: React.FC = React.memo(() => {
     }
   }, [isModeLimit, addressPay, addressReceive, userAddress, web3Provider, amountPay]);
 
+  const handleCloseQuotes = React.useCallback(() => {
+    setOpenQuotes(false);
+    toggleModal({ open: false, text: '' });
+    setWaiting(false);
+  }, [toggleModal]);
+
   const trade = React.useCallback(async () => {
     try {
       if (!tokenPay) return null;
+      if (!tokenReceive) return null;
+      if (!amountPay) return null;
+      if (!amountReceive) return null;
+      if (!userBalances) return null;
       if (!verifyForm()) {
         setWaiting(false);
         return null;
@@ -905,21 +1021,41 @@ export const PageMarketsContent: React.FC = React.memo(() => {
       if (gasPriceSetting) props.gasPrice = gasPriceSetting;
       if (slippagePercentage) props.slippagePercentage = slippagePercentage;
       if (excludedSources) props.excludedSources = excludedSources;
+      props.includePriceComparisons = true;
       console.log('trade props:', props);
-      const result = await Zx.getQuote(props);
-      console.log('trade getQuote:', result);
-      if (result.status === 'ERROR') return validateTradeErrors(result.error);
-      result.data.from = userAddress;
-      const { estimatedGas } = result.data;
-      const newEstimatedGas = +estimatedGas * 2;
-      result.data.gas = String(newEstimatedGas);
-      const resultSendTx = await web3Provider.sendTx(result.data);
-      console.log('trade resultSendTx:', resultSendTx);
-      if (resultSendTx.status === 'SUCCESS') {
-        setAmountPay('0');
-        setAmountReceive('0');
-      }
       setWaiting(false);
+      setOpenQuotes(true);
+      return toggleModal({
+        open: true,
+        text: (
+          <ModalContentQuotes
+            open={openQuotes}
+            amountPay={amountPay}
+            amountReceive={amountReceive}
+            tokenPay={tokenPay}
+            tokenReceive={tokenReceive}
+            tradeProps={props}
+            onClose={handleCloseQuotes}
+            excludedSources={excludedSources}
+          />
+        ),
+        noCloseButton: true,
+        fullPage: !isWide,
+        onClose: handleCloseQuotes,
+      });
+      // const resultGetQuote = await Zx.getQuote(props);
+      // console.log('trade getQuote:', resultGetQuote);
+      // if (resultGetQuote.status === 'ERROR') return validateTradeErrors(resultGetQuote.error);
+      // resultGetQuote.data.from = userAddress;
+      // const { estimatedGas } = resultGetQuote.data;
+      // const newEstimatedGas = +estimatedGas * 2;
+      // resultGetQuote.data.gas = String(newEstimatedGas);
+      // const resultSendTx = await web3Provider.sendTx(resultGetQuote.data);
+      // console.log('trade resultSendTx:', resultSendTx);
+      // if (resultSendTx.status === 'SUCCESS') {
+      // setAmountPay('0');
+      // setAmountReceive('0');
+      // }
       getBalanceOfTokensPay();
       getBalanceOfTokensReceive();
       return null;
@@ -929,16 +1065,23 @@ export const PageMarketsContent: React.FC = React.memo(() => {
       return null;
     }
   }, [
+    openQuotes,
+    handleCloseQuotes,
+    userBalances,
+    isWide,
+    toggleModal,
     tokenPay,
+    tokenReceive,
     verifyForm,
     slippage,
     getGasPriceSetting,
     addressPay,
     addressReceive,
     amountPay,
-    validateTradeErrors,
-    web3Provider,
-    userAddress,
+    amountReceive,
+    // validateTradeErrors,
+    // web3Provider,
+    // userAddress,
     getBalanceOfTokensPay,
     getBalanceOfTokensReceive,
     exchangesExcluded,
@@ -973,7 +1116,11 @@ export const PageMarketsContent: React.FC = React.memo(() => {
         setWaiting(false);
         toggleModal({
           open: true,
-          text: `Something gone wrong. Order was not signed`,
+          text: (
+            <div className={s.messageContent}>
+              <div>Something gone wrong. Order was not signed</div>
+            </div>
+          ),
         });
         return null;
       }
@@ -985,13 +1132,21 @@ export const PageMarketsContent: React.FC = React.memo(() => {
         setWaiting(false);
         toggleModal({
           open: true,
-          text: `Something gone wrong. Order was not placed`,
+          text: (
+            <div className={s.messageContent}>
+              <div>Something gone wrong. Order was not placed</div>
+            </div>
+          ),
         });
         return null;
       }
       toggleModal({
         open: true,
-        text: `Order was successfully placed`,
+        text: (
+          <div className={s.messageContent}>
+            <div>Order was successfully placed</div>
+          </div>
+        ),
       });
       setAmountPay('0');
       setAmountReceive('0');
@@ -1003,7 +1158,11 @@ export const PageMarketsContent: React.FC = React.memo(() => {
       setWaiting(false);
       toggleModal({
         open: true,
-        text: `Something gone wrong. Order was not placed`,
+        text: (
+          <div className={s.messageContent}>
+            <div>Something gone wrong. Order was not placed</div>
+          </div>
+        ),
       });
       return null;
     }
@@ -1177,7 +1336,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
         return toggleModal({
           open: true,
           text: (
-            <div>
+            <div className={s.messageContent}>
               <p>Please, connect wallet</p>
               <Button
                 secondary
@@ -1262,19 +1421,19 @@ export const PageMarketsContent: React.FC = React.memo(() => {
   };
 
   const handleSelectSymbolPay = async (address: string) => {
-    console.log('handleSelectSymbolPay:', address);
+    console.log('handleSelectSymbolPay:', { address, addressReceive });
     // setAmountPay(0);
     // setAmountReceive(0);
     setAddressPay(address);
     setOpenDropdownPay(false);
-    const tokensSymbolsReceive = await getTokensSymbolsReceive();
+    // const tokensSymbolsReceive = await getTokensSymbolsReceive();
     let newAddressReceive = addressReceive;
     if (address === newAddressReceive) {
       newAddressReceive = '';
       setAddressReceive('');
       setAmountReceive('0');
     }
-    if (!tokensSymbolsReceive.includes(addressReceive)) newAddressReceive = '';
+    // if (!tokensSymbolsReceive.includes(addressReceive)) newAddressReceive = '';
     history.push(`/markets/${address}/${newAddressReceive}`);
   };
 
@@ -1622,6 +1781,26 @@ export const PageMarketsContent: React.FC = React.memo(() => {
 
   return (
     <div className={s.container}>
+      <Helmet>
+        <title>
+          {tokenPay?.symbol || '-'}/{tokenReceive?.symbol || '-'} | Bitgear
+        </title>
+        <meta
+          name="description"
+          content={`Find the best prices across exchange networks. Swap erc20 tokens: ${
+            tokenPay?.symbol || ''
+          } (${tokenPay?.name || ''}) and ${tokenReceive?.symbol || ''} (${
+            tokenReceive?.name || ''
+          })`}
+        />
+        <meta
+          name="keywords"
+          content={`exchange, blockchain, crypto, ${tokenPay?.symbol || ''}, ${
+            tokenPay?.name || ''
+          }, ${tokenReceive?.symbol || ''}, ${tokenReceive?.name || ''}`}
+        />
+      </Helmet>
+
       <section className={s.containerTitle}>
         <div className={s.containerTitleFirst}>
           <div className={s.containerTitleName}>
@@ -1721,12 +1900,16 @@ export const PageMarketsContent: React.FC = React.memo(() => {
               </div>
               <div className={s.containerSettingsExchangesInner}>
                 {exchangesList?.map((exchange) => {
-                  const checked = exchanges.includes(exchange);
+                  const enabled = exchangesWithLiquidity
+                    ? exchangesWithLiquidity.includes(exchange)
+                    : false;
+                  const checked = enabled && exchanges.includes(exchange);
                   return (
                     <Checkbox
                       key={uuid()}
                       text={exchange}
                       checkedDefault={checked}
+                      disabled={!enabled}
                       onChange={(e: boolean) => handleChangeExchanges(e, exchange)}
                     />
                   );
@@ -2097,6 +2280,29 @@ export const PageMarketsContent: React.FC = React.memo(() => {
             <Button onClick={handleConnect}>Connect wallet</Button>
           )}
         </div>
+      </section>
+
+      <section className={s.containerTokenInfo}>
+        <a
+          href={`https://etherscan.io/token/${tokenPay?.address}`}
+          target="_blank"
+          rel="noreferrer"
+          className={s.tokenInfo}
+        >
+          <img src={tokenPay?.image} alt="" />
+          <div>
+            <span>{tokenPay?.name}</span>
+            <div>
+              {tokenPay?.address
+                ? `${tokenPay?.address.slice(0, 6)}...${tokenPay?.address.slice(-4)}`
+                : ''}
+            </div>
+          </div>
+          <div className={s.etherscan}>
+            Etherscan
+            <IconLink />
+          </div>
+        </a>
       </section>
 
       <section className={s.containerChart}>

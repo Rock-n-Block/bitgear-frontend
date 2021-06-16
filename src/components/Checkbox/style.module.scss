@@ -53,5 +53,11 @@
   border-color: #ffffff;
 }
 .checkbox:disabled+label::before {
-  background-color: #e9ecef;
+  background-color: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: $color-text-secondary;
+}
+
+.disabled {
+  color: $color-text-secondary;
 }

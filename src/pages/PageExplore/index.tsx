@@ -1,4 +1,5 @@
 import React from 'react';
+import { Helmet } from 'react-helmet';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { useMedia } from 'use-media';
@@ -178,6 +179,12 @@ export const PageExplore: React.FC = () => {
 
   return (
     <div className={s.container}>
+      <Helmet>
+        <title>Bitgear | Explore</title>
+        <meta name="description" content="Find the best prices across exchange networks" />
+        <meta name="keywords" content="exchange, blockchain, crypto" />
+      </Helmet>
+
       <section className={s.containerTitle}>
         <Search wide={isWide} />
       </section>

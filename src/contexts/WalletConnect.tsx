@@ -47,7 +47,21 @@ const Connector: React.FC = ({ children }) => {
         const balance = await web3.getBalance(addresses[0]);
         const resultCheckNetwork = await web3.checkNetwork();
         if (resultCheckNetwork.status === 'ERROR') {
-          toggleModal({ open: true, text: resultCheckNetwork.message });
+          toggleModal({
+            open: true,
+            text: (
+              <div
+                style={{
+                  height: '100%',
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                }}
+              >
+                <div>{resultCheckNetwork.message}</div>
+              </div>
+            ),
+          });
         } else {
           console.log('login chainId:', resultCheckNetwork.data);
           setChainId(resultCheckNetwork.data);

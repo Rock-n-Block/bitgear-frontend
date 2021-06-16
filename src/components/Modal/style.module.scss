@@ -29,11 +29,13 @@
 }
 
 .modalContainer {
-  @include flex(column,center,center);
+  @include flex(column,center,normal,nowrap);
   position: relative;
   min-width: 300px;
   max-width: 600px;
   min-height: 150px;
+  max-height: 100vh;
+  overflow: auto;
   background-color: $color-bg;
   border-radius: 20px;
   border: $border-form;
@@ -43,6 +45,27 @@
   line-height: 26px;
   padding: 20px 30px;
   margin: 10px;
+
+  @include b('mobile') {
+    width: 100%;
+    padding: 20px 10px;
+    margin: 0px;
+  }
+}
+
+.modalContainerFullPage {
+  position: absolute;
+  width: 100%;
+  margin: 0;
+  border-radius: 0;
+  border: none;
+  padding: 10px 30px;
+
+  @include b('mobile') {
+    width: 100%;
+    padding: 10px;
+    margin: 0px;
+  }
 }
 
 .modalImage {
@@ -53,7 +76,7 @@
 .modalHeader {
   @include flex(row,center,center);
   width: calc(100% - 46px);
-  padding: 0px 0px 15px 0px;
+  padding: 0;
   width: 100%;
   font-weight: 700;
   font-size: 24px;

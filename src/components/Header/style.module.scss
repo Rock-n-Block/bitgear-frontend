@@ -25,7 +25,7 @@ $fs: 16px;
   border-image-slice: 1;
   border-image-source: $color-border-header;
   @include b('mobile') {
-    height: 69px;
+    height: $height-header-mobile;
     padding: 0;
   }
 

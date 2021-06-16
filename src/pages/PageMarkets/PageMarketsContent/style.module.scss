@@ -388,7 +388,7 @@
 
 .containerChart {
   position: relative;
-  margin: 60px 0 0 0;
+  margin: 30px 0 0 0;
   width: 100%;
   background-color: $color-bg-chart;
   border-radius: 10px;
@@ -492,14 +492,14 @@
   }
 
   &Inner {
-    @include grid(1fr 2fr 250px, 100px 180px, 50px);
+    @include grid(1fr 2fr 250px, 260px 180px, 50px);
 
     @include b('1000') {
-      @include grid(150px 2fr 250px, 220px 180px, 50px);
+      @include grid(150px 2fr 250px, 480px 180px, 50px);
     }
 
     @include b('850') {
-      @include grid(1fr, 100px 420px 200px 100px, 10px);
+      @include grid(1fr, 100px 660px 200px 100px, 10px);
     }
   }
 
@@ -719,4 +719,48 @@
   line-height: 1.1;
   font-weight: 400;
   text-align: right;
+}
+
+.containerTokenInfo {
+  @include flex(row, center, center);
+  margin: 40px 0 0 0;
+}
+
+.tokenInfo {
+  @include grid(32px 2fr 1fr, 54px, 12px);
+  background-color: $color-bg-section;
+  border-radius: 10px;
+  max-width: 400px;
+  padding: 20px;
+  color: $color-text-secondary;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 25px;
+
+  >img {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+  }
+
+  span {
+    color: $color-text-link;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 31px;
+  }
+
+  .etherscan {
+    @include flex(row, center, normal, nowrap);
+    align-self: center;
+
+    >svg {
+      margin: 0 0 0 5px;
+    }
+  }
+}
+
+.messageContent {
+  @include flex(row, center, center, nowrap);
+  height: 100%;
 }

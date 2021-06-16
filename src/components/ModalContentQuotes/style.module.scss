@@ -1,0 +1,192 @@
+@import '../../scss/theme.scss';
+@import '../../scss/mixins.scss';
+
+.container {
+  @include flex(column, normal, normal, nowrap);
+  text-align: left;
+  width: 100%;
+}
+
+.header {
+  @include flex(row, center, space-between, nowrap);
+  width: calc(100% + 20px);
+  margin: -10px -10px 0 -10px;
+  padding: 0;
+  height: $height-header;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  border-image-slice: 1;
+  border-image-source: $color-border-header;
+
+  @include b('mobile') {
+    height: $height-header-mobile;
+  }
+}
+
+.logo {
+  padding: 20px;
+  width: 110px;
+  height: 33px;
+}
+
+.buttonClose {
+  padding: 20px;
+}
+
+.buttonBack {
+  @include flex(row, center);
+  width: 100px;
+  margin: 0 10px;
+  text-align: left;
+  cursor: pointer;
+  color: $color-text-link;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 31px;
+
+  svg {
+    margin: 0 3px 0 0;
+  }
+
+  @include b('mobile') {
+    margin: 20px 10px 0 10px;
+  }
+}
+
+.title {
+  width: 250px;
+  margin: 3px 10px 0 10px;
+  text-align: left;
+  font-weight: 400;
+  font-size: 30px;
+  line-height: 40px;
+  span {
+    margin: 0 7px 0 7px;
+    color: $color-text-link;
+    font-weight: 600;
+  }
+}
+
+.label {
+  width: 100%;
+  margin: 10px 0 5px 20px;
+  text-align: left;
+  color: $color-text-link;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 25px;
+}
+
+.section {
+  @include grid(58px 1fr, 1fr, 20px);
+  background: $color-bg-section;
+  border-radius: 20px;
+  padding: 11px 25px;
+
+  img {
+    justify-self: center;
+    align-self: center;
+    width: 58px;
+    height: 58px;
+  }
+}
+
+.tokenName {
+  color: $color-text-link;
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 31px;
+}
+
+.tokenPrice {
+  margin: -5px 0 0 0;
+  font-weight: 500;
+  font-size: 30px;
+  line-height: 47px;
+}
+
+.tokenBalance {
+  color: $color-text-secondary;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 25px;
+
+  span {
+    margin: 0 0 0 5px;
+    color: $color-text-link;
+    font-weight: 600;
+  }
+}
+
+.messageBestPrice {
+  @include flex(column, center);
+  margin: 20px 0 0 0;
+  width: 100%;
+
+  >div {
+    width: 200px;
+    text-align: center;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 28px;
+
+    >span {
+      color: $color-text-link;
+      font-weight: 700;
+    }
+  }
+}
+
+.containerButton {
+  margin: 17px 0 10px 0;
+}
+
+.labelSecondary {
+  width: 100%;
+  margin: 15px 0 0 0;
+  text-align: left;
+  color: $color-text-secondary;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 25px;
+}
+
+.divider {
+  margin: 15px 0 0 0;
+  height: 1px;
+  width: 100%;
+  background: $color-border-header;
+}
+
+.containerRate {
+  @include flex(row, center, normal);
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 28px;
+
+  svg {
+    margin: 0 24px;
+  }
+}
+
+.containerFee {
+  @include flex(row, center, space-between);
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 28px;
+
+  >span {
+    color: $color-text-link;
+  }
+}
+
+.containerYouSave {
+  @include flex(row, center, space-between);
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 28px;
+
+  >span {
+    color: $color-text-span-green;
+  }
+}

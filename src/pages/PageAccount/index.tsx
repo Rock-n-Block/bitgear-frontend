@@ -207,13 +207,13 @@ export const PageAccount: React.FC = () => {
         const symbolTaker = findToken(item.order.takerToken)?.symbol;
         const addressMaker = findToken(item.order.makerToken)?.address;
         const addressTaker = findToken(item.order.takerToken)?.address;
-        if (!addressMaker || !addressTaker) return;
+        if (!addressMaker || !addressTaker) continue;
         // eslint-disable-next-line no-await-in-loop
         const resultGetExchangeOfPair = await getExchangeOfPair({
           symbolOne: symbolMaker,
           symbolTwo: symbolTaker,
         });
-
+        console.log('PageAccount fillData resultGetExchangeOfPair:', resultGetExchangeOfPair);
         let exchange;
         if (resultGetExchangeOfPair.status === 'SUCCESS') {
           [exchange] = resultGetExchangeOfPair.data;
@@ -367,7 +367,9 @@ export const PageAccount: React.FC = () => {
             </Link>
             <Link key={uuid()} className={s.accountFundsCard} to={`/markets/${gearToken.address}`}>
               <h3>Your balance:</h3>
-              <span>{prettyPrice(userBalancesFiltered.GEAR || 0)} GEAR</span>
+              <span>
+                {prettyPrice(userBalancesFiltered[gearToken.address.toLowerCase()] || 0)} GEAR
+              </span>
               <img src={tokensBySymbol?.GEAR?.image || imageTokenPay} alt="ehereum logo" />
             </Link>
             {isNoBalances && (
