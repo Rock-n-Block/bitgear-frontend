@@ -1,6 +1,6 @@
 const IS_PRODUCTION = true;
 const IS_TESTING_ON_ROPSTEN = false;
-const SHOW_CONSOLE_LOGS = true;
+const SHOW_CONSOLE_LOGS = false;
 
 export default {
   IS_PRODUCTION,
