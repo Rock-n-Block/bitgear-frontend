@@ -1,0 +1,205 @@
+@import '../../scss/theme';
+@import '../../scss/mixins';
+
+table {
+  width: 100%;
+
+  border-collapse: collapse;
+
+  thead {
+    th {
+      padding-left: 10px;
+
+      min-width: 50px;
+      max-width: 155px;
+
+      font-weight: normal;
+      text-align: left;
+      text-transform: uppercase;
+
+      cursor: pointer;
+
+      opacity: 0.5;
+
+      &:last-child {
+        padding: 0 20px 0 0;
+
+        min-width: 100px;
+
+        text-align: right;
+      }
+
+      &:nth-child(4) {
+        min-width: 100px;
+      }
+
+      &:nth-child(6) {
+        width: 100px;
+      }
+    }
+  }
+
+  tbody {
+    tr {
+      height: 80px;
+
+      &:nth-child(odd) {
+        td {
+          background: #30335533;
+        }
+      }
+
+      td {
+        padding: 12px 0 12px 10px;
+        max-height: 80px;
+        color: $color-text-primary;
+        padding: 0;
+        @include b('mobile') {
+          padding: 5px 0 5px 10px;
+          text-transform: uppercase;
+        }
+
+        &:first-child {
+          width: 191px;
+          border-top-left-radius: 10px;
+          border-bottom-left-radius: 10px;
+          @include b('mobile') {
+            min-width: 80px;
+          }
+        }
+
+        &:nth-child(2) {
+          min-width: 96px;
+          @include b('mobile') {
+            min-width: 120px;
+          }
+        }
+
+        &:nth-child(3) {
+          width: 90px;
+          @include b('mobile') {
+            min-width: 120px;
+          }
+        }
+
+        &:nth-child(4) {
+          // width: 120px;
+        }
+
+        &:last-child {
+          color: #01c9c5;
+          border-top-right-radius: 10px;
+          border-bottom-right-radius: 10px;
+          @include b('mobile') {
+            padding-bottom: 16px;
+            max-height: 80px;
+            @include flex(column, normal, flex-end);
+          }
+
+          img {
+            margin-right: 10px;
+            width: 14px;
+            height: 15px;
+            @include b('mobile') {
+              margin-top: 4px;
+              margin-right: 4px;
+            }
+          }
+        }
+
+        a {
+          text-decoration: none;
+          color: $color-text-primary;
+        }
+      }
+    }
+  }
+}
+
+.ExploreTable {
+  margin-top: 50px;
+  width: 100%;
+
+  &Active {
+    text-shadow: 0 0 1px $color-text-link, 0 0 1px $color-text-link !important;
+    opacity: 1 !important;
+    color: $color-text-link;
+  }
+
+  &Down {
+    color: red !important;
+
+    img {
+      transform: rotate(180deg);
+    }
+  }
+}
+
+.chart {
+  &Container {
+    max-height: 60px;
+    background-color: transparent;
+  }
+
+  &Svg {
+    background-color: transparent;
+  }
+}
+
+.mobile {
+  &Symbol {
+    font-size: 14px;
+    opacity: 0.5;
+  }
+
+  &Price {
+    text-align: right;
+    color: white;
+  }
+
+  &PriceChangeModel {
+    text-align: right;
+    background: initial !important;
+
+    &Down {
+      text-align: right;
+      color: red;
+      background: initial !important;
+
+      img {
+        transform: rotate(180deg);
+      }
+    }
+  }
+
+  &PriceAndChangeContainer {
+    padding-top: 10px;
+    padding-right: 20px;
+    text-align: right;
+  }
+}
+
+.arrowSort {
+  padding-left: 2px;
+  @include b('mobile') {
+    margin-right: 2px;
+  }
+
+  &Up {
+    margin-left: 2px;
+    transform: rotate(180deg);
+    @include b('mobile') {
+      margin-right: 2px;
+    }
+  }
+}
+
+.priceChange {
+  @include flex(row, normal, normal, nowrap);
+  margin-right: 0;
+  text-transform: uppercase;
+}
+
+.priceChangeUp {
+  color: #01c9c5;
+}

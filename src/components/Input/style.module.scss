@@ -1,0 +1,31 @@
+@import '../../scss/theme.scss';
+@import '../../scss/mixins.scss';
+
+.container {
+  width: 100%;
+  position: relative;
+}
+
+.input {
+  width: 100%;
+  background: $color-bg-input;
+  border: none;
+  color: $color-text-primary;
+  font-size: 18px;
+  line-height: 26px;
+  font-weight: 400;
+  padding: 0 10px 0 30px;
+
+  &::placeholder {
+    font-size: 18px;
+    line-height: 26px;
+    font-weight: 400;
+    color: $color-text-primary;
+  }
+}
+
+.label {
+  @include flex(row, center);
+  position: absolute;
+  height: 100%;
+}

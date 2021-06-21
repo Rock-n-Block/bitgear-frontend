@@ -1,0 +1,207 @@
+@import "../../scss/theme";
+@import "../../scss/mixins";
+
+.container {
+  width: 100%;
+  height: 100%;
+  max-width: 1000px;
+  padding: 30px 30px 400px 30px;
+  @include b('mobile') {
+    padding: 0 30px 200px 30px;
+  }
+}
+
+.containerTitle {
+  padding: 55px 0 0;
+  @include b('mobile') {
+    padding: 0;
+  }
+  h1 {
+    max-width: 563px;
+    font-weight: 400;
+    font-size: 45px;
+    line-height: 70px;
+  }
+  span {
+    color: $color-text-span;
+  }
+}
+
+.containerLists {
+  @include grid(repeat(2, 1fr), 20px);
+  margin: 30px 0 0 0;
+
+  @include b('mobile') {
+    @include grid(repeat(1, 1fr));
+    margin: 10px 0 0 0;
+  }
+}
+
+.cardList {
+  @include flex(row,center,center);
+  flex-grow: 1;
+  flex-shrink: 1;
+  min-width: 200px;
+  height: 92px;
+  border: $border-card;
+  border-radius: 20px;
+  font-size: 20px;
+  line-height: 31px;
+  cursor: pointer;
+  text-decoration: none;
+  color: $color-text-primary;
+  transition: transform 0.5s cubic-bezier(0.2, 3, 0.4, 1) 0s, background-color 0.4s ease;
+
+  &:hover {
+    background-color: $color-bg-login-item-hover;
+  }
+
+  @include b('mobile') {
+    height: 60px;
+  }
+
+  &Image {
+    width: 38px;
+    height: 38px;
+    margin: 0 15px;
+  }
+}
+
+.button {
+  @include flex(row, center, center);
+  outline: none;
+  background: $color-bg-button;
+  cursor: pointer;
+  height: 46px;
+  padding: 0 10px;
+  border-radius: 12px;
+  color: $color-text-primary;
+  font-family: $font2;
+  font-size: 14px;
+  line-height: 26px;
+  letter-spacing: 0.04em;
+  margin: 0 12px 0 0;
+}
+
+.card {
+  @include flex(column, normal, space-between);
+  flex-basis: 320px;
+  flex-shrink: 1;
+  flex-grow: 1;
+  min-width: 200px;
+  height: 300px;
+  padding: 30px;
+  border-radius: 20px;
+  font-size: 18px;
+  cursor: pointer;
+  text-decoration: none;
+  color: $color-text-primary;
+  background: $color-bg-card;
+
+  @include b('mobile') {
+    height: 140px;
+    padding: 20px;
+  }
+
+  &ContainerFirst {
+    @include flex(column);
+
+    @include b('mobile') {
+      @include flex(column, normal, center);
+    }
+  }
+
+  &ContainerSecond {
+    @include flex(column, flex-end);
+
+    @include b('mobile') {
+      @include flex(column, flex-end);
+    }
+  }
+
+  &Symbol {
+    font-size: 20px;
+    line-height: 31px;
+    opacity: 0.5;
+    z-index: 1;
+
+    @include b('mobile') {
+      font-size: 16px;
+      line-height: 25px;
+      opacity: 0.5;
+      z-index: 1;
+    }
+  }
+
+  &Price {
+    font-size: 40px;
+    line-height: 63px;
+    font-weight: bold;
+
+    @include b('mobile') {
+      font-size: 30px;
+      line-height: 44px;
+    }
+  }
+
+  &PriceChange {
+    margin: 3px 0 0 0;
+    font-size: 20px;
+    line-height: 31px;
+    font-weight: 600;
+
+    @include b('mobile') {
+      font-size: 16px;
+      line-height: 25px;
+    }
+
+    &Plus {
+      color: $color-text-green;
+      font-size: 20px;
+      line-height: 31px;
+      font-weight: 600;
+
+      @include b('mobile') {
+        font-size: 16px;
+        line-height: 25px;
+      }
+    }
+
+    &Minus {
+      color: $color-text-red;
+      font-size: 20px;
+      line-height: 31px;
+      font-weight: 600;
+
+      @include b('mobile') {
+        font-size: 16px;
+        line-height: 25px;
+      }
+    }
+  }
+
+  &Image {
+    width: 100px;
+    height: 100px;
+    -webkit-filter: grayscale(1) brightness(1.1);
+    filter: grayscale(1) brightness(1.1);
+    opacity: 0.3;
+    border-radius: 50%;
+  }
+}
+
+.containerCards {
+  @include grid(repeat(2, 1fr), 1fr, 20px);
+  margin: 40px 160px 0 160px;
+
+  @include b('tablet') {
+    @include grid(repeat(2, 1fr), 1fr, 20px);
+    margin: 40px 80px 0 80px;
+  }
+
+  @include b('mobile') {
+    @include grid(repeat(1, 1fr), 1fr);
+    margin: 40px 0px 0 0px;
+  }
+}
+

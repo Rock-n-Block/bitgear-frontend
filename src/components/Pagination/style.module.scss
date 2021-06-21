@@ -1,0 +1,76 @@
+@import '../../scss/theme.scss';
+@import '../../scss/mixins.scss';
+
+.pagination {
+  width: 336px;
+  height: 54px;
+  margin: 0 auto;
+  border: $border-pagination;
+  background-color: $color-bg-pagination;
+  border-radius: 20px;
+  text-align: center;
+  transition: transform 0.5s cubic-bezier(0.2, 3, 0.4, 1) 0s, background-color 0.4s ease;
+  @include flex();
+
+  &:hover {
+    background-color: $color-bg-login-item-hover;
+  }
+}
+
+.buttonsContainer {
+  min-width: 264px;
+  max-width: 400px;
+  height: 38px;
+  margin: auto;
+}
+
+button {
+  padding: 0;
+  border: none;
+  font: inherit;
+  color: inherit;
+  background-color: transparent;
+
+}
+
+.button {
+  height: 38px;
+  width: 34px;
+  padding: 1px;
+  margin: auto 1px;
+  border-radius: 12px;
+  padding-left: 2px;
+  opacity: 0.5;
+  cursor: pointer;
+  transition: transform 0.5s cubic-bezier(0.2, 3, 0.4, 1) 0s, background-color 0.4s ease;
+
+  &Dots {
+    height: 38px;
+    width: 34px;
+    padding: 1px;
+    margin: auto 1px;
+    border-radius: 12px;
+    opacity: 0.5;
+  }
+}
+
+.button:hover {
+  border: 2px solid #0197E2;
+  opacity: 1;
+}
+
+.buttonActive {
+  height: 38px;
+  width: 34px;
+  padding: 1px;
+  margin: auto 1px;
+  border-radius: 12px;
+  padding-left: 2px;
+  cursor: pointer;
+  background-color: #0197E2;
+  cursor: default;
+}
+
+.pagination:hover {
+  border: 2px solid rgba(1, 151, 226, 0.5);
+}

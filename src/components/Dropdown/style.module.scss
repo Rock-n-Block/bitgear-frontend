@@ -1,0 +1,36 @@
+@import '../../scss/theme.scss';
+@import '../../scss/mixins.scss';
+
+.container {
+  //@include flex(row, center, normal, nowrap);
+  position: relative;
+}
+
+.dropdown {
+  position: absolute;
+  width: 287px;
+  top: 0px;
+  background: $color-bg-dropdown;
+  border-radius: 10px;
+  border: $border-form;
+  padding: 20px 0px 16px 0px;
+  z-index: 2;
+}
+
+.hidden {
+  visibility: hidden;
+}
+
+.dropdownInner {
+  height: 320px;
+  overflow: auto;
+  padding: 0 10px 0 0;
+}
+
+.left {
+  left: 0;
+}
+
+.right {
+  right: 0;
+}

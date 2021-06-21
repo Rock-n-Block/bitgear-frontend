@@ -1,0 +1,38 @@
+@import '../../scss/theme.scss';
+@import '../../scss/mixins.scss';
+
+.container {
+  //@include flex(row, center, normal, nowrap);
+  position: relative;
+  background-color: $color-bg-select;
+  border-radius: 4px;
+  height: 55px;
+  padding: 0 10px;
+}
+
+.dropdown {
+  position: absolute;
+  width: 100%;
+  top: 100%;
+  left: 0px;
+  border-radius: 4px;
+  z-index: 2;
+}
+
+.hidden {
+  visibility: hidden;
+}
+
+.label {
+  @include flex(row, center, space-between);
+  cursor: pointer;
+  height: 100%;
+  width: 100%;
+}
+
+.dropdownInner {
+  background: $color-bg-select;
+  max-height: 320px;
+  overflow: auto;
+  border-radius: 4px;
+}

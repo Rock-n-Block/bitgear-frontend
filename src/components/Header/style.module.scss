@@ -1,0 +1,325 @@
+@import '../../scss/theme.scss';
+@import '../../scss/mixins.scss';
+
+$fs: 16px;
+
+.header {
+  @include flex(row, center, center, nowrap);
+  font-family: $font;
+  position: fixed;
+  left: 0;
+  width: 100%;
+  height: $height-header;
+  background-color: $color-bg-header;
+  z-index: 999;
+  user-select: none;
+  color: $color-text-header;
+  padding-top: 12px;
+  padding-bottom: 11px;
+  text-transform: uppercase;
+  font-weight: 500;
+  letter-spacing: 1px;
+  font-size: $fs;
+  border-bottom-width: 2px;
+  border-bottom-style: solid;
+  border-image-slice: 1;
+  border-image-source: $color-border-header;
+  @include b('mobile') {
+    height: $height-header-mobile;
+    padding: 0;
+  }
+
+  &Container {
+    @include flex(row, center, space-between, nowrap);
+    height: $height-header;
+    width: 100%;
+    max-width: 1270px;
+    @include b('mobile') {
+      height: 69px;
+      padding: 0;
+    }
+  }
+  &LeftGroup {
+    @include flex(row, center, center, nowrap);
+    height: $height-header;
+    padding: 0 20px;
+    @include b('mobile') {
+      padding: 0 2vw;
+    }
+  }
+  &RightGroup {
+    @include flex(row, center, center, nowrap);
+    height: $height-header;
+    padding: 0 2vw;
+  }
+  &Item {
+    @include flex(row, center, center);
+    cursor: pointer;
+    padding: 20px 25px;
+    font-size: $fs;
+    border-radius: 5px;
+
+    @include b('mobile') {
+      width: 100%;
+      padding: 8px 25px;
+    }
+
+    a {
+      width: 100%;
+      text-align: center;
+      font-size: $fs;
+      text-decoration: none;
+      color: $color-text-header;
+      transition: color 200ms ease;
+    }
+
+    &Btn {
+      @include flex(row, center);
+      cursor: pointer;
+      background-color: $color-text-link;
+      padding: 10px;
+      margin: 0 25px;
+      border-radius: 10px;
+      color: #fff;
+      font-weight: 500;
+      font-size: 14px;
+      a {
+        color: #fff;
+      }
+    }
+  }
+  &Item:hover {
+    @include flex(row, center, center);
+    cursor: pointer;
+    padding: 20px 25px;
+    font-size: $fs;
+    border-radius: 5px;
+
+    @include b('mobile') {
+      width: 100%;
+      padding: 8px 25px;
+    }
+
+    a {
+      color: $color-text-link;
+      transition: color 200ms ease;
+    }
+  }
+  &ItemArrow {
+    margin-left: 6px;
+    opacity: 0.4;
+  }
+  &Logo {
+    height: $height-header - 40px;
+    @include b('mobile') {
+      margin-top: 10px;
+    }
+  }
+  &MenuMobileClosed {
+    display: none;
+  }
+  &MenuMobileOpen {
+    @include flex(column, center, flex-start, nowrap);
+    box-sizing: border-box;
+    position: fixed;
+    height: 100vh;
+    width: 100vw;
+    left: 0;
+    top: $height-header - 14px;
+    padding: 0 30px 120px 30px;
+    flex-grow: 0;
+    background-color: $color-bg-header;
+  }
+}
+
+.headerMenuBtn {
+  cursor: pointer;
+  z-index: 1000;
+  &Wrapper {
+    @include flex(column, center, center);
+    padding: 0 28px;
+    height: 60px;
+    cursor: pointer;
+    user-select: none;
+    font-size: $fs;
+    outline: none;
+  }
+  &Open {
+    background-color: transparent;
+  }
+}
+
+.headerMenu {
+  &Footer {
+    @include flex(column, center, space-around);
+    box-sizing: border-box;
+    position: absolute;
+    left: 0;
+    bottom: 100px;
+    margin-top: 30px;
+    width: 100%;
+    z-index: 997;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 26px;
+    user-select: none;
+    @include b('mobile') {
+      bottom: $height-header - 10px;
+      line-height: 20px;
+      z-index: 997;
+    }
+    &LogoGroup {
+      @include flex(row, center, center);
+    }
+    &Logo {
+      cursor: pointer;
+      margin: 0 14px;
+    }
+    &Copyright {
+      text-transform: none;
+      letter-spacing: normal;
+      color: $color-text-secondary;
+      a {
+        color: $color-text-link;
+        text-decoration: none;
+      }
+    }
+  }
+}
+
+.headerDropdown {
+  top: $height-header - 22px;
+  right: 25px;
+  min-width: 370px;
+  padding: 0;
+  z-index: 1000000;
+  border-radius: 20px;
+
+  @include b('mobile') {
+    width: calc(100vw - 40px);
+    margin-top: 256px;
+  }
+
+  &Inner {
+    min-height: 580px;
+    padding: 18px 30px 40px 30px;
+
+    @include b('mobile') {
+      padding: 18px 20px 10px 20px;
+      min-height: 400px;
+    }
+  }
+
+  &Item {
+    @include flex(row, center);
+    cursor: pointer;
+    padding: 10px 0px;
+
+    @include b('mobile') {
+      padding: 5px 0px;
+    }
+
+    span {
+      cursor: auto;
+    }
+
+    svg {
+      margin: 0 10px 0 0;
+    }
+  }
+
+  &ItemLabel {
+    margin: 10px 0 0 0;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 26px;
+    color: $color-text-secondary;
+  }
+
+  &ItemTokensList {
+    margin: 0 -10px 10px 0;
+    padding: 0;
+    max-height: 300px;
+    overflow: auto;
+
+    @include b('mobile') {
+      max-height: 20vh;
+    }
+  }
+
+  &ItemTokens {
+    @include flex(row, center, center);
+    padding: 20px;
+    background: $color-bg-input-small;
+    border-radius: 4px;
+    min-height: 100px;
+  }
+
+  &ItemToken {
+    @include grid(38px 1fr, 1fr, 20px);
+    margin: 10px 0;
+    padding: 20px;
+    background: $color-bg-input-small;
+    border-radius: 4px;
+    min-height: 78px;
+
+    @include b('mobile') {
+      @include grid(38px 1fr, 1fr, 10px);
+      min-height: 48px;
+      padding: 10px;
+    }
+  }
+
+  &ItemTokenImageWrap {
+    @include flex(row, center, center);
+  }
+
+  &ItemTokenImage {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+  }
+
+  &ItemTokenSymbol {
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 25px;
+    color: $color-text-secondary;
+
+    @include b('mobile') {
+      font-size: 14px;
+      line-height: 18px;
+    }
+  }
+
+  &ItemTokenBalance {
+    font-weight: 500;
+    font-size: 24px;
+    line-height: 25px;
+    color: $color-text-primary;
+
+    @include b('mobile') {
+      font-size: 16px;
+      line-height: 20px;
+    }
+  }
+}
+
+.headerWalletLogo {
+  width: 18px;
+  height: 18px;
+  margin: 0 10px 0 0;
+  filter: brightness(0.7);
+}
+
+.dropdownMobile {
+  position: absolute;
+  top: 120px;
+  padding: 16px;
+  margin: 10px;
+  height: 58vh;
+  border: 3px solid rgba(1, 151, 226, 0.5);
+  background: $color-bg-dropdown;
+  border-radius: 10px;
+  z-index: 99999;
+}

@@ -1,0 +1,94 @@
+@import "../../scss/theme";
+@import "../../scss/mixins";
+
+.modalOpen {
+  @include flex(column,center,center);
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 100000000;
+  opacity: 1;
+  transition: opacity 0.3s;
+}
+
+.modalClosed {
+  @include flex(column,center,center);
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 100000000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+
+.modalContainer {
+  @include flex(column,center,normal,nowrap);
+  position: relative;
+  min-width: 300px;
+  max-width: 600px;
+  min-height: 150px;
+  max-height: 100vh;
+  overflow: auto;
+  background-color: $color-bg;
+  border-radius: 20px;
+  border: $border-form;
+  color: $color-text-primary;
+  text-align: center;
+  font-size: 20px;
+  line-height: 26px;
+  padding: 20px 30px;
+  margin: 10px;
+
+  @include b('mobile') {
+    width: 100%;
+    padding: 20px 10px;
+    margin: 0px;
+  }
+}
+
+.modalContainerFullPage {
+  position: absolute;
+  width: 100%;
+  margin: 0;
+  border-radius: 0;
+  border: none;
+  padding: 10px 30px;
+
+  @include b('mobile') {
+    width: 100%;
+    padding: 10px;
+    margin: 0px;
+  }
+}
+
+.modalImage {
+  width: 40px;
+  height: 40px;
+}
+
+.modalHeader {
+  @include flex(row,center,center);
+  width: calc(100% - 46px);
+  padding: 0;
+  width: 100%;
+  font-weight: 700;
+  font-size: 24px;
+  text-align: center;
+}
+
+.modalClose {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  width: 20px;
+  height: 20px;
+  padding: 10px;
+  cursor: pointer;
+}

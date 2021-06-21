@@ -1,8 +1,5 @@
 {
   "shouldExtractLiteralValuesFromEnum": true,
-  "files": [
-    "./src/types/assets.d.ts"
-  ],
   "include": [
     "src/**/*.ts",
     "src/**/*.tsx"
