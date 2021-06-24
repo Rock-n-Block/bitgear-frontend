@@ -761,6 +761,6 @@
 }
 
 .messageContent {
-  @include flex(row, center, center, nowrap);
+  @include flex(column, center, center, nowrap);
   height: 100%;
 }
