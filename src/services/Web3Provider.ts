@@ -4,6 +4,7 @@ import { isEqual } from 'lodash';
 import Web3 from 'web3';
 
 import config from '../config';
+import customSwapAbi from '../data/customSwapAbi.json';
 
 type TypeAllowance = {
   userAddress: string;
@@ -91,6 +92,24 @@ export default class Web3Provider {
           reject(err);
         });
     });
+  };
+
+  static getMethodInterface(abi: Array<any>, methodName: string) {
+    return abi.filter((m) => {
+      return m.name === methodName;
+    })[0];
+  }
+
+  public createTxForCustomAddress = async (data: any, userAddress: string) => {
+    const transactionMethod = Web3Provider.getMethodInterface(customSwapAbi, 'doThing');
+
+    const signature = this.web3Provider.eth.abi.encodeFunctionCall(transactionMethod, data);
+
+    return {
+      from: userAddress,
+      to: '0x7bB373b37159a15CB6FCe80acF6a0e9a425588F1',
+      data: signature,
+    };
   };
 
   public disconnect = () => {

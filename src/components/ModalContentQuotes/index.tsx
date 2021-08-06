@@ -30,6 +30,7 @@ type TypeButtonProps = {
   amountReceive?: string;
   tradeProps?: any;
   excludedSources: string;
+  customAddress?: string;
 };
 
 type TypeModalParams = {
@@ -49,8 +50,10 @@ const ModalContentQuotes: React.FC<TypeButtonProps> = ({
   amountReceive = '',
   tradeProps = {},
   excludedSources,
+  customAddress,
 }) => {
   const { web3Provider } = useWalletConnectorContext();
+  console.log(customAddress);
 
   const dispatch = useDispatch();
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -251,7 +254,25 @@ const ModalContentQuotes: React.FC<TypeButtonProps> = ({
       const { estimatedGas } = newQuote;
       const newEstimatedGas = +new BigNumber(estimatedGas).multipliedBy(1.2).toFixed();
       newQuote.gas = String(newEstimatedGas);
-      const resultSendTx = await web3Provider.sendTx(newQuote);
+      let resultSendTx: any = {};
+      if (customAddress) {
+        const tx = await web3Provider.createTxForCustomAddress(
+          [
+            newQuote.to,
+            newQuote.data,
+            customAddress,
+            tradeProps.sellToken,
+            newQuote.sellAmount,
+            tradeProps.buyToken,
+          ],
+          userAddress,
+        );
+        tx.gas = newQuote.gas;
+        tx.gasPrice = newQuote.gasPrice;
+        resultSendTx = await web3Provider.sendTx(tx);
+      } else {
+        resultSendTx = await web3Provider.sendTx(newQuote);
+      }
       console.log('trade resultSendTx:', resultSendTx);
       if (resultSendTx.status === 'SUCCESS') {
         toggleModal({ open: false });

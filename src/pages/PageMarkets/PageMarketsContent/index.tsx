@@ -20,6 +20,7 @@ import ModalContentQuotes from '../../../components/ModalContentQuotes';
 import config from '../../../config';
 import { useWalletConnectorContext } from '../../../contexts/WalletConnect';
 import erc20Abi from '../../../data/erc20Abi.json';
+import gearToken from '../../../data/gearToken';
 import useDebounce from '../../../hooks/useDebounce';
 import { modalActions, statusActions, walletActions } from '../../../redux/actions';
 import { Service0x } from '../../../services/0x';
@@ -281,6 +282,10 @@ export const PageMarketsContent: React.FC = React.memo(() => {
   const [allowance, setAllowance] = React.useState<number>(0);
   const [openQuotes, setOpenQuotes] = React.useState<boolean>(false);
   const [exchangesWithLiquidity, setExchangesWithLiquidity] = React.useState<string[]>();
+  const [isCustomAddress, setIsCustomAddress] = React.useState<boolean>(false);
+  console.log(isCustomAddress);
+  const [customAddress, setCustomAddress] = React.useState<string>('');
+  const [gearBalance, setGearBalance] = React.useState<string | number>(0);
 
   const isWide = useMedia({ minWidth: '767px' });
 
@@ -904,6 +909,21 @@ export const PageMarketsContent: React.FC = React.memo(() => {
     }
   }, [userAddress, web3Provider, tokenReceive]);
 
+  const getGearBalance = React.useCallback(async () => {
+    const resultBalanceOfReceive = await web3Provider.balanceOf({
+      address: userAddress,
+      contractAddress: gearToken.address,
+      contractAbi: erc20Abi,
+    });
+    setGearBalance(resultBalanceOfReceive);
+  }, [userAddress, web3Provider]);
+
+  React.useEffect(() => {
+    if (userAddress) {
+      getGearBalance();
+    }
+  }, [userAddress, getGearBalance]);
+
   // const validateTradeErrors = React.useCallback(
   //   (error) => {
   //     const { code } = error.validationErrors[0];
@@ -1037,28 +1057,13 @@ export const PageMarketsContent: React.FC = React.memo(() => {
             tradeProps={props}
             onClose={handleCloseQuotes}
             excludedSources={excludedSources}
+            customAddress={customAddress}
           />
         ),
         noCloseButton: true,
         fullPage: !isWide,
         onClose: handleCloseQuotes,
       });
-      // const resultGetQuote = await Zx.getQuote(props);
-      // console.log('trade getQuote:', resultGetQuote);
-      // if (resultGetQuote.status === 'ERROR') return validateTradeErrors(resultGetQuote.error);
-      // resultGetQuote.data.from = userAddress;
-      // const { estimatedGas } = resultGetQuote.data;
-      // const newEstimatedGas = +estimatedGas * 2;
-      // resultGetQuote.data.gas = String(newEstimatedGas);
-      // const resultSendTx = await web3Provider.sendTx(resultGetQuote.data);
-      // console.log('trade resultSendTx:', resultSendTx);
-      // if (resultSendTx.status === 'SUCCESS') {
-      // setAmountPay('0');
-      // setAmountReceive('0');
-      // }
-      getBalanceOfTokensPay();
-      getBalanceOfTokensReceive();
-      return null;
     } catch (e) {
       console.error(e);
       setWaiting(false);
@@ -1082,9 +1087,8 @@ export const PageMarketsContent: React.FC = React.memo(() => {
     // validateTradeErrors,
     // web3Provider,
     // userAddress,
-    getBalanceOfTokensPay,
-    getBalanceOfTokensReceive,
     exchangesExcluded,
+    customAddress,
   ]);
 
   const tradeLimit = React.useCallback(async () => {
@@ -1966,6 +1970,17 @@ export const PageMarketsContent: React.FC = React.memo(() => {
                     {RadioLabelCustom}
                   </label>
                 </div>
+
+                {gearBalance > 5000 ? (
+                  <div className={s.containerSettingsGasCustomAddress}>
+                    <Checkbox
+                      text="Send tokens to a custom address"
+                      onChange={(e: boolean) => setIsCustomAddress(e)}
+                    />
+                  </div>
+                ) : (
+                  ''
+                )}
               </div>
             </div>
             <div className={s.containerSettingsButtons}>
@@ -2265,6 +2280,19 @@ export const PageMarketsContent: React.FC = React.memo(() => {
             </div>
           </div>
         </div>
+        {isCustomAddress && gearBalance > 5000 ? (
+          <div className={s.CustomAddress}>
+            <div className={s.CustomAddressTitle}>Custom address</div>
+            <Input
+              value={customAddress}
+              placeholder="Enter custom address to receive the tokens"
+              onChange={(value) => setCustomAddress(value)}
+              className={s.CustomAddressInput}
+            />
+          </div>
+        ) : (
+          ''
+        )}
         <div className={s.containerTradingButton}>
           {userAddress ? (
             isAllowed || isAddressPayETH ? (

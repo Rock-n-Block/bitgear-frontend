@@ -13,6 +13,7 @@ import ArrowDownIcon from '../../assets/icons/arrow-down-icon.svg';
 import { ReactComponent as IconArrowDownWhite } from '../../assets/icons/arrow-down-white.svg';
 import ArrowUpIcon from '../../assets/icons/arrow-up-icon.svg';
 import { ReactComponent as IconCopy } from '../../assets/icons/copy-icon.svg';
+import TierCheckIcon from '../../assets/icons/tier-check.svg';
 import EthGlassIcon from '../../assets/images/logo/eth-glass-icon.svg';
 import imageTokenPay from '../../assets/images/token.png';
 import { Pagination } from '../../components';
@@ -35,6 +36,26 @@ type TableType = {
 
 const Zx = new Service0x();
 const CryptoCompare = new CryptoCompareService();
+
+const tiers = [
+  {
+    amount: 5,
+    text: (
+      <>
+        You can now swap tokens
+        <br /> to custom addresses
+      </>
+    ),
+  },
+  {
+    amount: NaN,
+    text: 'to be announced later',
+  },
+  {
+    amount: NaN,
+    text: 'to be announced later',
+  },
+];
 
 export const PageAccount: React.FC = () => {
   const match = useRouteMatch();
@@ -63,6 +84,8 @@ export const PageAccount: React.FC = () => {
   const [isArrowUp, setIsArrowUp] = React.useState<boolean>(true);
   const [activeColumn, setActiveColumn] = React.useState<string>('');
   const [userBalancesFiltered, setUserBalancesFiltered] = React.useState<any>({});
+
+  const [gearBalance, setGearBalance] = React.useState<number | string>(0);
 
   const userBalancesAsArray = Object.entries(userBalancesFiltered);
 
@@ -105,6 +128,7 @@ export const PageAccount: React.FC = () => {
         newBalancesWithSymbols[address] = newBalance;
         return null;
       });
+
       setUserBalancesFiltered(newBalancesWithSymbols);
     } catch (e) {
       console.error(e);
@@ -329,6 +353,16 @@ export const PageAccount: React.FC = () => {
     }
   }, [data, isWide]);
 
+  React.useEffect(() => {
+    for (let i = 0; i < userBalancesAsArray.length; i += 1) {
+      const [address, balance]: [string, any] = userBalancesAsArray[i];
+      if (address.toLowerCase() === gearToken.address.toLowerCase()) {
+        setGearBalance(prettyPrice(balance));
+        break;
+      }
+    }
+  }, [userBalancesAsArray, userBalancesAsArray.length]);
+
   return (
     <div className={s.container}>
       <section className={s.containerTitle}>
@@ -359,52 +393,111 @@ export const PageAccount: React.FC = () => {
 
       <Switch>
         <Route path={match.path} exact>
-          <section className={s.accountFunds}>
-            <Link to={`/markets/${ethToken.address}`} className={s.accountFundsCard}>
-              <h3>Your balance:</h3>
-              <span>{prettyPrice(userBalance)} ETH</span>
-              <img src={EthGlassIcon} alt="ehereum logo" />
-            </Link>
-            <Link key={uuid()} className={s.accountFundsCard} to={`/markets/${gearToken.address}`}>
-              <h3>Your balance:</h3>
-              <span>
-                {prettyPrice(userBalancesFiltered[gearToken.address.toLowerCase()] || 0)} GEAR
-              </span>
-              <img src={tokensBySymbol?.GEAR?.image || imageTokenPay} alt="ehereum logo" />
-            </Link>
-            {isNoBalances && (
-              <div>
-                {isLoadingBalancesDone
-                  ? 'You do not have any tokens'
-                  : isLoadingBalancesError
-                  ? 'Not loaded'
-                  : 'Loading...'}
+          <div className={s.accountWrapper}>
+            <section className={s.accountFunds}>
+              <Link to={`/markets/${ethToken.address}`} className={s.accountFundsCard}>
+                <h3>Your balance:</h3>
+                <span>{prettyPrice(userBalance)} ETH</span>
+                <img src={EthGlassIcon} alt="ehereum logo" />
+              </Link>
+              <Link
+                key={uuid()}
+                className={s.accountFundsCard}
+                to={`/markets/${gearToken.address}`}
+              >
+                <h3>Your balance:</h3>
+                <span>
+                  {prettyPrice(userBalancesFiltered[gearToken.address.toLowerCase()] || 0)} GEAR
+                </span>
+                <img src={tokensBySymbol?.GEAR?.image || imageTokenPay} alt="ehereum logo" />
+              </Link>
+              {isNoBalances && (
+                <div>
+                  {isLoadingBalancesDone
+                    ? 'You do not have any tokens'
+                    : isLoadingBalancesError
+                    ? 'Not loaded'
+                    : 'Loading...'}
+                </div>
+              )}
+              {userBalancesAsArray.map((item: any) => {
+                const [address, balance] = item;
+                if (
+                  address.toLowerCase() === ethToken.address.toLowerCase() ||
+                  address.toLowerCase() === gearToken.address.toLowerCase()
+                )
+                  return null;
+                const image = (tokensByAddress && tokensByAddress[address]?.image) || imageTokenPay;
+                const symbol = tokensByAddress && tokensByAddress[address]?.symbol;
+                return (
+                  <>
+                    {balance > 0 ? (
+                      <Link key={uuid()} className={s.accountFundsCard} to={`/markets/${address}`}>
+                        <h3>Your balance:</h3>
+                        <span>
+                          {prettyPrice(balance)} {symbol}
+                        </span>
+                        <img className={s.accountFundsCardImage} src={image} alt="ehereum logo" />
+                      </Link>
+                    ) : null}
+                  </>
+                );
+              })}
+            </section>
+            <section className={s.accountTiersWrapper}>
+              <div className={s.accountTiersAddress}>
+                <div className={s.accountTiersAddressTitle}>Deposit more funds</div>
+                <CopyToClipboard text={userAddress}>
+                  <div className={s.accountTiersAddressCopy}>
+                    <div className={s.accountTiersAddressCopyBtn}>{userAddress}</div>
+                    <IconCopy />
+                  </div>
+                </CopyToClipboard>
               </div>
-            )}
-            {userBalancesAsArray.map((item: any) => {
-              const [address, balance] = item;
-              if (
-                address.toLowerCase() === ethToken.address.toLowerCase() ||
-                address.toLowerCase() === gearToken.address.toLowerCase()
-              )
-                return null;
-              const image = (tokensByAddress && tokensByAddress[address]?.image) || imageTokenPay;
-              const symbol = tokensByAddress && tokensByAddress[address]?.symbol;
-              return (
-                <>
-                  {balance > 0 ? (
-                    <Link key={uuid()} className={s.accountFundsCard} to={`/markets/${address}`}>
-                      <h3>Your balance:</h3>
-                      <span>
-                        {prettyPrice(balance)} {symbol}
-                      </span>
-                      <img className={s.accountFundsCardImage} src={image} alt="ehereum logo" />
-                    </Link>
-                  ) : null}
-                </>
-              );
-            })}
-          </section>
+              <div className={s.accountTiers}>
+                {tiers.map((tier, index) => (
+                  <div
+                    key={uuid()}
+                    className={cns(
+                      s.accountTiersCard,
+                      tier.amount && +gearBalance >= tier.amount * 1000 && s.accountTiersCardActive,
+                    )}
+                  >
+                    <div
+                      className={cns(
+                        s.accountTiersCardCircle,
+                        tier.amount &&
+                          +gearBalance >= tier.amount * 1000 &&
+                          s.accountTiersCardCircleActive,
+                      )}
+                    >
+                      {tier.amount && +gearBalance >= tier.amount * 1000 ? (
+                        <img src={TierCheckIcon} alt="" />
+                      ) : (
+                        ''
+                      )}
+                    </div>
+                    {tiers[index + 1] ? <div className={s.accountTiersCardLine} /> : ''}
+                    <div className={s.accountTiersCardTitle}>
+                      <span>{`TEIR ${index + 1}`}</span>
+                      {tier.amount &&
+                      +gearBalance >= tier.amount * 1000 &&
+                      !(tiers[index + 1] && +gearBalance >= tiers[index + 1].amount * 1000) ? (
+                        <div className={s.accountTiersCardTitleTooltip}>YOU TIER</div>
+                      ) : (
+                        ''
+                      )}
+                    </div>
+                    <div className={s.accountTiersCardAmount}>
+                      {}
+                      {tier.amount ? `${tier.amount}k GEAR` : 'to be announced later'}
+                    </div>
+                    <div className={s.accountTiersCardText}>{tier.text}</div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          </div>
         </Route>
         <Route path={`${match.path}/orders`}>
           <section className={s.accountTrade}>
