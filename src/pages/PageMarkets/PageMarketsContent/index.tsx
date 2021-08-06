@@ -1971,7 +1971,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
                   </label>
                 </div>
 
-                {gearBalance > 5000 ? (
+                {gearBalance > 4000 ? (
                   <div className={s.containerSettingsGasCustomAddress}>
                     <Checkbox
                       text="Send tokens to a custom address"
@@ -2280,7 +2280,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
             </div>
           </div>
         </div>
-        {isCustomAddress && gearBalance > 5000 ? (
+        {isCustomAddress && gearBalance > 4000 ? (
           <div className={s.CustomAddress}>
             <div className={s.CustomAddressTitle}>Custom address</div>
             <Input

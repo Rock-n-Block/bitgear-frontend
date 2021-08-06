@@ -39,7 +39,7 @@ const CryptoCompare = new CryptoCompareService();
 
 const tiers = [
   {
-    amount: 5,
+    amount: 4,
     text: (
       <>
         You can now swap tokens
