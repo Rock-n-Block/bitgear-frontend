@@ -105,11 +105,18 @@ export default class Web3Provider {
 
     const signature = this.web3Provider.eth.abi.encodeFunctionCall(transactionMethod, data);
 
-    return {
+    const tx: any = {
       from: userAddress,
       to: '0x85e00a4D4dE1071e299D0657EEeb987Cf016eA5F',
       data: signature,
     };
+
+    if (data[3] === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee') {
+      const value = data[4];
+      tx.value = value;
+    }
+
+    return tx;
   };
 
   public disconnect = () => {
