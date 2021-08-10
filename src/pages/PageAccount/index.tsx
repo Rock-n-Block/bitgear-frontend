@@ -87,7 +87,9 @@ export const PageAccount: React.FC = () => {
 
   const [gearBalance, setGearBalance] = React.useState<number | string>(0);
 
-  const userBalancesAsArray = Object.entries(userBalancesFiltered);
+  const userBalancesAsArray = React.useMemo(() => Object.entries(userBalancesFiltered), [
+    userBalancesFiltered,
+  ]);
 
   const isWide = useMedia({ minWidth: '767px' });
 
@@ -342,7 +344,7 @@ export const PageAccount: React.FC = () => {
   React.useEffect(() => {
     if (!tokens || tokens?.length === 0) return;
     filterAndSortUserBalances();
-  }, [tokens, filterAndSortUserBalances]);
+  }, [tokens, filterAndSortUserBalances, userAddress]);
 
   React.useEffect(() => {
     if (isWide) {
@@ -354,12 +356,17 @@ export const PageAccount: React.FC = () => {
   }, [data, isWide]);
 
   React.useEffect(() => {
+    let isWasGear = false;
     for (let i = 0; i < userBalancesAsArray.length; i += 1) {
       const [address, balance]: [string, any] = userBalancesAsArray[i];
       if (address.toLowerCase() === gearToken.address.toLowerCase()) {
+        isWasGear = true;
         setGearBalance(prettyPrice(balance));
         break;
       }
+    }
+    if (!isWasGear) {
+      setGearBalance(0);
     }
   }, [userBalancesAsArray, userBalancesAsArray.length]);
 
@@ -479,7 +486,7 @@ export const PageAccount: React.FC = () => {
                     </div>
                     {tiers[index + 1] ? <div className={s.accountTiersCardLine} /> : ''}
                     <div className={s.accountTiersCardTitle}>
-                      <span>{`TEIR ${index + 1}`}</span>
+                      <span>{`TIER ${index + 1}`}</span>
                       {tier.amount &&
                       +gearBalance >= tier.amount * 1000 &&
                       !(tiers[index + 1] && +gearBalance >= tiers[index + 1].amount * 1000) ? (
