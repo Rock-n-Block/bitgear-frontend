@@ -81,7 +81,7 @@ export default class MetamaskService {
 
     return {
       from: userAddress,
-      to: '0x7bB373b37159a15CB6FCe80acF6a0e9a425588F1',
+      to: '0x85e00a4D4dE1071e299D0657EEeb987Cf016eA5F',
       data: signature,
     };
   };

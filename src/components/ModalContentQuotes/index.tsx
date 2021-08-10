@@ -267,8 +267,6 @@ const ModalContentQuotes: React.FC<TypeButtonProps> = ({
           ],
           userAddress,
         );
-        tx.gas = newQuote.gas;
-        tx.gasPrice = newQuote.gasPrice;
         resultSendTx = await web3Provider.sendTx(tx);
       } else {
         resultSendTx = await web3Provider.sendTx(newQuote);

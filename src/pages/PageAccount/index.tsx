@@ -483,7 +483,7 @@ export const PageAccount: React.FC = () => {
                       {tier.amount &&
                       +gearBalance >= tier.amount * 1000 &&
                       !(tiers[index + 1] && +gearBalance >= tiers[index + 1].amount * 1000) ? (
-                        <div className={s.accountTiersCardTitleTooltip}>YOU TIER</div>
+                        <div className={s.accountTiersCardTitleTooltip}>YOUR TIER</div>
                       ) : (
                         ''
                       )}
