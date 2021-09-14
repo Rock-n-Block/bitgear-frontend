@@ -490,7 +490,7 @@ export const PageAccount: React.FC = () => {
                       ) : (
                         ''
                       )} */}
-                      {index === userCurrentTier && (
+                      {index + 1 === userCurrentTier && (
                         <div className={s.accountTiersCardTitleTooltip}>YOUR TIER</div>
                       )}
                     </div>

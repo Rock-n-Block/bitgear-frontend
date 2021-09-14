@@ -226,7 +226,7 @@ export const Header: React.FC = () => {
           <Link to="/">
             <img src={IconLogo} alt="" className={s.headerLogo} />
           </Link>
-          <div className={s.headerTierBadge}>Tier {userCurrentTier}</div>
+          {userAddress && <div className={s.headerTierBadge}>Tier {userCurrentTier}</div>}
         </div>
 
         {isMobile && (
