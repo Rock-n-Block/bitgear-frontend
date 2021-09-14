@@ -115,6 +115,19 @@ $fs: 16px;
       margin-top: 10px;
     }
   }
+  &TierBadge{
+    margin-left: 18px;
+    font-family: $font;
+    padding: 6px;
+    color: rgba(139, 139, 139, 1);
+    border: 1px solid #D6D6D6;
+    border-radius: 12px;
+
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 14px;
+    text-transform: uppercase;
+  }
   &MenuMobileClosed {
     display: none;
   }
