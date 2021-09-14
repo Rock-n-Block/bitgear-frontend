@@ -19,6 +19,7 @@ import imageTokenPay from '../../assets/images/token.png';
 import { Pagination } from '../../components';
 import ethToken from '../../data/ethToken';
 import gearToken from '../../data/gearToken';
+import { useUserTier } from '../../hooks/useUserTier';
 import { Service0x } from '../../services/0x';
 import { CryptoCompareService } from '../../services/CryptoCompareService';
 import { numberTransform } from '../../utils/numberTransform';
@@ -39,7 +40,7 @@ const CryptoCompare = new CryptoCompareService();
 
 const tiers = [
   {
-    amount: 4,
+    amount: 70,
     text: (
       <>
         You can now swap tokens
@@ -48,11 +49,11 @@ const tiers = [
     ),
   },
   {
-    amount: NaN,
+    amount: 300,
     text: 'to be announced later',
   },
   {
-    amount: NaN,
+    amount: Infinity,
     text: 'to be announced later',
   },
 ];
@@ -61,6 +62,7 @@ export const PageAccount: React.FC = () => {
   const match = useRouteMatch();
   const location = useLocation();
   const { pathname } = location;
+  const { userCurrentTier } = useUserTier();
   // console.log('PageAccount match, location:', match, location);
 
   const [data, setData] = React.useState<any[]>([] as any);
@@ -85,7 +87,7 @@ export const PageAccount: React.FC = () => {
   const [activeColumn, setActiveColumn] = React.useState<string>('');
   const [userBalancesFiltered, setUserBalancesFiltered] = React.useState<any>({});
 
-  const [gearBalance, setGearBalance] = React.useState<number | string>(0);
+  // const [gearBalance, setGearBalance] = React.useState<number | string>(0);
 
   const userBalancesAsArray = React.useMemo(() => Object.entries(userBalancesFiltered), [
     userBalancesFiltered,
@@ -355,7 +357,7 @@ export const PageAccount: React.FC = () => {
     }
   }, [data, isWide]);
 
-  React.useEffect(() => {
+  /* React.useEffect(() => {
     let isWasGear = false;
     for (let i = 0; i < userBalancesAsArray.length; i += 1) {
       const [address, balance]: [string, any] = userBalancesAsArray[i];
@@ -368,7 +370,7 @@ export const PageAccount: React.FC = () => {
     if (!isWasGear) {
       setGearBalance(0);
     }
-  }, [userBalancesAsArray, userBalancesAsArray.length]);
+  }, [userBalancesAsArray, userBalancesAsArray.length]); */
 
   return (
     <div className={s.container}>
@@ -467,32 +469,29 @@ export const PageAccount: React.FC = () => {
                     key={uuid()}
                     className={cns(
                       s.accountTiersCard,
-                      tier.amount && +gearBalance >= tier.amount * 1000 && s.accountTiersCardActive,
+                      index === userCurrentTier && s.accountTiersCardActive,
                     )}
                   >
                     <div
                       className={cns(
                         s.accountTiersCardCircle,
-                        tier.amount &&
-                          +gearBalance >= tier.amount * 1000 &&
-                          s.accountTiersCardCircleActive,
+                        index === userCurrentTier && s.accountTiersCardCircleActive,
                       )}
                     >
-                      {tier.amount && +gearBalance >= tier.amount * 1000 ? (
-                        <img src={TierCheckIcon} alt="" />
-                      ) : (
-                        ''
-                      )}
+                      {index === userCurrentTier ? <img src={TierCheckIcon} alt="" /> : ''}
                     </div>
-                    {tiers[index + 1] ? <div className={s.accountTiersCardLine} /> : ''}
+                    {tiers[index] ? <div className={s.accountTiersCardLine} /> : ''}
                     <div className={s.accountTiersCardTitle}>
-                      <span>{`TIER ${index + 1}`}</span>
-                      {tier.amount &&
+                      <span>{`TIER ${index}`}</span>
+                      {/* {tier.amount &&
                       +gearBalance >= tier.amount * 1000 &&
-                      !(tiers[index + 1] && +gearBalance >= tiers[index + 1].amount * 1000) ? (
+                      !(tiers[index] && +gearBalance >= tiers[index].amount * 1000) ? (
                         <div className={s.accountTiersCardTitleTooltip}>YOUR TIER</div>
                       ) : (
                         ''
+                      )} */}
+                      {index === userCurrentTier && (
+                        <div className={s.accountTiersCardTitleTooltip}>YOUR TIER</div>
                       )}
                     </div>
                     <div className={s.accountTiersCardAmount}>

@@ -2064,7 +2064,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
       {/* You Pay */}
       <section className={s.containerTrading}>
         <div className={s.containerTradingCard}>
-          <div className={s.containerTradingCardLabel}>You Pay</div>
+          <div className={s.containerTradingCardLabel}>You Sell</div>
           <div className={s.containerTradingCardInner}>
             <div className={s.containerTradingCardImage}>
               <img src={tokenPay?.image} alt="" />
