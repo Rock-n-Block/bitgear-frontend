@@ -53,7 +53,7 @@ const tiers = [
     text: 'to be announced later',
   },
   {
-    amount: Infinity,
+    amount: NaN,
     text: 'to be announced later',
   },
 ];
@@ -469,20 +469,20 @@ export const PageAccount: React.FC = () => {
                     key={uuid()}
                     className={cns(
                       s.accountTiersCard,
-                      index === userCurrentTier && s.accountTiersCardActive,
+                      index + 1 === userCurrentTier && s.accountTiersCardActive,
                     )}
                   >
                     <div
                       className={cns(
                         s.accountTiersCardCircle,
-                        index === userCurrentTier && s.accountTiersCardCircleActive,
+                        index + 1 === userCurrentTier && s.accountTiersCardCircleActive,
                       )}
                     >
-                      {index === userCurrentTier ? <img src={TierCheckIcon} alt="" /> : ''}
+                      {index + 1 === userCurrentTier ? <img src={TierCheckIcon} alt="" /> : ''}
                     </div>
                     {tiers[index] ? <div className={s.accountTiersCardLine} /> : ''}
                     <div className={s.accountTiersCardTitle}>
-                      <span>{`TIER ${index}`}</span>
+                      <span>{`TIER ${index + 1}`}</span>
                       {/* {tier.amount &&
                       +gearBalance >= tier.amount * 1000 &&
                       !(tiers[index] && +gearBalance >= tiers[index].amount * 1000) ? (

@@ -18,11 +18,13 @@ export const useUserTier = () => {
   const getGearBalance = useCallback(() => {
     userBalancesAsArray.forEach((item: any) => {
       const [address, balance] = item;
-      const { decimals } = gearToken;
+      const { decimals, address: gearTokenAddress } = gearToken;
       const newBalance = +new BigNumber(balance)
         .dividedBy(new BigNumber(10).pow(decimals))
         .toString();
-      if (address.toLowerCase() === gearToken.address.toLowerCase()) setGearBalance(newBalance);
+      if (address.toLowerCase() === gearTokenAddress.toLowerCase()) {
+        setGearBalance(newBalance);
+      }
       // const { decimals } = tokensByAddress[address];
     });
   }, [userBalancesAsArray]);
@@ -43,8 +45,8 @@ export const useUserTier = () => {
       },
     ];
     tiers.forEach((tier, index) => {
-      if (tier.lowerBound >= gearBalance && tier.upperBound < gearBalance) {
-        setUserCurrentTier(index);
+      if (tier.lowerBound <= gearBalance && tier.upperBound > gearBalance) {
+        setUserCurrentTier(index + 1);
       }
     });
   }, [gearBalance]);
