@@ -12,7 +12,7 @@ export default {
   links: {
     twitter: 'https://twitter.com/bitgeario',
     telegram: 'https://t.me/bitgear',
-    medium: 'https://medium.com/bitgear.io ',
+    medium: 'https://medium.com/bitgear',
     github: 'https://github.com/',
     reddit: 'https://www.reddit.com/',
     discord: 'https://discord.gg/',

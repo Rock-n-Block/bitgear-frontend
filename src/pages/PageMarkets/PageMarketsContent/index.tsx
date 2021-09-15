@@ -11,6 +11,7 @@ import { v1 as uuid } from 'uuid';
 import { ReactComponent as IconArrowDownWhite } from '../../../assets/icons/arrow-down-white.svg';
 import { ReactComponent as IconExchange } from '../../../assets/icons/exchange.svg';
 import { ReactComponent as IconGear } from '../../../assets/icons/gear.svg';
+import { ReactComponent as IconDiamond } from '../../../assets/icons/icon-diamond.svg';
 import { ReactComponent as IconLink } from '../../../assets/icons/link.svg';
 import { ReactComponent as IconSearchWhite } from '../../../assets/icons/search-white.svg';
 import imageTokenPay from '../../../assets/images/token.png';
@@ -2013,9 +2014,12 @@ export const PageMarketsContent: React.FC = React.memo(() => {
                     {RadioLabelCustom}
                   </label>
                 </div>
-
                 {gearBalance > 4000 ? (
                   <div className={s.containerSettingsGasCustomAddress}>
+                    <div className={s.containerSettingsGasPremiumBadge}>
+                      <IconDiamond />
+                      Premium
+                    </div>
                     <Checkbox
                       text="Send tokens to a custom address"
                       onChange={(e: boolean) => {
