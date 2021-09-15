@@ -12,6 +12,7 @@ type TypeInputProps = {
   type?: string;
   onChange?: (e: string) => void;
   inline?: boolean;
+  className?: string;
 };
 
 export const Input: React.FC<TypeInputProps> = ({
@@ -22,6 +23,7 @@ export const Input: React.FC<TypeInputProps> = ({
   label,
   onChange = () => {},
   inline = false,
+  className,
 }) => {
   const id = uuid();
 
@@ -39,7 +41,7 @@ export const Input: React.FC<TypeInputProps> = ({
   };
 
   return (
-    <div className={s.container}>
+    <div className={cns(s.container, className)}>
       {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
       {label && (
         <label className={s.label} htmlFor={id}>

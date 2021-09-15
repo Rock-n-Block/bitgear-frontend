@@ -17,6 +17,7 @@ import { ReactComponent as IconWalletConnect } from '../../assets/images/logo/wa
 import imageTokenPay from '../../assets/images/token.png';
 import config from '../../config';
 import { useWalletConnectorContext } from '../../contexts/WalletConnect';
+import { useUserTier } from '../../hooks/useUserTier';
 import { userActions } from '../../redux/actions';
 import { getFromStorage, setToStorage } from '../../utils/localStorage';
 import { prettyAmount } from '../../utils/prettifiers';
@@ -138,6 +139,8 @@ export const Header: React.FC = () => {
 
   const { web3Provider } = useWalletConnectorContext();
 
+  const { userCurrentTier } = useUserTier();
+
   const dispatch = useDispatch();
   const { address: userAddress, balance: userBalance } = useSelector(({ user }: any) => user);
   const setUserData = (props: any) => dispatch(userActions.setUserData(props));
@@ -223,6 +226,7 @@ export const Header: React.FC = () => {
           <Link to="/">
             <img src={IconLogo} alt="" className={s.headerLogo} />
           </Link>
+          {userAddress && <div className={s.headerTierBadge}>Tier {userCurrentTier}</div>}
         </div>
 
         {isMobile && (

@@ -92,14 +92,111 @@
     }
   }
 
-  &Funds {
-    @include grid(1fr 1fr, 1fr, 20px);
+  &Wrapper {
     margin-top: 50px;
+    @include flex(row, normal, space-between);
+  }
 
-    @include b('mobile') {
-      @include grid(1fr, 1fr, 20px);
+  &Tiers {
+    margin-top: 35px;
+    &Card {
+      padding: 15px 20px 13px 60px;
+      border-radius: 10px;
+      color: white;
+      height: 138px;
+      position: relative;
+      &Active {
+        background: rgba($color-bg-radio-point, 0.1);
+      }
+      &Circle {
+        position: absolute;
+        left: 15px;
+        top: 15px;
+        width: 24px;
+        height: 24px;
+        border: 3px solid $color-bg-radio-point;
+        border-radius: 50%;
+        @include flex(row, center, center);
+        img {
+          margin-right: -1px;
+        }
+        &Active {
+          background: $color-bg-radio-point;
+        }
+      }
+      &Line {
+        position: absolute;
+        height: 109px;
+        top: 44px;
+        left: 26px;
+        width: 3px;
+        background: $color-bg-radio-point;
+        border-radius: 50px;
+      }
+      &Title {
+        @include flex(row, center);
+        span {
+          font-size: 20px;
+          line-height: 31px;
+          display: block;
+        }
+        &Tooltip {
+          padding: 0 6px;
+          background: $color-bg-radio-point;
+          font-weight: 500;
+          font-size: 14px;
+          line-height: 26px;
+          border-radius: 12px;
+          margin-left: 9px;
+        }
+      }
+      &Amount {
+        font-size: 24px;
+        line-height: 38px;
+        color: $color-text-span;
+      }
+      &Text {
+        font-size: 16px;
+        line-height: 25px;
+      }
+      & + & {
+        margin-top: 5px;
+      }
     }
+    &Address {
+      &Title {
+        color: $color-chart-line-vertical;
+        font-size: 20px;
+        line-height: 31px;
+        margin-bottom: 5px;
+      }
+      &Copy {
+        @include flex(row, center, space-between);
+        cursor: pointer;
 
+        &Btn {
+          background: $color-bg-radio-point;
+          padding: 8px 17.5px;
+          border-radius: 12px;
+          font-weight: 500;
+          font-size: 14px;
+          line-height: 26px;
+          max-width: 90%;
+          text-overflow: ellipsis;
+          overflow: hidden;
+          white-space: nowrap;
+        }
+      }
+    }
+    &Wrapper {
+      width: 100%;
+      max-width: 310px;
+    }
+  }
+
+  &Funds {
+    width: 100%;
+    max-width: 500px;
     &Card {
       background-color: #0197e241;
       border-radius: 10px;
@@ -108,8 +205,11 @@
       padding: 30px 20px;
       position: relative;
       cursor: default;
-      margin-bottom: 10px;
       cursor: pointer;
+      display: block;
+      & + & {
+        margin-top: 50px;
+      }
 
       h3 {
         font-weight: normal;
@@ -299,7 +399,7 @@
 }
 
 .mobile {
-  &Container{
+  &Container {
     height: 100%;
     width: 100%;
     padding: 20px;

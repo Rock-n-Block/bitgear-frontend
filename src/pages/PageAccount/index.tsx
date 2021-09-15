@@ -13,11 +13,13 @@ import ArrowDownIcon from '../../assets/icons/arrow-down-icon.svg';
 import { ReactComponent as IconArrowDownWhite } from '../../assets/icons/arrow-down-white.svg';
 import ArrowUpIcon from '../../assets/icons/arrow-up-icon.svg';
 import { ReactComponent as IconCopy } from '../../assets/icons/copy-icon.svg';
+import TierCheckIcon from '../../assets/icons/tier-check.svg';
 import EthGlassIcon from '../../assets/images/logo/eth-glass-icon.svg';
 import imageTokenPay from '../../assets/images/token.png';
 import { Pagination } from '../../components';
 import ethToken from '../../data/ethToken';
 import gearToken from '../../data/gearToken';
+import { useUserTier } from '../../hooks/useUserTier';
 import { Service0x } from '../../services/0x';
 import { CryptoCompareService } from '../../services/CryptoCompareService';
 import { numberTransform } from '../../utils/numberTransform';
@@ -36,10 +38,31 @@ type TableType = {
 const Zx = new Service0x();
 const CryptoCompare = new CryptoCompareService();
 
+const tiers = [
+  {
+    amount: 70,
+    text: (
+      <>
+        You can now swap tokens
+        <br /> to custom addresses
+      </>
+    ),
+  },
+  {
+    amount: 300,
+    text: 'to be announced later',
+  },
+  {
+    amount: NaN,
+    text: 'to be announced later',
+  },
+];
+
 export const PageAccount: React.FC = () => {
   const match = useRouteMatch();
   const location = useLocation();
   const { pathname } = location;
+  const { userCurrentTier } = useUserTier();
   // console.log('PageAccount match, location:', match, location);
 
   const [data, setData] = React.useState<any[]>([] as any);
@@ -64,7 +87,11 @@ export const PageAccount: React.FC = () => {
   const [activeColumn, setActiveColumn] = React.useState<string>('');
   const [userBalancesFiltered, setUserBalancesFiltered] = React.useState<any>({});
 
-  const userBalancesAsArray = Object.entries(userBalancesFiltered);
+  // const [gearBalance, setGearBalance] = React.useState<number | string>(0);
+
+  const userBalancesAsArray = React.useMemo(() => Object.entries(userBalancesFiltered), [
+    userBalancesFiltered,
+  ]);
 
   const isWide = useMedia({ minWidth: '767px' });
 
@@ -105,6 +132,7 @@ export const PageAccount: React.FC = () => {
         newBalancesWithSymbols[address] = newBalance;
         return null;
       });
+
       setUserBalancesFiltered(newBalancesWithSymbols);
     } catch (e) {
       console.error(e);
@@ -318,7 +346,7 @@ export const PageAccount: React.FC = () => {
   React.useEffect(() => {
     if (!tokens || tokens?.length === 0) return;
     filterAndSortUserBalances();
-  }, [tokens, filterAndSortUserBalances]);
+  }, [tokens, filterAndSortUserBalances, userAddress]);
 
   React.useEffect(() => {
     if (isWide) {
@@ -328,6 +356,21 @@ export const PageAccount: React.FC = () => {
       setDataForTableMobile(data.slice(0, 5));
     }
   }, [data, isWide]);
+
+  /* React.useEffect(() => {
+    let isWasGear = false;
+    for (let i = 0; i < userBalancesAsArray.length; i += 1) {
+      const [address, balance]: [string, any] = userBalancesAsArray[i];
+      if (address.toLowerCase() === gearToken.address.toLowerCase()) {
+        isWasGear = true;
+        setGearBalance(prettyPrice(balance));
+        break;
+      }
+    }
+    if (!isWasGear) {
+      setGearBalance(0);
+    }
+  }, [userBalancesAsArray, userBalancesAsArray.length]); */
 
   return (
     <div className={s.container}>
@@ -359,52 +402,108 @@ export const PageAccount: React.FC = () => {
 
       <Switch>
         <Route path={match.path} exact>
-          <section className={s.accountFunds}>
-            <Link to={`/markets/${ethToken.address}`} className={s.accountFundsCard}>
-              <h3>Your balance:</h3>
-              <span>{prettyPrice(userBalance)} ETH</span>
-              <img src={EthGlassIcon} alt="ehereum logo" />
-            </Link>
-            <Link key={uuid()} className={s.accountFundsCard} to={`/markets/${gearToken.address}`}>
-              <h3>Your balance:</h3>
-              <span>
-                {prettyPrice(userBalancesFiltered[gearToken.address.toLowerCase()] || 0)} GEAR
-              </span>
-              <img src={tokensBySymbol?.GEAR?.image || imageTokenPay} alt="ehereum logo" />
-            </Link>
-            {isNoBalances && (
-              <div>
-                {isLoadingBalancesDone
-                  ? 'You do not have any tokens'
-                  : isLoadingBalancesError
-                  ? 'Not loaded'
-                  : 'Loading...'}
+          <div className={s.accountWrapper}>
+            <section className={s.accountFunds}>
+              <Link to={`/markets/${ethToken.address}`} className={s.accountFundsCard}>
+                <h3>Your balance:</h3>
+                <span>{prettyPrice(userBalance)} ETH</span>
+                <img src={EthGlassIcon} alt="ehereum logo" />
+              </Link>
+              <Link
+                key={uuid()}
+                className={s.accountFundsCard}
+                to={`/markets/${gearToken.address}`}
+              >
+                <h3>Your balance:</h3>
+                <span>
+                  {prettyPrice(userBalancesFiltered[gearToken.address.toLowerCase()] || 0)} GEAR
+                </span>
+                <img src={tokensBySymbol?.GEAR?.image || imageTokenPay} alt="ehereum logo" />
+              </Link>
+              {isNoBalances && (
+                <div>
+                  {isLoadingBalancesDone
+                    ? 'You do not have any tokens'
+                    : isLoadingBalancesError
+                    ? 'Not loaded'
+                    : 'Loading...'}
+                </div>
+              )}
+              {userBalancesAsArray.map((item: any) => {
+                const [address, balance] = item;
+                if (
+                  address.toLowerCase() === ethToken.address.toLowerCase() ||
+                  address.toLowerCase() === gearToken.address.toLowerCase()
+                )
+                  return null;
+                const image = (tokensByAddress && tokensByAddress[address]?.image) || imageTokenPay;
+                const symbol = tokensByAddress && tokensByAddress[address]?.symbol;
+                return (
+                  <>
+                    {balance > 0 ? (
+                      <Link key={uuid()} className={s.accountFundsCard} to={`/markets/${address}`}>
+                        <h3>Your balance:</h3>
+                        <span>
+                          {prettyPrice(balance)} {symbol}
+                        </span>
+                        <img className={s.accountFundsCardImage} src={image} alt="ehereum logo" />
+                      </Link>
+                    ) : null}
+                  </>
+                );
+              })}
+            </section>
+            <section className={s.accountTiersWrapper}>
+              <div className={s.accountTiersAddress}>
+                <div className={s.accountTiersAddressTitle}>Deposit more funds</div>
+                <CopyToClipboard text={userAddress}>
+                  <div className={s.accountTiersAddressCopy}>
+                    <div className={s.accountTiersAddressCopyBtn}>{userAddress}</div>
+                    <IconCopy />
+                  </div>
+                </CopyToClipboard>
               </div>
-            )}
-            {userBalancesAsArray.map((item: any) => {
-              const [address, balance] = item;
-              if (
-                address.toLowerCase() === ethToken.address.toLowerCase() ||
-                address.toLowerCase() === gearToken.address.toLowerCase()
-              )
-                return null;
-              const image = (tokensByAddress && tokensByAddress[address]?.image) || imageTokenPay;
-              const symbol = tokensByAddress && tokensByAddress[address]?.symbol;
-              return (
-                <>
-                  {balance > 0 ? (
-                    <Link key={uuid()} className={s.accountFundsCard} to={`/markets/${address}`}>
-                      <h3>Your balance:</h3>
-                      <span>
-                        {prettyPrice(balance)} {symbol}
-                      </span>
-                      <img className={s.accountFundsCardImage} src={image} alt="ehereum logo" />
-                    </Link>
-                  ) : null}
-                </>
-              );
-            })}
-          </section>
+              <div className={s.accountTiers}>
+                {tiers.map((tier, index) => (
+                  <div
+                    key={uuid()}
+                    className={cns(
+                      s.accountTiersCard,
+                      index + 1 === userCurrentTier && s.accountTiersCardActive,
+                    )}
+                  >
+                    <div
+                      className={cns(
+                        s.accountTiersCardCircle,
+                        index + 1 === userCurrentTier && s.accountTiersCardCircleActive,
+                      )}
+                    >
+                      {index + 1 === userCurrentTier ? <img src={TierCheckIcon} alt="" /> : ''}
+                    </div>
+                    {tiers[index] ? <div className={s.accountTiersCardLine} /> : ''}
+                    <div className={s.accountTiersCardTitle}>
+                      <span>{`TIER ${index + 1}`}</span>
+                      {/* {tier.amount &&
+                      +gearBalance >= tier.amount * 1000 &&
+                      !(tiers[index] && +gearBalance >= tiers[index].amount * 1000) ? (
+                        <div className={s.accountTiersCardTitleTooltip}>YOUR TIER</div>
+                      ) : (
+                        ''
+                      )} */}
+                      {index + 1 === userCurrentTier && (
+                        <div className={s.accountTiersCardTitleTooltip}>YOUR TIER</div>
+                      )}
+                    </div>
+                    <div className={s.accountTiersCardAmount}>
+                      {}
+                      {tier.amount ? `${tier.amount}k GEAR` : 'to be announced later'}
+                    </div>
+                    <div className={s.accountTiersCardText}>{tier.text}</div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          </div>
         </Route>
         <Route path={`${match.path}/orders`}>
           <section className={s.accountTrade}>
