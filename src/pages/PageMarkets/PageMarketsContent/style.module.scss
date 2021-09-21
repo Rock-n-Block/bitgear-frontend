@@ -1,5 +1,5 @@
-@import "../../../scss/theme";
-@import "../../../scss/mixins";
+@import '../../../scss/theme';
+@import '../../../scss/mixins';
 
 .container {
   width: 100%;
@@ -7,6 +7,35 @@
 
   @include b('mobile') {
     padding: 40px 10px 300px 10px;
+  }
+}
+
+.CustomAddress {
+  border: $border-form;
+  border-radius: 20px;
+  grid-column: 1 / 4;
+  position: relative;
+  &Title {
+    color: $color-bg-checkbox;
+    background: #07092a;
+    font-size: 16px;
+    position: absolute;
+    left: 50%;
+    top: -15px;
+    transform: translateX(-50%);
+    line-height: 25px;
+    padding: 0 5px;
+    z-index: 2;
+  }
+  &Input {
+    border-radius: 20px;
+    height: 100%;
+    overflow: hidden;
+    input {
+      padding: 0 10px;
+      text-align: center;
+      height: 100%;
+    }
   }
 }
 
@@ -100,7 +129,7 @@
     line-height: 31px;
     font-weight: 400;
 
-    &[data-positive="true"] {
+    &[data-positive='true'] {
       margin: -13px 0 0 0;
       color: $color-text-green;
       font-size: 20px;
@@ -108,7 +137,7 @@
       font-weight: 400;
     }
 
-    &[data-negative="true"] {
+    &[data-negative='true'] {
       margin: -13px 0 0 0;
       color: $color-text-red;
       font-size: 20px;
@@ -119,7 +148,7 @@
 }
 
 .containerTrading {
-  @include grid(1fr 44px 1fr, 1fr 58px, 28px);
+  @include grid(1fr 44px 1fr, 1fr 55px 58px, 28px);
   width: 100%;
   margin: 47px 0 0 0;
 
@@ -376,7 +405,6 @@
   &Button {
     @include flex(row, center, center);
     grid-column: 1 / 4;
-    grid-row: 2;
 
     @include b('870') {
       margin: 30px 0 0 0;
@@ -450,7 +478,7 @@
       }
     }
 
-    div[data-active="true"] {
+    div[data-active='true'] {
       color: $color-text-primary;
     }
   }
@@ -461,11 +489,11 @@
     font-size: 25px;
     line-height: 39px;
 
-    &[data-positive="true"] {
+    &[data-positive='true'] {
       color: $color-text-green;
     }
 
-    &[data-negative="true"] {
+    &[data-negative='true'] {
       color: $color-text-red;
     }
   }
@@ -492,10 +520,10 @@
   }
 
   &Inner {
-    @include grid(1fr 2fr 250px, 260px 180px, 50px);
+    @include grid(1fr 2fr 260px, 260px 180px, 50px);
 
     @include b('1000') {
-      @include grid(150px 2fr 250px, 480px 180px, 50px);
+      @include grid(150px 2fr 260px, 480px 180px, 50px);
     }
 
     @include b('850') {
@@ -525,7 +553,10 @@
     &Top {
       @include flex(row, center, space-between, nowrap);
 
-      &Button, &Button:active, &Button:focus, &Button:hover {
+      &Button,
+      &Button:active,
+      &Button:focus,
+      &Button:hover {
         padding: 0 10px;
         margin: 0;
         font-size: 16px;
@@ -560,6 +591,23 @@
         margin: 3px 0;
       }
     }
+    &CustomAddress {
+      margin-top: 16.5px !important;
+    }
+    &PremiumBadge{
+      display: flex;
+      align-items: center;
+      margin-bottom: 5px;
+      font-family: $font;
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 25px;
+
+      color: $color-text-span;
+      svg{
+        margin-right: 6px;
+      }
+    }
   }
 
   &Buttons {
@@ -573,7 +621,9 @@
       grid-row: 4;
     }
 
-    &ButtonSelectAll, &ButtonSelectAll:focus, &ButtonSelectAll:active {
+    &ButtonSelectAll,
+    &ButtonSelectAll:focus,
+    &ButtonSelectAll:active {
       width: 120px;
       font-weight: 500;
       font-size: 14px;
@@ -583,7 +633,9 @@
       background: none !important;
     }
 
-    &Button, &Button:focus, &Button:active {
+    &Button,
+    &Button:focus,
+    &Button:active {
       width: 60px;
       font-weight: 500;
       font-size: 14px;
@@ -637,7 +689,7 @@
     input {
       text-align: right;
       outline: none;
-      background-color: #40425D;
+      background-color: #40425d;
       padding: 5px 10px;
       font-weight: 500;
       font-size: 17px;
@@ -686,14 +738,14 @@
 .radioPoint {
   height: 20px;
   width: 20px;
-  background-color: #40425D;
+  background-color: #40425d;
   border-radius: 50%;
   position: relative;
   margin: 10px;
 }
 
 .radioPoint::after {
-  content: "";
+  content: '';
   display: block;
   height: 20px;
   width: 20px;
@@ -737,7 +789,7 @@
   font-size: 16px;
   line-height: 25px;
 
-  >img {
+  > img {
     width: 32px;
     height: 32px;
     border-radius: 50%;
@@ -754,13 +806,13 @@
     @include flex(row, center, normal, nowrap);
     align-self: center;
 
-    >svg {
+    > svg {
       margin: 0 0 0 5px;
     }
   }
 }
 
 .messageContent {
-  @include flex(row, center, center, nowrap);
+  @include flex(column, center, center, nowrap);
   height: 100%;
 }

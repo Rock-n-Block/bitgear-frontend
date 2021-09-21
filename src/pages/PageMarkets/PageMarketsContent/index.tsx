@@ -11,6 +11,7 @@ import { v1 as uuid } from 'uuid';
 import { ReactComponent as IconArrowDownWhite } from '../../../assets/icons/arrow-down-white.svg';
 import { ReactComponent as IconExchange } from '../../../assets/icons/exchange.svg';
 import { ReactComponent as IconGear } from '../../../assets/icons/gear.svg';
+import { ReactComponent as IconDiamond } from '../../../assets/icons/icon-diamond.svg';
 import { ReactComponent as IconLink } from '../../../assets/icons/link.svg';
 import { ReactComponent as IconSearchWhite } from '../../../assets/icons/search-white.svg';
 import imageTokenPay from '../../../assets/images/token.png';
@@ -20,6 +21,7 @@ import ModalContentQuotes from '../../../components/ModalContentQuotes';
 import config from '../../../config';
 import { useWalletConnectorContext } from '../../../contexts/WalletConnect';
 import erc20Abi from '../../../data/erc20Abi.json';
+import gearToken from '../../../data/gearToken';
 import useDebounce from '../../../hooks/useDebounce';
 import { modalActions, statusActions, walletActions } from '../../../redux/actions';
 import { Service0x } from '../../../services/0x';
@@ -279,8 +281,12 @@ export const PageMarketsContent: React.FC = React.memo(() => {
   const [gasPriceType, setGasPriceType] = React.useState<string>('');
   const [gasPriceCustom, setGasPriceCustom] = React.useState<number>(0);
   const [allowance, setAllowance] = React.useState<number>(0);
+  const [allowanceCustom, setAllowanceCustom] = React.useState<number>(0);
   const [openQuotes, setOpenQuotes] = React.useState<boolean>(false);
   const [exchangesWithLiquidity, setExchangesWithLiquidity] = React.useState<string[]>();
+  const [isCustomAddress, setIsCustomAddress] = React.useState<boolean>(false);
+  const [customAddress, setCustomAddress] = React.useState<string>('');
+  const [gearBalance, setGearBalance] = React.useState<string | number>(0);
 
   const isWide = useMedia({ minWidth: '767px' });
 
@@ -314,10 +320,15 @@ export const PageMarketsContent: React.FC = React.memo(() => {
   // );
 
   let isAllowed;
+  let isCustomAllowance = true;
   if (tokensBySymbol && tokensByAddress[addressPay]) {
     const decimals10 = new BigNumber(10).pow(tokenPay?.decimals).toFixed();
     const amountPayInWei = new BigNumber(amountPay).multipliedBy(decimals10).toFixed();
     isAllowed = allowance >= +amountPayInWei;
+
+    if (customAddress) {
+      isCustomAllowance = allowanceCustom >= +amountPayInWei;
+    }
     // console.log('PageMarketsContent:', symbolPay, allowance, decimals10, amountPayInWei);
   }
 
@@ -904,6 +915,21 @@ export const PageMarketsContent: React.FC = React.memo(() => {
     }
   }, [userAddress, web3Provider, tokenReceive]);
 
+  const getGearBalance = React.useCallback(async () => {
+    const resultBalanceOfReceive = await web3Provider.balanceOf({
+      address: userAddress,
+      contractAddress: gearToken.address,
+      contractAbi: erc20Abi,
+    });
+    setGearBalance(resultBalanceOfReceive);
+  }, [userAddress, web3Provider]);
+
+  React.useEffect(() => {
+    if (userAddress) {
+      getGearBalance();
+    }
+  }, [userAddress, getGearBalance]);
+
   // const validateTradeErrors = React.useCallback(
   //   (error) => {
   //     const { code } = error.validationErrors[0];
@@ -971,6 +997,23 @@ export const PageMarketsContent: React.FC = React.memo(() => {
     }
   }, [toggleModal]);
 
+  const getAllowanceForCustomSwap = React.useCallback(async () => {
+    try {
+      if (!addressPay || !addressReceive || !amountPay || !userAddress || !customAddress) return;
+      const propsGetAllowance = {
+        userAddress,
+        allowanceTarget: '0x85e00a4D4dE1071e299D0657EEeb987Cf016eA5F',
+        contractAddress: addressPay,
+        contractAbi: erc20Abi,
+      };
+      const resultGetAllowance = await web3Provider.allowance(propsGetAllowance);
+      console.log('PageMarketsContent getAllowance:', resultGetAllowance);
+      setAllowanceCustom(resultGetAllowance);
+    } catch (e) {
+      console.error('PageMarketsContent getAllowance:', e);
+    }
+  }, [addressPay, addressReceive, userAddress, web3Provider, amountPay, customAddress]);
+
   const getAllowance = React.useCallback(async () => {
     try {
       // console.log('PageMarketsContent getAllowance:', symbolPay, symbolReceive, amountPay);
@@ -1037,28 +1080,13 @@ export const PageMarketsContent: React.FC = React.memo(() => {
             tradeProps={props}
             onClose={handleCloseQuotes}
             excludedSources={excludedSources}
+            customAddress={customAddress}
           />
         ),
         noCloseButton: true,
         fullPage: !isWide,
         onClose: handleCloseQuotes,
       });
-      // const resultGetQuote = await Zx.getQuote(props);
-      // console.log('trade getQuote:', resultGetQuote);
-      // if (resultGetQuote.status === 'ERROR') return validateTradeErrors(resultGetQuote.error);
-      // resultGetQuote.data.from = userAddress;
-      // const { estimatedGas } = resultGetQuote.data;
-      // const newEstimatedGas = +estimatedGas * 2;
-      // resultGetQuote.data.gas = String(newEstimatedGas);
-      // const resultSendTx = await web3Provider.sendTx(resultGetQuote.data);
-      // console.log('trade resultSendTx:', resultSendTx);
-      // if (resultSendTx.status === 'SUCCESS') {
-      // setAmountPay('0');
-      // setAmountReceive('0');
-      // }
-      getBalanceOfTokensPay();
-      getBalanceOfTokensReceive();
-      return null;
     } catch (e) {
       console.error(e);
       setWaiting(false);
@@ -1082,9 +1110,8 @@ export const PageMarketsContent: React.FC = React.memo(() => {
     // validateTradeErrors,
     // web3Provider,
     // userAddress,
-    getBalanceOfTokensPay,
-    getBalanceOfTokensReceive,
     exchangesExcluded,
+    customAddress,
   ]);
 
   const tradeLimit = React.useCallback(async () => {
@@ -1373,13 +1400,6 @@ export const PageMarketsContent: React.FC = React.memo(() => {
       const amountInWei = new BigNumber(amountPay)
         .multipliedBy(new BigNumber(10).pow(decimals))
         .toString(10);
-      const propsApprove: any = {
-        amount: amountInWei,
-        userAddress,
-        allowanceTarget: isModeLimit ? allowanceTargetLimit : allowanceTarget,
-        contractAbi: erc20Abi,
-        contractAddress: addressPay,
-      };
       if (isAddressPayETH) {
         // propsApprove.amount = new BigNumber(amountPay)
         //   .multipliedBy(new BigNumber(10).pow(decimals))
@@ -1388,6 +1408,17 @@ export const PageMarketsContent: React.FC = React.memo(() => {
         // console.log('handleApprove resultApprove:', resultApprove);
         // setWaiting(false);
         // setApproved(true);
+      } else if (!isCustomAllowance) {
+        const propsApprove: any = {
+          amount: amountInWei,
+          userAddress,
+          allowanceTarget: '0x85e00a4D4dE1071e299D0657EEeb987Cf016eA5F',
+          contractAbi: erc20Abi,
+          contractAddress: addressPay,
+        };
+        const resultApprove = await web3Provider.approve(propsApprove);
+        console.log('handleApprove resultApprove:', resultApprove);
+        setWaiting(false);
       } else {
         // const totalSupply = await web3Provider.totalSupply({
         //   contractAddress,
@@ -1395,6 +1426,13 @@ export const PageMarketsContent: React.FC = React.memo(() => {
         // });
         // console.log('handleApprove totalSupply:', totalSupply);
         // propsApprove.amount = totalSupply;
+        const propsApprove: any = {
+          amount: amountInWei,
+          userAddress,
+          allowanceTarget: isModeLimit ? allowanceTargetLimit : allowanceTarget,
+          contractAbi: erc20Abi,
+          contractAddress: addressPay,
+        };
         const resultApprove = await web3Provider.approve(propsApprove);
         console.log('handleApprove resultApprove:', resultApprove);
         setWaiting(false);
@@ -1674,6 +1712,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
     if (!addressPay) return;
     if (addressPay === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee') return;
     getAllowance();
+    getAllowanceForCustomSwap();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addressReceive, addressPay]);
 
@@ -1685,8 +1724,9 @@ export const PageMarketsContent: React.FC = React.memo(() => {
     if (waiting) return;
     if (addressPay === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee') return;
     getAllowance();
+    getAllowanceForCustomSwap();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [addressReceive, addressPay, amountPayDebounced, userAddress, waiting]);
+  }, [addressReceive, addressPay, amountPayDebounced, userAddress, waiting, customAddress]);
 
   const RadioLabelFast = (
     <div className={s.radioLabelGas}>
@@ -1839,7 +1879,11 @@ export const PageMarketsContent: React.FC = React.memo(() => {
               className={
                 isModeMarket ? s.containerTitleSecondItemActive : s.containerTitleSecondItem
               }
-              onClick={() => handleSetMode('market')}
+              onClick={() => {
+                handleSetMode('market');
+                setCustomAddress('');
+                setIsCustomAddress(false);
+              }}
               onKeyDown={() => {}}
             >
               Market
@@ -1850,7 +1894,11 @@ export const PageMarketsContent: React.FC = React.memo(() => {
               className={
                 isModeLimit ? s.containerTitleSecondItemActive : s.containerTitleSecondItem
               }
-              onClick={() => handleSetMode('limit')}
+              onClick={() => {
+                handleSetMode('limit');
+                setCustomAddress('');
+                setIsCustomAddress(false);
+              }}
               onKeyDown={() => {}}
             >
               Limit
@@ -1966,6 +2014,25 @@ export const PageMarketsContent: React.FC = React.memo(() => {
                     {RadioLabelCustom}
                   </label>
                 </div>
+                {gearBalance > 4000 ? (
+                  <div className={s.containerSettingsGasCustomAddress}>
+                    <div className={s.containerSettingsGasPremiumBadge}>
+                      <IconDiamond />
+                      Premium
+                    </div>
+                    <Checkbox
+                      text="Send tokens to a custom address"
+                      onChange={(e: boolean) => {
+                        if (e) {
+                          setCustomAddress('');
+                        }
+                        setIsCustomAddress(e);
+                      }}
+                    />
+                  </div>
+                ) : (
+                  ''
+                )}
               </div>
             </div>
             <div className={s.containerSettingsButtons}>
@@ -2001,7 +2068,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
       {/* You Pay */}
       <section className={s.containerTrading}>
         <div className={s.containerTradingCard}>
-          <div className={s.containerTradingCardLabel}>You Pay</div>
+          <div className={s.containerTradingCardLabel}>You Sell</div>
           <div className={s.containerTradingCardInner}>
             <div className={s.containerTradingCardImage}>
               <img src={tokenPay?.image} alt="" />
@@ -2265,9 +2332,22 @@ export const PageMarketsContent: React.FC = React.memo(() => {
             </div>
           </div>
         </div>
+        {isCustomAddress && gearBalance > 4000 ? (
+          <div className={s.CustomAddress}>
+            <div className={s.CustomAddressTitle}>Custom address</div>
+            <Input
+              value={customAddress}
+              placeholder="Enter custom address to receive the tokens"
+              onChange={(value) => setCustomAddress(value)}
+              className={s.CustomAddressInput}
+            />
+          </div>
+        ) : (
+          ''
+        )}
         <div className={s.containerTradingButton}>
           {userAddress ? (
-            isAllowed || isAddressPayETH ? (
+            (isAllowed && isCustomAllowance) || isAddressPayETH ? (
               <Button onClick={handleTrade} disabled={isTradeDisabled || waiting}>
                 {waiting ? 'Waiting...' : 'Trade'}
               </Button>

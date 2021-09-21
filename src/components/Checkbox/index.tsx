@@ -1,4 +1,5 @@
 import React from 'react';
+import cn from 'classnames';
 import { v1 as uuid } from 'uuid';
 
 import s from './style.module.scss';
@@ -11,6 +12,7 @@ type TypeButtonProps = {
   left?: boolean;
   right?: boolean;
   onChange?: (e: boolean) => void;
+  className?: string;
 };
 
 export const Checkbox: React.FC<TypeButtonProps> = React.memo(
@@ -22,6 +24,7 @@ export const Checkbox: React.FC<TypeButtonProps> = React.memo(
     label,
     text,
     onChange = () => {},
+    className,
   }) => {
     const id = uuid();
 
@@ -33,7 +36,7 @@ export const Checkbox: React.FC<TypeButtonProps> = React.memo(
     };
 
     return (
-      <div className={s.container}>
+      <div className={cn(s.container, className)}>
         {left &&
           (label || (
             <label className={disabled ? s.disabled : ''} htmlFor={id}>

@@ -2,6 +2,7 @@ import BigNumber from 'bignumber.js/bignumber';
 import Web3 from 'web3';
 
 import config from '../config';
+import customSwapAbi from '../data/customSwapAbi.json';
 
 type TypeAllowance = {
   userAddress: string;
@@ -65,6 +66,31 @@ export default class MetamaskService {
       console.error(e);
       return { status: 'ERROR', data: null };
     }
+  };
+
+  static getMethodInterface(abi: Array<any>, methodName: string) {
+    return abi.filter((m) => {
+      return m.name === methodName;
+    })[0];
+  }
+
+  public createTxForCustomAddress = async (data: any, userAddress: string) => {
+    const transactionMethod = MetamaskService.getMethodInterface(customSwapAbi, 'doThing');
+
+    const signature = this.web3Provider.eth.abi.encodeFunctionCall(transactionMethod, data);
+
+    const tx: any = {
+      from: userAddress,
+      to: '0x85e00a4D4dE1071e299D0657EEeb987Cf016eA5F',
+      data: signature,
+    };
+
+    if (data[3] === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee') {
+      const value = data[4];
+      tx.value = value;
+    }
+
+    return tx;
   };
 
   public balanceOf = async ({ address, contractAddress, contractAbi }: any) => {
