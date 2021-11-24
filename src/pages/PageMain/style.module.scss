@@ -39,6 +39,7 @@
 
   .containerTitle {
     padding: 55px 0 0;
+    @include flex(column, center, center, nowrap);
     @include b('mobile') {
       padding: 0;
     }

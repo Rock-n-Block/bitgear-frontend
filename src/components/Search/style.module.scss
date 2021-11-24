@@ -2,23 +2,23 @@
 @import '../../scss/mixins.scss';
 
 .button {
-  @include flex(row, center, center);
-  margin: 0 12px 0 0;
-  padding: 0 10px;
-
-  height: 46px;
-
-  font-family: $font2;
-  font-size: 14px;
-  line-height: 26px;
-  letter-spacing: 0.04em;
-
-  cursor: pointer;
-
-  color: $color-text-primary;
-  background: $color-bg-button;
-  border-radius: 12px;
-  outline: none;
+  //@include flex(row, center, center);
+  //margin: 0 12px 0 0;
+  //padding: 0 10px;
+  //
+  //height: 46px;
+  //
+  //font-family: $font2;
+  //font-size: 14px;
+  //line-height: 26px;
+  //letter-spacing: 0.04em;
+  //
+  //cursor: pointer;
+  //
+  //color: $color-text-primary;
+  //background: $color-bg-button;
+  //border-radius: 12px;
+  //outline: none;
   @include b('mobile') {
     margin: 0 5px 0 0;
   }
@@ -106,7 +106,11 @@
 
 .label {
   position: absolute;
-  right: 0;
+  right: 32px;
+  top: 25px;
+  @include b('tablet') {
+    top: 16px;
+  }
 
   pointer-events: auto;
 }
