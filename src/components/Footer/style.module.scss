@@ -21,7 +21,8 @@
   user-select: none;
 
   color: $color-text-secondary;
-  background: $color-bg;
+  background: transparent;
+  //background: $color-bg;
 
   &LogoGroup {
     @include flex(row, center, center, wrap);

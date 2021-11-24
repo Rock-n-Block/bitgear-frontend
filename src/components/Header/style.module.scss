@@ -5,12 +5,14 @@ $fs: 16px;
 
 .header {
   @include flex(row, center, center, nowrap);
-  position: fixed;
+  position: sticky;
+  //position: fixed;
   z-index: 999;
-  left: 0;
+  top: 0;
+  transition: top 0.4s;
 
-  padding-top: 12px;
-  padding-bottom: 11px;
+  //padding-top: 12px;
+  //padding-bottom: 11px;
 
   width: 100%;
   height: $height-header;
@@ -24,11 +26,12 @@ $fs: 16px;
   user-select: none;
 
   color: $color-text-header;
-  background-color: $color-bg-header;
-  border-bottom-width: 2px;
-  border-bottom-style: solid;
-  border-image-source: $color-border-header;
-  border-image-slice: 1;
+  background: $color-bg;
+  //background-color: $color-bg-header;
+  //border-bottom: 1px solid $color-border-header-end;
+  //border-bottom-style: solid;
+  //border-image-source: $color-border-header;
+  //border-image-slice: 1;
   @include b('mobile') {
     padding: 0;
 
@@ -36,15 +39,27 @@ $fs: 16px;
   }
 
   &Container {
+    position: relative;
     @include flex(row, center, space-between, nowrap);
     width: 100%;
     max-width: 1270px;
     height: $height-header;
+    background: $color-bg-header;
     @include b('mobile') {
       padding: 0;
 
       height: 69px;
     }
+  }
+
+  &Wrapper {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    max-width: 1270px;
+    height: 1px;
+    background: $color-border-header;
+    opacity: 0.4;
   }
 
   &LeftGroup {
@@ -103,12 +118,16 @@ $fs: 16px;
       cursor: pointer;
 
       color: #fff;
-      background-color: $color-text-link;
+      background: $color-text-wc;
       border-radius: 10px;
 
       a {
         color: #fff;
       }
+    }
+
+    &Active {
+      color: $color-text-link !important;
     }
   }
 
@@ -134,6 +153,7 @@ $fs: 16px;
       transition: color 200ms ease;
     }
   }
+
 
   &ItemArrow {
     margin-left: 6px;

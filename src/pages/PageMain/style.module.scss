@@ -1,232 +1,261 @@
 @import '../../scss/theme';
 @import '../../scss/mixins';
 
-.container {
-  padding: 30px 30px 400px 30px;
 
-  width: 100%;
-  max-width: 1000px;
-  height: 100%;
-  @include b('mobile') {
-    padding: 0 30px 200px 30px;
-  }
-}
+.wrapper {
+  position: relative;
 
-.containerTitle {
-  padding: 55px 0 0;
-  @include b('mobile') {
-    padding: 0;
-  }
-
-  h1 {
-    max-width: 563px;
-
-    font-size: 45px;
-    font-weight: 400;
-    line-height: 70px;
+  .shadowtop {
+    position: absolute;
+    top: -400px;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    width: 395px;
+    height: 395px;
+    border-radius: 200px;
+    box-shadow: 120px 20px 150px 50px $color-boxsh-bg1, 120px 5px 100px 120px $color-boxsh-bg2;
   }
 
-  span {
-    color: $color-text-span;
-  }
-}
-
-.containerLists {
-  @include grid(repeat(2, 1fr), 20px);
-  margin: 30px 0 0 0;
-
-  @include b('mobile') {
-    @include grid(repeat(1, 1fr));
-    margin: 10px 0 0 0;
-  }
-}
-
-.cardList {
-  @include flex(row, center, center);
-  min-width: 200px;
-  height: 92px;
-
-  font-size: 20px;
-  line-height: 31px;
-  text-decoration: none;
-
-  cursor: pointer;
-
-  color: $color-text-primary;
-  border: $border-card;
-  border-radius: 20px;
-
-  transition: transform 0.5s cubic-bezier(0.2, 3, 0.4, 1) 0s, background-color 0.4s ease;
-  flex-grow: 1;
-  flex-shrink: 1;
-
-  &:hover {
-    background-color: $color-bg-login-item-hover;
-  }
-
-  @include b('mobile') {
-    height: 60px;
-  }
-
-  &Image {
-    margin: 0 15px;
-
-    width: 38px;
-    height: 38px;
-  }
-}
-
-.button {
-  @include flex(row, center, center);
-  margin: 0 12px 0 0;
-  padding: 0 10px;
-
-  height: 46px;
-
-  font-family: $font2;
-  font-size: 14px;
-  line-height: 26px;
-  letter-spacing: 0.04em;
-
-  cursor: pointer;
-
-  color: $color-text-primary;
-  background: $color-bg-button;
-  border-radius: 12px;
-  outline: none;
-}
-
-.card {
-  @include flex(column, normal, space-between);
-  padding: 30px;
-
-  min-width: 200px;
-  height: 300px;
-
-  font-size: 18px;
-  text-decoration: none;
-
-  cursor: pointer;
-
-  color: $color-text-primary;
-  background: $color-bg-card;
-  border-radius: 20px;
-  flex-basis: 320px;
-  flex-shrink: 1;
-  flex-grow: 1;
-
-  @include b('mobile') {
-    padding: 20px;
-
-    height: 140px;
-  }
-
-  &ContainerFirst {
-    @include flex(column);
-
+  //.shadowbottom {
+  //  position: absolute;
+  //  overflow: hidden;
+  //  bottom: -400px;
+  //  margin: 0 auto;
+  //  width: 395px;
+  //  height: 395px;
+  //  border-radius: 200px;
+  //  box-shadow: 120px 20px 150px 100px $color-boxsh-bg1, 120px 10px 150px 180px $color-boxsh-bg2;
+  //}
+  .container {
+    padding: 30px 30px 400px 30px;
+    width: 100%;
+    max-width: 1000px;
+    height: 100%;
     @include b('mobile') {
-      @include flex(column, normal, center);
+      padding: 0 30px 200px 30px;
     }
   }
 
-  &ContainerSecond {
-    @include flex(column, flex-end);
-
+  .containerTitle {
+    padding: 55px 0 0;
     @include b('mobile') {
-      @include flex(column, flex-end);
+      padding: 0;
+    }
+
+    h1 {
+      //max-width: 563px;
+
+      font-size: 45px;
+      font-weight: 400;
+      line-height: 70px;
+    }
+
+    span {
+      color: $color-text-span;
     }
   }
 
-  &Symbol {
-    z-index: 1;
+  .containerLists {
+    @include grid(repeat(2, 1fr), 20px);
+    margin: 30px 0 0 0;
+
+    @include b('mobile') {
+      @include grid(repeat(1, 1fr));
+      margin: 10px 0 0 0;
+    }
+  }
+
+  .cardList {
+    @include flex(row, center, center);
+    min-width: 200px;
+    height: 92px;
 
     font-size: 20px;
     line-height: 31px;
+    text-decoration: none;
 
-    opacity: 0.5;
+    cursor: pointer;
+
+    color: $color-text-primary;
+    border: $border-card;
+    border-radius: 20px;
+
+    transition: transform 0.5s cubic-bezier(0.2, 3, 0.4, 1) 0s, background-color 0.4s ease;
+    flex-grow: 1;
+    flex-shrink: 1;
+
+    &:hover {
+      background-color: $color-bg-login-item-hover;
+    }
 
     @include b('mobile') {
+      height: 60px;
+    }
+
+    &Image {
+      margin: 0 15px;
+
+      width: 38px;
+      height: 38px;
+    }
+  }
+
+  .button {
+    @include flex(row, center, center);
+    margin: 0 12px 0 0;
+    padding: 0 10px;
+
+    height: 46px;
+
+    font-family: $font2;
+    font-size: 14px;
+    line-height: 26px;
+    letter-spacing: 0.04em;
+
+    cursor: pointer;
+
+    color: $color-text-primary;
+    background: $color-bg-button;
+    border-radius: 12px;
+    outline: none;
+  }
+
+  .card {
+    @include flex(column, normal, space-between);
+    padding: 30px;
+
+    min-width: 200px;
+    height: 300px;
+
+    font-size: 18px;
+    text-decoration: none;
+
+    cursor: pointer;
+
+    color: $color-text-primary;
+    background: $color-bg-card;
+    border-radius: 20px;
+    flex-basis: 320px;
+    flex-shrink: 1;
+    flex-grow: 1;
+
+    @include b('mobile') {
+      padding: 20px;
+
+      height: 140px;
+    }
+
+    &ContainerFirst {
+      @include flex(column);
+
+      @include b('mobile') {
+        @include flex(column, normal, center);
+      }
+    }
+
+    &ContainerSecond {
+      @include flex(column, flex-end);
+
+      @include b('mobile') {
+        @include flex(column, flex-end);
+      }
+    }
+
+    &Symbol {
       z-index: 1;
 
-      font-size: 16px;
-      line-height: 25px;
+      font-size: 20px;
+      line-height: 31px;
 
       opacity: 0.5;
-    }
-  }
 
-  &Price {
-    font-size: 40px;
-    font-weight: bold;
-    line-height: 63px;
+      @include b('mobile') {
+        z-index: 1;
 
-    @include b('mobile') {
-      font-size: 30px;
-      line-height: 44px;
-    }
-  }
+        font-size: 16px;
+        line-height: 25px;
 
-  &PriceChange {
-    margin: 3px 0 0 0;
-
-    font-size: 20px;
-    font-weight: 600;
-    line-height: 31px;
-
-    @include b('mobile') {
-      font-size: 16px;
-      line-height: 25px;
+        opacity: 0.5;
+      }
     }
 
-    &Plus {
+    &Price {
+      font-size: 40px;
+      font-weight: bold;
+      line-height: 63px;
+
+      @include b('mobile') {
+        font-size: 30px;
+        line-height: 44px;
+      }
+    }
+
+    &PriceChange {
+      margin: 3px 0 0 0;
+
       font-size: 20px;
       font-weight: 600;
       line-height: 31px;
-
-      color: $color-text-green;
 
       @include b('mobile') {
         font-size: 16px;
         line-height: 25px;
       }
-    }
 
-    &Minus {
-      font-size: 20px;
-      font-weight: 600;
-      line-height: 31px;
+      &Plus {
+        font-size: 20px;
+        font-weight: 600;
+        line-height: 31px;
 
-      color: $color-text-red;
+        color: $color-text-green;
 
-      @include b('mobile') {
-        font-size: 16px;
-        line-height: 25px;
+        @include b('mobile') {
+          font-size: 16px;
+          line-height: 25px;
+        }
+      }
+
+      &Minus {
+        font-size: 20px;
+        font-weight: 600;
+        line-height: 31px;
+
+        color: $color-text-red;
+
+        @include b('mobile') {
+          font-size: 16px;
+          line-height: 25px;
+        }
       }
     }
+
+    &Image {
+      width: 100px;
+      height: 100px;
+
+      border-radius: 50%;
+      opacity: 0.3;
+      -webkit-filter: grayscale(1) brightness(1.1);
+      filter: grayscale(1) brightness(1.1);
+    }
   }
 
-  &Image {
-    width: 100px;
-    height: 100px;
-
-    border-radius: 50%;
-    opacity: 0.3;
-    -webkit-filter: grayscale(1) brightness(1.1);
-    filter: grayscale(1) brightness(1.1);
-  }
-}
-
-.containerCards {
-  @include grid(repeat(2, 1fr), 1fr, 20px);
-  margin: 40px 160px 0 160px;
-
-  @include b('tablet') {
+  .containerCards {
     @include grid(repeat(2, 1fr), 1fr, 20px);
-    margin: 40px 80px 0 80px;
-  }
+    margin: 40px 160px 0 160px;
 
-  @include b('mobile') {
-    @include grid(repeat(1, 1fr), 1fr);
-    margin: 40px 0 0 0;
+    @include b('tablet') {
+      @include grid(repeat(2, 1fr), 1fr, 20px);
+      margin: 40px 80px 0 80px;
+    }
+
+    @include b('mobile') {
+      @include grid(repeat(1, 1fr), 1fr);
+      margin: 40px 0 0 0;
+    }
   }
 }
+
+
+

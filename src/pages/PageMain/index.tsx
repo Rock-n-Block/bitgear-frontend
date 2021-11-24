@@ -143,29 +143,35 @@ export const PageMain: React.FC = () => {
   }, [changeTokens]);
 
   return (
-    <div className={s.container}>
-      <section className={s.containerTitle}>
-        <h1>
-          Gear up for <span>best prices</span> across exchanges
-        </h1>
-        <Search wide={isWide} />
-      </section>
-      <section className={s.containerCards}>
-        {tokensList.map((token: TypeToken) => {
-          const { address } = token;
-          return <CardToken key={uuid()} to={`/markets/${address}`} token={token} />;
-        })}
-      </section>
-      <section className={s.containerLists}>
-        <Link to="/lists/recently-added" className={s.cardList}>
-          <img src={imageCoin} alt="" className={s.cardListImage} />
-          Hot and new
-        </Link>
-        <Link to="/lists/top-gainers" className={s.cardList}>
-          <img src={imageRocket} alt="" className={s.cardListImage} />
-          Top performers
-        </Link>
-      </section>
-    </div>
+    <>
+      <div className={s.wrapper}>
+        <div className={s.shadowtop} />
+        <div className={s.container}>
+          <section className={s.containerTitle}>
+            <h1>
+              Gear up for <span>best prices</span> across exchanges
+            </h1>
+            <Search wide={isWide} />
+          </section>
+          <section className={s.containerCards}>
+            {tokensList.map((token: TypeToken) => {
+              const { address } = token;
+              return <CardToken key={uuid()} to={`/markets/${address}`} token={token} />;
+            })}
+          </section>
+          <section className={s.containerLists}>
+            <Link to="/lists/recently-added" className={s.cardList}>
+              <img src={imageCoin} alt="" className={s.cardListImage} />
+              Hot and new
+            </Link>
+            <Link to="/lists/top-gainers" className={s.cardList}>
+              <img src={imageRocket} alt="" className={s.cardListImage} />
+              Top performers
+            </Link>
+          </section>
+        </div>
+        <div className={s.shadowbottom} />
+      </div>
+    </>
   );
 };

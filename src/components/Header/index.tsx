@@ -1,7 +1,7 @@
 import React from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, useHistory, useLocation } from 'react-router-dom';
+import { Link, NavLink, useHistory, useLocation } from 'react-router-dom';
 import BigNumber from 'bignumber.js/bignumber';
 import useMedia from 'use-media';
 import { v1 as uuid } from 'uuid';
@@ -260,9 +260,14 @@ export const Header: React.FC = () => {
             onKeyDown={() => {}}
             onClick={handleCloseDropdownMenuMobile}
           >
-            <Link to="/" onClick={() => setOpenMenu(false)}>
+            <NavLink
+              to="/"
+              isActive={() => window.location.pathname === '/'}
+              activeClassName={s.headerItemActive}
+              onClick={() => setOpenMenu(false)}
+            >
               Home
-            </Link>
+            </NavLink>
           </div>
           <div
             className={s.headerItem}
@@ -271,9 +276,14 @@ export const Header: React.FC = () => {
             onKeyDown={() => {}}
             onClick={handleCloseDropdownMenuMobile}
           >
-            <Link to="/explore" onClick={() => setOpenMenu(false)}>
+            <NavLink
+              isActive={() => window.location.pathname === '/explore'}
+              activeClassName={s.headerItemActive}
+              to="/explore"
+              onClick={() => setOpenMenu(false)}
+            >
               Explore
-            </Link>
+            </NavLink>
           </div>
           <div
             className={s.headerItem}
@@ -445,6 +455,7 @@ export const Header: React.FC = () => {
           )}
         </nav>
       </div>
+      <div className={s.headerWrapper} />
     </header>
   );
 };
