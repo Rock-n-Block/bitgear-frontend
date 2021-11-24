@@ -2,8 +2,9 @@
 @import '../../../scss/mixins';
 
 .container {
-  width: 100%;
   padding: 40px 30px 300px 30px;
+
+  width: 100%;
 
   @include b('mobile') {
     padding: 40px 10px 300px 10px;
@@ -11,30 +12,42 @@
 }
 
 .CustomAddress {
+  position: relative;
+
   border: $border-form;
   border-radius: 20px;
   grid-column: 1 / 4;
-  position: relative;
+
   &Title {
+    position: absolute;
+    z-index: 2;
+    top: -15px;
+    left: 50%;
+
+    padding: 0 5px;
+
+    font-size: 16px;
+    line-height: 25px;
+
     color: $color-bg-checkbox;
     background: #07092a;
-    font-size: 16px;
-    position: absolute;
-    left: 50%;
-    top: -15px;
+
     transform: translateX(-50%);
-    line-height: 25px;
-    padding: 0 5px;
-    z-index: 2;
   }
+
   &Input {
-    border-radius: 20px;
-    height: 100%;
     overflow: hidden;
+
+    height: 100%;
+
+    border-radius: 20px;
+
     input {
       padding: 0 10px;
-      text-align: center;
+
       height: 100%;
+
+      text-align: center;
     }
   }
 }
@@ -58,6 +71,7 @@
     &Inner {
       @include flex(row, normal, space-between);
       margin: 24px 0 0 0;
+
       border-bottom: $border-tab;
 
       @include b('mobile') {
@@ -65,7 +79,7 @@
       }
 
       div:first-child {
-        padding: 10px 13px 10px 0px;
+        padding: 10px 13px 10px 0;
       }
 
       div {
@@ -77,7 +91,7 @@
       }
 
       div:last-child {
-        padding: 10px 0px 10px 13px;
+        padding: 10px 0 10px 13px;
 
         @include b('mobile') {
           float: right;
@@ -87,73 +101,88 @@
 
     &Item {
       font-size: 16px;
-      line-height: 25px;
       font-weight: 400;
-      color: $color-text-secondary;
+      line-height: 25px;
+
       cursor: pointer;
+
+      color: $color-text-secondary;
+
       transition: color 200ms ease;
 
       &:hover {
         color: $color-text-link;
+
         transition: color 200ms ease;
       }
     }
 
     &ItemActive {
+      padding: 10px 26px 10px 0;
+
       font-size: 16px;
-      line-height: 25px;
       font-weight: 700;
-      color: $color-text-link;
-      padding: 10px 26px 10px 0px;
+      line-height: 25px;
+
       cursor: pointer;
+
+      color: $color-text-link;
     }
   }
 
   &Name {
-    color: $color-text-link;
     font-size: 20px;
-    line-height: 31px;
     font-weight: 400;
+    line-height: 31px;
+
+    color: $color-text-link;
   }
 
   &Price {
     margin: -7px 0 0 0;
+
     font-size: 50px;
-    line-height: 78px;
     font-weight: 400;
+    line-height: 78px;
   }
 
   &PriceChange {
     margin: -13px 0 0 0;
+
     font-size: 20px;
-    line-height: 31px;
     font-weight: 400;
+    line-height: 31px;
 
     &[data-positive='true'] {
       margin: -13px 0 0 0;
-      color: $color-text-green;
+
       font-size: 20px;
-      line-height: 31px;
       font-weight: 400;
+      line-height: 31px;
+
+      color: $color-text-green;
     }
 
     &[data-negative='true'] {
       margin: -13px 0 0 0;
-      color: $color-text-red;
+
       font-size: 20px;
-      line-height: 31px;
       font-weight: 400;
+      line-height: 31px;
+
+      color: $color-text-red;
     }
   }
 }
 
 .containerTrading {
   @include grid(1fr 44px 1fr, 1fr 55px 58px, 28px);
-  width: 100%;
   margin: 47px 0 0 0;
 
+  width: 100%;
+
   @include b('870') {
-    @include grid(repeat(1, 1fr), auto, 0px);
+    @include grid(repeat(1, 1fr), auto, 0);
   }
 
   &CardLimitOpen {
@@ -161,22 +190,25 @@
   }
 
   &Card {
+    position: relative;
+
     border: $border-form;
     border-radius: 20px;
-    position: relative;
 
     &Inner {
       @include flex(row, normal, normal, nowrap);
       position: relative;
-      flex-basis: 450px;
+
       padding: 40px 25px 25px 25px;
+      flex-basis: 450px;
     }
 
     &Limit {
       margin: -15px 25px 25px 25px;
       padding: 10px;
-      border-radius: 10px;
+
       background-color: #131637;
+      border-radius: 10px;
 
       &Inner {
         @include grid(1fr 2fr, 1fr, 20px);
@@ -185,10 +217,11 @@
 
       &Label {
         @include flex(row, center);
-        color: $color-text-link;
-        font-weight: 500;
         font-size: 16px;
+        font-weight: 500;
         line-height: 25px;
+
+        color: $color-text-link;
       }
 
       &Input {
@@ -198,26 +231,33 @@
           @include flex(row, center);
           position: absolute;
           right: 10px;
-          color: $color-text-secondary;
-          font-weight: 400;
-          font-size: 16px;
-          line-height: 25px;
+
           height: 100%;
+
+          font-size: 16px;
+          font-weight: 400;
+          line-height: 25px;
+
+          color: $color-text-secondary;
         }
 
         input {
-          height: $height-input-small;
-          outline: none;
-          background-color: $color-bg-select-item;
           padding: 10px 10px;
-          font-weight: 500;
+
+          width: 100%;
+          height: $height-input-small;
+
           font-size: 22px;
+          font-weight: 500;
           line-height: 34px;
+
+          color: $color-text-input;
+          background-color: $color-bg-select-item;
           border: none;
           border-radius: 4px;
+          outline: none;
           caret-color: $color-cursor-input;
-          color: $color-text-input;
-          width: 100%;
+
           &::placeholder {
             color: $color-text-input-placeholder;
           }
@@ -227,29 +267,33 @@
 
     &Label {
       position: absolute;
-      padding: 0 5px;
       top: -14px;
       left: 20px;
+
+      padding: 0 5px;
+
       font-size: 16px;
-      line-height: 25px;
       font-weight: 500;
-      background: $color-bg;
+      line-height: 25px;
+
       color: $color-text-link;
+      background: $color-bg;
     }
 
     &Image {
       img {
         width: 58px;
         height: 58px;
-        border-radius: 50%;
+
         background: $color-bg-image;
+        border-radius: 50%;
       }
     }
 
     &Container {
+      margin: 6px 0 0 20px;
       flex-grow: 1;
       flex-shrink: 1;
-      margin: 6px 0 0 20px;
     }
 
     &ContainerInner {
@@ -266,10 +310,12 @@
 
       &Name {
         font-size: 20px;
-        line-height: 31px;
         font-weight: 500;
-        color: $color-text-link;
+        line-height: 31px;
+
         cursor: pointer;
+
+        color: $color-text-link;
       }
 
       &ArrowDown {
@@ -283,20 +329,25 @@
     }
 
     &SearchItems {
-      height: 280px;
-      overflow: auto;
       margin: 10px 0 0 0;
-      padding: 0px 10px;
+      padding: 0 10px;
+
+      overflow: auto;
+
+      height: 280px;
     }
 
     &SearchItem {
       @include grid(36px 150px 1fr, 36px, 0);
-      padding: 14px 10px;
-      border-radius: 12px;
-      cursor: pointer;
-      width: 100%;
-      background: $color-bg-dropdown-item;
       margin: 1px 0;
+      padding: 14px 10px;
+
+      width: 100%;
+
+      cursor: pointer;
+
+      background: $color-bg-dropdown-item;
+      border-radius: 12px;
 
       &:hover {
         background: $color-bg-dropdown;
@@ -305,60 +356,71 @@
       &Image {
         width: 36px;
         height: 36px;
-        border-radius: 50%;
+
         background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
       }
 
       &First {
         @include flex(column, normal, center, nowrap);
-        margin: 0px 13px 0 13px;
+        margin: 0 13px 0 13px;
       }
 
       &Name {
-        font-weight: 500;
         font-size: 16px;
+        font-weight: 500;
         line-height: 18px;
+
         color: $color-text-link;
       }
 
       &Price {
-        font-weight: 400;
-        font-size: 16px;
-        line-height: 25px;
-        color: $color-text-secondary;
         margin: -5px 0 0 0;
+
+        font-size: 16px;
+        font-weight: 400;
+        line-height: 25px;
+
+        color: $color-text-secondary;
       }
 
       &Symbol {
         @include flex(row, center, flex-end);
-        font-weight: 400;
         font-size: 16px;
+        font-weight: 400;
         line-height: 25px;
+
         color: $color-text-secondary;
       }
     }
 
     &Symbol {
       font-size: 16px;
-      line-height: 25px;
       font-weight: 400;
+      line-height: 25px;
+
       color: $color-text-secondary;
     }
 
     &Input {
       margin: 6px 0 0 0;
+
       input {
-        height: $height-input-small;
-        outline: none;
-        background-color: $color-bg-input-small;
         padding: 10px 20px;
+
+        width: 100%;
+        height: $height-input-small;
+
         font-size: 30px;
         line-height: 47px;
+
+        color: $color-text-input;
+        background-color: $color-bg-input-small;
         border: none;
         border-radius: 4px;
+        outline: none;
         caret-color: $color-cursor-input;
-        color: $color-text-input;
-        width: 100%;
+
         &::placeholder {
           color: $color-text-input-placeholder;
         }
@@ -367,15 +429,19 @@
 
     &Balance {
       margin: 11px 0 0 0;
-      text-align: right;
+
       font-size: 16px;
-      line-height: 1.1;
       font-weight: 400;
+      line-height: 1.1;
+      text-align: right;
+
       color: $color-text-secondary;
 
       span {
         margin: 0 0 0 11px;
+
         font-weight: 600;
+
         color: $color-text-link;
       }
     }
@@ -391,14 +457,17 @@
 
     &Inner {
       @include flex(row, center, center);
-      cursor: pointer;
+      z-index: 2;
+
       width: 44px;
       height: 44px;
+
+      cursor: pointer;
+      user-select: none;
+
+      background: $color-bg;
       border: $border-form;
       border-radius: 50%;
-      background: $color-bg;
-      z-index: 2;
-      user-select: none;
     }
   }
 
@@ -416,8 +485,11 @@
 
 .containerChart {
   position: relative;
+
   margin: 30px 0 0 0;
+
   width: 100%;
+
   background-color: $color-bg-chart;
   border-radius: 10px;
 }
@@ -437,27 +509,30 @@
   @include flex(row, center, space-between);
   position: absolute;
   bottom: 0;
-  width: 100%;
+
   padding: 0 20px 13px 20px;
 
+  width: 100%;
+
   &PriceName {
-    font-weight: 400;
     font-size: 16px;
+    font-weight: 400;
     line-height: 25px;
-    color: $color-text-secondary;
     text-transform: uppercase;
+
+    color: $color-text-secondary;
   }
 
   &Price {
-    font-weight: 400;
     font-size: 25px;
+    font-weight: 400;
     line-height: 39px;
   }
 
   &Period {
     @include grid(1fr 1fr 1fr, 25px, 28px);
-    font-weight: 400;
     font-size: 16px;
+    font-weight: 400;
     line-height: 25px;
     text-transform: uppercase;
 
@@ -466,14 +541,18 @@
     }
 
     div {
-      color: $color-text-secondary;
-      cursor: pointer;
       text-align: right;
-      transition: color 200ms ease;
+
+      cursor: pointer;
+
+      color: $color-text-secondary;
       outline: none;
+
+      transition: color 200ms ease;
 
       &:hover {
         color: $color-text-primary;
+
         transition: color 200ms ease;
       }
     }
@@ -485,9 +564,10 @@
 
   &PriceChange {
     width: 100%;
-    text-align: right;
+
     font-size: 25px;
     line-height: 39px;
+    text-align: right;
 
     &[data-positive='true'] {
       color: $color-text-green;
@@ -500,22 +580,25 @@
 }
 
 .containerSettings {
-  background: $color-bg-section;
   margin: 21px 0 0 0;
   padding: 20px;
+
+  background: $color-bg-section;
   border-radius: 10px;
 
   h1 {
-    font-weight: 400;
-    font-size: 24px;
-    line-height: 37px;
     margin: 0;
+
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 37px;
   }
 
   h2 {
-    font-weight: 500;
     font-size: 16px;
+    font-weight: 500;
     line-height: 25px;
+
     color: $color-text-link;
   }
 
@@ -557,11 +640,14 @@
       &Button:active,
       &Button:focus,
       &Button:hover {
-        padding: 0 10px;
         margin: 0;
+        padding: 0 10px;
+
         font-size: 16px;
         line-height: 25px;
+
         background: none !important;
+
         transition: none !important;
         transform: none !important;
       }
@@ -591,20 +677,25 @@
         margin: 3px 0;
       }
     }
+
     &CustomAddress {
       margin-top: 16.5px !important;
     }
-    &PremiumBadge{
+
+    &PremiumBadge {
+      margin-bottom: 5px;
+
       display: flex;
       align-items: center;
-      margin-bottom: 5px;
+
       font-family: $font;
-      font-weight: 500;
       font-size: 16px;
+      font-weight: 500;
       line-height: 25px;
 
       color: $color-text-span;
-      svg{
+
+      svg {
         margin-right: 6px;
       }
     }
@@ -624,24 +715,30 @@
     &ButtonSelectAll,
     &ButtonSelectAll:focus,
     &ButtonSelectAll:active {
-      width: 120px;
-      font-weight: 500;
-      font-size: 14px;
-      line-height: 26px;
-      padding: 8px 12px;
       margin: 5px 10px 5px 0;
+      padding: 8px 12px;
+
+      width: 120px;
+
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 26px;
+
       background: none !important;
     }
 
     &Button,
     &Button:focus,
     &Button:active {
-      width: 60px;
-      font-weight: 500;
-      font-size: 14px;
-      line-height: 26px;
-      padding: 8px 12px;
       margin: 5px 10px 5px 0;
+      padding: 8px 12px;
+
+      width: 60px;
+
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 26px;
+
       background: none !important;
     }
   }
@@ -650,24 +747,30 @@
 .containerSettingsSelect {
   &Label {
     @include flex(row, center, space-between);
-    cursor: pointer;
-    height: 100%;
     width: 100%;
-    font-weight: 500;
+    height: 100%;
+
     font-size: 22px;
+    font-weight: 500;
     line-height: 34px;
+
+    cursor: pointer;
   }
 
   &Items {
     div {
       @include flex(row, center, space-between);
-      height: 55px;
-      cursor: pointer;
-      background-color: $color-bg-select-item;
       padding: 10px;
-      font-weight: 500;
+
+      height: 55px;
+
       font-size: 22px;
+      font-weight: 500;
       line-height: 34px;
+
+      cursor: pointer;
+
+      background-color: $color-bg-select-item;
 
       &:hover {
         background-color: $color-bg-select-item-hover;
@@ -686,19 +789,24 @@
 
   &Input {
     margin: 0 10px;
+
     input {
-      text-align: right;
-      outline: none;
-      background-color: #40425d;
       padding: 5px 10px;
-      font-weight: 500;
+
+      width: 60px;
+
       font-size: 17px;
+      font-weight: 500;
       line-height: 26px;
+      text-align: right;
+
+      color: $color-text-input;
+      background-color: #40425d;
       border: none;
       border-radius: 4px;
+      outline: none;
       caret-color: $color-cursor-input;
-      color: $color-text-input;
-      width: 60px;
+
       &::placeholder {
         color: $color-text-input-placeholder;
       }
@@ -726,38 +834,49 @@
 
 .radioLabel {
   @include flex(row, center);
-  width: 100%;
-  font-weight: 500;
-  font-size: 17px;
-  line-height: 26px;
-  cursor: pointer;
   position: relative;
+
+  width: 100%;
   height: 55px;
+
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 26px;
+
+  cursor: pointer;
 }
 
 .radioPoint {
-  height: 20px;
+  position: relative;
+
+  margin: 10px;
+
   width: 20px;
+  height: 20px;
+
   background-color: #40425d;
   border-radius: 50%;
-  position: relative;
-  margin: 10px;
 }
 
 .radioPoint::after {
   content: '';
-  display: block;
-  height: 20px;
-  width: 20px;
-  border-radius: 50%;
+
   position: absolute;
   top: 50%;
   left: 10px;
-  transform: translate(-50%, -50%);
+
+  display: block;
+
+  width: 20px;
+  height: 20px;
+
   background-color: #fff;
-  box-shadow: inset 0 0 0 5px $color-bg-radio-point;
+  border-radius: 50%;
   opacity: 0;
+  box-shadow: inset 0 0 0 5px $color-bg-radio-point;
+
   transition: opacity 0.2s;
+  transform: translate(-50%, -50%);
 }
 
 .symbolWide {
@@ -766,11 +885,13 @@
 
 .error {
   margin: 2px 0;
-  color: $color-text-error;
+
   font-size: 16px;
-  line-height: 1.1;
   font-weight: 400;
+  line-height: 1.1;
   text-align: right;
+
+  color: $color-text-error;
 }
 
 .containerTokenInfo {
@@ -780,26 +901,31 @@
 
 .tokenInfo {
   @include grid(32px 2fr 1fr, 54px, 12px);
+  padding: 20px;
+
+  max-width: 400px;
+
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 25px;
+
+  color: $color-text-secondary;
   background-color: $color-bg-section;
   border-radius: 10px;
-  max-width: 400px;
-  padding: 20px;
-  color: $color-text-secondary;
-  font-weight: 400;
-  font-size: 16px;
-  line-height: 25px;
 
   > img {
     width: 32px;
     height: 32px;
+
     border-radius: 50%;
   }
 
   span {
-    color: $color-text-link;
-    font-weight: 500;
     font-size: 20px;
+    font-weight: 500;
     line-height: 31px;
+
+    color: $color-text-link;
   }
 
   .etherscan {

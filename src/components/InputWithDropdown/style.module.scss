@@ -1,18 +1,21 @@
-@import "../../scss/theme.scss";
-@import "../../scss/mixins.scss";
+@import '../../scss/theme.scss';
+@import '../../scss/mixins.scss';
 
 .containerInput {
   @include flex(column);
-  width: 100%;
-  box-sizing: border-box;
   position: relative;
-  background-color: $color-bg-input;
+
   margin: 5px 0 0 0;
+
+  box-sizing: border-box;
+  width: 100%;
+
+  background-color: $color-bg-input;
   border: $border-input;
   border-radius: 20px;
 
   &Inner {
-    @include flex(row,center);
+    @include flex(row, center);
     width: 100%;
     height: 100%;
   }
@@ -23,11 +26,14 @@
 
   &Open {
     @include flex(column);
-    width: 100%;
-    box-sizing: border-box;
     position: relative;
-    background-color: $color-bg-input;
+
     margin: 5px 0 0 0;
+
+    box-sizing: border-box;
+    width: 100%;
+
+    background-color: $color-bg-input;
     border: $border-input;
     border-bottom: $border-input-dropdown;
     border-radius: 20px 20px 0 0;
@@ -35,88 +41,109 @@
 }
 
 .input {
-  height: $height-input;
-  width: 100%;
-  box-sizing: border-box;
-  outline: none;
-  background-color: $color-bg-input;
   padding: 10px 20px 10px 57px;
+
+  box-sizing: border-box;
+  width: 100%;
+  height: $height-input;
+
   font-size: 22px;
   line-height: 34px;
+
+  color: $color-text-input;
+  background-color: $color-bg-input;
   border: none;
   border-radius: 20px;
+  outline: none;
   caret-color: $color-cursor-input;
-  color: $color-text-input;
+
   &::placeholder {
     color: $color-text-input-placeholder;
   }
   @include b('mobile') {
     height: $height-input-small;
+
     font-size: 16px;
   }
 }
 
 .inputBig {
-  height: 100%;
-  width: 100%;
+  padding: 3px 20px 20px 20px;
+
   box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+
+  font-size: 30px;
+  font-weight: 600;
+  line-height: 34px;
+
+  color: $color-text-input;
+  background-color: $color-bg-input;
+  border: none;
   border-radius: 0;
   outline: none;
-  border: none;
-  background-color: $color-bg-input;
-  padding: 3px 20px 20px 20px;
-  font-size: 30px;
-  line-height: 34px;
-  font-weight: 600;
   caret-color: $color-cursor-input;
-  color: $color-text-input;
+
   &::placeholder {
     color: $color-text-input-placeholder;
   }
 }
 
 .inputMedium {
-  height: 100%;
-  width: 100%;
+  padding: 0 5px 0 20px;
+
   box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+
+  font-size: 30px;
+  font-weight: 600;
+  line-height: 62px;
+
+  color: $color-text-input;
+  background-color: $color-bg-input;
+  border: none;
   border-radius: 0;
   outline: none;
-  border: none;
-  background-color: $color-bg-input;
-  padding: 0 5px 0 20px;
-  font-size: 30px;
-  line-height: 62px;
-  font-weight: 600;
   caret-color: $color-cursor-input;
-  color: $color-text-input;
+
   &::placeholder {
     color: $color-text-input-placeholder;
   }
 }
 
 .label {
-  @include flex(row,center,space-between);
+  @include flex(row, center, space-between);
   position: absolute;
+
   padding: 4px 6px;
-  height: 100%;
-  width: 100%;
+
   box-sizing: border-box;
-  border-radius: 0;
+  width: 100%;
+  height: 100%;
+
   font-size: 13px;
   font-weight: 400;
   text-transform: uppercase;
-  color: $color-text-input;
+
   pointer-events: none;
+
+  color: $color-text-input;
+  border-radius: 0;
 
   &Inner {
     position: absolute;
     top: 0;
+
     height: $height-input;
-    color: $color-text-input;
+
     font-size: 12px;
-    line-height: 12px;
     font-weight: 500;
+    line-height: 12px;
     text-transform: uppercase;
+
+    color: $color-text-input;
   }
 }
 
@@ -126,23 +153,27 @@
 
 .dropdown {
   position: absolute;
-  left: -2px;
-  width: calc(100% + 4px);
+  z-index: 2;
   top: $height-input;
+  left: -2px;
+
+  width: calc(100% + 4px);
+
   background: $color-bg-input;
   border-top: $border-input-dropdown;
+  border-left: $border-input;
   border-right: $border-input;
   border-bottom: $border-input;
-  border-left: $border-input;
   border-radius: 0 0 20px 20px;
-  z-index: 2;
-  @include b('mobile'){
+  @include b('mobile') {
     top: $height-input-small;
   }
 }
 
 .dropdownInner {
   margin: 0 0 15px 0;
-  max-height: 380px;
+
   overflow: auto;
+
+  max-height: 380px;
 }

@@ -3,18 +3,22 @@
 
 .button {
   @include flex(row, center, center);
-  outline: none;
-  background: $color-bg-button;
-  cursor: pointer;
-  height: 46px;
+  margin: 0 12px 0 0;
   padding: 0 10px;
-  border-radius: 12px;
-  color: $color-text-primary;
+
+  height: 46px;
+
   font-family: $font2;
   font-size: 14px;
   line-height: 26px;
   letter-spacing: 0.04em;
-  margin: 0 12px 0 0;
+
+  cursor: pointer;
+
+  color: $color-text-primary;
+  background: $color-bg-button;
+  border-radius: 12px;
+  outline: none;
   @include b('mobile') {
     margin: 0 5px 0 0;
   }
@@ -25,41 +29,50 @@
 }
 
 .labelInput {
-  @include flex(row,center,center);
-  height: $height-input;
-  width: 57px;
+  @include flex(row, center, center);
   padding: 0 0 0 10px;
+
+  width: 57px;
+  height: $height-input;
   @include b('mobile') {
-    height: $height-input-small;
     margin-left: -16px;
+
+    height: $height-input-small;
   }
 }
 
 .dropdownSearch {
   @include flex(column);
-  width: 100%;
-  font-family: $font2;
-  margin: 5px 0;
   z-index: 2;
+
+  margin: 5px 0;
+
+  width: 100%;
+
+  font-family: $font2;
 }
 
 .dropdownSearchItem {
   @include flex(row, center);
-  height: 63px;
-  width: calc(100% - 20px);
   margin: 5px 10px;
   padding: 0 10px;
-  border-radius: 12px;
+
+  width: calc(100% - 20px);
+  height: 63px;
+
   color: $color-text-primary;
+  border-radius: 12px;
 
   &:hover {
-    background: $color-bg-dropdown-item;
     cursor: pointer;
+
+    background: $color-bg-dropdown-item;
   }
 
   &Empty {
     @include flex(column, center, center);
     height: 145px;
+
     font-size: 20px;
     line-height: 31px;
   }
@@ -67,22 +80,26 @@
   &Image {
     width: 36px;
     height: 36px;
-    border-radius: 50%;
+
     background: #fff;
+    border-radius: 50%;
   }
 
   &Name {
     margin: 0 0 0 13px;
+
     font-size: 20px;
-    line-height: 31px;
     font-weight: 500;
+    line-height: 31px;
   }
 
   &Symbol {
     margin: 0 0 0 9px;
+
     font-size: 16px;
-    line-height: 25px;
     font-weight: 400;
+    line-height: 25px;
+
     opacity: 0.5;
   }
 }
@@ -90,5 +107,6 @@
 .label {
   position: absolute;
   right: 0;
+
   pointer-events: auto;
 }

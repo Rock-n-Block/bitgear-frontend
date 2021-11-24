@@ -5,158 +5,205 @@ $fs: 16px;
 
 .header {
   @include flex(row, center, center, nowrap);
-  font-family: $font;
   position: fixed;
-  left: 0;
-  width: 100%;
-  height: $height-header;
-  background-color: $color-bg-header;
   z-index: 999;
-  user-select: none;
-  color: $color-text-header;
+  left: 0;
+
   padding-top: 12px;
   padding-bottom: 11px;
-  text-transform: uppercase;
+
+  width: 100%;
+  height: $height-header;
+
+  font-family: $font;
+  font-size: $fs;
   font-weight: 500;
   letter-spacing: 1px;
-  font-size: $fs;
+  text-transform: uppercase;
+
+  user-select: none;
+
+  color: $color-text-header;
+  background-color: $color-bg-header;
   border-bottom-width: 2px;
   border-bottom-style: solid;
-  border-image-slice: 1;
   border-image-source: $color-border-header;
+  border-image-slice: 1;
   @include b('mobile') {
-    height: $height-header-mobile;
     padding: 0;
+
+    height: $height-header-mobile;
   }
 
   &Container {
     @include flex(row, center, space-between, nowrap);
-    height: $height-header;
     width: 100%;
     max-width: 1270px;
+    height: $height-header;
     @include b('mobile') {
-      height: 69px;
       padding: 0;
+
+      height: 69px;
     }
   }
+
   &LeftGroup {
     @include flex(row, center, center, nowrap);
-    height: $height-header;
     padding: 0 20px;
+
+    height: $height-header;
     @include b('mobile') {
       padding: 0 2vw;
     }
   }
+
   &RightGroup {
     @include flex(row, center, center, nowrap);
-    height: $height-header;
     padding: 0 2vw;
+
+    height: $height-header;
   }
+
   &Item {
     @include flex(row, center, center);
-    cursor: pointer;
     padding: 20px 25px;
+
     font-size: $fs;
+
+    cursor: pointer;
+
     border-radius: 5px;
 
     @include b('mobile') {
-      width: 100%;
       padding: 8px 25px;
+
+      width: 100%;
     }
 
     a {
       width: 100%;
-      text-align: center;
+
       font-size: $fs;
+      text-align: center;
       text-decoration: none;
+
       color: $color-text-header;
+
       transition: color 200ms ease;
     }
 
     &Btn {
       @include flex(row, center);
-      cursor: pointer;
-      background-color: $color-text-link;
-      padding: 10px;
       margin: 0 25px;
-      border-radius: 10px;
-      color: #fff;
-      font-weight: 500;
+      padding: 10px;
+
       font-size: 14px;
+      font-weight: 500;
+
+      cursor: pointer;
+
+      color: #fff;
+      background-color: $color-text-link;
+      border-radius: 10px;
+
       a {
         color: #fff;
       }
     }
   }
+
   &Item:hover {
     @include flex(row, center, center);
-    cursor: pointer;
     padding: 20px 25px;
+
     font-size: $fs;
+
+    cursor: pointer;
+
     border-radius: 5px;
 
     @include b('mobile') {
-      width: 100%;
       padding: 8px 25px;
+
+      width: 100%;
     }
 
     a {
       color: $color-text-link;
+
       transition: color 200ms ease;
     }
   }
+
   &ItemArrow {
     margin-left: 6px;
+
     opacity: 0.4;
   }
+
   &Logo {
     height: $height-header - 40px;
     @include b('mobile') {
       margin-top: 10px;
     }
   }
-  &TierBadge{
+
+  &TierBadge {
     margin-left: 18px;
-    font-family: $font;
     padding: 6px;
-    color: rgba(139, 139, 139, 1);
-    border: 1px solid #D6D6D6;
-    border-radius: 12px;
+
+    font-family: $font;
+    font-size: 14px;
 
     font-weight: 500;
-    font-size: 14px;
     line-height: 14px;
     text-transform: uppercase;
+
+    color: rgba(139, 139, 139, 1);
+    border: 1px solid #d6d6d6;
+    border-radius: 12px;
   }
+
   &MenuMobileClosed {
     display: none;
   }
+
   &MenuMobileOpen {
     @include flex(column, center, flex-start, nowrap);
-    box-sizing: border-box;
     position: fixed;
-    height: 100vh;
-    width: 100vw;
-    left: 0;
     top: $height-header - 14px;
+    left: 0;
+
     padding: 0 30px 120px 30px;
-    flex-grow: 0;
+
+    box-sizing: border-box;
+    width: 100vw;
+    height: 100vh;
+
     background-color: $color-bg-header;
+    flex-grow: 0;
   }
 }
 
 .headerMenuBtn {
-  cursor: pointer;
   z-index: 1000;
+
+  cursor: pointer;
+
   &Wrapper {
     @include flex(column, center, center);
     padding: 0 28px;
+
     height: 60px;
+
+    font-size: $fs;
+
     cursor: pointer;
     user-select: none;
-    font-size: $fs;
+
     outline: none;
   }
+
   &Open {
     background-color: transparent;
   }
@@ -165,71 +212,90 @@ $fs: 16px;
 .headerMenu {
   &Footer {
     @include flex(column, center, space-around);
-    box-sizing: border-box;
     position: absolute;
+    z-index: 997;
     left: 0;
     bottom: 100px;
+
     margin-top: 30px;
+
+    box-sizing: border-box;
     width: 100%;
-    z-index: 997;
-    font-weight: 400;
+
     font-size: 16px;
+    font-weight: 400;
     line-height: 26px;
+
     user-select: none;
     @include b('mobile') {
-      bottom: $height-header - 10px;
-      line-height: 20px;
       z-index: 997;
+      bottom: $height-header - 10px;
+
+      line-height: 20px;
     }
+
     &LogoGroup {
       @include flex(row, center, center);
     }
+
     &Logo {
-      cursor: pointer;
       margin: 0 14px;
+
+      cursor: pointer;
     }
+
     &Copyright {
-      text-transform: none;
       letter-spacing: normal;
+      text-transform: none;
+
       color: $color-text-secondary;
+
       a {
-        color: $color-text-link;
         text-decoration: none;
+
+        color: $color-text-link;
       }
     }
   }
 }
 
 .headerDropdown {
+  z-index: 1000000;
   top: $height-header - 22px;
   right: 25px;
-  min-width: 370px;
+
   padding: 0;
-  z-index: 1000000;
+
+  min-width: 370px;
+
   border-radius: 20px;
 
   @include b('mobile') {
-    width: calc(100vw - 40px);
     margin-top: 256px;
+
+    width: calc(100vw - 40px);
   }
 
   &Inner {
-    min-height: 580px;
     padding: 18px 30px 40px 30px;
+
+    min-height: 580px;
 
     @include b('mobile') {
       padding: 18px 20px 10px 20px;
+
       min-height: 400px;
     }
   }
 
   &Item {
     @include flex(row, center);
+    padding: 10px 0;
+
     cursor: pointer;
-    padding: 10px 0px;
 
     @include b('mobile') {
-      padding: 5px 0px;
+      padding: 5px 0;
     }
 
     span {
@@ -243,17 +309,21 @@ $fs: 16px;
 
   &ItemLabel {
     margin: 10px 0 0 0;
-    font-weight: 400;
+
     font-size: 16px;
+    font-weight: 400;
     line-height: 26px;
+
     color: $color-text-secondary;
   }
 
   &ItemTokensList {
     margin: 0 -10px 10px 0;
     padding: 0;
-    max-height: 300px;
+
     overflow: auto;
+
+    max-height: 300px;
 
     @include b('mobile') {
       max-height: 20vh;
@@ -263,23 +333,28 @@ $fs: 16px;
   &ItemTokens {
     @include flex(row, center, center);
     padding: 20px;
+
+    min-height: 100px;
+
     background: $color-bg-input-small;
     border-radius: 4px;
-    min-height: 100px;
   }
 
   &ItemToken {
     @include grid(38px 1fr, 1fr, 20px);
     margin: 10px 0;
     padding: 20px;
+
+    min-height: 78px;
+
     background: $color-bg-input-small;
     border-radius: 4px;
-    min-height: 78px;
 
     @include b('mobile') {
       @include grid(38px 1fr, 1fr, 10px);
-      min-height: 48px;
       padding: 10px;
+
+      min-height: 48px;
     }
   }
 
@@ -290,13 +365,15 @@ $fs: 16px;
   &ItemTokenImage {
     width: 38px;
     height: 38px;
+
     border-radius: 50%;
   }
 
   &ItemTokenSymbol {
-    font-weight: 500;
     font-size: 18px;
+    font-weight: 500;
     line-height: 25px;
+
     color: $color-text-secondary;
 
     @include b('mobile') {
@@ -306,9 +383,10 @@ $fs: 16px;
   }
 
   &ItemTokenBalance {
-    font-weight: 500;
     font-size: 24px;
+    font-weight: 500;
     line-height: 25px;
+
     color: $color-text-primary;
 
     @include b('mobile') {
@@ -319,20 +397,24 @@ $fs: 16px;
 }
 
 .headerWalletLogo {
+  margin: 0 10px 0 0;
+
   width: 18px;
   height: 18px;
-  margin: 0 10px 0 0;
   filter: brightness(0.7);
 }
 
 .dropdownMobile {
   position: absolute;
-  top: 120px;
-  padding: 16px;
-  margin: 10px;
-  height: 58vh;
-  border: 3px solid rgba(1, 151, 226, 0.5);
-  background: $color-bg-dropdown;
-  border-radius: 10px;
   z-index: 99999;
+  top: 120px;
+
+  margin: 10px;
+  padding: 16px;
+
+  height: 58vh;
+
+  background: $color-bg-dropdown;
+  border: 3px solid rgba(1, 151, 226, 0.5);
+  border-radius: 10px;
 }

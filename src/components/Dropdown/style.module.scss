@@ -8,13 +8,16 @@
 
 .dropdown {
   position: absolute;
-  width: 287px;
-  top: 0px;
-  background: $color-bg-dropdown;
-  border-radius: 10px;
-  border: $border-form;
-  padding: 20px 0px 16px 0px;
   z-index: 2;
+  top: 0;
+
+  padding: 20px 0 16px 0;
+
+  width: 287px;
+
+  background: $color-bg-dropdown;
+  border: $border-form;
+  border-radius: 10px;
 }
 
 .hidden {
@@ -22,9 +25,11 @@
 }
 
 .dropdownInner {
-  height: 320px;
-  overflow: auto;
   padding: 0 10px 0 0;
+
+  overflow: auto;
+
+  height: 320px;
 }
 
 .left {
