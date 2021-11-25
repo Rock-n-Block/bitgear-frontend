@@ -1,10 +1,11 @@
-
 .ham {
-  cursor: pointer;
-  transition: transform 400ms;
   position: relative;
-  user-select: none;
   z-index: 999;
+
+  cursor: pointer;
+  user-select: none;
+
+  transition: transform 400ms;
 }
 
 .hamRotate.active {
@@ -17,8 +18,9 @@
 
 .line {
   fill: none;
+
   transition: stroke-dasharray 400ms, stroke-dashoffset 400ms;
-  stroke: #FFFFFF;
+  stroke: #fff;
   stroke-width: 1.5;
   stroke-linecap: round;
 }

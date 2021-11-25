@@ -15,6 +15,7 @@
   border: $border-input;
   border-radius: 24px;
   box-shadow: 0 15px 20px 0 rgba(1, 151, 226, 0.4), 0 -5px 10px 0 rgba(1, 151, 226, 0.4);
+
   transition: all 400ms ease-in-out;
 
   &:hover {
@@ -57,6 +58,7 @@
 
   font-size: 22px;
   line-height: 34px;
+  text-align: center;
 
   color: $color-text-input;
   background: $color-bg-input;
@@ -64,7 +66,6 @@
   border-radius: 20px;
   outline: none;
   caret-color: $color-cursor-input;
-  text-align: center;
 
   &::placeholder {
     color: $color-cursor-input;

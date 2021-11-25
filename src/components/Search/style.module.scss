@@ -19,7 +19,6 @@
   //background: $color-bg-button;
   //border-radius: 12px;
   //outline: none;
-
 }
 
 .containerInput {
@@ -104,12 +103,12 @@
 
 .label {
   position: absolute;
-  right: 32px;
   top: 25px;
+  right: 32px;
+
+  pointer-events: auto;
   @include b('tablet') {
     top: 16px;
     right: 7px;
   }
-
-  pointer-events: auto;
 }

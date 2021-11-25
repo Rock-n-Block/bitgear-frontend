@@ -8,13 +8,12 @@ $font2: 'Baloo 2', normal;
 $color-bg: rgba(3, 13, 34, 1);
 //$color-bg: #07092a;
 $color-bg-section: #212443;
-$color-bg-header: linear-gradient(180deg, #030D22 0%, rgba(3, 13, 34, 0) 195.12%);
+$color-bg-header: linear-gradient(180deg, #030d22 0%, rgba(3, 13, 34, 0) 195.12%);
 //$color-bg-header: #07092a;
 $color-bg-footer: #07092a;
 $color-bg-error: #c88a38;
 $color-bg-input: linear-gradient(180deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0) 100%),
-linear-gradient(0deg, #0F2043, #0F2043);
-;
+  linear-gradient(0deg, #0f2043, #0f2043);
 //$color-bg-input: #07092a;
 $color-bg-input-small: #212443;
 $color-bg-pagination: #07092a;
@@ -44,7 +43,7 @@ $color-text-primary: #fff;
 $color-text-secondary: rgba(255, 255, 255, 0.5);
 $color-text-bright: #fff;
 $color-text-link: #0197e2;
-$color-text-wc: linear-gradient(294.07deg, #0278DF 41.96%, #6BFFC1 117.07%);
+$color-text-wc: linear-gradient(294.07deg, #0278df 41.96%, #6bffc1 117.07%);
 $color-text-span: #0197e2;
 $color-text-span-green: #00e3b6;
 $color-text-header: #fff;
@@ -62,24 +61,28 @@ $color-scrollbar-bg: #07092a;
 $color-gradient-button-start: rgba(208, 208, 208, 1);
 $color-gradient-button-end: rgba(208, 208, 208, 1);
 $color-gradient-button: linear-gradient(
-    90deg,
-    $color-gradient-button-start 0,
-    $color-gradient-button-start 7px,
-    $color-gradient-button-end 7px,
-    $color-gradient-button-end 100%
+  90deg,
+  $color-gradient-button-start 0,
+  $color-gradient-button-start 7px,
+  $color-gradient-button-end 7px,
+  $color-gradient-button-end 100%
 );
 $color-gradient-header-start: rgba(255, 255, 255, 0);
 $color-gradient-header-end: rgba(255, 255, 255, 1);
 $color-gradient-header: linear-gradient(
-    0deg,
-    $color-gradient-header-start 0%,
-    $color-gradient-header-end 100%
+  0deg,
+  $color-gradient-header-start 0%,
+  $color-gradient-header-end 100%
 );
 // border
 $color-border-header-start: rgba(255, 255, 255, 0);
 $color-border-header-end: rgba(255, 255, 255, 0.25);
-$color-border-header: linear-gradient(270deg, rgba(255, 255, 255, 0) 0%, #FFFFFF 25%, rgba(255, 255, 255, 0) 100%);
-
+$color-border-header: linear-gradient(
+  270deg,
+  rgba(255, 255, 255, 0) 0%,
+  #fff 25%,
+  rgba(255, 255, 255, 0) 100%
+);
 
 //$color-border-header: linear-gradient(
 //    90deg,

@@ -23,7 +23,6 @@
   color: $color-text-secondary;
   background: transparent;
   //background: $color-bg;
-
   &LogoGroup {
     @include flex(row, center, center, wrap);
   }
