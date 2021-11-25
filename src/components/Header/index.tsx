@@ -21,6 +21,7 @@ import { useUserTier } from '../../hooks/useUserTier';
 import { userActions } from '../../redux/actions';
 import { getFromStorage, setToStorage } from '../../utils/localStorage';
 import { prettyAmount } from '../../utils/prettifiers';
+import { Burger } from '../Burger';
 import { Dropdown } from '../Dropdown';
 
 import s from './style.module.scss';
@@ -240,7 +241,8 @@ export const Header: React.FC = () => {
             }}
             onKeyDown={() => setOpenMenu(!openMenu)}
           >
-            {!openMenu ? 'Menu' : 'Close'}
+            {/* {!openMenu ? 'Menu' : 'Close'} */}
+            <Burger onClick={() => setOpenMenu(!openMenu)} isMenuOpen={openMenu} />
           </div>
         )}
 

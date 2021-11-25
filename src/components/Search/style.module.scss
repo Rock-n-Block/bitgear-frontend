@@ -19,17 +19,15 @@
   //background: $color-bg-button;
   //border-radius: 12px;
   //outline: none;
-  @include b('mobile') {
-    margin: 0 5px 0 0;
-  }
+
 }
 
 .containerInput {
-  margin: 40px 0 0 0;
+  //margin: 40px 0 0 0;
 }
 
 .labelInput {
-  @include flex(row, center, center);
+  @include flex(row, center, flex-end);
   padding: 0 0 0 10px;
 
   width: 57px;
@@ -110,6 +108,7 @@
   top: 25px;
   @include b('tablet') {
     top: 16px;
+    right: 7px;
   }
 
   pointer-events: auto;

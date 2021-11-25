@@ -15,6 +15,11 @@
     height: 395px;
     border-radius: 200px;
     box-shadow: 120px 20px 150px 50px $color-boxsh-bg1, 120px 5px 100px 120px $color-boxsh-bg2;
+    @include b('tablet') {
+      width: 200px;
+      height: 200px;
+      box-shadow: 70px 20px 150px 50px $color-boxsh-bg1, 70px 5px 100px 120px $color-boxsh-bg2;
+    }
   }
 
   //.shadowbottom {
@@ -38,7 +43,7 @@
   }
 
   .containerTitle {
-    padding: 55px 0 0;
+    //padding: 55px 0 0;
     @include flex(column, center, center, nowrap);
     @include b('mobile') {
       padding: 0;
@@ -58,8 +63,9 @@
   }
 
   .containerLists {
-    @include grid(repeat(2, 1fr), 20px);
+    @include grid(repeat(2, 1fr), 0);
     margin: 30px 0 0 0;
+    grid-gap: 20px;
 
     @include b('mobile') {
       @include grid(repeat(1, 1fr));
@@ -75,19 +81,22 @@
     font-size: 20px;
     line-height: 31px;
     text-decoration: none;
+    text-transform: uppercase;
 
     cursor: pointer;
 
     color: $color-text-primary;
-    border: $border-card;
-    border-radius: 20px;
+    outline: $border-card;
+    border-radius: 12px;
 
-    transition: transform 0.5s cubic-bezier(0.2, 3, 0.4, 1) 0s, background-color 0.4s ease;
+    //transition: transform 0.5s cubic-bezier(0.2, 3, 0.4, 1) 0s, background-color 0.4s ease;
     flex-grow: 1;
     flex-shrink: 1;
 
     &:hover {
-      background-color: $color-bg-login-item-hover;
+      background: $color-bg-card;
+      outline: none;
+      //background-color: $color-bg-login-item-hover;
     }
 
     @include b('mobile') {
@@ -123,53 +132,80 @@
   }
 
   .card {
-    @include flex(column, normal, space-between);
-    padding: 30px;
+    position: relative;
+    padding: 20px;
 
-    min-width: 200px;
-    height: 300px;
+    min-width: 320px;
+    height: 145px;
 
-    font-size: 18px;
+    font-size: 16px;
     text-decoration: none;
 
     cursor: pointer;
+    overflow: hidden;
 
     color: $color-text-primary;
-    background: $color-bg-card;
-    border-radius: 20px;
+    background: transparent;
+    outline: $border-card;
+
+    border-radius: 12px;
     flex-basis: 320px;
     flex-shrink: 1;
     flex-grow: 1;
 
     @include b('mobile') {
       padding: 20px;
-
-      height: 140px;
+      min-width: 300px;
     }
 
-    &ContainerFirst {
-      @include flex(column);
-
-      @include b('mobile') {
-        @include flex(column, normal, center);
+    &Hover {
+      &:hover {
+        background: $color-bg-card;
+        outline: none;
       }
+
     }
 
-    &ContainerSecond {
-      @include flex(column, flex-end);
+    .loading {
+      position: absolute;
 
-      @include b('mobile') {
+      width: 100%;
+      z-index: 10;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+
+      background: linear-gradient(90deg, $color-bg 0px, rgba(255, 255, 255, 0.07) 80px, $color-bg 105px);
+      animation: loading 2s infinite;
+    }
+
+    &Container {
+      @include flex(row, flex-start, space-between, nowrap);
+
+      &First {
+        @include flex(column);
+
+        @include b('mobile') {
+          @include flex(column, normal, center);
+        }
+      }
+
+      &Second {
         @include flex(column, flex-end);
+
+        @include b('mobile') {
+          @include flex(column, flex-end);
+        }
       }
     }
+
 
     &Symbol {
       z-index: 1;
 
-      font-size: 20px;
+      font-size: 16px;
       line-height: 31px;
-
-      opacity: 0.5;
 
       @include b('mobile') {
         z-index: 1;
@@ -182,9 +218,10 @@
     }
 
     &Price {
-      font-size: 40px;
+      margin-bottom: 15px;
+      font-size: 25px;
       font-weight: bold;
-      line-height: 63px;
+      //line-height: 63px;
 
       @include b('mobile') {
         font-size: 30px;
@@ -195,7 +232,7 @@
     &PriceChange {
       margin: 3px 0 0 0;
 
-      font-size: 20px;
+      font-size: 16px;
       font-weight: 600;
       line-height: 31px;
 
@@ -205,7 +242,7 @@
       }
 
       &Plus {
-        font-size: 20px;
+        font-size: 16px;
         font-weight: 600;
         line-height: 31px;
 
@@ -218,7 +255,7 @@
       }
 
       &Minus {
-        font-size: 20px;
+        font-size: 16px;
         font-weight: 600;
         line-height: 31px;
 
@@ -232,19 +269,19 @@
     }
 
     &Image {
-      width: 100px;
-      height: 100px;
+      width: 36px;
+      height: 36px;
 
-      border-radius: 50%;
-      opacity: 0.3;
-      -webkit-filter: grayscale(1) brightness(1.1);
-      filter: grayscale(1) brightness(1.1);
+      border-radius: 12px;
+      //opacity: 0.3;
+      //-webkit-filter: grayscale(1) brightness(1.1);
+      //filter: grayscale(1) brightness(1.1);
     }
   }
 
   .containerCards {
     @include grid(repeat(2, 1fr), 1fr, 20px);
-    margin: 40px 160px 0 160px;
+    margin: 40px auto 0;
 
     @include b('tablet') {
       @include grid(repeat(2, 1fr), 1fr, 20px);
@@ -255,6 +292,17 @@
       @include grid(repeat(1, 1fr), 1fr);
       margin: 40px 0 0 0;
     }
+  }
+
+}
+
+
+@keyframes loading {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
   }
 }
 

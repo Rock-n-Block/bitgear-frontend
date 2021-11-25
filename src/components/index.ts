@@ -11,3 +11,4 @@ export { Modal } from './Modal';
 export { Search } from './Search';
 export { Pagination } from './Pagination';
 export { MainTable } from './MainTable';
+export { Burger } from './Burger';
