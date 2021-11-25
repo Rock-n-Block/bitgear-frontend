@@ -20,7 +20,9 @@
   transition: transform 0.2s ease;
 
   &:hover {
-    background: $color-bg-button-primary-hover !important;
+    font-weight: 700;
+    box-shadow: 0 0 7px 3px rgba(1, 151, 226, 0.6);
+    //background: $color-bg-button-primary-hover !important;
     //transform: scale(1.02);
     //transition: transform 0.5s cubic-bezier(0.2, 3, 0.4, 1);
   }
