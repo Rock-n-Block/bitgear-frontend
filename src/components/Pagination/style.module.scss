@@ -7,6 +7,10 @@
   width: 336px;
   height: 54px;
 
+  @include b('mobile') {
+    max-width: 285px;
+  }
+
   text-align: center;
 
   background-color: $color-bg-pagination;
@@ -25,7 +29,7 @@
   margin: auto;
 
   min-width: 264px;
-  max-width: 400px;
+  max-width: 300px;
   height: 38px;
 }
 
@@ -41,11 +45,14 @@ button {
 
 .button {
   margin: auto 1px;
-  padding: 1px;
-  padding-left: 2px;
+  padding: 1px 0 0 2px;
 
   width: 34px;
   height: 38px;
+
+  @include b('mobile') {
+    width: 30px;
+  }
 
   cursor: pointer;
 
@@ -80,9 +87,8 @@ button {
   height: 38px;
 
   cursor: pointer;
-  cursor: default;
 
-  background-color: #0197e2;
+  background: $color-text-wc;
   border-radius: 12px;
 }
 

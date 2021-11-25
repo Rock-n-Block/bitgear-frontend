@@ -14,13 +14,6 @@
   background-color: $color-bg-input;
   border: $border-input;
   border-radius: 24px;
-  box-shadow: 0 15px 20px 0 rgba(1, 151, 226, 0.4), 0 -5px 10px 0 rgba(1, 151, 226, 0.4);
-
-  transition: all 400ms ease-in-out;
-
-  &:hover {
-    box-shadow: 0 20px 25px 0 rgba(1, 151, 226, 0.45), 0 -20px 15px 0 rgba(1, 151, 226, 0.45);
-  }
 
   &Inner {
     @include flex(row, center);
@@ -62,10 +55,23 @@
 
   color: $color-text-input;
   background: $color-bg-input;
+  box-shadow: 0 15px 20px 0 rgba(1, 151, 226, 0.4), 0 -5px 10px 0 rgba(1, 151, 226, 0.4);
   border: none;
   border-radius: 20px;
   outline: none;
   caret-color: $color-cursor-input;
+  transition: all 400ms ease-in-out;
+
+  &:hover,
+  &:focus,
+  &:active {
+    box-shadow: 0 20px 25px 0 rgba(1, 151, 226, 0.45), 0 -20px 15px 0 rgba(1, 151, 226, 0.45);
+
+    &::placeholder {
+      color: $color-text-input-placeholder;
+    }
+  }
+
 
   &::placeholder {
     color: $color-cursor-input;

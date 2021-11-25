@@ -4,9 +4,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { useMedia } from 'use-media';
 
-import CoinIcon from '../../assets/images/coin.png';
-import RocketIcon from '../../assets/images/rocket.png';
-import { MainTable, Pagination, Search } from '../../components';
+import HotNew from '../../assets/icons/hot-new.svg';
+import TopPerf from '../../assets/icons/top-perf.svg';
+import { Loader, MainTable, Pagination, Search } from '../../components';
 // import excludedCoins from '../../data/excludedCoins';
 // import excludedSymbols from '../../data/excludedSymbols';
 import { tableActions } from '../../redux/actions';
@@ -180,6 +180,7 @@ export const PageExplore: React.FC = () => {
 
   return (
     <div className={s.container}>
+      <div className={s.shadowtop} />
       <Helmet>
         <title>Bitgear | Explore</title>
         <meta name="description" content="Find the best prices across exchange networks" />
@@ -191,21 +192,25 @@ export const PageExplore: React.FC = () => {
       </section>
       <section className={s.containerButtons}>
         <Link className={s.containerButtonsItem} to="/lists/recently-added">
-          <img src={CoinIcon} alt="CoinIcon" /> <span> Hot and new</span>
+          <img src={HotNew} alt="CoinIcon" /> <span> Hot and new</span>
         </Link>
         <Link className={s.containerButtonsItem} to="/lists/top-gainers">
-          <img src={RocketIcon} alt="RocketIcon" /> <span> Top performers</span>
+          <img src={TopPerf} alt="RocketIcon" /> <span> Top performers</span>
         </Link>
       </section>
-      <section className={s.ExploreTable}>
-        <MainTable
-          data={dataForTable}
-          dataForMobile={dataForTableMobile}
-          emitSorting={emitSorting}
-          activeColumn={activeColumn}
-          isArrowUp={isArrowUp}
-        />
-      </section>
+      {dataForTable.length || dataForTableMobile.length ? (
+        <section className={s.ExploreTable}>
+          <MainTable
+            data={dataForTable}
+            dataForMobile={dataForTableMobile}
+            emitSorting={emitSorting}
+            activeColumn={activeColumn}
+            isArrowUp={isArrowUp}
+          />
+        </section>
+      ) : (
+        <Loader className={s.ExploreLoader} color="white" />
+      )}
       <section className={s.paginationContainer}>
         <Pagination
           pageCountProp={pageCount}

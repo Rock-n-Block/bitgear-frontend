@@ -106,7 +106,7 @@ export const CardToken: React.FC<TypeCardProps> = ({ token, to = '/', isLoading 
 
   return (
     <Link to={to} className={cn(s.card, { [s.cardHover]: !isLoading })}>
-      <div className={cn({ [s.loading]: isLoading })}>
+      <div className={cn({ [s.skeleton]: isLoading })}>
         {!isLoading && (
           <div className={s.cardContainer}>
             <div className={s.cardContainerFirst}>
@@ -170,14 +170,12 @@ export const PageMain: React.FC = () => {
             <Search wide={isWide} />
           </section>
           <section className={s.containerCards}>
-            {/* {tokensList.length ? ( */}
-            {/*  <> */}
             {tokensList.map((token: TypeToken) => {
               const { address } = token;
               return (
                 <CardToken
                   key={uuid()}
-                  to={`/markets/${address}`}
+                  to={!tokens.length ? '/' : `/markets/${address}`}
                   token={token}
                   isLoading={!tokens.length}
                 />

@@ -2,14 +2,42 @@
 @import '../../scss/mixins';
 
 .container {
+  position: relative;
   padding: 10px 10px 200px 10px;
 
   width: 100%;
   max-width: 1100px;
+  @include b('mobile') {
+    padding: 10px;
+    max-width: 300px;
+  }
+
+  .shadowtop {
+    position: absolute;
+    top: -400px;
+    right: 0;
+    left: 0;
+
+    margin: 0 auto;
+
+    width: 395px;
+    height: 395px;
+
+    border-radius: 200px;
+    box-shadow: 120px 20px 150px 50px $color-boxsh-bg1, 120px 5px 100px 120px $color-boxsh-bg2;
+    @include b('tablet') {
+      width: 200px;
+      height: 200px;
+
+      box-shadow: 70px 20px 150px 50px $color-boxsh-bg1, 70px 5px 100px 120px $color-boxsh-bg2;
+    }
+  }
 }
 
 .containerTitle {
-  padding: 120px 0 0;
+  padding: 70px 0 0;
+  @include flex(column, center, center, nowrap);
+
   @include b('mobile') {
     padding: 0;
   }
@@ -38,10 +66,11 @@
     width: 100%;
     max-width: 48%;
     min-height: 90px;
+    text-transform: uppercase;
 
     cursor: pointer;
 
-    border: 2px solid $color-border-login-item;
+    outline: $border-card;
     border-radius: 10px;
 
     transition: transform 0.5s cubic-bezier(0.2, 3, 0.4, 1) 0s, background-color 0.4s ease;
@@ -57,7 +86,8 @@
     }
 
     &:hover {
-      background-color: $color-bg-login-item-hover;
+      background: $color-bg-card;
+      outline: none;
     }
 
     &:active,
@@ -120,7 +150,7 @@ table {
 
       td {
         padding: 12px 0 12px 10px;
-        padding-left: 10px;
+        //padding-left: 10px;
 
         max-height: 60px;
 
@@ -181,6 +211,10 @@ table {
   }
 }
 
+.ExploreLoader {
+  margin-top: 120px;
+}
+
 .chart {
   &Container {
     max-height: 50px;
@@ -209,7 +243,7 @@ table {
 }
 
 .paginationContainer {
-  margin-top: 50px;
+  margin: 50px 0 100px;
 }
 
 .flexContainer {
