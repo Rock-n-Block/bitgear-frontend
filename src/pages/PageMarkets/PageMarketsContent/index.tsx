@@ -2,6 +2,7 @@ import React, { LegacyRef, useRef } from 'react';
 import { Helmet } from 'react-helmet';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
+import { CSSTransition } from 'react-transition-group';
 import BigNumber from 'bignumber.js/bignumber';
 import cns from 'classnames';
 import _ from 'lodash';
@@ -177,15 +178,14 @@ export const DropdownItems: React.FC<TypeDropdownItemsParams> = React.memo(
 
     return (
       <div ref={refContainer}>
-        <div className={s.containerTradingCardSearchInput}>
-          <Input
-            autoFocus={open}
-            placeholder="Search"
-            label={label}
-            value={searchValue}
-            onChange={onChangeSearch}
-          />
-        </div>
+        <Input
+          autoFocus={open}
+          placeholder="Search"
+          label={label}
+          value={searchValue}
+          onChange={onChangeSearch}
+          className={s.containerTradingCardSearchInput}
+        />
         <div
           ref={refScrollContainer}
           className={s.containerTradingCardSearchItems}
@@ -2074,13 +2074,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
                 </div>
               )}
             </div>
-            <div
-              className={s.containerTradingCardInner}
-              onClick={() => sellInputRef.current.focus()}
-              role="button"
-              onKeyDown={() => {}}
-              tabIndex={0}
-            >
+            <div className={s.containerTradingCardInner}>
               <div className={s.containerTradingCardInnerName}>{tokenPay?.name}</div>
               <div className={s.containerTradingCardInnerRow}>
                 <div className={s.containerTradingCardImage}>
@@ -2088,67 +2082,82 @@ export const PageMarketsContent: React.FC = React.memo(() => {
                 </div>
                 <div className={s.containerTradingCardContainer}>
                   <div className={s.containerTradingCardContainerRow}>
-                    <Dropdown open={openDropdownPay} label={DropdownLabelPay}>
-                      <DropdownItems
-                        refContainer={refDropdownPay}
-                        open={openDropdownPay}
-                        label={<IconSearchWhite />}
-                        searchValue={searchValuePay}
-                        onChangeSearch={handleChangeSearchPay}
+                    <Dropdown label={DropdownLabelPay}>
+                      <CSSTransition
+                        unmountOnExit
+                        mountOnEnter
+                        in={openDropdownPay}
+                        timeout={200}
+                        classNames="transition"
                       >
-                        {searchTokensResultPay.map((token: any) => {
-                          // if (it > 50) return null;
-                          const {
-                            name: tokenName,
-                            symbol,
-                            image = imageTokenPay,
-                            address,
-                            decimals,
-                          } = token;
-                          const isBalanceZero = !userBalances[address];
-                          const newBalance = !isBalanceZero
-                            ? new BigNumber(userBalances[address])
-                                .dividedBy(new BigNumber(10).pow(decimals))
-                                .toString(10)
-                            : '0';
-                          const balance = !isBalanceZero ? prettyPrice(newBalance) : '';
-                          return (
-                            <div
-                              role="button"
-                              key={uuid()}
-                              tabIndex={0}
-                              className={s.containerTradingCardSearchItem}
-                              onClick={() => handleSelectSymbolPay(address)}
-                              onKeyDown={() => {}}
-                            >
-                              <img
-                                src={image}
-                                alt=""
-                                className={s.containerTradingCardSearchItemImage}
-                              />
-                              <div className={s.containerTradingCardSearchItemFirst}>
-                                <div className={s.containerTradingCardSearchItemName}>
-                                  {tokenName}
+                        <DropdownItems
+                          refContainer={refDropdownPay}
+                          open={openDropdownPay}
+                          label={<IconSearchWhite />}
+                          searchValue={searchValuePay}
+                          onChangeSearch={handleChangeSearchPay}
+                        >
+                          {searchTokensResultPay.map((token: any) => {
+                            // if (it > 50) return null;
+                            const {
+                              name: tokenName,
+                              symbol,
+                              image = imageTokenPay,
+                              address,
+                              decimals,
+                            } = token;
+                            const isBalanceZero = !userBalances[address];
+                            const newBalance = !isBalanceZero
+                              ? new BigNumber(userBalances[address])
+                                  .dividedBy(new BigNumber(10).pow(decimals))
+                                  .toString(10)
+                              : '0';
+                            const balance = !isBalanceZero ? prettyPrice(newBalance) : '';
+                            return (
+                              <div
+                                role="button"
+                                key={uuid()}
+                                tabIndex={0}
+                                className={s.containerTradingCardSearchItem}
+                                onClick={() => handleSelectSymbolPay(address)}
+                                onKeyDown={() => {}}
+                              >
+                                <img
+                                  src={image}
+                                  alt=""
+                                  className={s.containerTradingCardSearchItemImage}
+                                />
+                                <div className={s.containerTradingCardSearchItemFirst}>
+                                  <div className={s.containerTradingCardSearchItemName}>
+                                    {tokenName}
+                                  </div>
+                                  <div className={s.containerTradingCardSearchItemPrice}>
+                                    {balance}
+                                  </div>
                                 </div>
-                                <div className={s.containerTradingCardSearchItemPrice}>
-                                  {balance}
+                                <div className={s.containerTradingCardSearchItemSymbol}>
+                                  {symbol.length < 4 ? (
+                                    <div>{symbol}</div>
+                                  ) : (
+                                    <div className={s.symbolWide}>{symbol}</div>
+                                  )}
                                 </div>
                               </div>
-                              <div className={s.containerTradingCardSearchItemSymbol}>
-                                {symbol.length < 4 ? (
-                                  <div>{symbol}</div>
-                                ) : (
-                                  <div className={s.symbolWide}>{symbol}</div>
-                                )}
-                              </div>
-                            </div>
-                          );
-                        })}
-                      </DropdownItems>
+                            );
+                          })}
+                        </DropdownItems>
+                      </CSSTransition>
                     </Dropdown>
+
                     {/* <div className={s.containerTradingCardSymbol}>{tokenPay?.symbol}</div> */}
                   </div>
-                  <div className={s.containerTradingCardInput}>
+                  <div
+                    className={s.containerTradingCardInput}
+                    onClick={() => sellInputRef.current.focus()}
+                    role="button"
+                    onKeyDown={() => {}}
+                    tabIndex={0}
+                  >
                     {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
                     <label htmlFor="inputPay" />
                     <input
@@ -2272,13 +2281,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
                 </div>
               )}
             </div>
-            <div
-              className={s.containerTradingCardInner}
-              onClick={() => receiveInputRef.current.focus()}
-              role="button"
-              onKeyDown={() => {}}
-              tabIndex={0}
-            >
+            <div className={s.containerTradingCardInner}>
               <div className={s.containerTradingCardInnerName}>{tokenPay?.name}</div>
               <div className={s.containerTradingCardInnerRow}>
                 <div className={s.containerTradingCardImage}>
@@ -2286,66 +2289,80 @@ export const PageMarketsContent: React.FC = React.memo(() => {
                 </div>
                 <div className={s.containerTradingCardContainer}>
                   <div className={s.containerTradingCardContainerRow}>
-                    <Dropdown open={openDropdownReceive} label={DropdownLabelReceive}>
-                      <DropdownItems
-                        refContainer={refDropdownReceive}
-                        open={openDropdownReceive}
-                        label={<IconSearchWhite />}
-                        searchValue={searchValueReceive}
-                        onChangeSearch={handleChangeSearchReceive}
+                    <Dropdown label={DropdownLabelReceive}>
+                      <CSSTransition
+                        unmountOnExit
+                        mountOnEnter
+                        in={openDropdownReceive}
+                        timeout={200}
+                        classNames="transition"
                       >
-                        {searchTokensResultReceive.map((token: any) => {
-                          const {
-                            name: tokenName,
-                            symbol,
-                            image = imageTokenPay,
-                            address,
-                            decimals,
-                          } = token;
-                          const isBalanceZero = !userBalances[address];
-                          const newBalance = !isBalanceZero
-                            ? new BigNumber(userBalances[address])
-                                .dividedBy(new BigNumber(10).pow(decimals))
-                                .toString(10)
-                            : '0';
-                          const balance = !isBalanceZero ? prettyPrice(newBalance) : '';
-                          return (
-                            <div
-                              role="button"
-                              key={uuid()}
-                              tabIndex={0}
-                              className={s.containerTradingCardSearchItem}
-                              onClick={() => handleSelectSymbolReceive(address)}
-                              onKeyDown={() => {}}
-                            >
-                              <img
-                                src={image}
-                                alt=""
-                                className={s.containerTradingCardSearchItemImage}
-                              />
-                              <div className={s.containerTradingCardSearchItemFirst}>
-                                <div className={s.containerTradingCardSearchItemName}>
-                                  {tokenName}
+                        <DropdownItems
+                          refContainer={refDropdownReceive}
+                          open={openDropdownReceive}
+                          label={<IconSearchWhite />}
+                          searchValue={searchValueReceive}
+                          onChangeSearch={handleChangeSearchReceive}
+                        >
+                          {searchTokensResultReceive.map((token: any) => {
+                            const {
+                              name: tokenName,
+                              symbol,
+                              image = imageTokenPay,
+                              address,
+                              decimals,
+                            } = token;
+                            const isBalanceZero = !userBalances[address];
+                            const newBalance = !isBalanceZero
+                              ? new BigNumber(userBalances[address])
+                                  .dividedBy(new BigNumber(10).pow(decimals))
+                                  .toString(10)
+                              : '0';
+                            const balance = !isBalanceZero ? prettyPrice(newBalance) : '';
+                            return (
+                              <div
+                                role="button"
+                                key={uuid()}
+                                tabIndex={0}
+                                className={s.containerTradingCardSearchItem}
+                                onClick={() => handleSelectSymbolReceive(address)}
+                                onKeyDown={() => {}}
+                              >
+                                <img
+                                  src={image}
+                                  alt=""
+                                  className={s.containerTradingCardSearchItemImage}
+                                />
+                                <div className={s.containerTradingCardSearchItemFirst}>
+                                  <div className={s.containerTradingCardSearchItemName}>
+                                    {tokenName}
+                                  </div>
+                                  <div className={s.containerTradingCardSearchItemPrice}>
+                                    {balance}
+                                  </div>
                                 </div>
-                                <div className={s.containerTradingCardSearchItemPrice}>
-                                  {balance}
+                                <div className={s.containerTradingCardSearchItemSymbol}>
+                                  {symbol.length < 4 ? (
+                                    <div>{symbol}</div>
+                                  ) : (
+                                    <div className={s.symbolWide}>{symbol}</div>
+                                  )}
                                 </div>
                               </div>
-                              <div className={s.containerTradingCardSearchItemSymbol}>
-                                {symbol.length < 4 ? (
-                                  <div>{symbol}</div>
-                                ) : (
-                                  <div className={s.symbolWide}>{symbol}</div>
-                                )}
-                              </div>
-                            </div>
-                          );
-                        })}
-                      </DropdownItems>
+                            );
+                          })}
+                        </DropdownItems>
+                      </CSSTransition>
                     </Dropdown>
                     {/* <div className={s.containerTradingCardSymbol}>{tokenReceive?.symbol}</div> */}
                   </div>
-                  <div className={s.containerTradingCardInput}>
+                  <div
+                    className={s.containerTradingCardInput}
+                    onClick={() => receiveInputRef.current.focus()}
+                    role="button"
+                    onKeyDown={() => {}}
+                    tabIndex={0}
+                  >
                     {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
                     <label htmlFor="inputPay" />
                     <input
@@ -2387,7 +2404,9 @@ export const PageMarketsContent: React.FC = React.memo(() => {
                 </Button>
               )
             ) : (
-              <Button onClick={handleConnect}>Connect wallet</Button>
+              <Button onClick={handleConnect} classNameCustom={s.containerTradingButtonBtn}>
+                Connect wallet
+              </Button>
             )}
           </div>
         </section>

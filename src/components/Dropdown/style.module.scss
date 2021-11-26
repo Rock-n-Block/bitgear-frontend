@@ -2,22 +2,19 @@
 @import '../../scss/mixins.scss';
 
 .container {
-  //@include flex(row, center, normal, nowrap);
   position: relative;
 }
 
 .dropdown {
-  position: absolute;
-  z-index: 2;
-  top: 0;
-
-  padding: 20px 0 16px 0;
-
-  width: 287px;
-
-  background: $color-bg-dropdown;
-  border: $border-form;
-  border-radius: 10px;
+  //position: absolute;
+  //z-index: 2;
+  //top: 30px;
+  //left: -50px;
+  //
+  //width: 410px;
+  //background: $color-bg-dropdown;
+  //border-bottom-left-radius: 12px;
+  //border-bottom-right-radius: 12px;
 }
 
 .hidden {
@@ -27,9 +24,9 @@
 .dropdownInner {
   padding: 0 10px 0 0;
 
-  overflow: auto;
+  overflow-y: hidden;
 
-  height: 320px;
+  //height: 320px;
 }
 
 .left {
@@ -39,3 +36,6 @@
 .right {
   right: 0;
 }
+
+
+

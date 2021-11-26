@@ -300,6 +300,12 @@ $fs: 16px;
 
   border-radius: 20px;
 
+  position: absolute;
+  left: -50px;
+
+  width: 410px;
+  background: $color-bg-dropdown;
+
   @include b('mobile') {
     margin-top: 256px;
 
