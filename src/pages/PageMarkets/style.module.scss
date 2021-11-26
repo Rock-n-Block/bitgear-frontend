@@ -1,6 +1,15 @@
 @import '../../scss/theme';
 @import '../../scss/mixins';
 
+.marketWrapper {
+  width: 100%;
+  @include flex(row, center, center, nowrap);
+  background-image: url("../../assets/images/bg-market.svg");
+  background-position: center;
+  background-size: cover;
+  background-repeat: repeat-y;
+}
+
 .container {
   width: 100%;
   max-width: 1060px;

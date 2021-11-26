@@ -2,12 +2,20 @@
 @import '../../../scss/mixins';
 
 .container {
-  padding: 40px 30px 300px 30px;
+  @include flex(column, center, center, nowrap);
 
   width: 100%;
-
   @include b('mobile') {
     padding: 40px 10px 300px 10px;
+  }
+
+  &Wrapper {
+    margin: 34px 0 200px;
+    padding: 30px;
+    @include flex(column, center, center, nowrap);
+    max-width: 470px;
+    background: linear-gradient(180deg, #030D22 74.94%, rgba(3, 13, 34, 0) 100%);
+    border-radius: 12px;
   }
 }
 
@@ -53,80 +61,66 @@
 }
 
 .containerTitle {
-  @include flex(row, normal, space-between);
+  @include flex(row, center, space-between, nowrap);
   width: 100%;
-
+  min-height: 50px;
   @include b('mobile') {
-    @include flex(column);
     padding: 0 10px;
   }
 
   &First {
-    @include flex(column);
-  }
-
-  &Second {
-    @include flex(column, normal, flex-end);
-
-    &Inner {
-      @include flex(row, normal, space-between);
-      margin: 24px 0 0 0;
-
-      border-bottom: $border-tab;
-
-      @include b('mobile') {
-        display: block;
-      }
-
-      div:first-child {
-        padding: 10px 13px 10px 0;
-      }
-
-      div {
-        padding: 10px 13px 10px 13px;
-
-        @include b('mobile') {
-          float: left;
-        }
-      }
-
-      div:last-child {
-        padding: 10px 0 10px 13px;
-
-        @include b('mobile') {
-          float: right;
-        }
-      }
-    }
+    @include flex(row, center, space-between);
 
     &Item {
-      font-size: 16px;
-      font-weight: 400;
+      font-size: 14px;
+      font-weight: 900;
       line-height: 25px;
-
+      text-transform: uppercase;
       cursor: pointer;
 
       color: $color-text-secondary;
 
       transition: color 200ms ease;
+      border-bottom: 2px solid rgba(0, 0, 0, 0);
 
       &:hover {
         color: $color-text-link;
 
-        transition: color 200ms ease;
+        transition: all 200ms ease;
       }
     }
 
     &ItemActive {
-      padding: 10px 26px 10px 0;
-
-      font-size: 16px;
-      font-weight: 700;
+      font-size: 14px;
+      font-weight: 900;
       line-height: 25px;
+      text-transform: uppercase;
 
       cursor: pointer;
 
-      color: $color-text-link;
+      border-bottom: 2px solid $color-text-link;
+    }
+
+    & > div {
+      margin-right: 30px;
+    }
+  }
+
+  &Second {
+    @include flex(row, center, flex-end);
+
+    &Item {
+      &Img {
+        padding: 8px;
+        background: rgba(5, 26, 56, 1);
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 250ms ease-in-out;
+
+        &:hover {
+          box-shadow: 0 0 10px 1px rgba(255, 255, 255, 0.61);
+        }
+      }
     }
   }
 
@@ -176,8 +170,8 @@
 }
 
 .containerTrading {
-  @include grid(1fr 44px 1fr, 1fr 55px 58px, 28px);
-  margin: 47px 0 0 0;
+  @include flex(column, center, center, nowrap);
+  margin: 15px 0 0 0;
 
   width: 100%;
 
@@ -190,17 +184,31 @@
   }
 
   &Card {
-    position: relative;
-
-    border: $border-form;
+    @include flex(column, flex-start, flex-end, nowrap);
     border-radius: 20px;
 
     &Inner {
-      @include flex(row, normal, normal, nowrap);
-      position: relative;
+      margin-top: 6px;
+      padding: 10px 20px 5px;
+      background: $color-bg-input-market;
+      border-radius: 12px;
+      transition: all 250ms ease-in-out;
 
-      padding: 40px 25px 25px 25px;
-      flex-basis: 450px;
+      &:hover,
+      &:focus,
+      &:active {
+        box-shadow: 0 0 5px 0.2px rgba(255, 255, 255, 0.55);
+      }
+
+      &Name {
+        color: $color-text-secondary;
+        text-transform: uppercase;
+        font-weight: 900;
+      }
+
+      &Row {
+        @include flex(row, center, space-between, nowrap);
+      }
     }
 
     &Limit {
@@ -216,7 +224,6 @@
       }
 
       &Label {
-        @include flex(row, center);
         font-size: 16px;
         font-weight: 500;
         line-height: 25px;
@@ -225,7 +232,6 @@
       }
 
       &Input {
-        position: relative;
 
         label {
           @include flex(row, center);
@@ -266,15 +272,13 @@
     }
 
     &Label {
-      position: absolute;
-      top: -14px;
-      left: 20px;
-
       padding: 0 5px;
-
+      @include flex(row, flex-end, space-between, nowrap);
+      width: 100%;
       font-size: 16px;
-      font-weight: 500;
+      font-weight: 900;
       line-height: 25px;
+      text-transform: uppercase;
 
       color: $color-text-link;
       background: $color-bg;
@@ -282,45 +286,40 @@
 
     &Image {
       img {
-        width: 58px;
-        height: 58px;
+        width: 30px;
+        height: 30px;
 
         background: $color-bg-image;
-        border-radius: 50%;
+        border-radius: 12px;
       }
     }
 
     &Container {
-      margin: 6px 0 0 20px;
-      flex-grow: 1;
-      flex-shrink: 1;
+      @include flex(row, center, space-between, nowrap);
     }
 
     &ContainerInner {
-      @include flex(row, center, space-between);
-      width: 100%;
-    }
-
-    &Label {
-      @include flex(row, center, normal);
+      @include flex(row, center, flex-start, nowrap);
+      max-width: fit-content;
     }
 
     &Search {
-      @include flex(row, center, normal);
+      margin: 0 10px;
+      @include flex(row, center, normal, nowrap);
 
       &Name {
         font-size: 20px;
         font-weight: 500;
         line-height: 31px;
-
+        text-transform: uppercase;
         cursor: pointer;
 
-        color: $color-text-link;
+        color: $color-text-primary;
       }
 
       &ArrowDown {
         margin: 0 0 0 10px;
-        fill: white;
+        fill: rgba(1, 151, 226, 1);
       }
     }
 
@@ -404,20 +403,23 @@
 
     &Input {
       margin: 6px 0 0 0;
+      @include flex(row, center, flex-end, nowrap);
 
       input {
-        padding: 10px 20px;
+        padding: 0 20px;
 
         width: 100%;
-        height: $height-input-small;
+        max-height: 40px !important;
+        //height: $height-input-small;
 
-        font-size: 30px;
+        font-size: 24px;
         line-height: 47px;
+        text-align: right;
 
         color: $color-text-input;
-        background-color: $color-bg-input-small;
+        background: $color-bg-input-market;
         border: none;
-        border-radius: 4px;
+        border-radius: 12px;
         outline: none;
         caret-color: $color-cursor-input;
 
@@ -448,6 +450,7 @@
   }
 
   &Divider {
+    margin: 11px 0 0;
     @include flex(row, center, center);
 
     @include b('870') {
@@ -465,13 +468,18 @@
       cursor: pointer;
       user-select: none;
 
-      background: $color-bg;
-      border: $border-form;
+      background: $color-bg-input-market;
       border-radius: 50%;
+      transition: all 250ms ease-in-out;
+
+      &:hover {
+        box-shadow: 0 0 10px 1px rgba(255, 255, 255, 0.61);
+      }
     }
   }
 
   &Button {
+    margin-top: 30px;
     @include flex(row, center, center);
     grid-column: 1 / 4;
 

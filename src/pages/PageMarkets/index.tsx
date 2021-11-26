@@ -14,18 +14,20 @@ export const PageMarkets: React.FC = () => {
   const { path } = useRouteMatch<TypeRouteMatch>();
 
   return (
-    <div className={s.container}>
-      <Switch>
-        <Route path={path} exact>
-          <Redirect to="/explore" />
-        </Route>
-        <Route path={`${path}/:addressOne/:addressTwo`}>
-          <PageMarketsContent />
-        </Route>
-        <Route path={`${path}/:addressOne`}>
-          <PageMarketsContent />
-        </Route>
-      </Switch>
+    <div className={s.marketWrapper}>
+      <div className={s.container}>
+        <Switch>
+          <Route path={path} exact>
+            <Redirect to="/explore" />
+          </Route>
+          <Route path={`${path}/:addressOne/:addressTwo`}>
+            <PageMarketsContent />
+          </Route>
+          <Route path={`${path}/:addressOne`}>
+            <PageMarketsContent />
+          </Route>
+        </Switch>
+      </div>
     </div>
   );
 };
