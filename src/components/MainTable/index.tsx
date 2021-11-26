@@ -204,7 +204,8 @@ export const MainTable: React.FC<TableTypeProps> = React.memo(
                     />
                   ) : null}
                 </th>
-                <th> </th>
+                {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
+                <th />
               </tr>
             </thead>
           ) : (
@@ -222,7 +223,8 @@ export const MainTable: React.FC<TableTypeProps> = React.memo(
                     />
                   ) : null}
                 </th>
-                <th> </th>
+                {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
+                <th />
                 <th
                   className={cns(isActiveColumnPriceChange ? s.ExploreTableActive : null)}
                   onClick={() => onSort('priceChange')}
