@@ -10,10 +10,11 @@ type TypeDropdownProps = {
   label?: React.ReactElement;
   children?: Element | React.ReactChildren | React.ReactElement | React.ReactChild;
   handleClick?: () => void;
+  className?: string;
 };
 
 export const Select: React.FC<TypeDropdownProps> = React.memo(
-  ({ label, children = [], open = false }) => {
+  ({ label, children = [], open = false, className }) => {
     return (
       <div className={s.container}>
         {label || (
@@ -22,7 +23,7 @@ export const Select: React.FC<TypeDropdownProps> = React.memo(
             <IconArrowDownWhite />
           </div>
         )}
-        <div className={cns(s.dropdown, !open && s.hidden)}>
+        <div className={cns(s.dropdown, !open && s.hidden, className)}>
           <div className={s.dropdownInner}>{children}</div>
         </div>
       </div>

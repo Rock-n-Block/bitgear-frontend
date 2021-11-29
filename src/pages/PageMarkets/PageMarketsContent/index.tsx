@@ -266,6 +266,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
   const refInputGasPrice = React.useRef<HTMLInputElement>(null);
 
   const [slippageItems, setSlippageItems] = React.useState<slippageItem[]>(initSlippage);
+  const [dividerRotate, setRotateDivider] = React.useState(1);
   const [tokensFiltered, setTokensFiltered] = React.useState<any[]>(tokens);
   const [, setPrice] = React.useState<number>(0);
   const [, setPriceMarket] = React.useState<number>(0);
@@ -1547,6 +1548,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
     setAmountPay(amountReceive);
     setAmountReceive(amountPay);
     history.push(`/markets/${addressReceive}/${addressPay}`);
+    setRotateDivider(dividerRotate === 1 ? -1 : 1);
   };
 
   // const handleHoverChart = (value: string | null) => {
@@ -1850,725 +1852,737 @@ export const PageMarketsContent: React.FC = React.memo(() => {
 
   return (
     <div className={s.container}>
-      <div className={s.containerWrapper}>
-        {isModeMarket && openSettings ? (
-          <section className={s.containerSettings}>
-            <div className={s.containerSettingsBack}>
-              <div onClick={handleOpenSettings} role="button" tabIndex={0} onKeyDown={() => {}}>
-                <img src={ArrowBack} alt="back" />
-              </div>
-              <span>Advanced Settings</span>
-            </div>
-            <div className={s.containerSettingsInner}>
-              <div className={s.containerSettingsSlippage}>
-                <h2>Max Slippage</h2>
-                <RadioSelect
-                  items={slippageItems}
-                  onChecked={handleSelectSlippage}
-                  customPlaceholder="Custom"
-                  percent
-                  custom
-                  customValue={slippage}
-                />
-                {/* <Select open={openSelectSlippage} label={SelectLabelSlippage}> */}
-                {/* <div ref={refSelect} className={s.containerSettingsSelectItems}> */}
-                {/* {new Array(21).fill(0).map((item, ii) => { */}
-                {/*  return ( */}
-                {/*    <div */}
-                {/*      key={uuid()} */}
-                {/*      role="button" */}
-                {/*      tabIndex={0} */}
-                {/*      onClick={() => handleSelectSlippage(ii)} */}
-                {/*      onKeyDown={() => {}} */}
-                {/*    > */}
-                {/*      {ii} % */}
-                {/*    </div> */}
-                {/*  ); */}
-                {/* })} */}
-                {/* </div> */}
-                {/* </Select> */}
-              </div>
-              <div className={s.containerSettingsGas}>
-                <h2>Gas Price</h2>
-                <div className={s.containerSettingsGasInner}>
-                  <div className={s.radioContainer}>
-                    <input
-                      className={s.radioInput}
-                      type="checkbox"
-                      id="radioGasFast"
-                      name="radioGas"
-                      checked={isGasPriceTypeFast}
-                      onChange={() => handleChangeGasPrice(gasPriceFromNet, 'fast')}
-                    />
-                    {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-                    <label className={s.radioLabel} htmlFor="radioGasFast">
-                      {/* <span className={s.radioPoint} /> */}
-                      {RadioLabelFast}
-                    </label>
+      <div
+        className={cns(s.containerWrapper, {
+          [s.containerWrapperBg]: searchTokensResultPay.length,
+        })}
+      >
+        {searchTokensResultPay.length ? (
+          <>
+            {isModeMarket && openSettings ? (
+              <section className={s.containerSettings}>
+                <div className={s.containerSettingsBack}>
+                  <div onClick={handleOpenSettings} role="button" tabIndex={0} onKeyDown={() => {}}>
+                    <img src={ArrowBack} alt="back" />
                   </div>
-
-                  <div className={s.radioContainer}>
-                    <input
-                      className={s.radioInput}
-                      type="checkbox"
-                      id="radioGasVeryFast"
-                      name="radioGas"
-                      checked={isGasPriceTypeVeryFast}
-                      onChange={() => handleChangeGasPrice(gasPriceFromNet + 15, 'veryFast')}
+                  <span>Advanced Settings</span>
+                </div>
+                <div className={s.containerSettingsInner}>
+                  <div className={s.containerSettingsSlippage}>
+                    <h2>Max Slippage</h2>
+                    <RadioSelect
+                      items={slippageItems}
+                      onChecked={handleSelectSlippage}
+                      customPlaceholder="Custom"
+                      percent
+                      custom
+                      customValue={slippage}
                     />
-                    {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-                    <label className={s.radioLabel} htmlFor="radioGasVeryFast">
-                      {/* <span className={s.radioPoint} /> */}
-                      {RadioLabelVeryFast}
-                    </label>
+                    {/* <Select open={openSelectSlippage} label={SelectLabelSlippage}> */}
+                    {/* <div ref={refSelect} className={s.containerSettingsSelectItems}> */}
+                    {/* {new Array(21).fill(0).map((item, ii) => { */}
+                    {/*  return ( */}
+                    {/*    <div */}
+                    {/*      key={uuid()} */}
+                    {/*      role="button" */}
+                    {/*      tabIndex={0} */}
+                    {/*      onClick={() => handleSelectSlippage(ii)} */}
+                    {/*      onKeyDown={() => {}} */}
+                    {/*    > */}
+                    {/*      {ii} % */}
+                    {/*    </div> */}
+                    {/*  ); */}
+                    {/* })} */}
+                    {/* </div> */}
+                    {/* </Select> */}
                   </div>
-
-                  <div className={s.radioContainer}>
-                    <input
-                      className={s.radioInput}
-                      type="checkbox"
-                      id="radioGasCustom"
-                      name="radioGas"
-                      checked={isGasPriceTypeCustom}
-                      onChange={() => handleChangeGasPrice(gasPriceCustom, 'custom')}
-                    />
-                    {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-                    <label className={s.radioLabel} htmlFor="radioGasCustom">
-                      {/* <span className={s.radioPoint} /> */}
-                      {RadioLabelCustom}
-                    </label>
-                  </div>
-                  {gearBalance > 4000 ? (
-                    <div className={s.containerSettingsGasCustomAddress}>
-                      <div className={s.containerSettingsGasPremiumBadge}>
-                        <IconDiamond />
-                        Premium
+                  <div className={s.containerSettingsGas}>
+                    <h2>Gas Price</h2>
+                    <div className={s.containerSettingsGasInner}>
+                      <div className={s.radioContainer}>
+                        <input
+                          className={s.radioInput}
+                          type="checkbox"
+                          id="radioGasFast"
+                          name="radioGas"
+                          checked={isGasPriceTypeFast}
+                          onChange={() => handleChangeGasPrice(gasPriceFromNet, 'fast')}
+                        />
+                        {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+                        <label className={s.radioLabel} htmlFor="radioGasFast">
+                          {/* <span className={s.radioPoint} /> */}
+                          {RadioLabelFast}
+                        </label>
                       </div>
-                      <Checkbox
-                        text="Send tokens to a custom address"
-                        onChange={(e: boolean) => {
-                          if (e) {
-                            setCustomAddress('');
-                          }
-                          setIsCustomAddress(e);
-                        }}
+
+                      <div className={s.radioContainer}>
+                        <input
+                          className={s.radioInput}
+                          type="checkbox"
+                          id="radioGasVeryFast"
+                          name="radioGas"
+                          checked={isGasPriceTypeVeryFast}
+                          onChange={() => handleChangeGasPrice(gasPriceFromNet + 15, 'veryFast')}
+                        />
+                        {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+                        <label className={s.radioLabel} htmlFor="radioGasVeryFast">
+                          {/* <span className={s.radioPoint} /> */}
+                          {RadioLabelVeryFast}
+                        </label>
+                      </div>
+
+                      <div className={s.radioContainer}>
+                        <input
+                          className={s.radioInput}
+                          type="checkbox"
+                          id="radioGasCustom"
+                          name="radioGas"
+                          checked={isGasPriceTypeCustom}
+                          onChange={() => handleChangeGasPrice(gasPriceCustom, 'custom')}
+                        />
+                        {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+                        <label className={s.radioLabel} htmlFor="radioGasCustom">
+                          {/* <span className={s.radioPoint} /> */}
+                          {RadioLabelCustom}
+                        </label>
+                      </div>
+                      {gearBalance > 4000 ? (
+                        <div className={s.containerSettingsGasCustomAddress}>
+                          <div className={s.containerSettingsGasPremiumBadge}>
+                            <IconDiamond />
+                            Premium
+                          </div>
+                          <Checkbox
+                            text="Send tokens to a custom address"
+                            onChange={(e: boolean) => {
+                              if (e) {
+                                setCustomAddress('');
+                              }
+                              setIsCustomAddress(e);
+                            }}
+                          />
+                        </div>
+                      ) : (
+                        ''
+                      )}
+                    </div>
+                  </div>
+                  <div className={s.containerSettingsExchanges}>
+                    <div className={s.containerSettingsExchangesTop}>
+                      <h2>Exchanges</h2>
+                    </div>
+                    <div className={s.containerSettingsExchangesInner}>
+                      {exchangesList?.map((exchange) => {
+                        const enabled = exchangesWithLiquidity
+                          ? exchangesWithLiquidity.includes(exchange)
+                          : false;
+                        const checked = enabled && exchanges.includes(exchange);
+                        return (
+                          <Checkbox
+                            key={uuid()}
+                            text={exchange}
+                            checkedDefault={checked}
+                            disabled={!enabled}
+                            onChange={(e: boolean) => handleChangeExchanges(e, exchange)}
+                          />
+                        );
+                      })}
+                    </div>
+                  </div>
+                  <div className={s.containerSettingsButtons}>
+                    <Button
+                      normal
+                      classNameCustom={s.containerSettingsButtonsButton}
+                      onClick={() => handleResetSettings()}
+                    >
+                      Reset
+                    </Button>
+                    {exchanges.length === exchangesList.length ? (
+                      <Button
+                        normal
+                        classNameCustom={s.containerSettingsButtonsButtonSelectAll}
+                        onClick={() => handleDeselectAllExchanges()}
+                      >
+                        Deselect all
+                      </Button>
+                    ) : (
+                      <Button
+                        normal
+                        classNameCustom={s.containerSettingsButtonsButtonSelectAll}
+                        onClick={() => handleSelectAllExchanges()}
+                      >
+                        Select all
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              </section>
+            ) : (
+              <>
+                <Helmet>
+                  <title>
+                    {tokenPay?.symbol || '-'}/{tokenReceive?.symbol || '-'} | Bitgear
+                  </title>
+                  <meta
+                    name="description"
+                    content={`Find the best prices across exchange networks. Swap erc20 tokens: ${
+                      tokenPay?.symbol || ''
+                    } (${tokenPay?.name || ''}) and ${tokenReceive?.symbol || ''} (${
+                      tokenReceive?.name || ''
+                    })`}
+                  />
+                  <meta
+                    name="keywords"
+                    content={`exchange, blockchain, crypto, ${tokenPay?.symbol || ''}, ${
+                      tokenPay?.name || ''
+                    }, ${tokenReceive?.symbol || ''}, ${tokenReceive?.name || ''}`}
+                  />
+                </Helmet>
+
+                <section className={s.containerTitle}>
+                  <div className={s.containerTitleFirst}>
+                    <div
+                      role="button"
+                      tabIndex={0}
+                      className={
+                        isModeMarket ? s.containerTitleFirstItemActive : s.containerTitleFirstItem
+                      }
+                      onClick={() => {
+                        handleSetMode('market');
+                        setCustomAddress('');
+                        setIsCustomAddress(false);
+                      }}
+                      onKeyDown={() => {}}
+                    >
+                      Market
+                    </div>
+                    <div
+                      role="button"
+                      tabIndex={0}
+                      className={
+                        isModeLimit ? s.containerTitleFirstItemActive : s.containerTitleFirstItem
+                      }
+                      onClick={() => {
+                        handleSetMode('limit');
+                        setCustomAddress('');
+                        setIsCustomAddress(false);
+                      }}
+                      onKeyDown={() => {}}
+                    >
+                      Limit
+                    </div>
+                    {/* <div className={s.containerTitleName}> */}
+                    {/*  {tokenPay?.name} ({tokenPay?.symbol}) */}
+                    {/* </div> */}
+                    {/* <div className={s.containerTitlePrice}> */}
+                    {/*  {!tokenReceive?.symbol && '$'} */}
+                    {/*  {priceMarket */}
+                    {/*    ? prettyPrice(priceMarket?.toString()) */}
+                    {/*    : tokenReceive?.symbol === 'USDC' && !addressReceive */}
+                    {/*    ? marketHistory[0]?.quote?.USD?.close */}
+                    {/*    : '-'}{' '} */}
+                    {/*  {tokenReceive?.symbol} */}
+                    {/* </div> */}
+                    {/* <div */}
+                    {/*  className={classPriceChange} */}
+                    {/*  data-positive={isPriceChangePositive} */}
+                    {/*  data-negative={isPriceChangeNegative} */}
+                    {/* > */}
+                    {/*  {isPriceChangePositive && '+'} */}
+                    {/*  {!!priceChange && `${priceChange}%`}{' '} */}
+                    {/*  {!!priceChange && period === 1 */}
+                    {/*    ? 'past 24 hours' */}
+                    {/*    : period === 7 */}
+                    {/*    ? 'past week' */}
+                    {/*    : period === 30 */}
+                    {/*    ? 'past month' */}
+                    {/*    : ''} */}
+                    {/* </div> */}
+                  </div>
+                  <div className={s.containerTitleSecond}>
+                    {isModeMarket && (
+                      <div
+                        className={s.containerTitleSecondItem}
+                        onClick={handleOpenSettings}
+                        role="button"
+                        tabIndex={0}
+                        onKeyDown={() => {}}
+                      >
+                        <IconSettings className={s.containerTitleSecondItemImg} />
+                      </div>
+                    )}
+                  </div>
+                </section>
+
+                {/* You Pay */}
+                <section className={s.containerTrading}>
+                  <div className={s.containerTradingCard}>
+                    <div className={s.containerTradingCardLabel}>
+                      <div>You Sell</div>
+                      {addressPay && (
+                        <div className={s.containerTradingCardBalance}>
+                          Balance:
+                          <span>{prettyBalance(String(balanceOfTokenPay))}</span>
+                        </div>
+                      )}
+                    </div>
+                    <div className={s.containerTradingCardInner}>
+                      <div className={s.containerTradingCardInnerName}>{tokenPay?.name}</div>
+                      <div className={s.containerTradingCardInnerRow}>
+                        <div className={s.containerTradingCardImage}>
+                          <img src={tokenPay?.image} alt="" />
+                        </div>
+                        <div className={s.containerTradingCardContainer}>
+                          <div className={s.containerTradingCardContainerRow}>
+                            <Dropdown label={DropdownLabelPay}>
+                              <CSSTransition
+                                unmountOnExit
+                                mountOnEnter
+                                in={openDropdownPay}
+                                timeout={200}
+                                classNames="transition"
+                              >
+                                <DropdownItems
+                                  refContainer={refDropdownPay}
+                                  open={openDropdownPay}
+                                  label={<IconSearchWhite />}
+                                  searchValue={searchValuePay}
+                                  onChangeSearch={handleChangeSearchPay}
+                                >
+                                  {searchTokensResultPay.map((token: any) => {
+                                    // if (it > 50) return null;
+                                    const {
+                                      name: tokenName,
+                                      symbol,
+                                      image = imageTokenPay,
+                                      address,
+                                      decimals,
+                                    } = token;
+                                    const isBalanceZero = !userBalances[address];
+                                    const newBalance = !isBalanceZero
+                                      ? new BigNumber(userBalances[address])
+                                          .dividedBy(new BigNumber(10).pow(decimals))
+                                          .toString(10)
+                                      : '0';
+                                    const balance = !isBalanceZero ? prettyPrice(newBalance) : '';
+                                    return (
+                                      <div
+                                        role="button"
+                                        key={uuid()}
+                                        tabIndex={0}
+                                        className={s.containerTradingCardSearchItem}
+                                        onClick={() => handleSelectSymbolPay(address)}
+                                        onKeyDown={() => {}}
+                                      >
+                                        <img
+                                          src={image}
+                                          alt=""
+                                          className={s.containerTradingCardSearchItemImage}
+                                        />
+                                        <div className={s.containerTradingCardSearchItemFirst}>
+                                          <div className={s.containerTradingCardSearchItemName}>
+                                            {tokenName}
+                                          </div>
+                                          <div className={s.containerTradingCardSearchItemPrice}>
+                                            {balance}
+                                          </div>
+                                        </div>
+                                        <div className={s.containerTradingCardSearchItemSymbol}>
+                                          {symbol.length < 4 ? (
+                                            <div>{symbol}</div>
+                                          ) : (
+                                            <div className={s.symbolWide}>{symbol}</div>
+                                          )}
+                                        </div>
+                                      </div>
+                                    );
+                                  })}
+                                </DropdownItems>
+                              </CSSTransition>
+                            </Dropdown>
+
+                            {/* <div className={s.containerTradingCardSymbol}>{tokenPay?.symbol}</div> */}
+                          </div>
+                          <div
+                            className={s.containerTradingCardInput}
+                            onClick={() => sellInputRef.current.focus()}
+                            role="button"
+                            onKeyDown={() => {}}
+                            tabIndex={0}
+                          >
+                            {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+                            <label htmlFor="inputPay" />
+                            <input
+                              ref={sellInputRef}
+                              id="inputPay"
+                              type="number"
+                              value={amountPay}
+                              onChange={handleChangeAmountPay}
+                              onFocus={handleFocusAmountPay}
+                              onBlur={handleBlurAmountPay}
+                            />
+                          </div>
+
+                          {messageYouPay && <div className={s.error}>{messageYouPay}</div>}
+                        </div>
+                      </div>
+                    </div>
+                    {isModeLimit && (
+                      <div className={s.containerTradingCardLimit}>
+                        <div className={s.containerTradingCardLimitInner}>
+                          <div className={s.containerTradingCardLimitLabel}>
+                            <span>{tokenPay?.symbol} Price</span>
+                          </div>
+                          <div className={s.containerTradingCardLimitInput}>
+                            {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+                            <label htmlFor="inputPay">
+                              <div>{tokenReceive?.symbol}</div>
+                            </label>
+                            <input
+                              id="inputPay"
+                              type="number"
+                              value={amountReceive}
+                              onChange={handleChangeAmountReceiveLimit}
+                              onFocus={handleFocusAmountReceive}
+                              onBlur={handleBlurAmountReceive}
+                            />
+                          </div>
+                        </div>
+                        <div className={s.containerTradingCardLimitInner}>
+                          <div className={s.containerTradingCardLimitLabel}>
+                            <div>Expires in</div>
+                          </div>
+                          <Select open={openSelect} label={SelectLabelExpiration}>
+                            <div ref={refSelect} className={s.containerSettingsSelectItems}>
+                              <div
+                                role="button"
+                                tabIndex={0}
+                                onClick={() => handleSelectExpiration(10)}
+                                onKeyDown={() => {}}
+                              >
+                                10 min
+                              </div>
+                              <div
+                                role="button"
+                                tabIndex={0}
+                                onClick={() => handleSelectExpiration(30)}
+                                onKeyDown={() => {}}
+                              >
+                                30 min
+                              </div>
+                              <div
+                                role="button"
+                                tabIndex={0}
+                                onClick={() => handleSelectExpiration(60)}
+                                onKeyDown={() => {}}
+                              >
+                                1 hour
+                              </div>
+                              <div
+                                role="button"
+                                tabIndex={0}
+                                onClick={() => handleSelectExpiration(24 * 60)}
+                                onKeyDown={() => {}}
+                              >
+                                24 hours
+                              </div>
+                              <div
+                                role="button"
+                                tabIndex={0}
+                                onClick={() => handleSelectExpiration(3 * 24 * 60)}
+                                onKeyDown={() => {}}
+                              >
+                                3 days
+                              </div>
+                              <div
+                                role="button"
+                                tabIndex={0}
+                                onClick={() => handleSelectExpiration(7 * 24 * 60)}
+                                onKeyDown={() => {}}
+                              >
+                                7 days
+                              </div>
+                            </div>
+                          </Select>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className={cns(s.containerTradingDivider, s.containerTradingCardLimitOpen)}>
+                    <div
+                      role="button"
+                      title={!addressReceive ? 'Select receive currency to switch' : ''}
+                      tabIndex={0}
+                      className={cns(s.containerTradingDividerInner, {
+                        [s.containerTradingDividerInnerRotate]: dividerRotate === -1,
+                      })}
+                      onClick={switchPayAndReceive}
+                      onKeyDown={() => {}}
+                    >
+                      <IconExchange />
+                    </div>
+                  </div>
+
+                  {/* You Receive */}
+                  <div className={cns(s.containerTradingCard, s.containerTradingCardLimitOpen)}>
+                    <div className={s.containerTradingCardLabel}>
+                      <div>You Receive</div>
+                      {addressReceive && (
+                        <div className={s.containerTradingCardBalance}>
+                          Balance:
+                          <span>{prettyBalance(String(balanceOfTokenReceive))}</span>
+                        </div>
+                      )}
+                    </div>
+                    <div className={s.containerTradingCardInner}>
+                      <div className={s.containerTradingCardInnerName}>{tokenPay?.name}</div>
+                      <div className={s.containerTradingCardInnerRow}>
+                        <div className={s.containerTradingCardImage}>
+                          <img src={tokenReceive?.image} alt="" />
+                        </div>
+                        <div className={s.containerTradingCardContainer}>
+                          <div className={s.containerTradingCardContainerRow}>
+                            <Dropdown label={DropdownLabelReceive}>
+                              <CSSTransition
+                                unmountOnExit
+                                mountOnEnter
+                                in={openDropdownReceive}
+                                timeout={200}
+                                classNames="transition"
+                              >
+                                <DropdownItems
+                                  refContainer={refDropdownReceive}
+                                  open={openDropdownReceive}
+                                  label={<IconSearchWhite />}
+                                  searchValue={searchValueReceive}
+                                  onChangeSearch={handleChangeSearchReceive}
+                                >
+                                  {searchTokensResultReceive.map((token: any) => {
+                                    const {
+                                      name: tokenName,
+                                      symbol,
+                                      image = imageTokenPay,
+                                      address,
+                                      decimals,
+                                    } = token;
+                                    const isBalanceZero = !userBalances[address];
+                                    const newBalance = !isBalanceZero
+                                      ? new BigNumber(userBalances[address])
+                                          .dividedBy(new BigNumber(10).pow(decimals))
+                                          .toString(10)
+                                      : '0';
+                                    const balance = !isBalanceZero ? prettyPrice(newBalance) : '';
+                                    return (
+                                      <div
+                                        role="button"
+                                        key={uuid()}
+                                        tabIndex={0}
+                                        className={s.containerTradingCardSearchItem}
+                                        onClick={() => handleSelectSymbolReceive(address)}
+                                        onKeyDown={() => {}}
+                                      >
+                                        <img
+                                          src={image}
+                                          alt=""
+                                          className={s.containerTradingCardSearchItemImage}
+                                        />
+                                        <div className={s.containerTradingCardSearchItemFirst}>
+                                          <div className={s.containerTradingCardSearchItemName}>
+                                            {tokenName}
+                                          </div>
+                                          <div className={s.containerTradingCardSearchItemPrice}>
+                                            {balance}
+                                          </div>
+                                        </div>
+                                        <div className={s.containerTradingCardSearchItemSymbol}>
+                                          {symbol.length < 4 ? (
+                                            <div>{symbol}</div>
+                                          ) : (
+                                            <div className={s.symbolWide}>{symbol}</div>
+                                          )}
+                                        </div>
+                                      </div>
+                                    );
+                                  })}
+                                </DropdownItems>
+                              </CSSTransition>
+                            </Dropdown>
+                            {/* <div className={s.containerTradingCardSymbol}>{tokenReceive?.symbol}</div> */}
+                          </div>
+                          <div
+                            className={s.containerTradingCardInput}
+                            onClick={() => receiveInputRef.current.focus()}
+                            role="button"
+                            onKeyDown={() => {}}
+                            tabIndex={0}
+                          >
+                            {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+                            <label htmlFor="inputPay" />
+                            <input
+                              ref={receiveInputRef}
+                              id="inputPay"
+                              type="number"
+                              value={amountReceive}
+                              onChange={handleChangeAmountReceive}
+                              onFocus={handleFocusAmountReceive}
+                              onBlur={handleBlurAmountReceive}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  {isCustomAddress && gearBalance > 4000 ? (
+                    <div className={s.CustomAddress}>
+                      <div className={s.CustomAddressTitle}>Custom address</div>
+                      <Input
+                        value={customAddress}
+                        placeholder="Enter custom address to receive the tokens"
+                        onChange={(value) => setCustomAddress(value)}
+                        className={s.CustomAddressInput}
                       />
                     </div>
                   ) : (
                     ''
                   )}
-                </div>
-              </div>
-              <div className={s.containerSettingsExchanges}>
-                <div className={s.containerSettingsExchangesTop}>
-                  <h2>Exchanges</h2>
-                </div>
-                <div className={s.containerSettingsExchangesInner}>
-                  {exchangesList?.map((exchange) => {
-                    const enabled = exchangesWithLiquidity
-                      ? exchangesWithLiquidity.includes(exchange)
-                      : false;
-                    const checked = enabled && exchanges.includes(exchange);
-                    return (
-                      <Checkbox
-                        key={uuid()}
-                        text={exchange}
-                        checkedDefault={checked}
-                        disabled={!enabled}
-                        onChange={(e: boolean) => handleChangeExchanges(e, exchange)}
-                      />
-                    );
-                  })}
-                </div>
-              </div>
-              <div className={s.containerSettingsButtons}>
-                <Button
-                  normal
-                  classNameCustom={s.containerSettingsButtonsButton}
-                  onClick={() => handleResetSettings()}
-                >
-                  Reset
-                </Button>
-                {exchanges.length === exchangesList.length ? (
-                  <Button
-                    normal
-                    classNameCustom={s.containerSettingsButtonsButtonSelectAll}
-                    onClick={() => handleDeselectAllExchanges()}
-                  >
-                    Deselect all
-                  </Button>
-                ) : (
-                  <Button
-                    normal
-                    classNameCustom={s.containerSettingsButtonsButtonSelectAll}
-                    onClick={() => handleSelectAllExchanges()}
-                  >
-                    Select all
-                  </Button>
-                )}
-              </div>
-            </div>
-          </section>
-        ) : (
-          <>
-            <Helmet>
-              <title>
-                {tokenPay?.symbol || '-'}/{tokenReceive?.symbol || '-'} | Bitgear
-              </title>
-              <meta
-                name="description"
-                content={`Find the best prices across exchange networks. Swap erc20 tokens: ${
-                  tokenPay?.symbol || ''
-                } (${tokenPay?.name || ''}) and ${tokenReceive?.symbol || ''} (${
-                  tokenReceive?.name || ''
-                })`}
-              />
-              <meta
-                name="keywords"
-                content={`exchange, blockchain, crypto, ${tokenPay?.symbol || ''}, ${
-                  tokenPay?.name || ''
-                }, ${tokenReceive?.symbol || ''}, ${tokenReceive?.name || ''}`}
-              />
-            </Helmet>
-
-            <section className={s.containerTitle}>
-              <div className={s.containerTitleFirst}>
-                <div
-                  role="button"
-                  tabIndex={0}
-                  className={
-                    isModeMarket ? s.containerTitleFirstItemActive : s.containerTitleFirstItem
-                  }
-                  onClick={() => {
-                    handleSetMode('market');
-                    setCustomAddress('');
-                    setIsCustomAddress(false);
-                  }}
-                  onKeyDown={() => {}}
-                >
-                  Market
-                </div>
-                <div
-                  role="button"
-                  tabIndex={0}
-                  className={
-                    isModeLimit ? s.containerTitleFirstItemActive : s.containerTitleFirstItem
-                  }
-                  onClick={() => {
-                    handleSetMode('limit');
-                    setCustomAddress('');
-                    setIsCustomAddress(false);
-                  }}
-                  onKeyDown={() => {}}
-                >
-                  Limit
-                </div>
-                {/* <div className={s.containerTitleName}> */}
-                {/*  {tokenPay?.name} ({tokenPay?.symbol}) */}
-                {/* </div> */}
-                {/* <div className={s.containerTitlePrice}> */}
-                {/*  {!tokenReceive?.symbol && '$'} */}
-                {/*  {priceMarket */}
-                {/*    ? prettyPrice(priceMarket?.toString()) */}
-                {/*    : tokenReceive?.symbol === 'USDC' && !addressReceive */}
-                {/*    ? marketHistory[0]?.quote?.USD?.close */}
-                {/*    : '-'}{' '} */}
-                {/*  {tokenReceive?.symbol} */}
-                {/* </div> */}
-                {/* <div */}
-                {/*  className={classPriceChange} */}
-                {/*  data-positive={isPriceChangePositive} */}
-                {/*  data-negative={isPriceChangeNegative} */}
-                {/* > */}
-                {/*  {isPriceChangePositive && '+'} */}
-                {/*  {!!priceChange && `${priceChange}%`}{' '} */}
-                {/*  {!!priceChange && period === 1 */}
-                {/*    ? 'past 24 hours' */}
-                {/*    : period === 7 */}
-                {/*    ? 'past week' */}
-                {/*    : period === 30 */}
-                {/*    ? 'past month' */}
-                {/*    : ''} */}
-                {/* </div> */}
-              </div>
-              <div className={s.containerTitleSecond}>
-                {isModeMarket && (
-                  <div
-                    className={s.containerTitleSecondItem}
-                    onClick={handleOpenSettings}
-                    role="button"
-                    tabIndex={0}
-                    onKeyDown={() => {}}
-                  >
-                    <IconSettings className={s.containerTitleSecondItemImg} />
+                  <div className={s.containerTradingButton}>
+                    {userAddress ? (
+                      (isAllowed && isCustomAllowance) || isAddressPayETH ? (
+                        <Button
+                          onClick={handleTrade}
+                          disabled={isTradeDisabled || waiting}
+                          classNameCustom={s.containerTradingButtonBtn}
+                        >
+                          {waiting ? 'Waiting...' : 'Trade'}
+                        </Button>
+                      ) : (
+                        <Button
+                          onClick={handleApprove}
+                          disabled={isTradeDisabled || waiting}
+                          classNameCustom={s.containerTradingButtonBtn}
+                        >
+                          {waiting ? 'Waiting...' : 'Approve'}
+                        </Button>
+                      )
+                    ) : (
+                      <Button onClick={handleConnect} classNameCustom={s.containerTradingButtonBtn}>
+                        Connect wallet
+                      </Button>
+                    )}
                   </div>
-                )}
-              </div>
-            </section>
+                </section>
 
-            {/* You Pay */}
-            <section className={s.containerTrading}>
-              <div className={s.containerTradingCard}>
-                <div className={s.containerTradingCardLabel}>
-                  <div>You Sell</div>
-                  {addressPay && (
-                    <div className={s.containerTradingCardBalance}>
-                      Balance:
-                      <span>{prettyBalance(String(balanceOfTokenPay))}</span>
-                    </div>
-                  )}
-                </div>
-                <div className={s.containerTradingCardInner}>
-                  <div className={s.containerTradingCardInnerName}>{tokenPay?.name}</div>
-                  <div className={s.containerTradingCardInnerRow}>
-                    <div className={s.containerTradingCardImage}>
-                      <img src={tokenPay?.image} alt="" />
-                    </div>
-                    <div className={s.containerTradingCardContainer}>
-                      <div className={s.containerTradingCardContainerRow}>
-                        <Dropdown label={DropdownLabelPay}>
-                          <CSSTransition
-                            unmountOnExit
-                            mountOnEnter
-                            in={openDropdownPay}
-                            timeout={200}
-                            classNames="transition"
-                          >
-                            <DropdownItems
-                              refContainer={refDropdownPay}
-                              open={openDropdownPay}
-                              label={<IconSearchWhite />}
-                              searchValue={searchValuePay}
-                              onChangeSearch={handleChangeSearchPay}
-                            >
-                              {searchTokensResultPay.map((token: any) => {
-                                // if (it > 50) return null;
-                                const {
-                                  name: tokenName,
-                                  symbol,
-                                  image = imageTokenPay,
-                                  address,
-                                  decimals,
-                                } = token;
-                                const isBalanceZero = !userBalances[address];
-                                const newBalance = !isBalanceZero
-                                  ? new BigNumber(userBalances[address])
-                                      .dividedBy(new BigNumber(10).pow(decimals))
-                                      .toString(10)
-                                  : '0';
-                                const balance = !isBalanceZero ? prettyPrice(newBalance) : '';
-                                return (
-                                  <div
-                                    role="button"
-                                    key={uuid()}
-                                    tabIndex={0}
-                                    className={s.containerTradingCardSearchItem}
-                                    onClick={() => handleSelectSymbolPay(address)}
-                                    onKeyDown={() => {}}
-                                  >
-                                    <img
-                                      src={image}
-                                      alt=""
-                                      className={s.containerTradingCardSearchItemImage}
-                                    />
-                                    <div className={s.containerTradingCardSearchItemFirst}>
-                                      <div className={s.containerTradingCardSearchItemName}>
-                                        {tokenName}
-                                      </div>
-                                      <div className={s.containerTradingCardSearchItemPrice}>
-                                        {balance}
-                                      </div>
-                                    </div>
-                                    <div className={s.containerTradingCardSearchItemSymbol}>
-                                      {symbol.length < 4 ? (
-                                        <div>{symbol}</div>
-                                      ) : (
-                                        <div className={s.symbolWide}>{symbol}</div>
-                                      )}
-                                    </div>
-                                  </div>
-                                );
-                              })}
-                            </DropdownItems>
-                          </CSSTransition>
-                        </Dropdown>
+                <section className={s.containerCosts}>
+                  <ul>
+                    <li>
+                      <span>1 eth cost</span>
+                      <span>3,849.8736641 DAI</span>
+                    </li>
+                    <li>
+                      <span>1 dai cost</span>
+                      <span>0.0002597 ETH</span>
+                    </li>
+                    <li>
+                      <span>transaction cost</span>
+                      <span>0.008</span>
+                    </li>
+                  </ul>
+                </section>
 
-                        {/* <div className={s.containerTradingCardSymbol}>{tokenPay?.symbol}</div> */}
-                      </div>
-                      <div
-                        className={s.containerTradingCardInput}
-                        onClick={() => sellInputRef.current.focus()}
-                        role="button"
-                        onKeyDown={() => {}}
-                        tabIndex={0}
-                      >
-                        {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-                        <label htmlFor="inputPay" />
-                        <input
-                          ref={sellInputRef}
-                          id="inputPay"
-                          type="number"
-                          value={amountPay}
-                          onChange={handleChangeAmountPay}
-                          onFocus={handleFocusAmountPay}
-                          onBlur={handleBlurAmountPay}
-                        />
-                      </div>
+                {/* <section className={s.containerTokenInfo}> */}
+                {/*  <a */}
+                {/*    href={`https://etherscan.io/token/${tokenPay?.address}`} */}
+                {/*    target="_blank" */}
+                {/*    rel="noreferrer" */}
+                {/*    className={s.tokenInfo} */}
+                {/*  > */}
+                {/*    <img src={tokenPay?.image} alt="" /> */}
+                {/*    <div> */}
+                {/*      <span>{tokenPay?.name}</span> */}
+                {/*      <div> */}
+                {/*        {tokenPay?.address */}
+                {/*          ? `${tokenPay?.address.slice(0, 6)}...${tokenPay?.address.slice(-4)}` */}
+                {/*          : ''} */}
+                {/*      </div> */}
+                {/*    </div> */}
+                {/*    <div className={s.etherscan}> */}
+                {/*      Etherscan */}
+                {/*      <IconLink /> */}
+                {/*    </div> */}
+                {/*  </a> */}
+                {/* </section> */}
 
-                      {messageYouPay && <div className={s.error}>{messageYouPay}</div>}
-                    </div>
-                  </div>
-                </div>
-                {isModeLimit && (
-                  <div className={s.containerTradingCardLimit}>
-                    <div className={s.containerTradingCardLimitInner}>
-                      <div className={s.containerTradingCardLimitLabel}>
-                        <div>{tokenPay?.symbol} Price</div>
-                      </div>
-                      <div className={s.containerTradingCardLimitInput}>
-                        {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-                        <label htmlFor="inputPay">
-                          <div>{tokenReceive?.symbol}</div>
-                        </label>
-                        <input
-                          id="inputPay"
-                          type="number"
-                          value={amountReceive}
-                          onChange={handleChangeAmountReceiveLimit}
-                          onFocus={handleFocusAmountReceive}
-                          onBlur={handleBlurAmountReceive}
-                        />
-                      </div>
-                    </div>
-                    <div className={s.containerTradingCardLimitInner}>
-                      <div className={s.containerTradingCardLimitLabel}>
-                        <div>Expires in</div>
-                      </div>
-                      <Select open={openSelect} label={SelectLabelExpiration}>
-                        <div ref={refSelect} className={s.containerSettingsSelectItems}>
-                          <div
-                            role="button"
-                            tabIndex={0}
-                            onClick={() => handleSelectExpiration(10)}
-                            onKeyDown={() => {}}
-                          >
-                            10 min
-                          </div>
-                          <div
-                            role="button"
-                            tabIndex={0}
-                            onClick={() => handleSelectExpiration(30)}
-                            onKeyDown={() => {}}
-                          >
-                            30 min
-                          </div>
-                          <div
-                            role="button"
-                            tabIndex={0}
-                            onClick={() => handleSelectExpiration(60)}
-                            onKeyDown={() => {}}
-                          >
-                            1 hour
-                          </div>
-                          <div
-                            role="button"
-                            tabIndex={0}
-                            onClick={() => handleSelectExpiration(24 * 60)}
-                            onKeyDown={() => {}}
-                          >
-                            24 hours
-                          </div>
-                          <div
-                            role="button"
-                            tabIndex={0}
-                            onClick={() => handleSelectExpiration(3 * 24 * 60)}
-                            onKeyDown={() => {}}
-                          >
-                            3 days
-                          </div>
-                          <div
-                            role="button"
-                            tabIndex={0}
-                            onClick={() => handleSelectExpiration(7 * 24 * 60)}
-                            onKeyDown={() => {}}
-                          >
-                            7 days
-                          </div>
-                        </div>
-                      </Select>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              <div className={cns(s.containerTradingDivider, s.containerTradingCardLimitOpen)}>
-                <div
-                  role="button"
-                  title={!addressReceive ? 'Select receive currency to switch' : ''}
-                  tabIndex={0}
-                  className={s.containerTradingDividerInner}
-                  onClick={switchPayAndReceive}
-                  onKeyDown={() => {}}
-                >
-                  <IconExchange />
-                </div>
-              </div>
-
-              {/* You Receive */}
-              <div className={cns(s.containerTradingCard, s.containerTradingCardLimitOpen)}>
-                <div className={s.containerTradingCardLabel}>
-                  <div>You Receive</div>
-                  {addressReceive && (
-                    <div className={s.containerTradingCardBalance}>
-                      Balance:
-                      <span>{prettyBalance(String(balanceOfTokenReceive))}</span>
-                    </div>
-                  )}
-                </div>
-                <div className={s.containerTradingCardInner}>
-                  <div className={s.containerTradingCardInnerName}>{tokenPay?.name}</div>
-                  <div className={s.containerTradingCardInnerRow}>
-                    <div className={s.containerTradingCardImage}>
-                      <img src={tokenReceive?.image} alt="" />
-                    </div>
-                    <div className={s.containerTradingCardContainer}>
-                      <div className={s.containerTradingCardContainerRow}>
-                        <Dropdown label={DropdownLabelReceive}>
-                          <CSSTransition
-                            unmountOnExit
-                            mountOnEnter
-                            in={openDropdownReceive}
-                            timeout={200}
-                            classNames="transition"
-                          >
-                            <DropdownItems
-                              refContainer={refDropdownReceive}
-                              open={openDropdownReceive}
-                              label={<IconSearchWhite />}
-                              searchValue={searchValueReceive}
-                              onChangeSearch={handleChangeSearchReceive}
-                            >
-                              {searchTokensResultReceive.map((token: any) => {
-                                const {
-                                  name: tokenName,
-                                  symbol,
-                                  image = imageTokenPay,
-                                  address,
-                                  decimals,
-                                } = token;
-                                const isBalanceZero = !userBalances[address];
-                                const newBalance = !isBalanceZero
-                                  ? new BigNumber(userBalances[address])
-                                      .dividedBy(new BigNumber(10).pow(decimals))
-                                      .toString(10)
-                                  : '0';
-                                const balance = !isBalanceZero ? prettyPrice(newBalance) : '';
-                                return (
-                                  <div
-                                    role="button"
-                                    key={uuid()}
-                                    tabIndex={0}
-                                    className={s.containerTradingCardSearchItem}
-                                    onClick={() => handleSelectSymbolReceive(address)}
-                                    onKeyDown={() => {}}
-                                  >
-                                    <img
-                                      src={image}
-                                      alt=""
-                                      className={s.containerTradingCardSearchItemImage}
-                                    />
-                                    <div className={s.containerTradingCardSearchItemFirst}>
-                                      <div className={s.containerTradingCardSearchItemName}>
-                                        {tokenName}
-                                      </div>
-                                      <div className={s.containerTradingCardSearchItemPrice}>
-                                        {balance}
-                                      </div>
-                                    </div>
-                                    <div className={s.containerTradingCardSearchItemSymbol}>
-                                      {symbol.length < 4 ? (
-                                        <div>{symbol}</div>
-                                      ) : (
-                                        <div className={s.symbolWide}>{symbol}</div>
-                                      )}
-                                    </div>
-                                  </div>
-                                );
-                              })}
-                            </DropdownItems>
-                          </CSSTransition>
-                        </Dropdown>
-                        {/* <div className={s.containerTradingCardSymbol}>{tokenReceive?.symbol}</div> */}
-                      </div>
-                      <div
-                        className={s.containerTradingCardInput}
-                        onClick={() => receiveInputRef.current.focus()}
-                        role="button"
-                        onKeyDown={() => {}}
-                        tabIndex={0}
-                      >
-                        {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-                        <label htmlFor="inputPay" />
-                        <input
-                          ref={receiveInputRef}
-                          id="inputPay"
-                          type="number"
-                          value={amountReceive}
-                          onChange={handleChangeAmountReceive}
-                          onFocus={handleFocusAmountReceive}
-                          onBlur={handleBlurAmountReceive}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              {isCustomAddress && gearBalance > 4000 ? (
-                <div className={s.CustomAddress}>
-                  <div className={s.CustomAddressTitle}>Custom address</div>
-                  <Input
-                    value={customAddress}
-                    placeholder="Enter custom address to receive the tokens"
-                    onChange={(value) => setCustomAddress(value)}
-                    className={s.CustomAddressInput}
-                  />
-                </div>
-              ) : (
-                ''
-              )}
-              <div className={s.containerTradingButton}>
-                {userAddress ? (
-                  (isAllowed && isCustomAllowance) || isAddressPayETH ? (
-                    <Button
-                      onClick={handleTrade}
-                      disabled={isTradeDisabled || waiting}
-                      classNameCustom={s.containerTradingButtonBtn}
-                    >
-                      {waiting ? 'Waiting...' : 'Trade'}
-                    </Button>
-                  ) : (
-                    <Button
-                      onClick={handleApprove}
-                      disabled={isTradeDisabled || waiting}
-                      classNameCustom={s.containerTradingButtonBtn}
-                    >
-                      {waiting ? 'Waiting...' : 'Approve'}
-                    </Button>
-                  )
-                ) : (
-                  <Button onClick={handleConnect} classNameCustom={s.containerTradingButtonBtn}>
-                    Connect wallet
-                  </Button>
-                )}
-              </div>
-            </section>
-
-            <section className={s.containerCosts}>
-              <ul>
-                <li>
-                  <span>1 eth cost</span>
-                  <span>3,849.8736641 DAI</span>
-                </li>
-                <li>
-                  <span>1 dai cost</span>
-                  <span>0.0002597 ETH</span>
-                </li>
-                <li>
-                  <span>transaction cost</span>
-                  <span>0.008</span>
-                </li>
-              </ul>
-            </section>
-
-            {/* <section className={s.containerTokenInfo}> */}
-            {/*  <a */}
-            {/*    href={`https://etherscan.io/token/${tokenPay?.address}`} */}
-            {/*    target="_blank" */}
-            {/*    rel="noreferrer" */}
-            {/*    className={s.tokenInfo} */}
-            {/*  > */}
-            {/*    <img src={tokenPay?.image} alt="" /> */}
-            {/*    <div> */}
-            {/*      <span>{tokenPay?.name}</span> */}
-            {/*      <div> */}
-            {/*        {tokenPay?.address */}
-            {/*          ? `${tokenPay?.address.slice(0, 6)}...${tokenPay?.address.slice(-4)}` */}
-            {/*          : ''} */}
-            {/*      </div> */}
-            {/*    </div> */}
-            {/*    <div className={s.etherscan}> */}
-            {/*      Etherscan */}
-            {/*      <IconLink /> */}
-            {/*    </div> */}
-            {/*  </a> */}
-            {/* </section> */}
-
-            {/* <section className={s.containerChart}> */}
-            {/*  <div className={s.chart}> */}
-            {/*    {points.length > 0 && points[0] !== null && points[0] !== undefined ? ( */}
-            {/*      <LineChart */}
-            {/*        interactive */}
-            {/*        data={points} */}
-            {/*        dateTime={dateTime} */}
-            {/*        chartHeight={140} */}
-            {/*        padding={20} */}
-            {/*        onHover={handleHoverChart} */}
-            {/*      /> */}
-            {/*    ) : ( */}
-            {/*      <div className={s.chartWithoutData}> */}
-            {/*        <div>No data yet</div> */}
-            {/*      </div> */}
-            {/*    )} */}
-            {/*  </div> */}
-            {/*  <div className={s.chartData}> */}
-            {/*    <div className={s.chartDataFirst}> */}
-            {/*      <div className={s.chartDataPriceName}>Current price</div> */}
-            {/*      <div className={s.chartDataPrice}> */}
-            {/*        {!addressTwo && '$'} */}
-            {/*        {prettyPrice(priceChart || price.toString() || '-')} {tokenReceive?.symbol} */}
-            {/*      </div> */}
-            {/*    </div> */}
-            {/*    <div className={s.chartDataSecond}> */}
-            {/*      <div className={s.chartDataPeriod}> */}
-            {/*        <div */}
-            {/*          role="button" */}
-            {/*          tabIndex={0} */}
-            {/*          data-active={period === 1} */}
-            {/*          onClick={() => handleSetPeriod(1)} */}
-            {/*          onKeyDown={() => {}} */}
-            {/*        > */}
-            {/*          24H */}
-            {/*        </div> */}
-            {/*        <div */}
-            {/*          role="button" */}
-            {/*          tabIndex={0} */}
-            {/*          data-active={period === 7} */}
-            {/*          onClick={() => handleSetPeriod(7)} */}
-            {/*          onKeyDown={() => {}} */}
-            {/*        > */}
-            {/*          1W */}
-            {/*        </div> */}
-            {/*        <div */}
-            {/*          role="button" */}
-            {/*          tabIndex={0} */}
-            {/*          data-active={period === 30} */}
-            {/*          onClick={() => handleSetPeriod(30)} */}
-            {/*          onKeyDown={() => {}} */}
-            {/*        > */}
-            {/*          1M */}
-            {/*        </div> */}
-            {/*      </div> */}
-            {/*      <div */}
-            {/*        className={s.chartDataPriceChange} */}
-            {/*        data-positive={isPriceChangePositive} */}
-            {/*        data-negative={isPriceChangeNegative} */}
-            {/*      > */}
-            {/*        {priceChange || 0}% */}
-            {/*      </div> */}
-            {/*    </div> */}
-            {/*  </div> */}
-            {/* </section> */}
+                {/* <section className={s.containerChart}> */}
+                {/*  <div className={s.chart}> */}
+                {/*    {points.length > 0 && points[0] !== null && points[0] !== undefined ? ( */}
+                {/*      <LineChart */}
+                {/*        interactive */}
+                {/*        data={points} */}
+                {/*        dateTime={dateTime} */}
+                {/*        chartHeight={140} */}
+                {/*        padding={20} */}
+                {/*        onHover={handleHoverChart} */}
+                {/*      /> */}
+                {/*    ) : ( */}
+                {/*      <div className={s.chartWithoutData}> */}
+                {/*        <div>No data yet</div> */}
+                {/*      </div> */}
+                {/*    )} */}
+                {/*  </div> */}
+                {/*  <div className={s.chartData}> */}
+                {/*    <div className={s.chartDataFirst}> */}
+                {/*      <div className={s.chartDataPriceName}>Current price</div> */}
+                {/*      <div className={s.chartDataPrice}> */}
+                {/*        {!addressTwo && '$'} */}
+                {/*        {prettyPrice(priceChart || price.toString() || '-')} {tokenReceive?.symbol} */}
+                {/*      </div> */}
+                {/*    </div> */}
+                {/*    <div className={s.chartDataSecond}> */}
+                {/*      <div className={s.chartDataPeriod}> */}
+                {/*        <div */}
+                {/*          role="button" */}
+                {/*          tabIndex={0} */}
+                {/*          data-active={period === 1} */}
+                {/*          onClick={() => handleSetPeriod(1)} */}
+                {/*          onKeyDown={() => {}} */}
+                {/*        > */}
+                {/*          24H */}
+                {/*        </div> */}
+                {/*        <div */}
+                {/*          role="button" */}
+                {/*          tabIndex={0} */}
+                {/*          data-active={period === 7} */}
+                {/*          onClick={() => handleSetPeriod(7)} */}
+                {/*          onKeyDown={() => {}} */}
+                {/*        > */}
+                {/*          1W */}
+                {/*        </div> */}
+                {/*        <div */}
+                {/*          role="button" */}
+                {/*          tabIndex={0} */}
+                {/*          data-active={period === 30} */}
+                {/*          onClick={() => handleSetPeriod(30)} */}
+                {/*          onKeyDown={() => {}} */}
+                {/*        > */}
+                {/*          1M */}
+                {/*        </div> */}
+                {/*      </div> */}
+                {/*      <div */}
+                {/*        className={s.chartDataPriceChange} */}
+                {/*        data-positive={isPriceChangePositive} */}
+                {/*        data-negative={isPriceChangeNegative} */}
+                {/*      > */}
+                {/*        {priceChange || 0}% */}
+                {/*      </div> */}
+                {/*    </div> */}
+                {/*  </div> */}
+                {/* </section> */}
+              </>
+            )}
           </>
+        ) : (
+          <div className={s.containerWrapperSkeleton} />
         )}
       </div>
     </div>

@@ -8,18 +8,44 @@
     padding: 40px 10px 300px 10px;
   }
 
+
   &Wrapper {
+    position: relative;
+    overflow: hidden;
     margin: 34px 0 200px;
     padding: 30px 30px 125px;
 
     min-width: 470px;
     max-width: 470px;
-
-    background: linear-gradient(180deg, #030d22 74.94%, rgba(3, 13, 34, 0) 100%);
+    height: 500px;
+    background: $color-bg;
     border-radius: 12px;
     @include flex(column, center, center, nowrap);
     @include b('mobile') {
       min-width: 300px;
+    }
+
+    &Bg {
+      background: linear-gradient(180deg, #030d22 74.94%, rgba(3, 13, 34, 0) 100%);
+      height: auto;
+    }
+
+    &Skeleton {
+      position: absolute;
+      top: 0;
+      right: 0;
+      left: 0;
+      bottom: 0;
+
+      width: 100%;
+      background: linear-gradient(
+          90deg,
+          $color-bg 0,
+          rgba(255, 255, 255, 0.07) 80px,
+          $color-bg 105px
+      );
+
+      animation: loading 2s infinite;
     }
   }
 }
@@ -224,23 +250,29 @@
     }
 
     &Limit {
-      margin: -15px 25px 25px 25px;
-      padding: 10px;
-
-      background-color: #131637;
-      border-radius: 10px;
+      margin-top: 10px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      grid-gap: 10px;
+      width: 100%;
 
       &Inner {
-        @include grid(1fr 2fr, 1fr, 20px);
-        margin: 5px;
+        padding: 12px 20px 0;
+        background: $color-bg-input-market;
+        border-radius: 12px;
+        max-height: 80px;
+        max-width: 200px;
       }
 
       &Label {
         font-size: 16px;
-        font-weight: 500;
+        font-weight: 900;
         line-height: 25px;
 
-        color: $color-text-link;
+        color: $color-text-secondary;
+        text-transform: uppercase;
+        background: $color-bg-input-market;
+
       }
 
       &Input {
@@ -256,22 +288,19 @@
           line-height: 25px;
 
           color: $color-text-secondary;
+
         }
 
         input {
-          padding: 10px 10px;
-
-          width: 100%;
-          height: $height-input-small;
-
+          padding: 10px 10px 0;
+          height: 35px;
           font-size: 22px;
           font-weight: 500;
           line-height: 34px;
 
           color: $color-text-input;
-          background-color: $color-bg-select-item;
+          background: transparent;
           border: none;
-          border-radius: 4px;
           outline: none;
           caret-color: $color-cursor-input;
 
@@ -504,6 +533,14 @@
       &:hover {
         box-shadow: 0 0 7px 1px rgba(255, 255, 255, 0.61);
       }
+
+      &:active {
+        box-shadow: 0 0 10px 3px rgba(255, 255, 255, 0.61);
+      }
+
+      &Rotate {
+        transform: rotate(180deg);
+      }
     }
   }
 
@@ -661,7 +698,7 @@
 
   &Slippage {
     width: 100%;
- 
+
   }
 
   &Exchanges {
@@ -822,6 +859,7 @@
     line-height: 34px;
 
     cursor: pointer;
+    background: $color-bg-input-market;
   }
 
   &Items {
@@ -830,17 +868,16 @@
       padding: 10px;
 
       height: 55px;
-
       font-size: 22px;
       font-weight: 500;
       line-height: 34px;
 
       cursor: pointer;
 
-      background-color: $color-bg-select-item;
+      background: $color-bg-input-market;
 
       &:hover {
-        background-color: $color-bg-select-item-hover;
+        background: $color-bg-input-market;
       }
     }
   }
@@ -1120,3 +1157,14 @@
 }
 
 // GAS PRICE FOR RADIO VAR
+
+
+@keyframes loading {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(100%);
+  }
+}
