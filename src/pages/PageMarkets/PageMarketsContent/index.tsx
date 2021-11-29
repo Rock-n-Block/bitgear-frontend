@@ -12,11 +12,10 @@ import { v1 as uuid } from 'uuid';
 import { ReactComponent as IconArrowDownWhite } from '../../../assets/icons/arrow-down-white.svg';
 import { ReactComponent as IconExchange } from '../../../assets/icons/exchange.svg';
 import { ReactComponent as IconDiamond } from '../../../assets/icons/icon-diamond.svg';
-import { ReactComponent as IconLink } from '../../../assets/icons/link.svg';
 import { ReactComponent as IconSearchWhite } from '../../../assets/icons/search-white.svg';
 import { ReactComponent as IconSettings } from '../../../assets/icons/switcher-settings.svg';
 import imageTokenPay from '../../../assets/images/token.png';
-import { Checkbox, Dropdown, Input, LineChart, Select } from '../../../components';
+import { Checkbox, Dropdown, Input, Select } from '../../../components';
 import Button from '../../../components/Button';
 import ModalContentQuotes from '../../../components/ModalContentQuotes';
 import config from '../../../config';
@@ -241,14 +240,14 @@ export const PageMarketsContent: React.FC = React.memo(() => {
   const refInputGasPrice = React.useRef<HTMLInputElement>(null);
 
   const [tokensFiltered, setTokensFiltered] = React.useState<any[]>(tokens);
-  const [price, setPrice] = React.useState<number>(0);
+  const [, setPrice] = React.useState<number>(0);
   const [, setPriceMarket] = React.useState<number>(0);
-  const [priceChange, setPriceChange] = React.useState<number>(0);
-  const [priceChart, setPriceChart] = React.useState<string | null>();
+  const [, setPriceChange] = React.useState<number>(0);
+  // const [priceChart, setPriceChart] = React.useState<string | null>();
   const [marketHistory, setMarketHistory] = React.useState<any[]>([]);
-  const [points, setPoints] = React.useState<number[]>([]);
-  const [dateTime, setDateTime] = React.useState<number[]>([]);
-  const [period, setPeriod] = React.useState<number>(periodDefault > 0 ? periodDefault : 1);
+  const [, setPoints] = React.useState<number[]>([]);
+  const [, setDateTime] = React.useState<number[]>([]);
+  const [period] = React.useState<number>(periodDefault > 0 ? periodDefault : 1);
   const [searchValuePay, setSearchValuePay] = React.useState<string>('');
   const [searchValueReceive, setSearchValueReceive] = React.useState<string>('');
   const [exchanges, setExchanges] = React.useState<any>([...exchangesList]);
@@ -301,8 +300,8 @@ export const PageMarketsContent: React.FC = React.memo(() => {
   const isModeLimit = mode === 'limit';
 
   // const classPriceChange = s.containerTitlePriceChange;
-  const isPriceChangePositive = +priceChange > 0;
-  const isPriceChangeNegative = +priceChange < 0;
+  // const isPriceChangePositive = +priceChange > 0;
+  // const isPriceChangeNegative = +priceChange < 0;
 
   const isGasPriceTypeFast = gasPriceType === 'fast';
   const isGasPriceTypeVeryFast = gasPriceType === 'veryFast';
@@ -1344,10 +1343,10 @@ export const PageMarketsContent: React.FC = React.memo(() => {
     toggleModal({ open: false });
   }, [setWalletType, toggleModal]);
 
-  const handleSetPeriod = (newPeriod: number) => {
-    setPeriod(newPeriod);
-    setToStorage('chartPeriod', newPeriod);
-  };
+  // const handleSetPeriod = (newPeriod: number) => {
+  //   setPeriod(newPeriod);
+  //   setToStorage('chartPeriod', newPeriod);
+  // };
 
   const handleSetMode = (newMode: string) => {
     if (addressPay === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee') {
@@ -1522,9 +1521,9 @@ export const PageMarketsContent: React.FC = React.memo(() => {
     history.push(`/markets/${addressReceive}/${addressPay}`);
   };
 
-  const handleHoverChart = (value: string | null) => {
-    setPriceChart(value);
-  };
+  // const handleHoverChart = (value: string | null) => {
+  //   setPriceChart(value);
+  // };
 
   const handleClickOutsideDropdownPay = (e: any) => {
     if (
@@ -2395,11 +2394,19 @@ export const PageMarketsContent: React.FC = React.memo(() => {
           <div className={s.containerTradingButton}>
             {userAddress ? (
               (isAllowed && isCustomAllowance) || isAddressPayETH ? (
-                <Button onClick={handleTrade} disabled={isTradeDisabled || waiting}>
+                <Button
+                  onClick={handleTrade}
+                  disabled={isTradeDisabled || waiting}
+                  classNameCustom={s.containerTradingButtonBtn}
+                >
                   {waiting ? 'Waiting...' : 'Trade'}
                 </Button>
               ) : (
-                <Button onClick={handleApprove} disabled={isTradeDisabled || waiting}>
+                <Button
+                  onClick={handleApprove}
+                  disabled={isTradeDisabled || waiting}
+                  classNameCustom={s.containerTradingButtonBtn}
+                >
                   {waiting ? 'Waiting...' : 'Approve'}
                 </Button>
               )
@@ -2411,94 +2418,111 @@ export const PageMarketsContent: React.FC = React.memo(() => {
           </div>
         </section>
 
-        <section className={s.containerTokenInfo}>
-          <a
-            href={`https://etherscan.io/token/${tokenPay?.address}`}
-            target="_blank"
-            rel="noreferrer"
-            className={s.tokenInfo}
-          >
-            <img src={tokenPay?.image} alt="" />
-            <div>
-              <span>{tokenPay?.name}</span>
-              <div>
-                {tokenPay?.address
-                  ? `${tokenPay?.address.slice(0, 6)}...${tokenPay?.address.slice(-4)}`
-                  : ''}
-              </div>
-            </div>
-            <div className={s.etherscan}>
-              Etherscan
-              <IconLink />
-            </div>
-          </a>
+        <section className={s.containerCosts}>
+          <ul>
+            <li>
+              <span>1 eth cost</span>
+              <span>3,849.8736641 DAI</span>
+            </li>
+            <li>
+              <span>1 dai cost</span>
+              <span>0.0002597 ETH</span>
+            </li>
+            <li>
+              <span>transaction cost</span>
+              <span>0.008</span>
+            </li>
+          </ul>
         </section>
 
-        <section className={s.containerChart}>
-          <div className={s.chart}>
-            {points.length > 0 && points[0] !== null && points[0] !== undefined ? (
-              <LineChart
-                interactive
-                data={points}
-                dateTime={dateTime}
-                chartHeight={140}
-                padding={20}
-                onHover={handleHoverChart}
-              />
-            ) : (
-              <div className={s.chartWithoutData}>
-                <div>No data yet</div>
-              </div>
-            )}
-          </div>
-          <div className={s.chartData}>
-            <div className={s.chartDataFirst}>
-              <div className={s.chartDataPriceName}>Current price</div>
-              <div className={s.chartDataPrice}>
-                {!addressTwo && '$'}
-                {prettyPrice(priceChart || price.toString() || '-')} {tokenReceive?.symbol}
-              </div>
-            </div>
-            <div className={s.chartDataSecond}>
-              <div className={s.chartDataPeriod}>
-                <div
-                  role="button"
-                  tabIndex={0}
-                  data-active={period === 1}
-                  onClick={() => handleSetPeriod(1)}
-                  onKeyDown={() => {}}
-                >
-                  24H
-                </div>
-                <div
-                  role="button"
-                  tabIndex={0}
-                  data-active={period === 7}
-                  onClick={() => handleSetPeriod(7)}
-                  onKeyDown={() => {}}
-                >
-                  1W
-                </div>
-                <div
-                  role="button"
-                  tabIndex={0}
-                  data-active={period === 30}
-                  onClick={() => handleSetPeriod(30)}
-                  onKeyDown={() => {}}
-                >
-                  1M
-                </div>
-              </div>
-              <div
-                className={s.chartDataPriceChange}
-                data-positive={isPriceChangePositive}
-                data-negative={isPriceChangeNegative}
-              >
-                {priceChange || 0}%
-              </div>
-            </div>
-          </div>
-        </section>
+        {/* <section className={s.containerTokenInfo}> */}
+        {/*  <a */}
+        {/*    href={`https://etherscan.io/token/${tokenPay?.address}`} */}
+        {/*    target="_blank" */}
+        {/*    rel="noreferrer" */}
+        {/*    className={s.tokenInfo} */}
+        {/*  > */}
+        {/*    <img src={tokenPay?.image} alt="" /> */}
+        {/*    <div> */}
+        {/*      <span>{tokenPay?.name}</span> */}
+        {/*      <div> */}
+        {/*        {tokenPay?.address */}
+        {/*          ? `${tokenPay?.address.slice(0, 6)}...${tokenPay?.address.slice(-4)}` */}
+        {/*          : ''} */}
+        {/*      </div> */}
+        {/*    </div> */}
+        {/*    <div className={s.etherscan}> */}
+        {/*      Etherscan */}
+        {/*      <IconLink /> */}
+        {/*    </div> */}
+        {/*  </a> */}
+        {/* </section> */}
+
+        {/* <section className={s.containerChart}> */}
+        {/*  <div className={s.chart}> */}
+        {/*    {points.length > 0 && points[0] !== null && points[0] !== undefined ? ( */}
+        {/*      <LineChart */}
+        {/*        interactive */}
+        {/*        data={points} */}
+        {/*        dateTime={dateTime} */}
+        {/*        chartHeight={140} */}
+        {/*        padding={20} */}
+        {/*        onHover={handleHoverChart} */}
+        {/*      /> */}
+        {/*    ) : ( */}
+        {/*      <div className={s.chartWithoutData}> */}
+        {/*        <div>No data yet</div> */}
+        {/*      </div> */}
+        {/*    )} */}
+        {/*  </div> */}
+        {/*  <div className={s.chartData}> */}
+        {/*    <div className={s.chartDataFirst}> */}
+        {/*      <div className={s.chartDataPriceName}>Current price</div> */}
+        {/*      <div className={s.chartDataPrice}> */}
+        {/*        {!addressTwo && '$'} */}
+        {/*        {prettyPrice(priceChart || price.toString() || '-')} {tokenReceive?.symbol} */}
+        {/*      </div> */}
+        {/*    </div> */}
+        {/*    <div className={s.chartDataSecond}> */}
+        {/*      <div className={s.chartDataPeriod}> */}
+        {/*        <div */}
+        {/*          role="button" */}
+        {/*          tabIndex={0} */}
+        {/*          data-active={period === 1} */}
+        {/*          onClick={() => handleSetPeriod(1)} */}
+        {/*          onKeyDown={() => {}} */}
+        {/*        > */}
+        {/*          24H */}
+        {/*        </div> */}
+        {/*        <div */}
+        {/*          role="button" */}
+        {/*          tabIndex={0} */}
+        {/*          data-active={period === 7} */}
+        {/*          onClick={() => handleSetPeriod(7)} */}
+        {/*          onKeyDown={() => {}} */}
+        {/*        > */}
+        {/*          1W */}
+        {/*        </div> */}
+        {/*        <div */}
+        {/*          role="button" */}
+        {/*          tabIndex={0} */}
+        {/*          data-active={period === 30} */}
+        {/*          onClick={() => handleSetPeriod(30)} */}
+        {/*          onKeyDown={() => {}} */}
+        {/*        > */}
+        {/*          1M */}
+        {/*        </div> */}
+        {/*      </div> */}
+        {/*      <div */}
+        {/*        className={s.chartDataPriceChange} */}
+        {/*        data-positive={isPriceChangePositive} */}
+        {/*        data-negative={isPriceChangeNegative} */}
+        {/*      > */}
+        {/*        {priceChange || 0}% */}
+        {/*      </div> */}
+        {/*    </div> */}
+        {/*  </div> */}
+        {/* </section> */}
       </div>
     </div>
   );

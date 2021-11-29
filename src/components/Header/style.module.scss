@@ -290,21 +290,18 @@ $fs: 16px;
 }
 
 .headerDropdown {
+  position: absolute;
+  padding: 0;
   z-index: 1000000;
   top: $height-header - 22px;
   right: 25px;
 
-  padding: 0;
 
   min-width: 370px;
-
-  border-radius: 20px;
-
-  position: absolute;
-  left: -50px;
-
   width: 410px;
-  background: $color-bg-dropdown;
+  background: $color-bg-dropdown-wc;
+  border: 2px solid $color-border-bottom-span;
+  border-radius: 20px;
 
   @include b('mobile') {
     margin-top: 256px;
@@ -325,7 +322,7 @@ $fs: 16px;
   }
 
   &Item {
-    @include flex(row, center);
+    @include flex(row, center, space-between, nowrap);
     padding: 10px 0;
 
     cursor: pointer;
