@@ -13,3 +13,4 @@ export { Pagination } from './Pagination';
 export { MainTable } from './MainTable';
 export { Burger } from './Burger';
 export { Loader } from './Loader';
+export { RadioSelect } from './RadioSelect';

@@ -660,13 +660,8 @@
   }
 
   &Slippage {
-    grid-column: 1;
-    grid-row: 1;
-
-    @include b('850') {
-      grid-column: 1;
-      grid-row: 1;
-    }
+    width: 100%;
+ 
   }
 
   &Exchanges {

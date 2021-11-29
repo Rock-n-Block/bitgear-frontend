@@ -16,7 +16,7 @@ import { ReactComponent as IconDiamond } from '../../../assets/icons/icon-diamon
 import { ReactComponent as IconSearchWhite } from '../../../assets/icons/search-white.svg';
 import { ReactComponent as IconSettings } from '../../../assets/icons/switcher-settings.svg';
 import imageTokenPay from '../../../assets/images/token.png';
-import { Checkbox, Dropdown, Input, Select } from '../../../components';
+import { Checkbox, Dropdown, Input, RadioSelect, Select } from '../../../components';
 import Button from '../../../components/Button';
 import ModalContentQuotes from '../../../components/ModalContentQuotes';
 import config from '../../../config';
@@ -75,6 +75,31 @@ const exchangesList: string[] = [
   'Uniswap_V2',
   'Uniswap_V3',
   'xSigma',
+];
+
+export type slippageItem = {
+  [k: string]: string | number | boolean;
+  text: string | number;
+  checked: boolean;
+};
+
+const initSlippage = [
+  {
+    text: 0.1,
+    checked: false,
+  },
+  {
+    text: 0.5,
+    checked: false,
+  },
+  {
+    text: 1,
+    checked: false,
+  },
+  {
+    text: 3,
+    checked: false,
+  },
 ];
 
 // const exchangesListOld: string[] = [
@@ -240,6 +265,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
   const refSelectLabelSlippage = React.useRef<HTMLDivElement>(null);
   const refInputGasPrice = React.useRef<HTMLInputElement>(null);
 
+  const [slippageItems, setSlippageItems] = React.useState<slippageItem[]>(initSlippage);
   const [tokensFiltered, setTokensFiltered] = React.useState<any[]>(tokens);
   const [, setPrice] = React.useState<number>(0);
   const [, setPriceMarket] = React.useState<number>(0);
@@ -256,7 +282,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
   const [openDropdownPay, setOpenDropdownPay] = React.useState<boolean>(false);
   const [openDropdownReceive, setOpenDropdownReceive] = React.useState<boolean>(false);
   const [openSelect, setOpenSelect] = React.useState<boolean>(false);
-  const [openSelectSlippage, setOpenSelectSlippage] = React.useState<boolean>(false);
+  const [, setOpenSelectSlippage] = React.useState<boolean>(false);
   const [openSettings, setOpenSettings] = React.useState<boolean>(false);
   const [mode, setMode] = React.useState<string>('market');
   const [searchTokensResultPay, setSearchTokensResultPay] = React.useState<TypeToken[]>(tokens);
@@ -1231,9 +1257,9 @@ export const PageMarketsContent: React.FC = React.memo(() => {
     setOpenSelect(!openSelect);
   };
 
-  const handleOpenSelectSlippage = () => {
-    setOpenSelectSlippage(!openSelectSlippage);
-  };
+  // const handleOpenSelectSlippage = () => {
+  //   setOpenSelectSlippage(!openSelectSlippage);
+  // };
 
   const handleFocusAmountPay = async () => {
     if (amountPay === '0') setAmountPay('');
@@ -1486,9 +1512,10 @@ export const PageMarketsContent: React.FC = React.memo(() => {
     history.push(`/markets/${addressPay}/${address}`);
   };
 
-  const handleSelectSlippage = (value: number) => {
-    setSlippage(value);
-    setOpenSelect(false);
+  const handleSelectSlippage = (value: string | number, slippageArr: slippageItem[]) => {
+    setSlippageItems(slippageArr);
+    setSlippage(+value);
+    // setOpenSelect(false);
   };
 
   const handleSelectExpiration = (minutes: number) => {
@@ -1765,19 +1792,19 @@ export const PageMarketsContent: React.FC = React.memo(() => {
     </div>
   );
 
-  const SelectLabelSlippage = (
-    <div
-      ref={refSelectLabelSlippage}
-      className={s.containerSettingsSelectLabel}
-      role="button"
-      tabIndex={0}
-      onKeyDown={() => {}}
-      onClick={handleOpenSelectSlippage}
-    >
-      <div>{slippage} %</div>
-      <IconArrowDownWhite />
-    </div>
-  );
+  // const SelectLabelSlippage = (
+  //   <div
+  //     ref={refSelectLabelSlippage}
+  //     className={s.containerSettingsSelectLabel}
+  //     role="button"
+  //     tabIndex={0}
+  //     onKeyDown={() => {}}
+  //     onClick={handleOpenSelectSlippage}
+  //   >
+  //     <div>{slippage} %</div>
+  //     <IconArrowDownWhite />
+  //   </div>
+  // );
 
   const SelectLabelExpiration = (
     <div
@@ -1835,23 +1862,30 @@ export const PageMarketsContent: React.FC = React.memo(() => {
             <div className={s.containerSettingsInner}>
               <div className={s.containerSettingsSlippage}>
                 <h2>Max Slippage</h2>
-                <Select open={openSelectSlippage} label={SelectLabelSlippage}>
-                  <div ref={refSelect} className={s.containerSettingsSelectItems}>
-                    {new Array(21).fill(0).map((item, ii) => {
-                      return (
-                        <div
-                          key={uuid()}
-                          role="button"
-                          tabIndex={0}
-                          onClick={() => handleSelectSlippage(ii)}
-                          onKeyDown={() => {}}
-                        >
-                          {ii} %
-                        </div>
-                      );
-                    })}
-                  </div>
-                </Select>
+                <RadioSelect
+                  items={slippageItems}
+                  onChecked={handleSelectSlippage}
+                  customPlaceholder="Custom"
+                  percent
+                  custom
+                />
+                {/* <Select open={openSelectSlippage} label={SelectLabelSlippage}> */}
+                {/* <div ref={refSelect} className={s.containerSettingsSelectItems}> */}
+                {/* {new Array(21).fill(0).map((item, ii) => { */}
+                {/*  return ( */}
+                {/*    <div */}
+                {/*      key={uuid()} */}
+                {/*      role="button" */}
+                {/*      tabIndex={0} */}
+                {/*      onClick={() => handleSelectSlippage(ii)} */}
+                {/*      onKeyDown={() => {}} */}
+                {/*    > */}
+                {/*      {ii} % */}
+                {/*    </div> */}
+                {/*  ); */}
+                {/* })} */}
+                {/* </div> */}
+                {/* </Select> */}
               </div>
               <div className={s.containerSettingsGas}>
                 <h2>Gas Price</h2>
