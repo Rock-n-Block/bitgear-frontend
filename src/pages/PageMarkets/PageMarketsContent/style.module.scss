@@ -14,8 +14,12 @@
     padding: 30px 30px 125px;
     @include flex(column, center, center, nowrap);
     max-width: 470px;
+    min-width: 470px;
     background: linear-gradient(180deg, #030D22 74.94%, rgba(3, 13, 34, 0) 100%);
     border-radius: 12px;
+    @include b('mobile') {
+      min-width: 300px;
+    }
   }
 }
 
@@ -609,38 +613,40 @@
 }
 
 .containerSettings {
-  margin: 21px 0 0 0;
-  padding: 20px;
+  //margin: 21px 0 0 0;
+  //padding: 20px;
 
-  background: $color-bg-section;
-  border-radius: 10px;
+  //background: $color-bg-section;
+  //border-radius: 10px;
+  width: 100%;
 
-  h1 {
-    margin: 0;
-
-    font-size: 24px;
-    font-weight: 400;
-    line-height: 37px;
-  }
+  //h1 {
+  //  margin: 0;
+  //
+  //  font-size: 24px;
+  //  font-weight: 400;
+  //  line-height: 37px;
+  //}
 
   h2 {
     font-size: 16px;
-    font-weight: 500;
+    font-weight: 900;
     line-height: 25px;
 
     color: $color-text-link;
   }
 
   &Inner {
-    @include grid(1fr 2fr 260px, 260px 180px, 50px);
-
-    @include b('1000') {
-      @include grid(150px 2fr 260px, 480px 180px, 50px);
-    }
-
-    @include b('850') {
-      @include grid(1fr, 100px 660px 200px 100px, 10px);
-    }
+    //@include grid(1fr 2fr 260px, 260px 180px, 50px);
+    //
+    //@include b('1000') {
+    //  @include grid(150px 2fr 260px, 480px 180px, 50px);
+    //}
+    //
+    //@include b('850') {
+    //  @include grid(1fr, 100px 660px 200px 100px, 10px);
+    //}
+    @include flex(column, center, center, nowrap);
   }
 
   &Slippage {
@@ -654,13 +660,13 @@
   }
 
   &Exchanges {
-    grid-column: 2;
-    grid-row: 1 / 3;
+    width: 100%;
 
-    @include b('850') {
-      grid-column: 1;
-      grid-row: 2;
-    }
+
+    //@include b('850') {
+    //  grid-column: 1;
+    //  grid-row: 2;
+    //}
 
     &Top {
       @include flex(row, center, space-between, nowrap);
@@ -683,8 +689,13 @@
     }
 
     &Inner {
-      @include flex(column, normal, normal, wrap);
-      height: calc(100% - 40px);
+      //@include flex(column, normal, normal, wrap);
+      //height: calc(100% - 40px);
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      @include b('mobile') {
+        grid-template-columns: repeat(2, 1fr);
+      }
 
       div {
         margin: 8px 4px;
@@ -693,18 +704,10 @@
   }
 
   &Gas {
-    grid-column: 3;
-    grid-row: 1 / 3;
-
-    @include b('850') {
-      grid-column: 1;
-      grid-row: 3;
-    }
+    width: 100%;
 
     &Inner {
-      > div {
-        margin: 3px 0;
-      }
+      //background: transparent;
     }
 
     &CustomAddress {
@@ -771,6 +774,34 @@
       background: none !important;
     }
   }
+
+  &Back {
+    @include flex(row, center, flex-start, nowrap);
+
+    span {
+      text-transform: uppercase;
+      font-weight: 900;
+      line-height: 22.04px;
+      font-size: 14px;
+    }
+
+    img {
+      padding: 8px;
+      margin-right: 20px;
+      max-width: 40px;
+      max-height: 40px;
+
+      @include flex(row, center, center, nowrap);
+      background: $color-bg-input-market;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 250ms ease-in-out;
+
+      &:hover {
+        box-shadow: 0 0 10px 1px rgba(255, 255, 255, 0.61);
+      }
+    }
+  }
 }
 
 .containerSettingsSelect {
@@ -812,6 +843,15 @@
   @include flex(row, center, space-between, nowrap);
   width: calc(100% - 50px);
 
+  div {
+    font-weight: 900;
+
+    &:last-child {
+      color: $color-text-secondary;
+      text-transform: uppercase;
+    }
+  }
+
   &Inner {
     @include flex(row, center);
   }
@@ -822,17 +862,17 @@
     input {
       padding: 5px 10px;
 
-      width: 60px;
+      width: 94px;
 
       font-size: 17px;
       font-weight: 500;
       line-height: 26px;
-      text-align: right;
+      text-align: center;
 
-      color: $color-text-input;
-      background-color: #40425d;
-      border: none;
-      border-radius: 4px;
+      color: $color-text-link;
+      background: transparent;
+      border: 1px solid $color-bg-checkbox;
+      border-radius: 12px;
       outline: none;
       caret-color: $color-cursor-input;
 
@@ -880,17 +920,11 @@
 }
 
 .radioContainer {
-  @include flex(row);
-  background-color: $color-bg-radio;
-  border-radius: 4px;
-}
-
-.radioInput {
-  display: none;
-}
-
-.radioInput:checked ~ .radioLabel .radioPoint::after {
-  opacity: 1;
+  margin: 4px 0;
+  padding-left: 20px;
+  @include flex(row, center, center, nowrap);
+  background-color: $color-bg-input-market;
+  border-radius: 12px;
 }
 
 .radioLabel {
@@ -907,38 +941,75 @@
   cursor: pointer;
 }
 
-.radioPoint {
-  position: relative;
-
-  margin: 10px;
-
-  width: 20px;
-  height: 20px;
-
-  background-color: #40425d;
-  border-radius: 50%;
-}
-
-.radioPoint::after {
-  content: '';
-
+//--------------- GAS PRICE CHECKBOX ----------------
+.radioInput {
   position: absolute;
-  top: 50%;
-  left: 10px;
+  z-index: -1;
 
-  display: block;
-
-  width: 20px;
-  height: 20px;
-
-  background-color: #fff;
-  border-radius: 50%;
   opacity: 0;
-  box-shadow: inset 0 0 0 5px $color-bg-radio-point;
-
-  transition: opacity 0.2s;
-  transform: translate(-50%, -50%);
 }
+
+.radioInput + label {
+  display: inline-flex;
+  align-items: center;
+
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 25px;
+
+  cursor: pointer;
+  user-select: none;
+
+  &::before {
+    content: '';
+
+    margin-right: 9px;
+
+    display: inline-block;
+
+    width: 20px;
+    height: 20px;
+
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: 50% 50%;
+    border: 1px solid $color-text-link;
+    border-radius: 50%;
+    flex-shrink: 0;
+    flex-grow: 0;
+  }
+}
+
+.radioInput:checked + label::before {
+  background-color: $color-bg-checkbox;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%23fff' d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26 2.974 7.25 8 2.193z'/%3e%3c/svg%3e");
+  border-color: $color-bg-checkbox;
+}
+
+.radioInput:not(:disabled):not(:checked) + label:hover::before {
+  border-color: #fff;
+}
+
+.radioInput:not(:disabled):active + label::before {
+  background-color: #fff;
+  border-color: #fff;
+}
+
+.che.radioInputbox:focus:not(:checked) + label::before {
+  border-color: #fff;
+}
+
+.radioInput:disabled + label::before {
+  color: $color-text-secondary;
+  background-color: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.disabled {
+  color: $color-text-secondary;
+}
+
+//--------------- GAS PRICE CHECKBOX ----------------
 
 .symbolWide {
   margin-left: -36px;
@@ -1004,3 +1075,40 @@
   height: 100%;
 
 }
+
+// GAS PRICE FOR RADIO VAR
+.radioPoint {
+  position: relative;
+
+  margin: 10px;
+
+  width: 20px;
+  height: 20px;
+
+  //background-color: #40425d;
+  border: 1px solid $color-text-link;
+  border-radius: 50%;
+}
+
+.radioPoint::after {
+  content: '';
+
+  position: absolute;
+  top: 50%;
+  left: 10px;
+
+  display: block;
+
+  width: 20px;
+  height: 20px;
+
+  background-color: $color-text-link;
+  border-radius: 50%;
+  opacity: 0;
+  //box-shadow: inset 0 0 0 5px $color-bg-radio-point;
+
+  transition: opacity 0.2s;
+  transform: translate(-50%, -50%);
+}
+
+// GAS PRICE FOR RADIO VAR
