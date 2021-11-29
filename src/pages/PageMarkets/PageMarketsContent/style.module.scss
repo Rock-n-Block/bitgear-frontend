@@ -3,7 +3,6 @@
 
 .container {
   @include flex(column, center, center, nowrap);
-
   width: 100%;
   @include b('mobile') {
     padding: 40px 10px 300px 10px;
@@ -12,11 +11,13 @@
   &Wrapper {
     margin: 34px 0 200px;
     padding: 30px 30px 125px;
-    @include flex(column, center, center, nowrap);
-    max-width: 470px;
+
     min-width: 470px;
-    background: linear-gradient(180deg, #030D22 74.94%, rgba(3, 13, 34, 0) 100%);
+    max-width: 470px;
+
+    background: linear-gradient(180deg, #030d22 74.94%, rgba(3, 13, 34, 0) 100%);
     border-radius: 12px;
+    @include flex(column, center, center, nowrap);
     @include b('mobile') {
       min-width: 300px;
     }
@@ -80,12 +81,13 @@
       font-weight: 900;
       line-height: 25px;
       text-transform: uppercase;
+
       cursor: pointer;
 
       color: $color-text-secondary;
+      border-bottom: 2px solid rgba(0, 0, 0, 0);
 
       transition: color 200ms ease;
-      border-bottom: 2px solid rgba(0, 0, 0, 0);
 
       &:hover {
         color: $color-text-link;
@@ -116,9 +118,12 @@
     &Item {
       &Img {
         padding: 8px;
+
+        cursor: pointer;
+
         background: rgba(5, 26, 56, 1);
         border-radius: 12px;
-        cursor: pointer;
+
         transition: all 250ms ease-in-out;
 
         &:hover {
@@ -194,8 +199,10 @@
     &Inner {
       margin-top: 6px;
       padding: 10px 20px 5px;
+
       background: $color-bg-input-market;
       border-radius: 12px;
+
       transition: all 250ms ease-in-out;
 
       &:hover,
@@ -205,9 +212,10 @@
       }
 
       &Name {
-        color: $color-text-secondary;
-        text-transform: uppercase;
         font-weight: 900;
+        text-transform: uppercase;
+
+        color: $color-text-secondary;
       }
 
       &Row {
@@ -236,7 +244,6 @@
       }
 
       &Input {
-
         label {
           @include flex(row, center);
           position: absolute;
@@ -279,6 +286,7 @@
       padding: 0 5px;
       @include flex(row, flex-end, space-between, nowrap);
       width: 100%;
+
       font-size: 16px;
       font-weight: 900;
       line-height: 25px;
@@ -316,6 +324,7 @@
         font-weight: 500;
         line-height: 31px;
         text-transform: uppercase;
+
         cursor: pointer;
 
         color: $color-text-primary;
@@ -330,19 +339,22 @@
     &SearchInput {
       margin: 0 auto;
       padding: 14px;
+
       max-width: 370px;
+
+      background: rgba(5, 26, 56, 1);
+      border-radius: 12px;
 
       @include b('mobile') {
         max-width: 250px;
       }
 
       @include flex(row, center, space-between, nowrap);
-      border-radius: 12px;
-      background: rgba(5, 26, 56, 1);
 
       input {
         margin-left: 20px;
         padding: 0;
+
         background: transparent;
       }
     }
@@ -431,7 +443,6 @@
         width: 100%;
         max-height: 40px !important;
         //height: $height-input-small;
-
         font-size: 24px;
         line-height: 47px;
         text-align: right;
@@ -477,10 +488,8 @@
     //  @include flex(row, center, flex-end);
     //  margin: -12px 0;
     //}
-
     &Inner {
       @include flex(row, center, center);
-
       width: 44px;
       height: 44px;
 
@@ -489,6 +498,7 @@
 
       background: $color-bg-input-market;
       border-radius: 50%;
+
       transition: all 250ms ease-in-out;
 
       &:hover {
@@ -510,8 +520,9 @@
 
     &Btn {
       padding: 8px;
-      max-height: 42px;
+
       width: 202px;
+      max-height: 42px;
     }
   }
 }
@@ -627,7 +638,6 @@
   //  font-weight: 400;
   //  line-height: 37px;
   //}
-
   h2 {
     font-size: 16px;
     font-weight: 900;
@@ -662,12 +672,10 @@
   &Exchanges {
     width: 100%;
 
-
     //@include b('850') {
     //  grid-column: 1;
     //  grid-row: 2;
     //}
-
     &Top {
       @include flex(row, center, space-between, nowrap);
 
@@ -779,23 +787,27 @@
     @include flex(row, center, flex-start, nowrap);
 
     span {
-      text-transform: uppercase;
+      font-size: 14px;
       font-weight: 900;
       line-height: 22.04px;
-      font-size: 14px;
+      text-transform: uppercase;
     }
 
     img {
-      padding: 8px;
       margin-right: 20px;
+      padding: 8px;
+
       max-width: 40px;
       max-height: 40px;
 
-      @include flex(row, center, center, nowrap);
+      cursor: pointer;
+
       background: $color-bg-input-market;
       border-radius: 12px;
-      cursor: pointer;
+
       transition: all 250ms ease-in-out;
+
+      @include flex(row, center, center, nowrap);
 
       &:hover {
         box-shadow: 0 0 10px 1px rgba(255, 255, 255, 0.61);
@@ -847,8 +859,9 @@
     font-weight: 900;
 
     &:last-child {
-      color: $color-text-secondary;
       text-transform: uppercase;
+
+      color: $color-text-secondary;
     }
   }
 
@@ -884,8 +897,9 @@
 }
 
 .containerTradingModalButton {
-  padding: 8px;
   margin: 5px 0;
+  padding: 8px;
+
   width: 202px;
   height: 42px;
 }
@@ -895,12 +909,14 @@
   padding: 20px;
 
   width: 100%;
+
   border: 1px solid $color-text-secondary;
   border-radius: 12px;
 
   ul {
     margin: 0;
     padding: 0;
+
     list-style: none;
 
     li {
@@ -908,8 +924,8 @@
       @include flex(row, center, space-between, nowrap);
 
       span {
-        text-transform: uppercase;
         font-size: 16px;
+        text-transform: uppercase;
 
         &:first-child {
           color: $color-text-secondary;
@@ -1010,7 +1026,6 @@
 }
 
 //--------------- GAS PRICE CHECKBOX ----------------
-
 .symbolWide {
   margin-left: -36px;
 }
@@ -1073,7 +1088,6 @@
 .messageContent {
   @include flex(column, center, center, nowrap);
   height: 100%;
-
 }
 
 // GAS PRICE FOR RADIO VAR
@@ -1106,7 +1120,6 @@
   border-radius: 50%;
   opacity: 0;
   //box-shadow: inset 0 0 0 5px $color-bg-radio-point;
-
   transition: opacity 0.2s;
   transform: translate(-50%, -50%);
 }

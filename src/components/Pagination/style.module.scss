@@ -10,7 +10,6 @@
   @include b('mobile') {
     max-width: 285px;
   }
-
   text-align: center;
 
   background-color: $color-bg-pagination;
@@ -53,7 +52,6 @@ button {
   @include b('mobile') {
     width: 30px;
   }
-
   cursor: pointer;
 
   border-radius: 12px;

@@ -3,12 +3,14 @@
 
 .container {
   position: relative;
+
   padding: 10px 10px 200px 10px;
 
   width: 100%;
   max-width: 1100px;
   @include b('mobile') {
     padding: 10px;
+
     max-width: 300px;
   }
 
@@ -66,12 +68,14 @@
     width: 100%;
     max-width: 48%;
     min-height: 90px;
+
     text-transform: uppercase;
 
     cursor: pointer;
 
-    outline: $border-card;
     border-radius: 10px;
+
+    outline: $border-card;
 
     transition: transform 0.5s cubic-bezier(0.2, 3, 0.4, 1) 0s, background-color 0.4s ease;
     @include b('mobile') {
@@ -151,7 +155,6 @@ table {
       td {
         padding: 12px 0 12px 10px;
         //padding-left: 10px;
-
         max-height: 60px;
 
         color: $color-text-primary;

@@ -133,6 +133,7 @@ $fs: 16px;
 
       &:hover {
         font-weight: 700;
+
         box-shadow: 0 0 7px 3px rgba(1, 151, 226, 0.6);
       }
     }
@@ -291,14 +292,16 @@ $fs: 16px;
 
 .headerDropdown {
   position: absolute;
-  padding: 0;
   z-index: 1000000;
   top: $height-header - 22px;
   right: 25px;
 
+  padding: 0;
+
+  width: 410px;
 
   min-width: 370px;
-  width: 410px;
+
   background: $color-bg-dropdown-wc;
   border: 2px solid $color-border-bottom-span;
   border-radius: 20px;

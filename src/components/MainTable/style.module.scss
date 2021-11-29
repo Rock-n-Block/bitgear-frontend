@@ -42,6 +42,7 @@ table {
   tbody {
     tr {
       height: 80px;
+
       transition: all 250ms ease-in;
 
       &:nth-child(odd) {
@@ -86,7 +87,6 @@ table {
         //    min-width: 120px;
         //  }
         //}
-
         &:nth-child(4) {
           // width: 120px;
         }

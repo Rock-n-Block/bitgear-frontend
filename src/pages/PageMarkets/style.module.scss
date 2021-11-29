@@ -3,11 +3,12 @@
 
 .marketWrapper {
   width: 100%;
-  @include flex(row, center, center, nowrap);
-  background-image: url("../../assets/images/bg-market.svg");
+
+  background-image: url('../../assets/images/bg-market.svg');
+  background-repeat: repeat-y;
   background-position: center;
   background-size: cover;
-  background-repeat: repeat-y;
+  @include flex(row, center, center, nowrap);
 }
 
 .container {

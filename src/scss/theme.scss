@@ -13,7 +13,7 @@ $color-bg-header: linear-gradient(180deg, #030d22 0%, rgba(3, 13, 34, 0) 195.12%
 $color-bg-footer: #07092a;
 $color-bg-error: #c88a38;
 $color-bg-input: linear-gradient(180deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0) 100%),
-linear-gradient(0deg, #0f2043, #0f2043);
+  linear-gradient(0deg, #0f2043, #0f2043);
 //$color-bg-input: #07092a;
 $color-bg-input-small: #212443;
 $color-bg-pagination: #07092a;
@@ -39,7 +39,7 @@ $color-bg-button-secondary: #0197e2;
 $color-bg-button-secondary-hover: #70bde3;
 $color-bg-button-normal: transparent;
 $color-bg-login-item-hover: #0197e23d;
-$color-bg-card-market: linear-gradient(180deg, #030D22 74.94%, rgba(3, 13, 34, 0) 100%);
+$color-bg-card-market: linear-gradient(180deg, #030d22 74.94%, rgba(3, 13, 34, 0) 100%);
 $color-boxsh-bg1: rgba(0, 227, 182, 0.3);
 $color-boxsh-bg2: rgba(0, 127, 239, 0.4);
 // text
@@ -65,27 +65,27 @@ $color-scrollbar-bg: #07092a;
 $color-gradient-button-start: rgba(208, 208, 208, 1);
 $color-gradient-button-end: rgba(208, 208, 208, 1);
 $color-gradient-button: linear-gradient(
-    90deg,
-    $color-gradient-button-start 0,
-    $color-gradient-button-start 7px,
-    $color-gradient-button-end 7px,
-    $color-gradient-button-end 100%
+  90deg,
+  $color-gradient-button-start 0,
+  $color-gradient-button-start 7px,
+  $color-gradient-button-end 7px,
+  $color-gradient-button-end 100%
 );
 $color-gradient-header-start: rgba(255, 255, 255, 0);
 $color-gradient-header-end: rgba(255, 255, 255, 1);
 $color-gradient-header: linear-gradient(
-    0deg,
-    $color-gradient-header-start 0%,
-    $color-gradient-header-end 100%
+  0deg,
+  $color-gradient-header-start 0%,
+  $color-gradient-header-end 100%
 );
 // border
 $color-border-header-start: rgba(255, 255, 255, 0);
 $color-border-header-end: rgba(255, 255, 255, 0.25);
 $color-border-header: linear-gradient(
-    270deg,
-    rgba(255, 255, 255, 0) 0%,
-    #fff 25%,
-    rgba(255, 255, 255, 0) 100%
+  270deg,
+  rgba(255, 255, 255, 0) 0%,
+  #fff 25%,
+  rgba(255, 255, 255, 0) 100%
 );
 
 //$color-border-header: linear-gradient(

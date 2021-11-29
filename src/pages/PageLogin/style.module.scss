@@ -10,6 +10,7 @@
 
 .containerTitle {
   padding: 55px 0 0;
+
   text-align: center;
 
   @include b('mobile') {
@@ -24,8 +25,9 @@
   }
 
   strong {
-    color: $color-text-link;
     font-weight: 400;
+
+    color: $color-text-link;
   }
 
   span {
@@ -55,8 +57,9 @@
 
       cursor: pointer;
 
-      outline: 2px solid $color-border-login-item;
       border-radius: 10px;
+
+      outline: 2px solid $color-border-login-item;
 
       transition: transform 0.5s cubic-bezier(0.2, 3, 0.4, 1) 0s, background-color 0.4s ease;
       grid-template-columns: 120px 1fr;

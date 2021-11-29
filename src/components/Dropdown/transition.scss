@@ -6,65 +6,70 @@
 }
 
 .transition-enter-active {
-
   position: absolute;
   z-index: 2;
   top: 30px;
   left: -50px;
 
+  padding: 20px 0 16px 0;
+
   width: 410px;
+
+  height: 365px;
+
+  background: $color-bg-dropdown;
+  border-bottom-right-radius: 12px;
+  border-bottom-left-radius: 12px;
+
+  transition: all 250ms ease-out;
   @include b('mobile') {
     width: 278px;
   }
-  background: $color-bg-dropdown;
-  border-bottom-left-radius: 12px;
-  border-bottom-right-radius: 12px;
-  padding: 20px 0 16px 0;
-
-  height: 365px;
-  transition: all 250ms ease-out;
 }
 
 .transition-exit {
-  padding: 20px 0 16px 0;
-
-  height: 365px;
-  opacity: 1;
-
   position: absolute;
   z-index: 2;
   top: 30px;
   left: -50px;
 
+  padding: 20px 0 16px 0;
+
   width: 410px;
+
+  height: 365px;
+
+  background: $color-bg-dropdown;
+  border-bottom-right-radius: 12px;
+  border-bottom-left-radius: 12px;
+  opacity: 1;
   @include b('mobile') {
     width: 278px;
   }
-  background: $color-bg-dropdown;
-  border-bottom-left-radius: 12px;
-  border-bottom-right-radius: 12px;
 }
 
 .transition-exit-active {
   height: 0;
+
   transition: all 250ms ease-out;
 }
 
 .transition-enter-done {
-  padding: 20px 0 16px 0;
-
-  height: 365px;
-
   position: absolute;
   z-index: 2;
   top: 30px;
   left: -50px;
 
+  padding: 20px 0 16px 0;
+
   width: 410px;
+
+  height: 365px;
+
+  background: $color-bg-dropdown;
+  border-bottom-right-radius: 12px;
+  border-bottom-left-radius: 12px;
   @include b('mobile') {
     width: 278px;
   }
-  background: $color-bg-dropdown;
-  border-bottom-left-radius: 12px;
-  border-bottom-right-radius: 12px;
 }
