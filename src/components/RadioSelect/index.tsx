@@ -10,6 +10,7 @@ interface IRadioSelect {
   onChecked: (value: string | number, arr: slippageItem[]) => void;
   percent?: boolean;
   custom?: boolean;
+  customValue?: number;
   wrapperClassName?: string;
   className?: string;
   customPlaceholder?: string;
@@ -19,12 +20,13 @@ export const RadioSelect: React.FC<IRadioSelect> = ({
   items,
   percent = false,
   custom = false,
+  customValue,
   onChecked,
   wrapperClassName,
   className,
   customPlaceholder,
 }) => {
-  const [value, setValue] = React.useState<number | ''>('');
+  const [value, setValue] = React.useState<any>(customValue || '');
 
   const handleChangeCheck = (index: number) => {
     let newSlippage;
@@ -44,13 +46,30 @@ export const RadioSelect: React.FC<IRadioSelect> = ({
         };
       });
       onChecked(items[index].text, newSlippage);
+      setValue('');
     }
   };
 
-  const handleChangeCustom = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setValue(+event.target.value);
-    onChecked(+event.target.value, items);
+  const handleChangeCustomValue = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // eslint-disable-next-line @typescript-eslint/no-shadow
+    const { value } = e.target;
+    if (value === null || !/[^\d.]/g.test(value)) {
+      setValue(value);
+      onChecked(+value, items);
+    }
   };
+
+  React.useEffect(() => {
+    let isAnyChecked = false;
+    items.forEach((item) => {
+      if (item.checked) {
+        isAnyChecked = true;
+      }
+    });
+    if (isAnyChecked) {
+      setValue('');
+    }
+  }, [items]);
 
   return (
     <div className={cn(s.radioSelect, wrapperClassName)}>
@@ -78,7 +97,7 @@ export const RadioSelect: React.FC<IRadioSelect> = ({
             className={cn({ [s.activeCustom]: value !== 0 && value !== '' })}
             value={value}
             placeholder={customPlaceholder || ''}
-            onChange={handleChangeCustom}
+            onChange={handleChangeCustomValue}
             onClick={() => handleChangeCheck(-1)}
           />
         </>

@@ -1868,6 +1868,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
                   customPlaceholder="Custom"
                   percent
                   custom
+                  customValue={slippage}
                 />
                 {/* <Select open={openSelectSlippage} label={SelectLabelSlippage}> */}
                 {/* <div ref={refSelect} className={s.containerSettingsSelectItems}> */}
