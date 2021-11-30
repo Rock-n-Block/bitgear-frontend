@@ -7,7 +7,7 @@
   height: 100%;
   @include flex(row, center, center, nowrap);
 
-  background-image: url("../../assets/images/bg-with-shadow.png");
+  background-image: url('../../assets/images/bg-with-shadow.png');
   background-position: center;
   background-repeat: no-repeat;
   background-size: contain;
@@ -40,7 +40,6 @@
       line-height: 70px;
       @include b('mobile') {
         font-size: 26px;
-
       }
     }
 
@@ -165,10 +164,10 @@
       width: 100%;
 
       background: linear-gradient(
-          90deg,
-          $color-bg 0,
-          rgba(255, 255, 255, 0.07) 80px,
-          $color-bg 105px
+        90deg,
+        $color-bg 0,
+        rgba(255, 255, 255, 0.07) 80px,
+        $color-bg 105px
       );
 
       animation: loading 2s infinite;

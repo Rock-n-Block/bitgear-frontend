@@ -6,7 +6,7 @@
   min-height: 100vh;
   height: 100%;
   @include flex(row, center, center, nowrap);
-  background-image: url("../../assets/images/bg-with-shadow.png");
+  background-image: url('../../assets/images/bg-with-shadow.png');
   background-position: center;
   background-repeat: no-repeat;
 
@@ -14,7 +14,6 @@
     background-size: cover;
   }
 }
-
 
 .container {
   padding: 0 10px 200px 10px;
