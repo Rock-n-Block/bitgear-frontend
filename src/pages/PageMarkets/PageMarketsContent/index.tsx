@@ -10,6 +10,7 @@ import { useMedia } from 'use-media';
 import { v1 as uuid } from 'uuid';
 
 import ArrowBack from '../../../assets/icons/arrow-back.svg';
+import ArrowDown from '../../../assets/icons/arrow-down-blue.svg';
 import { ReactComponent as IconArrowDownWhite } from '../../../assets/icons/arrow-down-white.svg';
 import { ReactComponent as IconExchange } from '../../../assets/icons/exchange.svg';
 import { ReactComponent as IconDiamond } from '../../../assets/icons/icon-diamond.svg';
@@ -1255,6 +1256,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
   };
 
   const handleOpenSelect = () => {
+    console.log('OPEN OPEN OPEN');
     setOpenSelect(!openSelect);
   };
 
@@ -1818,7 +1820,8 @@ export const PageMarketsContent: React.FC = React.memo(() => {
       onClick={handleOpenSelect}
     >
       <div>{prettyExpiration(expiration)}</div>
-      <IconArrowDownWhite />
+      {/* <IconArrowDownWhite /> */}
+      <img src={ArrowDown} alt="arrowDown" className={s.containerTradingCardLimitInnerImage} />
     </div>
   );
 
@@ -2235,9 +2238,9 @@ export const PageMarketsContent: React.FC = React.memo(() => {
                           </div>
                           <div className={s.containerTradingCardLimitInput}>
                             {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-                            <label htmlFor="inputPay">
-                              <div>{tokenReceive?.symbol}</div>
-                            </label>
+                            {/* <label htmlFor="inputPay"> */}
+                            {/*  <div>{tokenReceive?.symbol}</div> */}
+                            {/* </label> */}
                             <input
                               id="inputPay"
                               type="number"
@@ -2248,17 +2251,27 @@ export const PageMarketsContent: React.FC = React.memo(() => {
                             />
                           </div>
                         </div>
-                        <div className={s.containerTradingCardLimitInner}>
+                        <div
+                          className={s.containerTradingCardLimitInner}
+                          onClick={handleOpenSelect}
+                          role="button"
+                          tabIndex={0}
+                          onKeyDown={() => {}}
+                        >
                           <div className={s.containerTradingCardLimitLabel}>
                             <div>Expires in</div>
                           </div>
-                          <Select open={openSelect} label={SelectLabelExpiration}>
+                          <Select
+                            className={s.containerSettingsWrapper}
+                            open={openSelect}
+                            label={SelectLabelExpiration}
+                          >
                             <div ref={refSelect} className={s.containerSettingsSelectItems}>
                               <div
                                 role="button"
                                 tabIndex={0}
-                                onClick={() => handleSelectExpiration(10)}
                                 onKeyDown={() => {}}
+                                onClick={() => handleSelectExpiration(10)}
                               >
                                 10 min
                               </div>
@@ -2336,7 +2349,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
                       )}
                     </div>
                     <div className={s.containerTradingCardInner}>
-                      <div className={s.containerTradingCardInnerName}>{tokenPay?.name}</div>
+                      <div className={s.containerTradingCardInnerName}>{tokenReceive?.name}</div>
                       <div className={s.containerTradingCardInnerRow}>
                         <div className={s.containerTradingCardImage}>
                           <img src={tokenReceive?.image} alt="" />

@@ -226,6 +226,7 @@
       margin-top: 6px;
       padding: 10px 20px 5px;
 
+      @include flex(column, flex-start, center, nowrap);
       background: $color-bg-input-market;
       border-radius: 12px;
 
@@ -257,11 +258,23 @@
       width: 100%;
 
       &Inner {
-        padding: 12px 20px 0;
+        padding: 12px 20px;
         background: $color-bg-input-market;
         border-radius: 12px;
         max-height: 80px;
         max-width: 200px;
+
+        &Row {
+          @include flex(row, center, flex-start, nowrap);
+
+        }
+
+        &Image {
+          //position: absolute;
+          //top: 50px;
+          //right: 80px;
+          //cursor: pointer;
+        }
       }
 
       &Label {
@@ -275,7 +288,9 @@
 
       }
 
+
       &Input {
+
         label {
           @include flex(row, center);
           position: absolute;
@@ -294,6 +309,7 @@
         input {
           padding: 10px 10px 0;
           height: 35px;
+          width: 150px;
           font-size: 22px;
           font-weight: 500;
           line-height: 34px;
@@ -681,6 +697,11 @@
     line-height: 25px;
 
     color: $color-text-link;
+  }
+
+  &Wrapper {
+    background: transparent;
+    max-height: 20px;
   }
 
   &Inner {
