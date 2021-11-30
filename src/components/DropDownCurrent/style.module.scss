@@ -41,8 +41,7 @@
 
   cursor: pointer;
 
-  border: 2px solid #647CE2;
-
+  border: 2px solid #647ce2;
 
   transition: box-shadow 0.2s;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
@@ -104,27 +103,27 @@
 }
 
 .blue {
-  background: linear-gradient(88.72deg, #647CE2 -28.56%, #758FFF 120.6%) !important;
+  background: linear-gradient(88.72deg, #647ce2 -28.56%, #758fff 120.6%) !important;
 
   &:hover {
-    background: linear-gradient(88.72deg, #647CE2 -28.56%, #3c5adc 120.6%) !important;
+    background: linear-gradient(88.72deg, #647ce2 -28.56%, #3c5adc 120.6%) !important;
   }
 }
 
 .purple {
-  background: linear-gradient(88.72deg, #7A4FDD -28.56%, #4E3A7D 120.6%) !important;;
+  background: linear-gradient(88.72deg, #7a4fdd -28.56%, #4e3a7d 120.6%) !important;
 }
 
 .yellow {
-  background: linear-gradient(88.72deg, #A97808 -28.56%, #FFB307 120.6%) !important;
+  background: linear-gradient(88.72deg, #a97808 -28.56%, #ffb307 120.6%) !important;
 
   &:hover {
-    background: linear-gradient(88.72deg, #A97808 -28.56%, #a77608 120.6%) !important;
+    background: linear-gradient(88.72deg, #a97808 -28.56%, #a77608 120.6%) !important;
   }
 }
 
 .gray {
-  background: rgba(40, 41, 69, 1) !important;;
+  background: rgba(40, 41, 69, 1) !important;
 }
 
 .blue,
