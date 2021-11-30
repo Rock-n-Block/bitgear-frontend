@@ -288,6 +288,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
   const [openSettings, setOpenSettings] = React.useState<boolean>(false);
   const [mode, setMode] = React.useState<string>('market');
   const [searchTokensResultPay, setSearchTokensResultPay] = React.useState<TypeToken[]>(tokens);
+  const [isLoaded, setLoaded] = React.useState(false);
   const [tokensReceive, setTokensReceive] = React.useState<TypeToken[]>([]);
   const [searchTokensResultReceive, setSearchTokensResultReceive] = React.useState<TypeToken[]>(
     tokensReceive,
@@ -1340,6 +1341,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
       });
       // console.log('matchSearch:', result);
       setSearchTokensResultPay(result);
+      setLoaded(true);
     } catch (e) {
       console.error(e);
     }
@@ -1860,7 +1862,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
           [s.containerWrapperBg]: searchTokensResultPay.length,
         })}
       >
-        {searchTokensResultPay.length ? (
+        {isLoaded || searchTokensResultPay.length ? (
           <>
             {isModeMarket && openSettings ? (
               <section className={s.containerSettings}>

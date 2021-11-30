@@ -373,332 +373,339 @@ export const PageAccount: React.FC = () => {
   }, [userBalancesAsArray, userBalancesAsArray.length]); */
 
   return (
-    <div className={s.container}>
-      <section className={s.containerTitle}>
-        <div className={s.containerTitleBlock}>
-          <h1>Your Account</h1>
-          <CopyToClipboard text={userAddress} onCopy={handleCopyAddress}>
-            <span>
-              {isAddressCopied ? 'Copied to clipboard!' : userAddress}
-              <IconCopy />
-            </span>
-          </CopyToClipboard>
-        </div>
-        <div className={s.accountMenu}>
-          <Link
-            to={`${match.url}`}
-            className={isBalancePage ? s.accountMenuItemActive : s.accountMenuItem}
-          >
-            Balance
-          </Link>
-          <Link
-            to={`${match.url}/orders`}
-            className={isOrdersPage ? s.accountMenuItemActive : s.accountMenuItem}
-          >
-            Trade History
-          </Link>
-        </div>
-      </section>
+    <div className={s.wrapper}>
+      <div className={s.container}>
+        <section className={s.containerTitle}>
+          <div className={s.containerTitleBlock}>
+            <h1>Your Account</h1>
+            <CopyToClipboard text={userAddress} onCopy={handleCopyAddress}>
+              <span>
+                {isAddressCopied ? 'Copied to clipboard!' : `${userAddress.slice(0, 12)}...`}
+                <IconCopy />
+              </span>
+            </CopyToClipboard>
+          </div>
+          <div className={s.accountMenu}>
+            <Link
+              to={`${match.url}`}
+              className={isBalancePage ? s.accountMenuItemActive : s.accountMenuItem}
+            >
+              Balance
+            </Link>
+            <Link
+              to={`${match.url}/orders`}
+              className={isOrdersPage ? s.accountMenuItemActive : s.accountMenuItem}
+            >
+              Trade History
+            </Link>
+          </div>
+        </section>
 
-      <Switch>
-        <Route path={match.path} exact>
-          <div className={s.accountWrapper}>
-            <section className={s.accountFunds}>
-              <Link to={`/markets/${ethToken.address}`} className={s.accountFundsCard}>
-                <h3>Your balance:</h3>
-                <span>{prettyPrice(userBalance)} ETH</span>
-                <img src={EthGlassIcon} alt="ehereum logo" />
-              </Link>
-              <Link
-                key={uuid()}
-                className={s.accountFundsCard}
-                to={`/markets/${gearToken.address}`}
-              >
-                <h3>Your balance:</h3>
-                <span>
-                  {prettyPrice(userBalancesFiltered[gearToken.address.toLowerCase()] || 0)} GEAR
-                </span>
-                <img src={tokensBySymbol?.GEAR?.image || imageTokenPay} alt="ehereum logo" />
-              </Link>
-              {isNoBalances && (
-                <div>
-                  {isLoadingBalancesDone
-                    ? 'You do not have any tokens'
-                    : isLoadingBalancesError
-                    ? 'Not loaded'
-                    : 'Loading...'}
-                </div>
-              )}
-              {userBalancesAsArray.map((item: any) => {
-                const [address, balance] = item;
-                if (
-                  address.toLowerCase() === ethToken.address.toLowerCase() ||
-                  address.toLowerCase() === gearToken.address.toLowerCase()
-                )
-                  return null;
-                const image = (tokensByAddress && tokensByAddress[address]?.image) || imageTokenPay;
-                const symbol = tokensByAddress && tokensByAddress[address]?.symbol;
-                return (
-                  <>
-                    {balance > 0 ? (
-                      <Link key={uuid()} className={s.accountFundsCard} to={`/markets/${address}`}>
-                        <h3>Your balance:</h3>
-                        <span>
-                          {prettyPrice(balance)} {symbol}
-                        </span>
-                        <img className={s.accountFundsCardImage} src={image} alt="ehereum logo" />
-                      </Link>
-                    ) : null}
-                  </>
-                );
-              })}
-            </section>
-            <section className={s.accountTiersWrapper}>
-              <div className={s.accountTiersAddress}>
-                <div className={s.accountTiersAddressTitle}>Deposit more funds</div>
-                <CopyToClipboard text={userAddress}>
-                  <div className={s.accountTiersAddressCopy}>
-                    <div className={s.accountTiersAddressCopyBtn}>{userAddress}</div>
-                    <IconCopy />
+        <Switch>
+          <Route path={match.path} exact>
+            <div className={s.accountWrapper}>
+              <section className={s.accountFunds}>
+                <Link to={`/markets/${ethToken.address}`} className={s.accountFundsCard}>
+                  <h3>Your balance:</h3>
+                  <span>{prettyPrice(userBalance)} ETH</span>
+                  <img src={EthGlassIcon} alt="ehereum logo" />
+                </Link>
+                <Link
+                  key={uuid()}
+                  className={s.accountFundsCard}
+                  to={`/markets/${gearToken.address}`}
+                >
+                  <h3>Your balance:</h3>
+                  <span>
+                    {prettyPrice(userBalancesFiltered[gearToken.address.toLowerCase()] || 0)} GEAR
+                  </span>
+                  <img src={tokensBySymbol?.GEAR?.image || imageTokenPay} alt="ehereum logo" />
+                </Link>
+                {isNoBalances && (
+                  <div>
+                    {isLoadingBalancesDone
+                      ? 'You do not have any tokens'
+                      : isLoadingBalancesError
+                      ? 'Not loaded'
+                      : 'Loading...'}
                   </div>
-                </CopyToClipboard>
-              </div>
-              <div className={s.accountTiers}>
-                {tiers.map((tier, index) => (
-                  <div
-                    key={uuid()}
-                    className={cns(
-                      s.accountTiersCard,
-                      index + 1 === userCurrentTier && s.accountTiersCardActive,
-                    )}
-                  >
+                )}
+                {userBalancesAsArray.map((item: any) => {
+                  const [address, balance] = item;
+                  if (
+                    address.toLowerCase() === ethToken.address.toLowerCase() ||
+                    address.toLowerCase() === gearToken.address.toLowerCase()
+                  )
+                    return null;
+                  const image =
+                    (tokensByAddress && tokensByAddress[address]?.image) || imageTokenPay;
+                  const symbol = tokensByAddress && tokensByAddress[address]?.symbol;
+                  return (
+                    <>
+                      {balance > 0 ? (
+                        <Link
+                          key={uuid()}
+                          className={s.accountFundsCard}
+                          to={`/markets/${address}`}
+                        >
+                          <h3>Your balance:</h3>
+                          <span>
+                            {prettyPrice(balance)} {symbol}
+                          </span>
+                          <img className={s.accountFundsCardImage} src={image} alt="ehereum logo" />
+                        </Link>
+                      ) : null}
+                    </>
+                  );
+                })}
+              </section>
+              <section className={s.accountTiersWrapper}>
+                <div className={s.accountTiersAddress}>
+                  <div className={s.accountTiersAddressTitle}>Deposit more funds</div>
+                  <CopyToClipboard text={userAddress}>
+                    <div className={s.accountTiersAddressCopy}>
+                      <div className={s.accountTiersAddressCopyBtn}>{userAddress}</div>
+                      <IconCopy />
+                    </div>
+                  </CopyToClipboard>
+                </div>
+                <div className={s.accountTiers}>
+                  {tiers.map((tier, index) => (
                     <div
+                      key={uuid()}
                       className={cns(
-                        s.accountTiersCardCircle,
-                        index + 1 === userCurrentTier && s.accountTiersCardCircleActive,
+                        s.accountTiersCard,
+                        index + 1 === userCurrentTier && s.accountTiersCardActive,
                       )}
                     >
-                      {index + 1 === userCurrentTier ? <img src={TierCheckIcon} alt="" /> : ''}
-                    </div>
-                    {tiers[index] ? <div className={s.accountTiersCardLine} /> : ''}
-                    <div className={s.accountTiersCardTitle}>
-                      <span>{`TIER ${index + 1}`}</span>
-                      {/* {tier.amount &&
+                      <div
+                        className={cns(
+                          s.accountTiersCardCircle,
+                          index + 1 === userCurrentTier && s.accountTiersCardCircleActive,
+                        )}
+                      >
+                        {index + 1 === userCurrentTier ? <img src={TierCheckIcon} alt="" /> : ''}
+                      </div>
+                      {tiers[index] ? <div className={s.accountTiersCardLine} /> : ''}
+                      <div className={s.accountTiersCardTitle}>
+                        <span>{`TIER ${index + 1}`}</span>
+                        {/* {tier.amount &&
                       +gearBalance >= tier.amount * 1000 &&
                       !(tiers[index] && +gearBalance >= tiers[index].amount * 1000) ? (
                         <div className={s.accountTiersCardTitleTooltip}>YOUR TIER</div>
                       ) : (
                         ''
                       )} */}
-                      {index + 1 === userCurrentTier && (
-                        <div className={s.accountTiersCardTitleTooltip}>YOUR TIER</div>
-                      )}
-                    </div>
-                    <div className={s.accountTiersCardAmount}>
-                      {}
-                      {tier.amount ? `${tier.amount}k GEAR` : 'to be announced later'}
-                    </div>
-                    <div className={s.accountTiersCardText}>{tier.text}</div>
-                  </div>
-                ))}
-              </div>
-            </section>
-          </div>
-        </Route>
-        <Route path={`${match.path}/orders`}>
-          <section className={s.accountTrade}>
-            <h2>Trade History</h2>
-
-            <div className={s.accountTradeHistory}>
-              <table className={s.accountTradeTable}>
-                {isWide ? (
-                  <thead>
-                    <tr key={uuid()}>
-                      <th
-                        className={cns(
-                          activeColumn === 'timestart' ? s.accountTradeTableActive : null,
+                        {index + 1 === userCurrentTier && (
+                          <div className={s.accountTiersCardTitleTooltip}>YOUR TIER</div>
                         )}
-                        onClick={onSort.bind(this, 'timestart')}
-                      >
-                        Time start
-                        {activeColumn === 'timestart' ? (
-                          <IconArrowDownWhite
-                            fill="#0197E2"
-                            className={cns(isArrowUp ? s.arrowSortUp : s.arrowSort)}
-                          />
-                        ) : null}
-                      </th>
-                      <th>Time end</th>
-                      <th>Trading pair</th>
-                      <th>Amount</th>
-                      <th>Price</th>
-                    </tr>
-                  </thead>
-                ) : (
-                  <thead>
-                    <tr />
-                  </thead>
-                )}
-                {isWide ? (
-                  <tbody>
-                    {dataForTable.map((item: any) => {
-                      const {
-                        orderCreate,
-                        orderExpire,
-                        price,
-                        tradingPair,
-                        amount,
-                        timeCreate,
-                        timeExpire,
-                        addressMaker,
-                        addressTaker,
-                      } = item;
-                      const link = `/markets/${addressMaker}/${addressTaker}`;
-                      let priceChangeModel = (
-                        <td>
-                          <img src={ArrowUpIcon} alt="arrow up" />{' '}
-                          {`${price ? numberTransform(price) : '-'}`}
-                        </td>
-                      );
-                      if (price < 0) {
-                        priceChangeModel = (
-                          <td className={`${s.accountTradeTableDown}`}>
-                            <img src={ArrowDownIcon} alt="arrow down" />
-                            {`${numberTransform(price)}`}
+                      </div>
+                      <div className={s.accountTiersCardAmount}>
+                        {}
+                        {tier.amount ? `${tier.amount}k GEAR` : 'to be announced later'}
+                      </div>
+                      <div className={s.accountTiersCardText}>{tier.text}</div>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            </div>
+          </Route>
+          <Route path={`${match.path}/orders`}>
+            <section className={s.accountTrade}>
+              <h2>Trade History</h2>
+
+              <div className={s.accountTradeHistory}>
+                <table className={s.accountTradeTable}>
+                  {isWide ? (
+                    <thead>
+                      <tr key={uuid()}>
+                        <th
+                          className={cns(
+                            activeColumn === 'timestart' ? s.accountTradeTableActive : null,
+                          )}
+                          onClick={onSort.bind(this, 'timestart')}
+                        >
+                          Time start
+                          {activeColumn === 'timestart' ? (
+                            <IconArrowDownWhite
+                              fill="#0197E2"
+                              className={cns(isArrowUp ? s.arrowSortUp : s.arrowSort)}
+                            />
+                          ) : null}
+                        </th>
+                        <th>Time end</th>
+                        <th>Trading pair</th>
+                        <th>Amount</th>
+                        <th>Price</th>
+                      </tr>
+                    </thead>
+                  ) : (
+                    <thead>
+                      <tr />
+                    </thead>
+                  )}
+                  {isWide ? (
+                    <tbody>
+                      {dataForTable.map((item: any) => {
+                        const {
+                          orderCreate,
+                          orderExpire,
+                          price,
+                          tradingPair,
+                          amount,
+                          timeCreate,
+                          timeExpire,
+                          addressMaker,
+                          addressTaker,
+                        } = item;
+                        const link = `/markets/${addressMaker}/${addressTaker}`;
+                        let priceChangeModel = (
+                          <td>
+                            <img src={ArrowUpIcon} alt="arrow up" />{' '}
+                            {`${price ? numberTransform(price) : '-'}`}
                           </td>
                         );
-                      }
-                      if (price === 0) {
-                        priceChangeModel = <td>{`${numberTransform(price)}`}</td>;
-                      }
-                      return (
-                        <tr key={uuid()}>
-                          <td>
-                            {orderCreate} <span className={s.time}>{timeCreate}</span>
-                          </td>
-                          <td>
-                            {orderExpire} <span className={s.time}>{timeExpire}</span>
-                          </td>
-                          <td>
-                            <Link to={link}>
-                              <img
-                                className={s.tokenImageMaker}
-                                src={getTokenBySymbol(tradingPair.symbolMaker).image}
-                                alt=""
-                              />
-                              <img
-                                className={s.tokenImageTaker}
-                                src={getTokenBySymbol(tradingPair.symbolTaker).image}
-                                alt=""
-                              />
-                              {tradingPair.symbolMaker} / {tradingPair.symbolTaker}
-                            </Link>
-                          </td>
-                          <td>{amount}</td>
-                          {priceChangeModel}
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                ) : (
-                  <tbody>
-                    {dataForTableMobile.map((item: any) => {
-                      const {
-                        orderCreate,
-                        orderExpire,
-                        price,
-                        tradingPair,
-                        amount,
-                        timeCreate,
-                        timeExpire,
-                        addressMaker,
-                        addressTaker,
-                      } = item;
-                      const link = `/markets/${addressMaker}/${addressTaker}`;
-                      let priceChangeModel = (
-                        <div className={s.mobilePriceChangeModel}>
-                          <img src={ArrowUpIcon} alt="arrow up" /> {`${numberTransform(price)}`}
-                        </div>
-                      );
-                      if (price < 0) {
-                        priceChangeModel = (
-                          <div className={s.mobilePriceChangeModelDown}>
-                            <img src={ArrowDownIcon} alt="arrow down" />{' '}
-                            {`${numberTransform(price)}`}
+                        if (price < 0) {
+                          priceChangeModel = (
+                            <td className={`${s.accountTradeTableDown}`}>
+                              <img src={ArrowDownIcon} alt="arrow down" />
+                              {`${numberTransform(price)}`}
+                            </td>
+                          );
+                        }
+                        if (price === 0) {
+                          priceChangeModel = <td>{`${numberTransform(price)}`}</td>;
+                        }
+                        return (
+                          <tr key={uuid()}>
+                            <td>
+                              {orderCreate} <span className={s.time}>{timeCreate}</span>
+                            </td>
+                            <td>
+                              {orderExpire} <span className={s.time}>{timeExpire}</span>
+                            </td>
+                            <td>
+                              <Link to={link}>
+                                <img
+                                  className={s.tokenImageMaker}
+                                  src={getTokenBySymbol(tradingPair.symbolMaker).image}
+                                  alt=""
+                                />
+                                <img
+                                  className={s.tokenImageTaker}
+                                  src={getTokenBySymbol(tradingPair.symbolTaker).image}
+                                  alt=""
+                                />
+                                {tradingPair.symbolMaker} / {tradingPair.symbolTaker}
+                              </Link>
+                            </td>
+                            <td>{amount}</td>
+                            {priceChangeModel}
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  ) : (
+                    <tbody>
+                      {dataForTableMobile.map((item: any) => {
+                        const {
+                          orderCreate,
+                          orderExpire,
+                          price,
+                          tradingPair,
+                          amount,
+                          timeCreate,
+                          timeExpire,
+                          addressMaker,
+                          addressTaker,
+                        } = item;
+                        const link = `/markets/${addressMaker}/${addressTaker}`;
+                        let priceChangeModel = (
+                          <div className={s.mobilePriceChangeModel}>
+                            <img src={ArrowUpIcon} alt="arrow up" /> {`${numberTransform(price)}`}
                           </div>
                         );
-                      }
-                      if (price === 0) {
-                        priceChangeModel = <div>{`${price}`}</div>;
-                      }
-                      return (
-                        <tr key={uuid()}>
-                          <td>
-                            <div className={s.mobileContainer}>
-                              <div className={s.mobilePair}>
-                                <Link to={link}>
-                                  <img
-                                    className={s.tokenImageMaker}
-                                    src={getTokenBySymbol(tradingPair.symbolMaker).image}
-                                    alt=""
-                                  />
-                                  <img
-                                    className={s.tokenImageTaker}
-                                    src={getTokenBySymbol(tradingPair.symbolTaker).image}
-                                    alt=""
-                                  />
-                                  {tradingPair.symbolMaker} / {tradingPair.symbolTaker}
-                                </Link>
-                              </div>
-                              <div>
-                                <div className={s.mobileTime}>
-                                  <div className={s.flexContainerColumn}>
-                                    <div className={s.mobileColumnTitle}>TIME START</div>
-                                    <div>
-                                      {orderCreate}
-                                      <span className={s.time}>{timeCreate}</span>
-                                    </div>
-                                  </div>
-                                  <div className={s.flexContainerColumn}>
-                                    <div className={s.mobileColumnTitle}>TIME END</div>
-                                    <div>
-                                      {orderExpire}
-                                      <span className={s.time}>{timeExpire}</span>
-                                    </div>
-                                  </div>
-                                </div>
-                                <div className={s.mobileAmountPrice}>
-                                  <div className={s.flexContainerColumn}>
-                                    <div className={s.mobileColumnTitle}>AMOUNT</div>
-                                    <div>{numberTransform(amount)}</div>
-                                  </div>
-                                  <div className={s.flexContainerColumn}>
-                                    <div className={s.mobileColumnTitle}>PRICE</div>
-                                    <div>{priceChangeModel}</div>
-                                  </div>
-                                </div>
-                              </div>
+                        if (price < 0) {
+                          priceChangeModel = (
+                            <div className={s.mobilePriceChangeModelDown}>
+                              <img src={ArrowDownIcon} alt="arrow down" />{' '}
+                              {`${numberTransform(price)}`}
                             </div>
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                )}
-              </table>
-            </div>
-          </section>
-          <section className={s.paginationContainer}>
-            <Pagination
-              pageCountProp={pageCount}
-              pageCountMobileProp={pageCountMobile}
-              emitChanges={emitChanges}
-              data={data}
-              sortFlagChangedProp={sortFlagChanged}
-            />
-          </section>
-        </Route>
-      </Switch>
+                          );
+                        }
+                        if (price === 0) {
+                          priceChangeModel = <div>{`${price}`}</div>;
+                        }
+                        return (
+                          <tr key={uuid()}>
+                            <td>
+                              <div className={s.mobileContainer}>
+                                <div className={s.mobilePair}>
+                                  <Link to={link}>
+                                    <img
+                                      className={s.tokenImageMaker}
+                                      src={getTokenBySymbol(tradingPair.symbolMaker).image}
+                                      alt=""
+                                    />
+                                    <img
+                                      className={s.tokenImageTaker}
+                                      src={getTokenBySymbol(tradingPair.symbolTaker).image}
+                                      alt=""
+                                    />
+                                    {tradingPair.symbolMaker} / {tradingPair.symbolTaker}
+                                  </Link>
+                                </div>
+                                <div>
+                                  <div className={s.mobileTime}>
+                                    <div className={s.flexContainerColumn}>
+                                      <div className={s.mobileColumnTitle}>TIME START</div>
+                                      <div>
+                                        {orderCreate}
+                                        <span className={s.time}>{timeCreate}</span>
+                                      </div>
+                                    </div>
+                                    <div className={s.flexContainerColumn}>
+                                      <div className={s.mobileColumnTitle}>TIME END</div>
+                                      <div>
+                                        {orderExpire}
+                                        <span className={s.time}>{timeExpire}</span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div className={s.mobileAmountPrice}>
+                                    <div className={s.flexContainerColumn}>
+                                      <div className={s.mobileColumnTitle}>AMOUNT</div>
+                                      <div>{numberTransform(amount)}</div>
+                                    </div>
+                                    <div className={s.flexContainerColumn}>
+                                      <div className={s.mobileColumnTitle}>PRICE</div>
+                                      <div>{priceChangeModel}</div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  )}
+                </table>
+              </div>
+            </section>
+            <section className={s.paginationContainer}>
+              <Pagination
+                pageCountProp={pageCount}
+                pageCountMobileProp={pageCountMobile}
+                emitChanges={emitChanges}
+                data={data}
+                sortFlagChangedProp={sortFlagChanged}
+              />
+            </section>
+          </Route>
+        </Switch>
+      </div>
     </div>
   );
 };
