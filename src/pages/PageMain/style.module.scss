@@ -3,14 +3,14 @@
 
 .wrapper {
   width: 100%;
-  min-height: 100vh;
   height: 100%;
-  @include flex(row, center, center, nowrap);
+  min-height: 100vh;
 
   background-image: url('../../assets/images/bg-with-shadow.png');
-  background-position: center;
   background-repeat: no-repeat;
+  background-position: center;
   background-size: contain;
+  @include flex(row, center, center, nowrap);
   @include b('mobile') {
     background-size: cover;
   }

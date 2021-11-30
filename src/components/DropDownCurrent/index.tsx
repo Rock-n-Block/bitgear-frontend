@@ -53,7 +53,13 @@ export const DropDownCurrent: React.FC<IDropdownProps> = ({
           tabIndex={0}
           role="button"
           className={styles.head}
-          onClick={handleOpen}
+          onClick={() => {
+            if (visible) {
+              handleClose();
+            } else {
+              handleOpen();
+            }
+          }}
         >
           {isWritable ? (
             <input value={value} className={styles.input} />
