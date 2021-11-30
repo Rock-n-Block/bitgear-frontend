@@ -1,44 +1,37 @@
 @import '../../scss/theme';
 @import '../../scss/mixins';
 
-.container {
-  position: relative;
+.wrapper {
+  width: 100%;
+  min-height: 100vh;
+  height: 100%;
+  @include flex(row, center, center, nowrap);
+  background-image: url("../../assets/images/bg-with-shadow.png");
+  background-position: center;
+  background-repeat: no-repeat;
 
-  padding: 10px 10px 200px 10px;
+  &Cover {
+    background-size: cover;
+  }
+}
+
+
+.container {
+  padding: 0 10px 200px 10px;
 
   width: 100%;
+  height: 100%;
   max-width: 1100px;
   @include b('mobile') {
-    padding: 10px;
+    padding: 120px 10px 100px 10px;
 
     max-width: 300px;
-  }
-
-  .shadowtop {
-    position: absolute;
-    top: -400px;
-    right: 0;
-    left: 0;
-
-    margin: 0 auto;
-
-    width: 395px;
-    height: 395px;
-
-    border-radius: 200px;
-    box-shadow: 120px 20px 150px 50px $color-boxsh-bg1, 120px 5px 100px 120px $color-boxsh-bg2;
-    @include b('tablet') {
-      width: 200px;
-      height: 200px;
-
-      box-shadow: 70px 20px 150px 50px $color-boxsh-bg1, 70px 5px 100px 120px $color-boxsh-bg2;
-    }
   }
 }
 
 .containerTitle {
-  padding: 70px 0 0;
-  @include flex(column, center, center, nowrap);
+  padding: 120px 0 0;
+  @include flex(column, flex-start, flex-start, nowrap);
 
   @include b('mobile') {
     padding: 0;

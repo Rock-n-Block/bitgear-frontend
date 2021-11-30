@@ -161,7 +161,6 @@ export const PageMain: React.FC = () => {
   return (
     <>
       <div className={s.wrapper}>
-        <div className={s.shadowtop} />
         <div className={s.container}>
           <section className={s.containerTitle}>
             <h1>

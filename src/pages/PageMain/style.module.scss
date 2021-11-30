@@ -2,52 +2,32 @@
 @import '../../scss/mixins';
 
 .wrapper {
-  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  height: 100%;
+  @include flex(row, center, center, nowrap);
 
-  .shadowtop {
-    position: absolute;
-    top: -400px;
-    right: 0;
-    left: 0;
-
-    margin: 0 auto;
-
-    width: 395px;
-    height: 395px;
-
-    border-radius: 200px;
-    box-shadow: 120px 20px 150px 50px $color-boxsh-bg1, 120px 5px 100px 120px $color-boxsh-bg2;
-    @include b('tablet') {
-      width: 200px;
-      height: 200px;
-
-      box-shadow: 70px 20px 150px 50px $color-boxsh-bg1, 70px 5px 100px 120px $color-boxsh-bg2;
-    }
+  background-image: url("../../assets/images/bg-with-shadow.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  @include b('mobile') {
+    background-size: cover;
   }
 
-  //.shadowbottom {
-  //  position: absolute;
-  //  overflow: hidden;
-  //  bottom: -400px;
-  //  margin: 0 auto;
-  //  width: 395px;
-  //  height: 395px;
-  //  border-radius: 200px;
-  //  box-shadow: 120px 20px 150px 100px $color-boxsh-bg1, 120px 10px 150px 180px $color-boxsh-bg2;
-  //}
   .container {
-    padding: 30px 30px 400px 30px;
+    padding: 0 30px 400px 30px;
 
     width: 100%;
     max-width: 1000px;
     height: 100%;
     @include b('mobile') {
-      padding: 0 30px 200px 30px;
+      padding: 70px 20px 200px 20px;
     }
   }
 
   .containerTitle {
-    //padding: 55px 0 0;
+    padding-top: 100px;
     @include flex(column, center, center, nowrap);
     @include b('mobile') {
       padding: 0;
@@ -55,9 +35,13 @@
 
     h1 {
       //max-width: 563px;
-      font-size: 45px;
+      font-size: 35px;
       font-weight: 400;
       line-height: 70px;
+      @include b('mobile') {
+        font-size: 26px;
+
+      }
     }
 
     span {
@@ -161,7 +145,7 @@
     @include b('mobile') {
       padding: 20px;
 
-      min-width: 300px;
+      min-width: 280px;
     }
 
     &Hover {
@@ -181,10 +165,10 @@
       width: 100%;
 
       background: linear-gradient(
-        90deg,
-        $color-bg 0,
-        rgba(255, 255, 255, 0.07) 80px,
-        $color-bg 105px
+          90deg,
+          $color-bg 0,
+          rgba(255, 255, 255, 0.07) 80px,
+          $color-bg 105px
       );
 
       animation: loading 2s infinite;

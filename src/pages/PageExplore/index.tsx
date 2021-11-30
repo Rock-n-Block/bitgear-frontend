@@ -2,6 +2,7 @@ import React from 'react';
 import { Helmet } from 'react-helmet';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import cn from 'classnames';
 import { useMedia } from 'use-media';
 
 import HotNew from '../../assets/icons/hot-new.svg';
@@ -179,47 +180,52 @@ export const PageExplore: React.FC = () => {
   }, [data, isWide]);
 
   return (
-    <div className={s.container}>
-      <div className={s.shadowtop} />
-      <Helmet>
-        <title>Bitgear | Explore</title>
-        <meta name="description" content="Find the best prices across exchange networks" />
-        <meta name="keywords" content="exchange, blockchain, crypto" />
-      </Helmet>
+    <div
+      className={cn(s.wrapper, {
+        [s.wrapperCover]: dataForTable.length || dataForTableMobile.length,
+      })}
+    >
+      <div className={s.container}>
+        <Helmet>
+          <title>Bitgear | Explore</title>
+          <meta name="description" content="Find the best prices across exchange networks" />
+          <meta name="keywords" content="exchange, blockchain, crypto" />
+        </Helmet>
 
-      <section className={s.containerTitle}>
-        <Search wide={isWide} />
-      </section>
-      <section className={s.containerButtons}>
-        <Link className={s.containerButtonsItem} to="/lists/recently-added">
-          <img src={HotNew} alt="CoinIcon" /> <span> Hot and new</span>
-        </Link>
-        <Link className={s.containerButtonsItem} to="/lists/top-gainers">
-          <img src={TopPerf} alt="RocketIcon" /> <span> Top performers</span>
-        </Link>
-      </section>
-      {dataForTable.length || dataForTableMobile.length ? (
-        <section className={s.ExploreTable}>
-          <MainTable
-            data={dataForTable}
-            dataForMobile={dataForTableMobile}
-            emitSorting={emitSorting}
-            activeColumn={activeColumn}
-            isArrowUp={isArrowUp}
+        <section className={s.containerTitle}>
+          <Search wide={isWide} />
+        </section>
+        <section className={s.containerButtons}>
+          <Link className={s.containerButtonsItem} to="/lists/recently-added">
+            <img src={HotNew} alt="CoinIcon" /> <span> Hot and new</span>
+          </Link>
+          <Link className={s.containerButtonsItem} to="/lists/top-gainers">
+            <img src={TopPerf} alt="RocketIcon" /> <span> Top performers</span>
+          </Link>
+        </section>
+        {dataForTable.length || dataForTableMobile.length ? (
+          <section className={s.ExploreTable}>
+            <MainTable
+              data={dataForTable}
+              dataForMobile={dataForTableMobile}
+              emitSorting={emitSorting}
+              activeColumn={activeColumn}
+              isArrowUp={isArrowUp}
+            />
+          </section>
+        ) : (
+          <Loader className={s.ExploreLoader} color="white" />
+        )}
+        <section className={s.paginationContainer}>
+          <Pagination
+            pageCountProp={pageCount}
+            pageCountMobileProp={pageCountMobile}
+            emitChanges={emitChanges}
+            data={data}
+            sortFlagChangedProp={sortFlagChanged}
           />
         </section>
-      ) : (
-        <Loader className={s.ExploreLoader} color="white" />
-      )}
-      <section className={s.paginationContainer}>
-        <Pagination
-          pageCountProp={pageCount}
-          pageCountMobileProp={pageCountMobile}
-          emitChanges={emitChanges}
-          data={data}
-          sortFlagChangedProp={sortFlagChanged}
-        />
-      </section>
+      </div>
     </div>
   );
 };

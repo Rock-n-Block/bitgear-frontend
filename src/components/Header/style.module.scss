@@ -5,13 +5,10 @@ $fs: 16px;
 
 .header {
   @include flex(row, center, center, nowrap);
-  position: sticky;
-  //position: fixed;
+  position: fixed;
   z-index: 999;
   top: 0;
 
-  //padding-top: 12px;
-  //padding-bottom: 11px;
   width: 100%;
   height: $height-header;
 
@@ -23,15 +20,11 @@ $fs: 16px;
 
   user-select: none;
 
+  background: linear-gradient(180deg, #030D22 0%, rgba(3, 13, 34, 0) 195.12%),
+  linear-gradient(0deg, rgba(3, 13, 35, 0.25), rgba(3, 13, 35, 0.25));
   color: $color-text-header;
-  background: $color-bg;
-
   transition: top 0.4s;
-  //background-color: $color-bg-header;
-  //border-bottom: 1px solid $color-border-header-end;
-  //border-bottom-style: solid;
-  //border-image-source: $color-border-header;
-  //border-image-slice: 1;
+
   @include b('mobile') {
     padding: 0;
 
@@ -45,7 +38,6 @@ $fs: 16px;
     max-width: 1270px;
     height: $height-header;
 
-    background: $color-bg-header;
     @include flex(row, center, space-between, nowrap);
     @include b('mobile') {
       padding: 0;
