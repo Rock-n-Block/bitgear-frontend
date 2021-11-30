@@ -23,6 +23,7 @@ import { getFromStorage, setToStorage } from '../../utils/localStorage';
 import { prettyAmount } from '../../utils/prettifiers';
 import { Burger } from '../Burger';
 import { Dropdown } from '../Dropdown';
+import { NetworkDropDown } from '../NetworkDropDown';
 
 import s from './style.module.scss';
 
@@ -297,6 +298,9 @@ export const Header: React.FC = () => {
             <a href="https://farm.bitgear.io" target="_blank" rel="noreferrer">
               Farm
             </a>
+          </div>
+          <div className={s.headerItem}>
+            <NetworkDropDown />
           </div>
           {userAddress && isMobile ? (
             <>
