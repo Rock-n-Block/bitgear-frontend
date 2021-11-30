@@ -8,7 +8,6 @@
     padding: 40px 10px 300px 10px;
   }
 
-
   &Wrapper {
     position: relative;
     overflow: hidden;
@@ -39,10 +38,10 @@
 
       width: 100%;
       background: linear-gradient(
-          90deg,
-          $color-bg 0,
-          rgba(255, 255, 255, 0.07) 80px,
-          $color-bg 105px
+        90deg,
+        $color-bg 0,
+        rgba(255, 255, 255, 0.07) 80px,
+        $color-bg 105px
       );
 
       animation: loading 2s infinite;
@@ -266,7 +265,6 @@
 
         &Row {
           @include flex(row, center, flex-start, nowrap);
-
         }
 
         &Image {
@@ -285,12 +283,9 @@
         color: $color-text-secondary;
         text-transform: uppercase;
         background: $color-bg-input-market;
-
       }
 
-
       &Input {
-
         label {
           @include flex(row, center);
           position: absolute;
@@ -303,7 +298,6 @@
           line-height: 25px;
 
           color: $color-text-secondary;
-
         }
 
         input {
@@ -719,7 +713,6 @@
 
   &Slippage {
     width: 100%;
-
   }
 
   &Exchanges {
@@ -1178,7 +1171,6 @@
 }
 
 // GAS PRICE FOR RADIO VAR
-
 
 @keyframes loading {
   0% {
