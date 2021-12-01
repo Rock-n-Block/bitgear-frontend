@@ -9,6 +9,10 @@
   background-image: url('../../assets/images/bg-with-shadow.png');
   background-repeat: no-repeat;
   background-position: center;
+  background-size: contain;
+  @include b('mobile') {
+    background-size: cover;
+  }
   @include flex(row, center, center, nowrap);
 
   &Cover {

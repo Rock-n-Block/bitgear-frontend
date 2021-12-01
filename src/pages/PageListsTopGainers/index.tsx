@@ -1,6 +1,7 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
 import { useSelector } from 'react-redux';
+import cn from 'classnames';
 import { useMedia } from 'use-media';
 
 import { Loader, MainTable, Search } from '../../components';
@@ -148,33 +149,39 @@ export const PageListsTopGainers: React.FC = React.memo(() => {
   }, [data]);
 
   return (
-    <div className={s.container}>
-      <Helmet>
-        <title>Bitgear | Top performers</title>
-        <meta name="description" content="Find the best prices across exchange networks" />
-        <meta name="keywords" content="exchange, blockchain, crypto" />
-      </Helmet>
+    <div
+      className={cn(s.wrapper, {
+        [s.wrapperCover]: dataForTable.length || dataForTableMobile.length,
+      })}
+    >
+      <div className={s.container}>
+        <Helmet>
+          <title>Bitgear | Top performers</title>
+          <meta name="description" content="Find the best prices across exchange networks" />
+          <meta name="keywords" content="exchange, blockchain, crypto" />
+        </Helmet>
 
-      <section className={s.containerTitle}>
-        <h1>Top performers</h1>
-      </section>
-
-      <section className={s.containerSearch}>
-        <Search wide={isWide} />
-      </section>
-      {dataForTableMobile.length || dataForTable.length ? (
-        <section className={s.ExploreTable}>
-          <MainTable
-            data={dataForTable}
-            emitSorting={emitSorting}
-            activeColumn={activeColumn}
-            isArrowUp={isArrowUp}
-            dataForMobile={dataForTableMobile}
-          />
+        <section className={s.containerTitle}>
+          <h1>Top performers</h1>
         </section>
-      ) : (
-        <Loader className={s.ExploreLoader} color="white" />
-      )}
+
+        <section className={s.containerSearch}>
+          <Search wide={isWide} />
+        </section>
+        {dataForTableMobile.length || dataForTable.length ? (
+          <section className={s.ExploreTable}>
+            <MainTable
+              data={dataForTable}
+              emitSorting={emitSorting}
+              activeColumn={activeColumn}
+              isArrowUp={isArrowUp}
+              dataForMobile={dataForTableMobile}
+            />
+          </section>
+        ) : (
+          <Loader className={s.ExploreLoader} color="white" />
+        )}
+      </div>
     </div>
   );
 });
