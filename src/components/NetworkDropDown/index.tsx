@@ -13,21 +13,25 @@ export const NetworkDropDown: React.FC = () => {
       text: 'Ethereum',
       icon: ETH,
       color: 'blue',
+      disable: false,
     },
     {
       text: 'Polygon (coming soon)',
       icon: MATIC,
       color: 'purple',
+      disable: true,
     },
     {
       text: 'BSC (coming soon)',
       icon: BNB,
       color: 'yellow',
+      disable: true,
     },
     {
       text: 'Moonriver (coming soon)',
       icon: MON,
       color: 'gray',
+      disable: true,
     },
   ];
 

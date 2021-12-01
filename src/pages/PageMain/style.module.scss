@@ -11,7 +11,7 @@
   background-position: center;
   background-size: contain;
   @include flex(row, center, center, nowrap);
-  @include b('mobile') {
+  @include b('tablet') {
     background-size: cover;
   }
 
@@ -164,10 +164,10 @@
       width: 100%;
 
       background: linear-gradient(
-        90deg,
-        $color-bg 0,
-        rgba(255, 255, 255, 0.07) 80px,
-        $color-bg 105px
+          90deg,
+          $color-bg 0,
+          rgba(255, 255, 255, 0.07) 80px,
+          $color-bg 105px
       );
 
       animation: loading 2s infinite;

@@ -18,7 +18,7 @@
   background-position: center;
   background-size: contain;
   @include flex(row, center, center, nowrap);
-  @include b('mobile') {
+  @include b('tablet') {
     background-size: cover;
   }
 }
@@ -41,10 +41,16 @@
 
       font-size: 45px;
       font-weight: normal;
+      @include b('mobile') {
+        font-size: 26px;
+      }
     }
 
     span {
       font-size: 24px;
+      @include b('mobile') {
+        font-size: 18px;
+      }
       font-weight: normal;
 
       cursor: pointer;

@@ -256,6 +256,9 @@ export const Header: React.FC = () => {
               : s.headerRightGroup
           }
         >
+          <div className={s.headerItemMobile}>
+            <NetworkDropDown />
+          </div>
           <div
             className={s.headerItem}
             role="button"
@@ -299,7 +302,7 @@ export const Header: React.FC = () => {
               Farm
             </a>
           </div>
-          <div className={s.headerItem}>
+          <div className={s.headerItemDesktop}>
             <NetworkDropDown />
           </div>
           {userAddress && isMobile ? (
