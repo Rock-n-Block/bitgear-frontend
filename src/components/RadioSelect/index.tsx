@@ -29,25 +29,12 @@ export const RadioSelect: React.FC<IRadioSelect> = ({
   const [value, setValue] = React.useState<any>(customValue || '');
 
   const handleChangeCheck = (index: number) => {
-    let newSlippage;
-    if (index === -1) {
-      newSlippage = items.map((item) => {
-        return {
-          ...item,
-          checked: false,
-        };
-      });
-      onChecked(0, newSlippage);
-    } else {
-      newSlippage = items.map((item, i) => {
-        return {
-          ...item,
-          checked: index === i,
-        };
-      });
-      onChecked(items[index].text, newSlippage);
-      setValue('');
-    }
+    const newSlippage = items.map((item, i) => ({
+      ...item,
+      checked: index === -1 ? false : index === i,
+    }));
+    onChecked(index === -1 ? 0 : items[index].text, newSlippage);
+    setValue('');
   };
 
   const handleChangeCustomValue = (e: React.ChangeEvent<HTMLInputElement>) => {
