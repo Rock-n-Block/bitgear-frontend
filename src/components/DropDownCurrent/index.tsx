@@ -53,7 +53,13 @@ export const DropDownCurrent: React.FC<IDropdownProps> = ({
           tabIndex={0}
           role="button"
           className={styles.head}
-          onClick={handleOpen}
+          onClick={() => {
+            if (visible) {
+              handleClose();
+            } else {
+              handleOpen();
+            }
+          }}
         >
           {isWritable ? (
             <input value={value} className={styles.input} />
@@ -97,9 +103,14 @@ export const DropDownCurrent: React.FC<IDropdownProps> = ({
                         [styles.selectioned]: option.text === value,
                       },
                       [styles[option.color]],
+                      { [styles.disable]: option.disable },
                       option.text === value ? 'text-gradient' : '',
                     )}
-                    onClick={() => handleClick(option.text)}
+                    onClick={() => {
+                      if (!option.disable) {
+                        handleClick(option.text);
+                      }
+                    }}
                     key={`dropdown_option_${option.text}`}
                   >
                     {option.icon ? <img src={option.icon} alt="icon" /> : ''}

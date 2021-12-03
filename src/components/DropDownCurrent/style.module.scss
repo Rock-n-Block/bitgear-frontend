@@ -7,6 +7,10 @@
 
   color: $color-text-primary;
 
+  @include b('mobile') {
+    margin-bottom: 20px;
+  }
+
   &.active {
     z-index: 10;
 
@@ -32,16 +36,18 @@
   position: relative;
 
   padding: 8px 48px 8px 16px;
-  border-radius: 12px;
 
   height: 42px;
-
+  @include b('mobile') {
+    max-width: 160px;
+  }
   font-size: 16px;
   line-height: 160%;
 
   cursor: pointer;
 
   border: 2px solid #647ce2;
+  border-radius: 12px;
 
   transition: box-shadow 0.2s;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
@@ -74,6 +80,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+
   transition: all 250ms ease-in-out;
 
   transform: translateY(-50%);
@@ -94,9 +101,16 @@
   visibility: hidden;
 
   width: 269px;
+  @include b('mobile') {
+    top: 60px;
+
+    width: 160px;
+
+    background: $color-bg-input-market;
+  }
   background: $color-bg;
-  opacity: 0;
   border-radius: 12px;
+  opacity: 0;
 
   transition: all 0.2s;
   transform: translateY(3px);
@@ -142,18 +156,23 @@
   padding: 8px 16px;
 
   height: 56px;
+  @include b('mobile') {
+    padding: 16px;
 
+    height: 70px;
+  }
   font-size: 14px;
   font-weight: 500;
 
-  cursor: pointer;
-
   text-transform: initial;
-  transition: color 0.2s;
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+
+  cursor: pointer;
 
   background: $color-bg-input-market;
   border-radius: 12px;
+
+  transition: color 0.2s;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
   img {
     margin-right: 10px;
@@ -189,4 +208,8 @@
 
   color: $color-text-primary;
   background-color: transparent;
+}
+
+.disable {
+  cursor: not-allowed !important;
 }
