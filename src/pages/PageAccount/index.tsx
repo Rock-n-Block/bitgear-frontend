@@ -387,7 +387,7 @@ export const PageAccount: React.FC = () => {
         <div className={s.accountMenu}>
           <Link
             to={`${match.url}`}
-            className={isBalancePage ? s.accountMenuItemctive : s.accountMenuItem}
+            className={isBalancePage ? s.accountMenuItemActive : s.accountMenuItem}
           >
             Balance
           </Link>
@@ -395,7 +395,7 @@ export const PageAccount: React.FC = () => {
             to={`${match.url}/orders`}
             className={isOrdersPage ? s.accountMenuItemActive : s.accountMenuItem}
           >
-            Orders History
+            Trade History
           </Link>
         </div>
       </section>
@@ -507,7 +507,7 @@ export const PageAccount: React.FC = () => {
         </Route>
         <Route path={`${match.path}/orders`}>
           <section className={s.accountTrade}>
-            <h2>Order History</h2>
+            <h2>Trade History</h2>
 
             <div className={s.accountTradeHistory}>
               <table className={s.accountTradeTable}>

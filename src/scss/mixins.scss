@@ -27,7 +27,9 @@
       @content;
     }
   } @else if $point==mobile3x {
-    @media only screen and (-webkit-min-device-pixel-ratio: 3), only screen and (min-resolution: 3dppx), only screen and (min-resolution: 350dpi) {
+    @media only screen and (-webkit-min-device-pixel-ratio: 3),
+      only screen and (min-resolution: 3dppx),
+      only screen and (min-resolution: 350dpi) {
       @content;
     }
   } @else {

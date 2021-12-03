@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet';
 import { useSelector } from 'react-redux';
 import { useMedia } from 'use-media';
 
-import { MainTable, Search } from '../../components';
+import { Loader, MainTable, Search } from '../../components';
 import excludedCoins from '../../data/excludedCoins';
 import excludedSymbols from '../../data/excludedSymbols';
 import { CoinMarketCapService } from '../../services/CoinMarketCap';
@@ -163,15 +163,19 @@ export const PageListsRecentlyAdded: React.FC = React.memo(() => {
         <Search wide={isWide} />
       </section>
 
-      <section className={s.ExploreTable}>
-        <MainTable
-          data={dataForTable}
-          emitSorting={emitSorting}
-          activeColumn={activeColumn}
-          isArrowUp={isArrowUp}
-          dataForMobile={dataForTableMobile}
-        />
-      </section>
+      {dataForTable.length || dataForTableMobile.length ? (
+        <section className={s.ExploreTable}>
+          <MainTable
+            data={dataForTable}
+            emitSorting={emitSorting}
+            activeColumn={activeColumn}
+            isArrowUp={isArrowUp}
+            dataForMobile={dataForTableMobile}
+          />
+        </section>
+      ) : (
+        <Loader className={s.ExploreLoader} color="white" />
+      )}
     </div>
   );
 });

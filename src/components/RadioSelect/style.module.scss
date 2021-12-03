@@ -1,0 +1,79 @@
+@import '../../scss/theme';
+@import '../../scss/mixins';
+
+$gap: 12px;
+
+.radioSelect {
+  padding: 20px;
+  width: 100%;
+  @include flex(row, center, space-between, wrap);
+  background: $color-bg-input-market;
+  border-radius: 12px;
+
+  &Item {
+    padding: 6px;
+    width: 50px;
+
+    background: transparent;
+    border: 1px solid $color-bg-checkbox;
+    border-radius: 12px;
+
+    cursor: pointer;
+
+    transition: all 250ms ease-in-out;
+
+    span {
+      color: $color-text-link;
+    }
+
+    &:hover,
+    &Checked {
+      background: $color-bg-checkbox;
+
+      span {
+        color: $color-text-primary;
+      }
+    }
+
+    &:not(:first-child) {
+      margin-left: $gap;
+    }
+  }
+
+  input {
+    margin-left: $gap;
+    @include b('mobile') {
+      margin: $gap 0 0;
+    }
+    padding: 6px;
+
+    max-width: 122px;
+    min-height: 39px;
+
+    color: $color-text-link;
+    text-align: center;
+    font-weight: 400;
+
+    background: transparent;
+    border: 1px solid $color-bg-checkbox;
+    border-radius: 12px;
+
+    transition: all 250ms ease-in-out;
+
+    &:hover,
+    &:active,
+    &:focus {
+      background: $color-bg-checkbox;
+      color: $color-text-primary;
+    }
+
+    &::placeholder {
+      color: $color-text-link;
+    }
+  }
+
+  .activeCustom {
+    background: $color-bg-checkbox;
+    color: $color-text-primary;
+  }
+}

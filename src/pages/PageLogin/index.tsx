@@ -4,6 +4,8 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
 
+import CoinaseLogo from '../../assets/images/logo/coinbase-logo.svg';
+import FormaticLogo from '../../assets/images/logo/fortmatic-logo.svg';
 import MetamaskLogo from '../../assets/images/logo/metamask-logo.svg';
 import WalletConnectLogo from '../../assets/images/logo/wallet-connect-logo.svg';
 import { walletActions } from '../../redux/actions';
@@ -42,10 +44,22 @@ export const PageLogin: React.FC = () => {
   return (
     <div className={s.container}>
       <section className={s.containerTitle}>
-        <h1>Connect your wallet</h1>
+        <h1>
+          Connect your <strong>wallet</strong>
+        </h1>
         <span>Connect with one of available wallet providers or create a new wallet.</span>
       </section>
       <div className={s.login_methods}>
+        <div
+          role="button"
+          tabIndex={0}
+          className={s.login_methods_item} // TODO change for FORMATIC
+          onClick={handleWalletConnectLogin}
+          onKeyDown={() => {}}
+        >
+          <img src={FormaticLogo} alt="Formatic logo" />
+          <span>Formatic</span>
+        </div>
         <div
           role="button"
           tabIndex={0}
@@ -55,6 +69,16 @@ export const PageLogin: React.FC = () => {
         >
           <img src={WalletConnectLogo} alt="WalletConnect logo" />
           <span>WalletConnect</span>
+        </div>
+        <div
+          role="button"
+          tabIndex={0}
+          className={s.login_methods_item}
+          onClick={handleMetamaskLogin} // TODO change for Coinbase
+          onKeyDown={() => {}}
+        >
+          <img src={CoinaseLogo} alt="Coinbase logo" />
+          <span>Coinbase wallet</span>
         </div>
         <div
           role="button"

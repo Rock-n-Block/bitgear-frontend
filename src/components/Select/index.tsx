@@ -10,12 +10,13 @@ type TypeDropdownProps = {
   label?: React.ReactElement;
   children?: Element | React.ReactChildren | React.ReactElement | React.ReactChild;
   handleClick?: () => void;
+  className?: string;
 };
 
 export const Select: React.FC<TypeDropdownProps> = React.memo(
-  ({ label, children = [], open = false }) => {
+  ({ label, children = [], open = false, className }) => {
     return (
-      <div className={s.container}>
+      <div className={cns(s.container, className)}>
         {label || (
           <div className={s.label} role="button" tabIndex={0} onKeyDown={() => {}}>
             <div>Select</div>

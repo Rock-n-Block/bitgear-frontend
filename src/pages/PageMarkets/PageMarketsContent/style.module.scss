@@ -2,158 +2,215 @@
 @import '../../../scss/mixins';
 
 .container {
+  @include flex(column, center, center, nowrap);
   width: 100%;
-  padding: 40px 30px 300px 30px;
-
   @include b('mobile') {
     padding: 40px 10px 300px 10px;
+  }
+
+  &Wrapper {
+    position: relative;
+    overflow: hidden;
+    margin: 34px 0 200px;
+    padding: 30px 30px 125px;
+
+    min-width: 470px;
+    max-width: 470px;
+    height: 500px;
+    background: $color-bg;
+    border-radius: 12px;
+    @include flex(column, center, center, nowrap);
+    @include b('mobile') {
+      min-width: 300px;
+    }
+
+    &Bg {
+      background: linear-gradient(180deg, #030d22 74.94%, rgba(3, 13, 34, 0) 100%);
+      height: auto;
+    }
+
+    &Skeleton {
+      position: absolute;
+      top: 0;
+      right: 0;
+      left: 0;
+      bottom: 0;
+
+      width: 100%;
+      background: linear-gradient(
+        90deg,
+        $color-bg 0,
+        rgba(255, 255, 255, 0.07) 80px,
+        $color-bg 105px
+      );
+
+      animation: loading 2s infinite;
+    }
   }
 }
 
 .CustomAddress {
+  position: relative;
+
   border: $border-form;
   border-radius: 20px;
   grid-column: 1 / 4;
-  position: relative;
+
   &Title {
+    position: absolute;
+    z-index: 2;
+    top: -15px;
+    left: 50%;
+
+    padding: 0 5px;
+
+    font-size: 16px;
+    line-height: 25px;
+
     color: $color-bg-checkbox;
     background: #07092a;
-    font-size: 16px;
-    position: absolute;
-    left: 50%;
-    top: -15px;
+
     transform: translateX(-50%);
-    line-height: 25px;
-    padding: 0 5px;
-    z-index: 2;
   }
+
   &Input {
-    border-radius: 20px;
-    height: 100%;
     overflow: hidden;
+
+    height: 100%;
+
+    border-radius: 20px;
+
     input {
       padding: 0 10px;
-      text-align: center;
+
       height: 100%;
+
+      text-align: center;
     }
   }
 }
 
 .containerTitle {
-  @include flex(row, normal, space-between);
+  @include flex(row, center, space-between, nowrap);
   width: 100%;
-
+  min-height: 50px;
   @include b('mobile') {
-    @include flex(column);
     padding: 0 10px;
   }
 
   &First {
-    @include flex(column);
-  }
-
-  &Second {
-    @include flex(column, normal, flex-end);
-
-    &Inner {
-      @include flex(row, normal, space-between);
-      margin: 24px 0 0 0;
-      border-bottom: $border-tab;
-
-      @include b('mobile') {
-        display: block;
-      }
-
-      div:first-child {
-        padding: 10px 13px 10px 0px;
-      }
-
-      div {
-        padding: 10px 13px 10px 13px;
-
-        @include b('mobile') {
-          float: left;
-        }
-      }
-
-      div:last-child {
-        padding: 10px 0px 10px 13px;
-
-        @include b('mobile') {
-          float: right;
-        }
-      }
-    }
+    @include flex(row, center, space-between);
 
     &Item {
-      font-size: 16px;
+      font-size: 14px;
+      font-weight: 900;
       line-height: 25px;
-      font-weight: 400;
-      color: $color-text-secondary;
+      text-transform: uppercase;
+
       cursor: pointer;
+
+      color: $color-text-secondary;
+      border-bottom: 2px solid rgba(0, 0, 0, 0);
+
       transition: color 200ms ease;
 
       &:hover {
         color: $color-text-link;
-        transition: color 200ms ease;
+
+        transition: all 200ms ease;
       }
     }
 
     &ItemActive {
-      font-size: 16px;
+      font-size: 14px;
+      font-weight: 900;
       line-height: 25px;
-      font-weight: 700;
-      color: $color-text-link;
-      padding: 10px 26px 10px 0px;
+      text-transform: uppercase;
+
       cursor: pointer;
+
+      border-bottom: 2px solid $color-text-link;
+    }
+
+    & > div {
+      margin-right: 30px;
+    }
+  }
+
+  &Second {
+    @include flex(row, center, flex-end);
+
+    &Item {
+      &Img {
+        padding: 8px;
+
+        cursor: pointer;
+
+        background: rgba(5, 26, 56, 1);
+        border-radius: 12px;
+
+        transition: all 250ms ease-in-out;
+
+        &:hover {
+          box-shadow: 0 0 10px 1px rgba(255, 255, 255, 0.61);
+        }
+      }
     }
   }
 
   &Name {
-    color: $color-text-link;
     font-size: 20px;
-    line-height: 31px;
     font-weight: 400;
+    line-height: 31px;
+
+    color: $color-text-link;
   }
 
   &Price {
     margin: -7px 0 0 0;
+
     font-size: 50px;
-    line-height: 78px;
     font-weight: 400;
+    line-height: 78px;
   }
 
   &PriceChange {
     margin: -13px 0 0 0;
+
     font-size: 20px;
-    line-height: 31px;
     font-weight: 400;
+    line-height: 31px;
 
     &[data-positive='true'] {
       margin: -13px 0 0 0;
-      color: $color-text-green;
+
       font-size: 20px;
-      line-height: 31px;
       font-weight: 400;
+      line-height: 31px;
+
+      color: $color-text-green;
     }
 
     &[data-negative='true'] {
       margin: -13px 0 0 0;
-      color: $color-text-red;
+
       font-size: 20px;
-      line-height: 31px;
       font-weight: 400;
+      line-height: 31px;
+
+      color: $color-text-red;
     }
   }
 }
 
 .containerTrading {
-  @include grid(1fr 44px 1fr, 1fr 55px 58px, 28px);
+  @include flex(column, center, center, nowrap);
+  margin: 15px 0 0 0;
+
   width: 100%;
-  margin: 47px 0 0 0;
 
   @include b('870') {
-    @include grid(repeat(1, 1fr), auto, 0px);
+    @include grid(repeat(1, 1fr), auto, 0);
   }
 
   &CardLimitOpen {
@@ -161,63 +218,105 @@
   }
 
   &Card {
-    border: $border-form;
+    @include flex(column, flex-start, flex-end, nowrap);
     border-radius: 20px;
-    position: relative;
 
     &Inner {
-      @include flex(row, normal, normal, nowrap);
-      position: relative;
-      flex-basis: 450px;
-      padding: 40px 25px 25px 25px;
+      margin-top: 6px;
+      padding: 10px 20px 5px;
+
+      @include flex(column, flex-start, center, nowrap);
+      background: $color-bg-input-market;
+      border-radius: 12px;
+
+      transition: all 250ms ease-in-out;
+
+      &:hover,
+      &:focus,
+      &:active {
+        box-shadow: 0 0 10px 0.5px rgba(255, 255, 255, 0.55);
+      }
+
+      &Name {
+        font-weight: 900;
+        text-transform: uppercase;
+
+        color: $color-text-secondary;
+      }
+
+      &Row {
+        @include flex(row, center, space-between, nowrap);
+      }
     }
 
     &Limit {
-      margin: -15px 25px 25px 25px;
-      padding: 10px;
-      border-radius: 10px;
-      background-color: #131637;
+      margin-top: 10px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      grid-gap: 10px;
+      width: 100%;
 
       &Inner {
-        @include grid(1fr 2fr, 1fr, 20px);
-        margin: 5px;
+        padding: 12px 20px;
+        background: $color-bg-input-market;
+        border-radius: 12px;
+        max-height: 80px;
+        max-width: 200px;
+        @include b('mobile') {
+          max-width: 140px;
+        }
+
+        &Row {
+          @include flex(row, center, flex-start, nowrap);
+        }
+
+        &Image {
+          //position: absolute;
+          //top: 50px;
+          //right: 80px;
+          //cursor: pointer;
+        }
       }
 
       &Label {
-        @include flex(row, center);
-        color: $color-text-link;
-        font-weight: 500;
         font-size: 16px;
+        font-weight: 900;
         line-height: 25px;
+
+        color: $color-text-secondary;
+        text-transform: uppercase;
+        background: $color-bg-input-market;
       }
 
       &Input {
-        position: relative;
-
         label {
           @include flex(row, center);
           position: absolute;
           right: 10px;
-          color: $color-text-secondary;
-          font-weight: 400;
-          font-size: 16px;
-          line-height: 25px;
+
           height: 100%;
+
+          font-size: 16px;
+          font-weight: 400;
+          line-height: 25px;
+
+          color: $color-text-secondary;
         }
 
         input {
-          height: $height-input-small;
-          outline: none;
-          background-color: $color-bg-select-item;
-          padding: 10px 10px;
-          font-weight: 500;
+          padding: 10px 10px 0;
+          height: 35px;
+          width: 150px;
           font-size: 22px;
+          font-weight: 500;
           line-height: 34px;
-          border: none;
-          border-radius: 4px;
-          caret-color: $color-cursor-input;
+
           color: $color-text-input;
-          width: 100%;
+          background: transparent;
+          border: none;
+          outline: none;
+          caret-color: $color-cursor-input;
+
           &::placeholder {
             color: $color-text-input-placeholder;
           }
@@ -226,139 +325,177 @@
     }
 
     &Label {
-      position: absolute;
       padding: 0 5px;
-      top: -14px;
-      left: 20px;
+      @include flex(row, flex-end, space-between, nowrap);
+      width: 100%;
+
       font-size: 16px;
+      font-weight: 900;
       line-height: 25px;
-      font-weight: 500;
-      background: $color-bg;
+      text-transform: uppercase;
+
       color: $color-text-link;
+      background: $color-bg;
     }
 
     &Image {
       img {
-        width: 58px;
-        height: 58px;
-        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+
         background: $color-bg-image;
+        border-radius: 12px;
       }
     }
 
     &Container {
-      flex-grow: 1;
-      flex-shrink: 1;
-      margin: 6px 0 0 20px;
+      @include flex(row, center, space-between, nowrap);
     }
 
     &ContainerInner {
-      @include flex(row, center, space-between);
-      width: 100%;
-    }
-
-    &Label {
-      @include flex(row, center, normal);
+      @include flex(row, center, flex-start, nowrap);
+      max-width: fit-content;
     }
 
     &Search {
-      @include flex(row, center, normal);
+      margin: 0 10px;
+      @include flex(row, center, normal, nowrap);
 
       &Name {
         font-size: 20px;
-        line-height: 31px;
         font-weight: 500;
-        color: $color-text-link;
+        line-height: 31px;
+        text-transform: uppercase;
+
         cursor: pointer;
+
+        color: $color-text-primary;
       }
 
       &ArrowDown {
         margin: 0 0 0 10px;
-        fill: white;
+        fill: rgba(1, 151, 226, 1);
       }
     }
 
     &SearchInput {
-      padding: 0 10px;
+      margin: 0 auto;
+      padding: 14px;
+
+      max-width: 370px;
+
+      background: rgba(5, 26, 56, 1);
+      border-radius: 12px;
+
+      @include b('mobile') {
+        max-width: 250px;
+      }
+
+      @include flex(row, center, space-between, nowrap);
+
+      input {
+        margin-left: 20px;
+        padding: 0;
+
+        background: transparent;
+      }
     }
 
     &SearchItems {
-      height: 280px;
-      overflow: auto;
       margin: 10px 0 0 0;
-      padding: 0px 10px;
+      padding: 0 10px;
+
+      overflow: auto;
+
+      height: 280px;
     }
 
     &SearchItem {
       @include grid(36px 150px 1fr, 36px, 0);
-      padding: 14px 10px;
-      border-radius: 12px;
-      cursor: pointer;
-      width: 100%;
-      background: $color-bg-dropdown-item;
       margin: 1px 0;
+      padding: 14px 10px;
+
+      width: 100%;
+
+      cursor: pointer;
+
+      //background: $color-bg-dropdown-item;
+      border-radius: 12px;
 
       &:hover {
-        background: $color-bg-dropdown;
+        background: rgba(5, 26, 56, 1);
       }
 
       &Image {
         width: 36px;
         height: 36px;
-        border-radius: 50%;
+
         background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
       }
 
       &First {
         @include flex(column, normal, center, nowrap);
-        margin: 0px 13px 0 13px;
+        margin: 0 13px 0 13px;
       }
 
       &Name {
-        font-weight: 500;
         font-size: 16px;
+        font-weight: 500;
         line-height: 18px;
+
         color: $color-text-link;
       }
 
       &Price {
-        font-weight: 400;
-        font-size: 16px;
-        line-height: 25px;
-        color: $color-text-secondary;
         margin: -5px 0 0 0;
+
+        font-size: 16px;
+        font-weight: 400;
+        line-height: 25px;
+
+        color: $color-text-secondary;
       }
 
       &Symbol {
         @include flex(row, center, flex-end);
-        font-weight: 400;
         font-size: 16px;
+        font-weight: 400;
         line-height: 25px;
+
         color: $color-text-secondary;
       }
     }
 
     &Symbol {
       font-size: 16px;
-      line-height: 25px;
       font-weight: 400;
+      line-height: 25px;
+
       color: $color-text-secondary;
     }
 
     &Input {
       margin: 6px 0 0 0;
+      @include flex(row, center, flex-end, nowrap);
+
       input {
-        height: $height-input-small;
-        outline: none;
-        background-color: $color-bg-input-small;
-        padding: 10px 20px;
-        font-size: 30px;
-        line-height: 47px;
-        border: none;
-        border-radius: 4px;
-        caret-color: $color-cursor-input;
-        color: $color-text-input;
+        padding: 0 20px;
+
         width: 100%;
+        max-height: 40px !important;
+        //height: $height-input-small;
+        font-size: 24px;
+        line-height: 47px;
+        text-align: right;
+
+        color: $color-text-input;
+        background: $color-bg-input-market;
+        border: none;
+        border-radius: 12px;
+        outline: none;
+        caret-color: $color-cursor-input;
+
         &::placeholder {
           color: $color-text-input-placeholder;
         }
@@ -367,42 +504,61 @@
 
     &Balance {
       margin: 11px 0 0 0;
-      text-align: right;
+
       font-size: 16px;
-      line-height: 1.1;
       font-weight: 400;
+      line-height: 1.1;
+      text-align: right;
+
       color: $color-text-secondary;
 
       span {
         margin: 0 0 0 11px;
+
         font-weight: 600;
+
         color: $color-text-link;
       }
     }
   }
 
   &Divider {
+    margin: 11px 0 4px;
     @include flex(row, center, center);
 
-    @include b('870') {
-      @include flex(row, center, flex-end);
-      margin: -12px 0;
-    }
-
+    //@include b('870') {
+    //  @include flex(row, center, flex-end);
+    //  margin: -12px 0;
+    //}
     &Inner {
       @include flex(row, center, center);
-      cursor: pointer;
       width: 44px;
       height: 44px;
-      border: $border-form;
-      border-radius: 50%;
-      background: $color-bg;
-      z-index: 2;
+
+      cursor: pointer;
       user-select: none;
+
+      background: $color-bg-input-market;
+      border-radius: 50%;
+
+      transition: all 250ms ease-in-out;
+
+      &:hover {
+        box-shadow: 0 0 7px 1px rgba(255, 255, 255, 0.61);
+      }
+
+      &:active {
+        box-shadow: 0 0 10px 3px rgba(255, 255, 255, 0.61);
+      }
+
+      &Rotate {
+        transform: rotate(180deg);
+      }
     }
   }
 
   &Button {
+    margin-top: 30px;
     @include flex(row, center, center);
     grid-column: 1 / 4;
 
@@ -411,13 +567,23 @@
       grid-column: auto;
       grid-row: auto;
     }
+
+    &Btn {
+      padding: 8px;
+
+      width: 202px;
+      max-height: 42px;
+    }
   }
 }
 
 .containerChart {
   position: relative;
+
   margin: 30px 0 0 0;
+
   width: 100%;
+
   background-color: $color-bg-chart;
   border-radius: 10px;
 }
@@ -437,27 +603,30 @@
   @include flex(row, center, space-between);
   position: absolute;
   bottom: 0;
-  width: 100%;
+
   padding: 0 20px 13px 20px;
 
+  width: 100%;
+
   &PriceName {
-    font-weight: 400;
     font-size: 16px;
+    font-weight: 400;
     line-height: 25px;
-    color: $color-text-secondary;
     text-transform: uppercase;
+
+    color: $color-text-secondary;
   }
 
   &Price {
-    font-weight: 400;
     font-size: 25px;
+    font-weight: 400;
     line-height: 39px;
   }
 
   &Period {
     @include grid(1fr 1fr 1fr, 25px, 28px);
-    font-weight: 400;
     font-size: 16px;
+    font-weight: 400;
     line-height: 25px;
     text-transform: uppercase;
 
@@ -466,14 +635,18 @@
     }
 
     div {
-      color: $color-text-secondary;
-      cursor: pointer;
       text-align: right;
-      transition: color 200ms ease;
+
+      cursor: pointer;
+
+      color: $color-text-secondary;
       outline: none;
+
+      transition: color 200ms ease;
 
       &:hover {
         color: $color-text-primary;
+
         transition: color 200ms ease;
       }
     }
@@ -485,9 +658,10 @@
 
   &PriceChange {
     width: 100%;
-    text-align: right;
+
     font-size: 25px;
     line-height: 39px;
+    text-align: right;
 
     &[data-positive='true'] {
       color: $color-text-green;
@@ -500,56 +674,57 @@
 }
 
 .containerSettings {
-  background: $color-bg-section;
-  margin: 21px 0 0 0;
-  padding: 20px;
-  border-radius: 10px;
+  //margin: 21px 0 0 0;
+  //padding: 20px;
 
-  h1 {
-    font-weight: 400;
-    font-size: 24px;
-    line-height: 37px;
-    margin: 0;
-  }
+  //background: $color-bg-section;
+  //border-radius: 10px;
+  width: 100%;
 
+  //h1 {
+  //  margin: 0;
+  //
+  //  font-size: 24px;
+  //  font-weight: 400;
+  //  line-height: 37px;
+  //}
   h2 {
-    font-weight: 500;
     font-size: 16px;
+    font-weight: 900;
     line-height: 25px;
+
     color: $color-text-link;
   }
 
+  &Wrapper {
+    background: transparent;
+    max-height: 20px;
+  }
+
   &Inner {
-    @include grid(1fr 2fr 260px, 260px 180px, 50px);
-
-    @include b('1000') {
-      @include grid(150px 2fr 260px, 480px 180px, 50px);
-    }
-
-    @include b('850') {
-      @include grid(1fr, 100px 660px 200px 100px, 10px);
-    }
+    //@include grid(1fr 2fr 260px, 260px 180px, 50px);
+    //
+    //@include b('1000') {
+    //  @include grid(150px 2fr 260px, 480px 180px, 50px);
+    //}
+    //
+    //@include b('850') {
+    //  @include grid(1fr, 100px 660px 200px 100px, 10px);
+    //}
+    @include flex(column, center, center, nowrap);
   }
 
   &Slippage {
-    grid-column: 1;
-    grid-row: 1;
-
-    @include b('850') {
-      grid-column: 1;
-      grid-row: 1;
-    }
+    width: 100%;
   }
 
   &Exchanges {
-    grid-column: 2;
-    grid-row: 1 / 3;
+    width: 100%;
 
-    @include b('850') {
-      grid-column: 1;
-      grid-row: 2;
-    }
-
+    //@include b('850') {
+    //  grid-column: 1;
+    //  grid-row: 2;
+    //}
     &Top {
       @include flex(row, center, space-between, nowrap);
 
@@ -557,19 +732,27 @@
       &Button:active,
       &Button:focus,
       &Button:hover {
-        padding: 0 10px;
         margin: 0;
+        padding: 0 10px;
+
         font-size: 16px;
         line-height: 25px;
+
         background: none !important;
+
         transition: none !important;
         transform: none !important;
       }
     }
 
     &Inner {
-      @include flex(column, normal, normal, wrap);
-      height: calc(100% - 40px);
+      //@include flex(column, normal, normal, wrap);
+      //height: calc(100% - 40px);
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      @include b('mobile') {
+        grid-template-columns: repeat(2, 1fr);
+      }
 
       div {
         margin: 8px 4px;
@@ -578,33 +761,30 @@
   }
 
   &Gas {
-    grid-column: 3;
-    grid-row: 1 / 3;
-
-    @include b('850') {
-      grid-column: 1;
-      grid-row: 3;
-    }
+    width: 100%;
 
     &Inner {
-      > div {
-        margin: 3px 0;
-      }
+      //background: transparent;
     }
+
     &CustomAddress {
       margin-top: 16.5px !important;
     }
-    &PremiumBadge{
+
+    &PremiumBadge {
+      margin-bottom: 5px;
+
       display: flex;
       align-items: center;
-      margin-bottom: 5px;
+
       font-family: $font;
-      font-weight: 500;
       font-size: 16px;
+      font-weight: 500;
       line-height: 25px;
 
       color: $color-text-span;
-      svg{
+
+      svg {
         margin-right: 6px;
       }
     }
@@ -624,25 +804,63 @@
     &ButtonSelectAll,
     &ButtonSelectAll:focus,
     &ButtonSelectAll:active {
-      width: 120px;
-      font-weight: 500;
-      font-size: 14px;
-      line-height: 26px;
-      padding: 8px 12px;
       margin: 5px 10px 5px 0;
+      padding: 8px 12px;
+
+      width: 120px;
+
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 26px;
+
       background: none !important;
     }
 
     &Button,
     &Button:focus,
     &Button:active {
-      width: 60px;
-      font-weight: 500;
-      font-size: 14px;
-      line-height: 26px;
-      padding: 8px 12px;
       margin: 5px 10px 5px 0;
+      padding: 8px 12px;
+
+      width: 60px;
+
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 26px;
+
       background: none !important;
+    }
+  }
+
+  &Back {
+    @include flex(row, center, flex-start, nowrap);
+
+    span {
+      font-size: 14px;
+      font-weight: 900;
+      line-height: 22.04px;
+      text-transform: uppercase;
+    }
+
+    img {
+      margin-right: 20px;
+      padding: 8px;
+
+      max-width: 40px;
+      max-height: 40px;
+
+      cursor: pointer;
+
+      background: $color-bg-input-market;
+      border-radius: 12px;
+
+      transition: all 250ms ease-in-out;
+
+      @include flex(row, center, center, nowrap);
+
+      &:hover {
+        box-shadow: 0 0 10px 1px rgba(255, 255, 255, 0.61);
+      }
     }
   }
 }
@@ -650,27 +868,33 @@
 .containerSettingsSelect {
   &Label {
     @include flex(row, center, space-between);
-    cursor: pointer;
-    height: 100%;
     width: 100%;
-    font-weight: 500;
+    height: 100%;
+
     font-size: 22px;
+    font-weight: 500;
     line-height: 34px;
+
+    cursor: pointer;
+    background: $color-bg-input-market;
   }
 
   &Items {
     div {
       @include flex(row, center, space-between);
-      height: 55px;
-      cursor: pointer;
-      background-color: $color-bg-select-item;
       padding: 10px;
-      font-weight: 500;
+
+      height: 55px;
       font-size: 22px;
+      font-weight: 500;
       line-height: 34px;
 
+      cursor: pointer;
+
+      background: $color-bg-input-market;
+
       &:hover {
-        background-color: $color-bg-select-item-hover;
+        background: $color-bg-input-market;
       }
     }
   }
@@ -680,25 +904,40 @@
   @include flex(row, center, space-between, nowrap);
   width: calc(100% - 50px);
 
+  div {
+    font-weight: 900;
+
+    &:last-child {
+      text-transform: uppercase;
+
+      color: $color-text-secondary;
+    }
+  }
+
   &Inner {
     @include flex(row, center);
   }
 
   &Input {
     margin: 0 10px;
+
     input {
-      text-align: right;
-      outline: none;
-      background-color: #40425d;
       padding: 5px 10px;
-      font-weight: 500;
+
+      width: 94px;
+
       font-size: 17px;
+      font-weight: 500;
       line-height: 26px;
-      border: none;
-      border-radius: 4px;
+      text-align: center;
+
+      color: $color-text-link;
+      background: transparent;
+      border: 1px solid $color-bg-checkbox;
+      border-radius: 12px;
+      outline: none;
       caret-color: $color-cursor-input;
-      color: $color-text-input;
-      width: 60px;
+
       &::placeholder {
         color: $color-text-input-placeholder;
       }
@@ -708,69 +947,147 @@
 
 .containerTradingModalButton {
   margin: 5px 0;
+  padding: 8px;
+
+  width: 202px;
+  height: 42px;
+}
+
+.containerCosts {
+  margin-top: 30px;
+  padding: 20px;
+
+  width: 100%;
+
+  border: 1px solid $color-text-secondary;
+  border-radius: 12px;
+
+  ul {
+    margin: 0;
+    padding: 0;
+
+    list-style: none;
+
+    li {
+      width: 100%;
+      @include flex(row, center, space-between, nowrap);
+
+      span {
+        font-size: 16px;
+        text-transform: uppercase;
+
+        &:first-child {
+          color: $color-text-secondary;
+        }
+      }
+    }
+  }
 }
 
 .radioContainer {
-  @include flex(row);
-  background-color: $color-bg-radio;
-  border-radius: 4px;
-}
-
-.radioInput {
-  display: none;
-}
-
-.radioInput:checked ~ .radioLabel .radioPoint::after {
-  opacity: 1;
+  margin: 4px 0;
+  padding-left: 20px;
+  @include flex(row, center, center, nowrap);
+  background-color: $color-bg-input-market;
+  border-radius: 12px;
 }
 
 .radioLabel {
   @include flex(row, center);
+  position: relative;
+
   width: 100%;
-  font-weight: 500;
-  font-size: 17px;
-  line-height: 26px;
-  cursor: pointer;
-  position: relative;
   height: 55px;
+
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 26px;
+
+  cursor: pointer;
 }
 
-.radioPoint {
-  height: 20px;
-  width: 20px;
-  background-color: #40425d;
-  border-radius: 50%;
-  position: relative;
-  margin: 10px;
-}
-
-.radioPoint::after {
-  content: '';
-  display: block;
-  height: 20px;
-  width: 20px;
-  border-radius: 50%;
+//--------------- GAS PRICE CHECKBOX ----------------
+.radioInput {
   position: absolute;
-  top: 50%;
-  left: 10px;
-  transform: translate(-50%, -50%);
-  background-color: #fff;
-  box-shadow: inset 0 0 0 5px $color-bg-radio-point;
+  z-index: -1;
+
   opacity: 0;
-  transition: opacity 0.2s;
 }
 
+.radioInput + label {
+  display: inline-flex;
+  align-items: center;
+
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 25px;
+
+  cursor: pointer;
+  user-select: none;
+
+  &::before {
+    content: '';
+
+    margin-right: 9px;
+
+    display: inline-block;
+
+    width: 20px;
+    height: 20px;
+
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: 50% 50%;
+    border: 1px solid $color-text-link;
+    border-radius: 50%;
+    flex-shrink: 0;
+    flex-grow: 0;
+  }
+}
+
+.radioInput:checked + label::before {
+  background-color: $color-bg-checkbox;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%23fff' d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26 2.974 7.25 8 2.193z'/%3e%3c/svg%3e");
+  border-color: $color-bg-checkbox;
+}
+
+.radioInput:not(:disabled):not(:checked) + label:hover::before {
+  border-color: #fff;
+}
+
+.radioInput:not(:disabled):active + label::before {
+  background-color: #fff;
+  border-color: #fff;
+}
+
+.che.radioInputbox:focus:not(:checked) + label::before {
+  border-color: #fff;
+}
+
+.radioInput:disabled + label::before {
+  color: $color-text-secondary;
+  background-color: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.disabled {
+  color: $color-text-secondary;
+}
+
+//--------------- GAS PRICE CHECKBOX ----------------
 .symbolWide {
   margin-left: -36px;
 }
 
 .error {
   margin: 2px 0;
-  color: $color-text-error;
+
   font-size: 16px;
-  line-height: 1.1;
   font-weight: 400;
+  line-height: 1.1;
   text-align: right;
+
+  color: $color-text-error;
 }
 
 .containerTokenInfo {
@@ -780,26 +1097,31 @@
 
 .tokenInfo {
   @include grid(32px 2fr 1fr, 54px, 12px);
+  padding: 20px;
+
+  max-width: 400px;
+
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 25px;
+
+  color: $color-text-secondary;
   background-color: $color-bg-section;
   border-radius: 10px;
-  max-width: 400px;
-  padding: 20px;
-  color: $color-text-secondary;
-  font-weight: 400;
-  font-size: 16px;
-  line-height: 25px;
 
   > img {
     width: 32px;
     height: 32px;
+
     border-radius: 50%;
   }
 
   span {
-    color: $color-text-link;
-    font-weight: 500;
     font-size: 20px;
+    font-weight: 500;
     line-height: 31px;
+
+    color: $color-text-link;
   }
 
   .etherscan {
@@ -815,4 +1137,50 @@
 .messageContent {
   @include flex(column, center, center, nowrap);
   height: 100%;
+}
+
+// GAS PRICE FOR RADIO VAR
+.radioPoint {
+  position: relative;
+
+  margin: 10px;
+
+  width: 20px;
+  height: 20px;
+
+  //background-color: #40425d;
+  border: 1px solid $color-text-link;
+  border-radius: 50%;
+}
+
+.radioPoint::after {
+  content: '';
+
+  position: absolute;
+  top: 50%;
+  left: 10px;
+
+  display: block;
+
+  width: 20px;
+  height: 20px;
+
+  background-color: $color-text-link;
+  border-radius: 50%;
+  opacity: 0;
+  //box-shadow: inset 0 0 0 5px $color-bg-radio-point;
+  transition: opacity 0.2s;
+  transform: translate(-50%, -50%);
+}
+
+// GAS PRICE FOR RADIO VAR
+
+@keyframes loading {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(100%);
+  }
 }

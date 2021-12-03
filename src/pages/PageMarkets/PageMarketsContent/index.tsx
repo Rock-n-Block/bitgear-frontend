@@ -1,21 +1,23 @@
-import React, { LegacyRef } from 'react';
+import React, { LegacyRef, useRef } from 'react';
 import { Helmet } from 'react-helmet';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
+import { CSSTransition } from 'react-transition-group';
 import BigNumber from 'bignumber.js/bignumber';
 import cns from 'classnames';
 import _ from 'lodash';
 import { useMedia } from 'use-media';
 import { v1 as uuid } from 'uuid';
 
+import ArrowBack from '../../../assets/icons/arrow-back.svg';
+import ArrowDown from '../../../assets/icons/arrow-down-blue.svg';
 import { ReactComponent as IconArrowDownWhite } from '../../../assets/icons/arrow-down-white.svg';
 import { ReactComponent as IconExchange } from '../../../assets/icons/exchange.svg';
-import { ReactComponent as IconGear } from '../../../assets/icons/gear.svg';
 import { ReactComponent as IconDiamond } from '../../../assets/icons/icon-diamond.svg';
-import { ReactComponent as IconLink } from '../../../assets/icons/link.svg';
 import { ReactComponent as IconSearchWhite } from '../../../assets/icons/search-white.svg';
+import { ReactComponent as IconSettings } from '../../../assets/icons/switcher-settings.svg';
 import imageTokenPay from '../../../assets/images/token.png';
-import { Checkbox, Dropdown, Input, LineChart, Select } from '../../../components';
+import { Checkbox, Dropdown, Input, RadioSelect, Select } from '../../../components';
 import Button from '../../../components/Button';
 import ModalContentQuotes from '../../../components/ModalContentQuotes';
 import config from '../../../config';
@@ -74,6 +76,31 @@ const exchangesList: string[] = [
   'Uniswap_V2',
   'Uniswap_V3',
   'xSigma',
+];
+
+export type slippageItem = {
+  [k: string]: string | number | boolean;
+  text: string | number;
+  checked: boolean;
+};
+
+const initSlippage = [
+  {
+    text: 0.1,
+    checked: false,
+  },
+  {
+    text: 0.5,
+    checked: false,
+  },
+  {
+    text: 1,
+    checked: false,
+  },
+  {
+    text: 3,
+    checked: false,
+  },
 ];
 
 // const exchangesListOld: string[] = [
@@ -177,15 +204,14 @@ export const DropdownItems: React.FC<TypeDropdownItemsParams> = React.memo(
 
     return (
       <div ref={refContainer}>
-        <div className={s.containerTradingCardSearchInput}>
-          <Input
-            autoFocus={open}
-            placeholder="Search"
-            label={label}
-            value={searchValue}
-            onChange={onChangeSearch}
-          />
-        </div>
+        <Input
+          autoFocus={open}
+          placeholder="Search"
+          label={label}
+          value={searchValue}
+          onChange={onChangeSearch}
+          className={s.containerTradingCardSearchInput}
+        />
         <div
           ref={refScrollContainer}
           className={s.containerTradingCardSearchItems}
@@ -199,6 +225,8 @@ export const DropdownItems: React.FC<TypeDropdownItemsParams> = React.memo(
 );
 
 export const PageMarketsContent: React.FC = React.memo(() => {
+  const receiveInputRef = useRef<any>();
+  const sellInputRef = useRef<any>();
   const history = useHistory();
 
   const periodDefault = Number(getFromStorage('chartPeriod'));
@@ -238,15 +266,17 @@ export const PageMarketsContent: React.FC = React.memo(() => {
   const refSelectLabelSlippage = React.useRef<HTMLDivElement>(null);
   const refInputGasPrice = React.useRef<HTMLInputElement>(null);
 
+  const [slippageItems, setSlippageItems] = React.useState<slippageItem[]>(initSlippage);
+  const [dividerRotate, setRotateDivider] = React.useState(1);
   const [tokensFiltered, setTokensFiltered] = React.useState<any[]>(tokens);
-  const [price, setPrice] = React.useState<number>(0);
-  const [priceMarket, setPriceMarket] = React.useState<number>(0);
-  const [priceChange, setPriceChange] = React.useState<number>(0);
-  const [priceChart, setPriceChart] = React.useState<string | null>();
+  const [, setPrice] = React.useState<number>(0);
+  const [, setPriceMarket] = React.useState<number>(0);
+  const [, setPriceChange] = React.useState<number>(0);
+  // const [priceChart, setPriceChart] = React.useState<string | null>();
   const [marketHistory, setMarketHistory] = React.useState<any[]>([]);
-  const [points, setPoints] = React.useState<number[]>([]);
-  const [dateTime, setDateTime] = React.useState<number[]>([]);
-  const [period, setPeriod] = React.useState<number>(periodDefault > 0 ? periodDefault : 1);
+  const [, setPoints] = React.useState<number[]>([]);
+  const [, setDateTime] = React.useState<number[]>([]);
+  const [period] = React.useState<number>(periodDefault > 0 ? periodDefault : 1);
   const [searchValuePay, setSearchValuePay] = React.useState<string>('');
   const [searchValueReceive, setSearchValueReceive] = React.useState<string>('');
   const [exchanges, setExchanges] = React.useState<any>([...exchangesList]);
@@ -254,7 +284,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
   const [openDropdownPay, setOpenDropdownPay] = React.useState<boolean>(false);
   const [openDropdownReceive, setOpenDropdownReceive] = React.useState<boolean>(false);
   const [openSelect, setOpenSelect] = React.useState<boolean>(false);
-  const [openSelectSlippage, setOpenSelectSlippage] = React.useState<boolean>(false);
+  const [, setOpenSelectSlippage] = React.useState<boolean>(false);
   const [openSettings, setOpenSettings] = React.useState<boolean>(false);
   const [mode, setMode] = React.useState<string>('market');
   const [searchTokensResultPay, setSearchTokensResultPay] = React.useState<TypeToken[]>(tokens);
@@ -298,9 +328,9 @@ export const PageMarketsContent: React.FC = React.memo(() => {
   const isModeMarket = mode === 'market';
   const isModeLimit = mode === 'limit';
 
-  const classPriceChange = s.containerTitlePriceChange;
-  const isPriceChangePositive = +priceChange > 0;
-  const isPriceChangeNegative = +priceChange < 0;
+  // const classPriceChange = s.containerTitlePriceChange;
+  // const isPriceChangePositive = +priceChange > 0;
+  // const isPriceChangeNegative = +priceChange < 0;
 
   const isGasPriceTypeFast = gasPriceType === 'fast';
   const isGasPriceTypeVeryFast = gasPriceType === 'veryFast';
@@ -1226,12 +1256,13 @@ export const PageMarketsContent: React.FC = React.memo(() => {
   };
 
   const handleOpenSelect = () => {
+    console.log('OPEN OPEN OPEN');
     setOpenSelect(!openSelect);
   };
 
-  const handleOpenSelectSlippage = () => {
-    setOpenSelectSlippage(!openSelectSlippage);
-  };
+  // const handleOpenSelectSlippage = () => {
+  //   setOpenSelectSlippage(!openSelectSlippage);
+  // };
 
   const handleFocusAmountPay = async () => {
     if (amountPay === '0') setAmountPay('');
@@ -1342,10 +1373,10 @@ export const PageMarketsContent: React.FC = React.memo(() => {
     toggleModal({ open: false });
   }, [setWalletType, toggleModal]);
 
-  const handleSetPeriod = (newPeriod: number) => {
-    setPeriod(newPeriod);
-    setToStorage('chartPeriod', newPeriod);
-  };
+  // const handleSetPeriod = (newPeriod: number) => {
+  //   setPeriod(newPeriod);
+  //   setToStorage('chartPeriod', newPeriod);
+  // };
 
   const handleSetMode = (newMode: string) => {
     if (addressPay === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee') {
@@ -1484,9 +1515,10 @@ export const PageMarketsContent: React.FC = React.memo(() => {
     history.push(`/markets/${addressPay}/${address}`);
   };
 
-  const handleSelectSlippage = (value: number) => {
-    setSlippage(value);
-    setOpenSelect(false);
+  const handleSelectSlippage = (value: string | number, slippageArr: slippageItem[]) => {
+    setSlippageItems(slippageArr);
+    setSlippage(+value);
+    // setOpenSelect(false);
   };
 
   const handleSelectExpiration = (minutes: number) => {
@@ -1518,11 +1550,12 @@ export const PageMarketsContent: React.FC = React.memo(() => {
     setAmountPay(amountReceive);
     setAmountReceive(amountPay);
     history.push(`/markets/${addressReceive}/${addressPay}`);
+    setRotateDivider(dividerRotate === 1 ? -1 : 1);
   };
 
-  const handleHoverChart = (value: string | null) => {
-    setPriceChart(value);
-  };
+  // const handleHoverChart = (value: string | null) => {
+  //   setPriceChart(value);
+  // };
 
   const handleClickOutsideDropdownPay = (e: any) => {
     if (
@@ -1763,19 +1796,19 @@ export const PageMarketsContent: React.FC = React.memo(() => {
     </div>
   );
 
-  const SelectLabelSlippage = (
-    <div
-      ref={refSelectLabelSlippage}
-      className={s.containerSettingsSelectLabel}
-      role="button"
-      tabIndex={0}
-      onKeyDown={() => {}}
-      onClick={handleOpenSelectSlippage}
-    >
-      <div>{slippage} %</div>
-      <IconArrowDownWhite />
-    </div>
-  );
+  // const SelectLabelSlippage = (
+  //   <div
+  //     ref={refSelectLabelSlippage}
+  //     className={s.containerSettingsSelectLabel}
+  //     role="button"
+  //     tabIndex={0}
+  //     onKeyDown={() => {}}
+  //     onClick={handleOpenSelectSlippage}
+  //   >
+  //     <div>{slippage} %</div>
+  //     <IconArrowDownWhite />
+  //   </div>
+  // );
 
   const SelectLabelExpiration = (
     <div
@@ -1787,7 +1820,8 @@ export const PageMarketsContent: React.FC = React.memo(() => {
       onClick={handleOpenSelect}
     >
       <div>{prettyExpiration(expiration)}</div>
-      <IconArrowDownWhite />
+      {/* <IconArrowDownWhite /> */}
+      <img src={ArrowDown} alt="arrowDown" className={s.containerTradingCardLimitInnerImage} />
     </div>
   );
 
@@ -1821,635 +1855,749 @@ export const PageMarketsContent: React.FC = React.memo(() => {
 
   return (
     <div className={s.container}>
-      <Helmet>
-        <title>
-          {tokenPay?.symbol || '-'}/{tokenReceive?.symbol || '-'} | Bitgear
-        </title>
-        <meta
-          name="description"
-          content={`Find the best prices across exchange networks. Swap erc20 tokens: ${
-            tokenPay?.symbol || ''
-          } (${tokenPay?.name || ''}) and ${tokenReceive?.symbol || ''} (${
-            tokenReceive?.name || ''
-          })`}
-        />
-        <meta
-          name="keywords"
-          content={`exchange, blockchain, crypto, ${tokenPay?.symbol || ''}, ${
-            tokenPay?.name || ''
-          }, ${tokenReceive?.symbol || ''}, ${tokenReceive?.name || ''}`}
-        />
-      </Helmet>
+      <div
+        className={cns(s.containerWrapper, {
+          [s.containerWrapperBg]: searchTokensResultPay.length,
+        })}
+      >
+        {searchTokensResultPay.length ? (
+          <>
+            {isModeMarket && openSettings ? (
+              <section className={s.containerSettings}>
+                <div className={s.containerSettingsBack}>
+                  <div onClick={handleOpenSettings} role="button" tabIndex={0} onKeyDown={() => {}}>
+                    <img src={ArrowBack} alt="back" />
+                  </div>
+                  <span>Advanced Settings</span>
+                </div>
+                <div className={s.containerSettingsInner}>
+                  <div className={s.containerSettingsSlippage}>
+                    <h2>Max Slippage</h2>
+                    <RadioSelect
+                      items={slippageItems}
+                      onChecked={handleSelectSlippage}
+                      customPlaceholder="Custom"
+                      percent
+                      custom
+                      customValue={slippage}
+                    />
+                    {/* <Select open={openSelectSlippage} label={SelectLabelSlippage}> */}
+                    {/* <div ref={refSelect} className={s.containerSettingsSelectItems}> */}
+                    {/* {new Array(21).fill(0).map((item, ii) => { */}
+                    {/*  return ( */}
+                    {/*    <div */}
+                    {/*      key={uuid()} */}
+                    {/*      role="button" */}
+                    {/*      tabIndex={0} */}
+                    {/*      onClick={() => handleSelectSlippage(ii)} */}
+                    {/*      onKeyDown={() => {}} */}
+                    {/*    > */}
+                    {/*      {ii} % */}
+                    {/*    </div> */}
+                    {/*  ); */}
+                    {/* })} */}
+                    {/* </div> */}
+                    {/* </Select> */}
+                  </div>
+                  <div className={s.containerSettingsGas}>
+                    <h2>Gas Price</h2>
+                    <div className={s.containerSettingsGasInner}>
+                      <div className={s.radioContainer}>
+                        <input
+                          className={s.radioInput}
+                          type="checkbox"
+                          id="radioGasFast"
+                          name="radioGas"
+                          checked={isGasPriceTypeFast}
+                          onChange={() => handleChangeGasPrice(gasPriceFromNet, 'fast')}
+                        />
+                        {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+                        <label className={s.radioLabel} htmlFor="radioGasFast">
+                          {/* <span className={s.radioPoint} /> */}
+                          {RadioLabelFast}
+                        </label>
+                      </div>
 
-      <section className={s.containerTitle}>
-        <div className={s.containerTitleFirst}>
-          <div className={s.containerTitleName}>
-            {tokenPay?.name} ({tokenPay?.symbol})
-          </div>
-          <div className={s.containerTitlePrice}>
-            {!tokenReceive?.symbol && '$'}
-            {priceMarket
-              ? prettyPrice(priceMarket?.toString())
-              : tokenReceive?.symbol === 'USDC' && !addressReceive
-              ? marketHistory[0]?.quote?.USD?.close
-              : '-'}{' '}
-            {tokenReceive?.symbol}
-          </div>
-          <div
-            className={classPriceChange}
-            data-positive={isPriceChangePositive}
-            data-negative={isPriceChangeNegative}
-          >
-            {isPriceChangePositive && '+'}
-            {!!priceChange && `${priceChange}%`}{' '}
-            {!!priceChange && period === 1
-              ? 'past 24 hours'
-              : period === 7
-              ? 'past week'
-              : period === 30
-              ? 'past month'
-              : ''}
-          </div>
-        </div>
-        <div className={s.containerTitleSecond}>
-          <div className={s.containerTitleSecondInner}>
-            <div
-              role="button"
-              tabIndex={0}
-              className={
-                isModeMarket ? s.containerTitleSecondItemActive : s.containerTitleSecondItem
-              }
-              onClick={() => {
-                handleSetMode('market');
-                setCustomAddress('');
-                setIsCustomAddress(false);
-              }}
-              onKeyDown={() => {}}
-            >
-              Market
-            </div>
-            <div
-              role="button"
-              tabIndex={0}
-              className={
-                isModeLimit ? s.containerTitleSecondItemActive : s.containerTitleSecondItem
-              }
-              onClick={() => {
-                handleSetMode('limit');
-                setCustomAddress('');
-                setIsCustomAddress(false);
-              }}
-              onKeyDown={() => {}}
-            >
-              Limit
-            </div>
-            {isModeMarket && (
-              <div
-                className={s.containerTitleSecondItem}
-                onClick={handleOpenSettings}
-                role="button"
-                tabIndex={0}
-                onKeyDown={() => {}}
-              >
-                <IconGear />
-              </div>
-            )}
-          </div>
-        </div>
-      </section>
+                      <div className={s.radioContainer}>
+                        <input
+                          className={s.radioInput}
+                          type="checkbox"
+                          id="radioGasVeryFast"
+                          name="radioGas"
+                          checked={isGasPriceTypeVeryFast}
+                          onChange={() => handleChangeGasPrice(gasPriceFromNet + 15, 'veryFast')}
+                        />
+                        {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+                        <label className={s.radioLabel} htmlFor="radioGasVeryFast">
+                          {/* <span className={s.radioPoint} /> */}
+                          {RadioLabelVeryFast}
+                        </label>
+                      </div>
 
-      {isModeMarket && openSettings && (
-        <section className={s.containerSettings}>
-          <h1>Advanced Settings</h1>
-          <div className={s.containerSettingsInner}>
-            <div className={s.containerSettingsSlippage}>
-              <h2>Max Slippage</h2>
-              <Select open={openSelectSlippage} label={SelectLabelSlippage}>
-                <div ref={refSelect} className={s.containerSettingsSelectItems}>
-                  {new Array(21).fill(0).map((item, ii) => {
-                    return (
+                      <div className={s.radioContainer}>
+                        <input
+                          className={s.radioInput}
+                          type="checkbox"
+                          id="radioGasCustom"
+                          name="radioGas"
+                          checked={isGasPriceTypeCustom}
+                          onChange={() => handleChangeGasPrice(gasPriceCustom, 'custom')}
+                        />
+                        {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+                        <label className={s.radioLabel} htmlFor="radioGasCustom">
+                          {/* <span className={s.radioPoint} /> */}
+                          {RadioLabelCustom}
+                        </label>
+                      </div>
+                      {gearBalance > 4000 ? (
+                        <div className={s.containerSettingsGasCustomAddress}>
+                          <div className={s.containerSettingsGasPremiumBadge}>
+                            <IconDiamond />
+                            Premium
+                          </div>
+                          <Checkbox
+                            text="Send tokens to a custom address"
+                            onChange={(e: boolean) => {
+                              if (e) {
+                                setCustomAddress('');
+                              }
+                              setIsCustomAddress(e);
+                            }}
+                          />
+                        </div>
+                      ) : (
+                        ''
+                      )}
+                    </div>
+                  </div>
+                  <div className={s.containerSettingsExchanges}>
+                    <div className={s.containerSettingsExchangesTop}>
+                      <h2>Exchanges</h2>
+                    </div>
+                    <div className={s.containerSettingsExchangesInner}>
+                      {exchangesList?.map((exchange) => {
+                        const enabled = exchangesWithLiquidity
+                          ? exchangesWithLiquidity.includes(exchange)
+                          : false;
+                        const checked = enabled && exchanges.includes(exchange);
+                        return (
+                          <Checkbox
+                            key={uuid()}
+                            text={exchange}
+                            checkedDefault={checked}
+                            disabled={!enabled}
+                            onChange={(e: boolean) => handleChangeExchanges(e, exchange)}
+                          />
+                        );
+                      })}
+                    </div>
+                  </div>
+                  <div className={s.containerSettingsButtons}>
+                    <Button
+                      normal
+                      classNameCustom={s.containerSettingsButtonsButton}
+                      onClick={() => handleResetSettings()}
+                    >
+                      Reset
+                    </Button>
+                    {exchanges.length === exchangesList.length ? (
+                      <Button
+                        normal
+                        classNameCustom={s.containerSettingsButtonsButtonSelectAll}
+                        onClick={() => handleDeselectAllExchanges()}
+                      >
+                        Deselect all
+                      </Button>
+                    ) : (
+                      <Button
+                        normal
+                        classNameCustom={s.containerSettingsButtonsButtonSelectAll}
+                        onClick={() => handleSelectAllExchanges()}
+                      >
+                        Select all
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              </section>
+            ) : (
+              <>
+                <Helmet>
+                  <title>
+                    {tokenPay?.symbol || '-'}/{tokenReceive?.symbol || '-'} | Bitgear
+                  </title>
+                  <meta
+                    name="description"
+                    content={`Find the best prices across exchange networks. Swap erc20 tokens: ${
+                      tokenPay?.symbol || ''
+                    } (${tokenPay?.name || ''}) and ${tokenReceive?.symbol || ''} (${
+                      tokenReceive?.name || ''
+                    })`}
+                  />
+                  <meta
+                    name="keywords"
+                    content={`exchange, blockchain, crypto, ${tokenPay?.symbol || ''}, ${
+                      tokenPay?.name || ''
+                    }, ${tokenReceive?.symbol || ''}, ${tokenReceive?.name || ''}`}
+                  />
+                </Helmet>
+
+                <section className={s.containerTitle}>
+                  <div className={s.containerTitleFirst}>
+                    <div
+                      role="button"
+                      tabIndex={0}
+                      className={
+                        isModeMarket ? s.containerTitleFirstItemActive : s.containerTitleFirstItem
+                      }
+                      onClick={() => {
+                        handleSetMode('market');
+                        setCustomAddress('');
+                        setIsCustomAddress(false);
+                      }}
+                      onKeyDown={() => {}}
+                    >
+                      Market
+                    </div>
+                    <div
+                      role="button"
+                      tabIndex={0}
+                      className={
+                        isModeLimit ? s.containerTitleFirstItemActive : s.containerTitleFirstItem
+                      }
+                      onClick={() => {
+                        handleSetMode('limit');
+                        setCustomAddress('');
+                        setIsCustomAddress(false);
+                      }}
+                      onKeyDown={() => {}}
+                    >
+                      Limit
+                    </div>
+                    {/* <div className={s.containerTitleName}> */}
+                    {/*  {tokenPay?.name} ({tokenPay?.symbol}) */}
+                    {/* </div> */}
+                    {/* <div className={s.containerTitlePrice}> */}
+                    {/*  {!tokenReceive?.symbol && '$'} */}
+                    {/*  {priceMarket */}
+                    {/*    ? prettyPrice(priceMarket?.toString()) */}
+                    {/*    : tokenReceive?.symbol === 'USDC' && !addressReceive */}
+                    {/*    ? marketHistory[0]?.quote?.USD?.close */}
+                    {/*    : '-'}{' '} */}
+                    {/*  {tokenReceive?.symbol} */}
+                    {/* </div> */}
+                    {/* <div */}
+                    {/*  className={classPriceChange} */}
+                    {/*  data-positive={isPriceChangePositive} */}
+                    {/*  data-negative={isPriceChangeNegative} */}
+                    {/* > */}
+                    {/*  {isPriceChangePositive && '+'} */}
+                    {/*  {!!priceChange && `${priceChange}%`}{' '} */}
+                    {/*  {!!priceChange && period === 1 */}
+                    {/*    ? 'past 24 hours' */}
+                    {/*    : period === 7 */}
+                    {/*    ? 'past week' */}
+                    {/*    : period === 30 */}
+                    {/*    ? 'past month' */}
+                    {/*    : ''} */}
+                    {/* </div> */}
+                  </div>
+                  <div className={s.containerTitleSecond}>
+                    {isModeMarket && (
                       <div
-                        key={uuid()}
+                        className={s.containerTitleSecondItem}
+                        onClick={handleOpenSettings}
                         role="button"
                         tabIndex={0}
-                        onClick={() => handleSelectSlippage(ii)}
                         onKeyDown={() => {}}
                       >
-                        {ii} %
+                        <IconSettings className={s.containerTitleSecondItemImg} />
                       </div>
-                    );
-                  })}
-                </div>
-              </Select>
-            </div>
-            <div className={s.containerSettingsExchanges}>
-              <div className={s.containerSettingsExchangesTop}>
-                <h2>Exchanges</h2>
-              </div>
-              <div className={s.containerSettingsExchangesInner}>
-                {exchangesList?.map((exchange) => {
-                  const enabled = exchangesWithLiquidity
-                    ? exchangesWithLiquidity.includes(exchange)
-                    : false;
-                  const checked = enabled && exchanges.includes(exchange);
-                  return (
-                    <Checkbox
-                      key={uuid()}
-                      text={exchange}
-                      checkedDefault={checked}
-                      disabled={!enabled}
-                      onChange={(e: boolean) => handleChangeExchanges(e, exchange)}
-                    />
-                  );
-                })}
-              </div>
-            </div>
-            <div className={s.containerSettingsGas}>
-              <h2>Gas Price</h2>
-              <div className={s.containerSettingsGasInner}>
-                <div className={s.radioContainer}>
-                  <input
-                    className={s.radioInput}
-                    type="radio"
-                    id="radioGasFast"
-                    name="radioGas"
-                    checked={isGasPriceTypeFast}
-                    onChange={() => handleChangeGasPrice(gasPriceFromNet, 'fast')}
-                  />
-                  {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-                  <label className={s.radioLabel} htmlFor="radioGasFast">
-                    <span className={s.radioPoint} />
-                    {RadioLabelFast}
-                  </label>
-                </div>
-
-                <div className={s.radioContainer}>
-                  <input
-                    className={s.radioInput}
-                    type="radio"
-                    id="radioGasVeryFast"
-                    name="radioGas"
-                    checked={isGasPriceTypeVeryFast}
-                    onChange={() => handleChangeGasPrice(gasPriceFromNet + 15, 'veryFast')}
-                  />
-                  {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-                  <label className={s.radioLabel} htmlFor="radioGasVeryFast">
-                    <span className={s.radioPoint} />
-                    {RadioLabelVeryFast}
-                  </label>
-                </div>
-
-                <div className={s.radioContainer}>
-                  <input
-                    className={s.radioInput}
-                    type="radio"
-                    id="radioGasCustom"
-                    name="radioGas"
-                    checked={isGasPriceTypeCustom}
-                    onChange={() => handleChangeGasPrice(gasPriceCustom, 'custom')}
-                  />
-                  {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-                  <label className={s.radioLabel} htmlFor="radioGasCustom">
-                    <span className={s.radioPoint} />
-                    {RadioLabelCustom}
-                  </label>
-                </div>
-                {gearBalance > 4000 ? (
-                  <div className={s.containerSettingsGasCustomAddress}>
-                    <div className={s.containerSettingsGasPremiumBadge}>
-                      <IconDiamond />
-                      Premium
-                    </div>
-                    <Checkbox
-                      text="Send tokens to a custom address"
-                      onChange={(e: boolean) => {
-                        if (e) {
-                          setCustomAddress('');
-                        }
-                        setIsCustomAddress(e);
-                      }}
-                    />
+                    )}
                   </div>
-                ) : (
-                  ''
-                )}
-              </div>
-            </div>
-            <div className={s.containerSettingsButtons}>
-              <Button
-                normal
-                classNameCustom={s.containerSettingsButtonsButton}
-                onClick={() => handleResetSettings()}
-              >
-                Reset
-              </Button>
-              {exchanges.length === exchangesList.length ? (
-                <Button
-                  normal
-                  classNameCustom={s.containerSettingsButtonsButtonSelectAll}
-                  onClick={() => handleDeselectAllExchanges()}
-                >
-                  Deselect all
-                </Button>
-              ) : (
-                <Button
-                  normal
-                  classNameCustom={s.containerSettingsButtonsButtonSelectAll}
-                  onClick={() => handleSelectAllExchanges()}
-                >
-                  Select all
-                </Button>
-              )}
-            </div>
-          </div>
-        </section>
-      )}
+                </section>
 
-      {/* You Pay */}
-      <section className={s.containerTrading}>
-        <div className={s.containerTradingCard}>
-          <div className={s.containerTradingCardLabel}>You Sell</div>
-          <div className={s.containerTradingCardInner}>
-            <div className={s.containerTradingCardImage}>
-              <img src={tokenPay?.image} alt="" />
-            </div>
-            <div className={s.containerTradingCardContainer}>
-              <div className={s.containerTradingCardContainerInner}>
-                <Dropdown open={openDropdownPay} label={DropdownLabelPay}>
-                  <DropdownItems
-                    refContainer={refDropdownPay}
-                    open={openDropdownPay}
-                    label={<IconSearchWhite />}
-                    searchValue={searchValuePay}
-                    onChangeSearch={handleChangeSearchPay}
-                  >
-                    {searchTokensResultPay.map((token: any) => {
-                      // if (it > 50) return null;
-                      const {
-                        name: tokenName,
-                        symbol,
-                        image = imageTokenPay,
-                        address,
-                        decimals,
-                      } = token;
-                      const isBalanceZero = !userBalances[address];
-                      const newBalance = !isBalanceZero
-                        ? new BigNumber(userBalances[address])
-                            .dividedBy(new BigNumber(10).pow(decimals))
-                            .toString(10)
-                        : '0';
-                      const balance = !isBalanceZero ? prettyPrice(newBalance) : '';
-                      return (
-                        <div
-                          role="button"
-                          key={uuid()}
-                          tabIndex={0}
-                          className={s.containerTradingCardSearchItem}
-                          onClick={() => handleSelectSymbolPay(address)}
-                          onKeyDown={() => {}}
-                        >
-                          <img
-                            src={image}
-                            alt=""
-                            className={s.containerTradingCardSearchItemImage}
-                          />
-                          <div className={s.containerTradingCardSearchItemFirst}>
-                            <div className={s.containerTradingCardSearchItemName}>{tokenName}</div>
-                            <div className={s.containerTradingCardSearchItemPrice}>{balance}</div>
+                {/* You Pay */}
+                <section className={s.containerTrading}>
+                  <div className={s.containerTradingCard}>
+                    <div className={s.containerTradingCardLabel}>
+                      <div>You Sell</div>
+                      {addressPay && (
+                        <div className={s.containerTradingCardBalance}>
+                          Balance:
+                          <span>{prettyBalance(String(balanceOfTokenPay))}</span>
+                        </div>
+                      )}
+                    </div>
+                    <div className={s.containerTradingCardInner}>
+                      <div className={s.containerTradingCardInnerName}>{tokenPay?.name}</div>
+                      <div className={s.containerTradingCardInnerRow}>
+                        <div className={s.containerTradingCardImage}>
+                          <img src={tokenPay?.image} alt="" />
+                        </div>
+                        <div className={s.containerTradingCardContainer}>
+                          <div className={s.containerTradingCardContainerRow}>
+                            <Dropdown label={DropdownLabelPay}>
+                              <CSSTransition
+                                unmountOnExit
+                                mountOnEnter
+                                in={openDropdownPay}
+                                timeout={200}
+                                classNames="transition"
+                              >
+                                <DropdownItems
+                                  refContainer={refDropdownPay}
+                                  open={openDropdownPay}
+                                  label={<IconSearchWhite />}
+                                  searchValue={searchValuePay}
+                                  onChangeSearch={handleChangeSearchPay}
+                                >
+                                  {searchTokensResultPay.map((token: any) => {
+                                    // if (it > 50) return null;
+                                    const {
+                                      name: tokenName,
+                                      symbol,
+                                      image = imageTokenPay,
+                                      address,
+                                      decimals,
+                                    } = token;
+                                    const isBalanceZero = !userBalances[address];
+                                    const newBalance = !isBalanceZero
+                                      ? new BigNumber(userBalances[address])
+                                          .dividedBy(new BigNumber(10).pow(decimals))
+                                          .toString(10)
+                                      : '0';
+                                    const balance = !isBalanceZero ? prettyPrice(newBalance) : '';
+                                    return (
+                                      <div
+                                        role="button"
+                                        key={uuid()}
+                                        tabIndex={0}
+                                        className={s.containerTradingCardSearchItem}
+                                        onClick={() => handleSelectSymbolPay(address)}
+                                        onKeyDown={() => {}}
+                                      >
+                                        <img
+                                          src={image}
+                                          alt=""
+                                          className={s.containerTradingCardSearchItemImage}
+                                        />
+                                        <div className={s.containerTradingCardSearchItemFirst}>
+                                          <div className={s.containerTradingCardSearchItemName}>
+                                            {tokenName}
+                                          </div>
+                                          <div className={s.containerTradingCardSearchItemPrice}>
+                                            {balance}
+                                          </div>
+                                        </div>
+                                        <div className={s.containerTradingCardSearchItemSymbol}>
+                                          {symbol.length < 4 ? (
+                                            <div>{symbol}</div>
+                                          ) : (
+                                            <div className={s.symbolWide}>{symbol}</div>
+                                          )}
+                                        </div>
+                                      </div>
+                                    );
+                                  })}
+                                </DropdownItems>
+                              </CSSTransition>
+                            </Dropdown>
+
+                            {/* <div className={s.containerTradingCardSymbol}>{tokenPay?.symbol}</div> */}
                           </div>
-                          <div className={s.containerTradingCardSearchItemSymbol}>
-                            {symbol.length < 4 ? (
-                              <div>{symbol}</div>
-                            ) : (
-                              <div className={s.symbolWide}>{symbol}</div>
-                            )}
+                          <div
+                            className={s.containerTradingCardInput}
+                            onClick={() => sellInputRef.current.focus()}
+                            role="button"
+                            onKeyDown={() => {}}
+                            tabIndex={0}
+                          >
+                            {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+                            <label htmlFor="inputPay" />
+                            <input
+                              ref={sellInputRef}
+                              id="inputPay"
+                              type="number"
+                              value={amountPay}
+                              onChange={handleChangeAmountPay}
+                              onFocus={handleFocusAmountPay}
+                              onBlur={handleBlurAmountPay}
+                            />
+                          </div>
+
+                          {messageYouPay && <div className={s.error}>{messageYouPay}</div>}
+                        </div>
+                      </div>
+                    </div>
+                    {isModeLimit && (
+                      <div className={s.containerTradingCardLimit}>
+                        <div className={s.containerTradingCardLimitInner}>
+                          <div className={s.containerTradingCardLimitLabel}>
+                            <span>{tokenPay?.symbol} Price</span>
+                          </div>
+                          <div className={s.containerTradingCardLimitInput}>
+                            {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+                            {/* <label htmlFor="inputPay"> */}
+                            {/*  <div>{tokenReceive?.symbol}</div> */}
+                            {/* </label> */}
+                            <input
+                              id="inputPay"
+                              type="number"
+                              value={amountReceive}
+                              onChange={handleChangeAmountReceiveLimit}
+                              onFocus={handleFocusAmountReceive}
+                              onBlur={handleBlurAmountReceive}
+                            />
                           </div>
                         </div>
-                      );
-                    })}
-                  </DropdownItems>
-                </Dropdown>
-                <div className={s.containerTradingCardSymbol}>{tokenPay?.symbol}</div>
-              </div>
-              <div className={s.containerTradingCardInput}>
-                {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-                <label htmlFor="inputPay" />
-                <input
-                  id="inputPay"
-                  type="number"
-                  value={amountPay}
-                  onChange={handleChangeAmountPay}
-                  onFocus={handleFocusAmountPay}
-                  onBlur={handleBlurAmountPay}
-                />
-              </div>
-              {addressPay && (
-                <div className={s.containerTradingCardBalance}>
-                  Current balance ({tokenPay?.symbol})
-                  <span>{prettyBalance(String(balanceOfTokenPay))}</span>
-                </div>
-              )}
-              {messageYouPay && <div className={s.error}>{messageYouPay}</div>}
-            </div>
-          </div>
-          {isModeLimit && (
-            <div className={s.containerTradingCardLimit}>
-              <div className={s.containerTradingCardLimitInner}>
-                <div className={s.containerTradingCardLimitLabel}>
-                  <div>{tokenPay?.symbol} Price</div>
-                </div>
-                <div className={s.containerTradingCardLimitInput}>
-                  {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-                  <label htmlFor="inputPay">
-                    <div>{tokenReceive?.symbol}</div>
-                  </label>
-                  <input
-                    id="inputPay"
-                    type="number"
-                    value={amountReceive}
-                    onChange={handleChangeAmountReceiveLimit}
-                    onFocus={handleFocusAmountReceive}
-                    onBlur={handleBlurAmountReceive}
-                  />
-                </div>
-              </div>
-              <div className={s.containerTradingCardLimitInner}>
-                <div className={s.containerTradingCardLimitLabel}>
-                  <div>Expires in</div>
-                </div>
-                <Select open={openSelect} label={SelectLabelExpiration}>
-                  <div ref={refSelect} className={s.containerSettingsSelectItems}>
-                    <div
-                      role="button"
-                      tabIndex={0}
-                      onClick={() => handleSelectExpiration(10)}
-                      onKeyDown={() => {}}
-                    >
-                      10 min
-                    </div>
-                    <div
-                      role="button"
-                      tabIndex={0}
-                      onClick={() => handleSelectExpiration(30)}
-                      onKeyDown={() => {}}
-                    >
-                      30 min
-                    </div>
-                    <div
-                      role="button"
-                      tabIndex={0}
-                      onClick={() => handleSelectExpiration(60)}
-                      onKeyDown={() => {}}
-                    >
-                      1 hour
-                    </div>
-                    <div
-                      role="button"
-                      tabIndex={0}
-                      onClick={() => handleSelectExpiration(24 * 60)}
-                      onKeyDown={() => {}}
-                    >
-                      24 hours
-                    </div>
-                    <div
-                      role="button"
-                      tabIndex={0}
-                      onClick={() => handleSelectExpiration(3 * 24 * 60)}
-                      onKeyDown={() => {}}
-                    >
-                      3 days
-                    </div>
-                    <div
-                      role="button"
-                      tabIndex={0}
-                      onClick={() => handleSelectExpiration(7 * 24 * 60)}
-                      onKeyDown={() => {}}
-                    >
-                      7 days
-                    </div>
-                  </div>
-                </Select>
-              </div>
-            </div>
-          )}
-        </div>
-
-        <div className={cns(s.containerTradingDivider, s.containerTradingCardLimitOpen)}>
-          <div
-            role="button"
-            title={!addressReceive ? 'Select receive currency to switch' : ''}
-            tabIndex={0}
-            className={s.containerTradingDividerInner}
-            onClick={switchPayAndReceive}
-            onKeyDown={() => {}}
-          >
-            <IconExchange />
-          </div>
-        </div>
-
-        {/* You Receive */}
-        <div className={cns(s.containerTradingCard, s.containerTradingCardLimitOpen)}>
-          <div className={s.containerTradingCardLabel}>You Receive</div>
-          <div className={s.containerTradingCardInner}>
-            <div className={s.containerTradingCardImage}>
-              <img src={tokenReceive?.image} alt="" />
-            </div>
-            <div className={s.containerTradingCardContainer}>
-              <div className={s.containerTradingCardContainerInner}>
-                <Dropdown open={openDropdownReceive} label={DropdownLabelReceive}>
-                  <DropdownItems
-                    refContainer={refDropdownReceive}
-                    open={openDropdownReceive}
-                    label={<IconSearchWhite />}
-                    searchValue={searchValueReceive}
-                    onChangeSearch={handleChangeSearchReceive}
-                  >
-                    {searchTokensResultReceive.map((token: any) => {
-                      const {
-                        name: tokenName,
-                        symbol,
-                        image = imageTokenPay,
-                        address,
-                        decimals,
-                      } = token;
-                      const isBalanceZero = !userBalances[address];
-                      const newBalance = !isBalanceZero
-                        ? new BigNumber(userBalances[address])
-                            .dividedBy(new BigNumber(10).pow(decimals))
-                            .toString(10)
-                        : '0';
-                      const balance = !isBalanceZero ? prettyPrice(newBalance) : '';
-                      return (
                         <div
+                          className={s.containerTradingCardLimitInner}
+                          onClick={handleOpenSelect}
                           role="button"
-                          key={uuid()}
                           tabIndex={0}
-                          className={s.containerTradingCardSearchItem}
-                          onClick={() => handleSelectSymbolReceive(address)}
                           onKeyDown={() => {}}
                         >
-                          <img
-                            src={image}
-                            alt=""
-                            className={s.containerTradingCardSearchItemImage}
-                          />
-                          <div className={s.containerTradingCardSearchItemFirst}>
-                            <div className={s.containerTradingCardSearchItemName}>{tokenName}</div>
-                            <div className={s.containerTradingCardSearchItemPrice}>{balance}</div>
+                          <div className={s.containerTradingCardLimitLabel}>
+                            <div>Expires in</div>
                           </div>
-                          <div className={s.containerTradingCardSearchItemSymbol}>
-                            {symbol.length < 4 ? (
-                              <div>{symbol}</div>
-                            ) : (
-                              <div className={s.symbolWide}>{symbol}</div>
-                            )}
+                          <Select
+                            className={s.containerSettingsWrapper}
+                            open={openSelect}
+                            label={SelectLabelExpiration}
+                          >
+                            <div ref={refSelect} className={s.containerSettingsSelectItems}>
+                              <div
+                                role="button"
+                                tabIndex={0}
+                                onKeyDown={() => {}}
+                                onClick={() => handleSelectExpiration(10)}
+                              >
+                                10 min
+                              </div>
+                              <div
+                                role="button"
+                                tabIndex={0}
+                                onClick={() => handleSelectExpiration(30)}
+                                onKeyDown={() => {}}
+                              >
+                                30 min
+                              </div>
+                              <div
+                                role="button"
+                                tabIndex={0}
+                                onClick={() => handleSelectExpiration(60)}
+                                onKeyDown={() => {}}
+                              >
+                                1 hour
+                              </div>
+                              <div
+                                role="button"
+                                tabIndex={0}
+                                onClick={() => handleSelectExpiration(24 * 60)}
+                                onKeyDown={() => {}}
+                              >
+                                24 hours
+                              </div>
+                              <div
+                                role="button"
+                                tabIndex={0}
+                                onClick={() => handleSelectExpiration(3 * 24 * 60)}
+                                onKeyDown={() => {}}
+                              >
+                                3 days
+                              </div>
+                              <div
+                                role="button"
+                                tabIndex={0}
+                                onClick={() => handleSelectExpiration(7 * 24 * 60)}
+                                onKeyDown={() => {}}
+                              >
+                                7 days
+                              </div>
+                            </div>
+                          </Select>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className={cns(s.containerTradingDivider, s.containerTradingCardLimitOpen)}>
+                    <div
+                      role="button"
+                      title={!addressReceive ? 'Select receive currency to switch' : ''}
+                      tabIndex={0}
+                      className={cns(s.containerTradingDividerInner, {
+                        [s.containerTradingDividerInnerRotate]: dividerRotate === -1,
+                      })}
+                      onClick={switchPayAndReceive}
+                      onKeyDown={() => {}}
+                    >
+                      <IconExchange />
+                    </div>
+                  </div>
+
+                  {/* You Receive */}
+                  <div className={cns(s.containerTradingCard, s.containerTradingCardLimitOpen)}>
+                    <div className={s.containerTradingCardLabel}>
+                      <div>You Receive</div>
+                      {addressReceive && (
+                        <div className={s.containerTradingCardBalance}>
+                          Balance:
+                          <span>{prettyBalance(String(balanceOfTokenReceive))}</span>
+                        </div>
+                      )}
+                    </div>
+                    <div className={s.containerTradingCardInner}>
+                      <div className={s.containerTradingCardInnerName}>{tokenReceive?.name}</div>
+                      <div className={s.containerTradingCardInnerRow}>
+                        <div className={s.containerTradingCardImage}>
+                          <img src={tokenReceive?.image} alt="" />
+                        </div>
+                        <div className={s.containerTradingCardContainer}>
+                          <div className={s.containerTradingCardContainerRow}>
+                            <Dropdown label={DropdownLabelReceive}>
+                              <CSSTransition
+                                unmountOnExit
+                                mountOnEnter
+                                in={openDropdownReceive}
+                                timeout={200}
+                                classNames="transition"
+                              >
+                                <DropdownItems
+                                  refContainer={refDropdownReceive}
+                                  open={openDropdownReceive}
+                                  label={<IconSearchWhite />}
+                                  searchValue={searchValueReceive}
+                                  onChangeSearch={handleChangeSearchReceive}
+                                >
+                                  {searchTokensResultReceive.map((token: any) => {
+                                    const {
+                                      name: tokenName,
+                                      symbol,
+                                      image = imageTokenPay,
+                                      address,
+                                      decimals,
+                                    } = token;
+                                    const isBalanceZero = !userBalances[address];
+                                    const newBalance = !isBalanceZero
+                                      ? new BigNumber(userBalances[address])
+                                          .dividedBy(new BigNumber(10).pow(decimals))
+                                          .toString(10)
+                                      : '0';
+                                    const balance = !isBalanceZero ? prettyPrice(newBalance) : '';
+                                    return (
+                                      <div
+                                        role="button"
+                                        key={uuid()}
+                                        tabIndex={0}
+                                        className={s.containerTradingCardSearchItem}
+                                        onClick={() => handleSelectSymbolReceive(address)}
+                                        onKeyDown={() => {}}
+                                      >
+                                        <img
+                                          src={image}
+                                          alt=""
+                                          className={s.containerTradingCardSearchItemImage}
+                                        />
+                                        <div className={s.containerTradingCardSearchItemFirst}>
+                                          <div className={s.containerTradingCardSearchItemName}>
+                                            {tokenName}
+                                          </div>
+                                          <div className={s.containerTradingCardSearchItemPrice}>
+                                            {balance}
+                                          </div>
+                                        </div>
+                                        <div className={s.containerTradingCardSearchItemSymbol}>
+                                          {symbol.length < 4 ? (
+                                            <div>{symbol}</div>
+                                          ) : (
+                                            <div className={s.symbolWide}>{symbol}</div>
+                                          )}
+                                        </div>
+                                      </div>
+                                    );
+                                  })}
+                                </DropdownItems>
+                              </CSSTransition>
+                            </Dropdown>
+                            {/* <div className={s.containerTradingCardSymbol}>{tokenReceive?.symbol}</div> */}
+                          </div>
+                          <div
+                            className={s.containerTradingCardInput}
+                            onClick={() => receiveInputRef.current.focus()}
+                            role="button"
+                            onKeyDown={() => {}}
+                            tabIndex={0}
+                          >
+                            {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+                            <label htmlFor="inputPay" />
+                            <input
+                              ref={receiveInputRef}
+                              id="inputPay"
+                              type="number"
+                              value={amountReceive}
+                              onChange={handleChangeAmountReceive}
+                              onFocus={handleFocusAmountReceive}
+                              onBlur={handleBlurAmountReceive}
+                            />
                           </div>
                         </div>
-                      );
-                    })}
-                  </DropdownItems>
-                </Dropdown>
-                <div className={s.containerTradingCardSymbol}>{tokenReceive?.symbol}</div>
-              </div>
-              <div className={s.containerTradingCardInput}>
-                {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-                <label htmlFor="inputPay" />
-                <input
-                  id="inputPay"
-                  type="number"
-                  value={amountReceive}
-                  onChange={handleChangeAmountReceive}
-                  onFocus={handleFocusAmountReceive}
-                  onBlur={handleBlurAmountReceive}
-                />
-              </div>
-              {addressReceive && (
-                <div className={s.containerTradingCardBalance}>
-                  Current balance ({tokenReceive?.symbol})
-                  <span>{prettyBalance(String(balanceOfTokenReceive))}</span>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-        {isCustomAddress && gearBalance > 4000 ? (
-          <div className={s.CustomAddress}>
-            <div className={s.CustomAddressTitle}>Custom address</div>
-            <Input
-              value={customAddress}
-              placeholder="Enter custom address to receive the tokens"
-              onChange={(value) => setCustomAddress(value)}
-              className={s.CustomAddressInput}
-            />
-          </div>
+                      </div>
+                    </div>
+                  </div>
+                  {isCustomAddress && gearBalance > 4000 ? (
+                    <div className={s.CustomAddress}>
+                      <div className={s.CustomAddressTitle}>Custom address</div>
+                      <Input
+                        value={customAddress}
+                        placeholder="Enter custom address to receive the tokens"
+                        onChange={(value) => setCustomAddress(value)}
+                        className={s.CustomAddressInput}
+                      />
+                    </div>
+                  ) : (
+                    ''
+                  )}
+                  <div className={s.containerTradingButton}>
+                    {userAddress ? (
+                      (isAllowed && isCustomAllowance) || isAddressPayETH ? (
+                        <Button
+                          onClick={handleTrade}
+                          disabled={isTradeDisabled || waiting}
+                          classNameCustom={s.containerTradingButtonBtn}
+                        >
+                          {waiting ? 'Waiting...' : 'Trade'}
+                        </Button>
+                      ) : (
+                        <Button
+                          onClick={handleApprove}
+                          disabled={isTradeDisabled || waiting}
+                          classNameCustom={s.containerTradingButtonBtn}
+                        >
+                          {waiting ? 'Waiting...' : 'Approve'}
+                        </Button>
+                      )
+                    ) : (
+                      <Button onClick={handleConnect} classNameCustom={s.containerTradingButtonBtn}>
+                        Connect wallet
+                      </Button>
+                    )}
+                  </div>
+                </section>
+
+                <section className={s.containerCosts}>
+                  <ul>
+                    <li>
+                      <span>1 eth cost</span>
+                      <span>3,849.8736641 DAI</span>
+                    </li>
+                    <li>
+                      <span>1 dai cost</span>
+                      <span>0.0002597 ETH</span>
+                    </li>
+                    <li>
+                      <span>transaction cost</span>
+                      <span>0.008</span>
+                    </li>
+                  </ul>
+                </section>
+
+                {/* <section className={s.containerTokenInfo}> */}
+                {/*  <a */}
+                {/*    href={`https://etherscan.io/token/${tokenPay?.address}`} */}
+                {/*    target="_blank" */}
+                {/*    rel="noreferrer" */}
+                {/*    className={s.tokenInfo} */}
+                {/*  > */}
+                {/*    <img src={tokenPay?.image} alt="" /> */}
+                {/*    <div> */}
+                {/*      <span>{tokenPay?.name}</span> */}
+                {/*      <div> */}
+                {/*        {tokenPay?.address */}
+                {/*          ? `${tokenPay?.address.slice(0, 6)}...${tokenPay?.address.slice(-4)}` */}
+                {/*          : ''} */}
+                {/*      </div> */}
+                {/*    </div> */}
+                {/*    <div className={s.etherscan}> */}
+                {/*      Etherscan */}
+                {/*      <IconLink /> */}
+                {/*    </div> */}
+                {/*  </a> */}
+                {/* </section> */}
+
+                {/* <section className={s.containerChart}> */}
+                {/*  <div className={s.chart}> */}
+                {/*    {points.length > 0 && points[0] !== null && points[0] !== undefined ? ( */}
+                {/*      <LineChart */}
+                {/*        interactive */}
+                {/*        data={points} */}
+                {/*        dateTime={dateTime} */}
+                {/*        chartHeight={140} */}
+                {/*        padding={20} */}
+                {/*        onHover={handleHoverChart} */}
+                {/*      /> */}
+                {/*    ) : ( */}
+                {/*      <div className={s.chartWithoutData}> */}
+                {/*        <div>No data yet</div> */}
+                {/*      </div> */}
+                {/*    )} */}
+                {/*  </div> */}
+                {/*  <div className={s.chartData}> */}
+                {/*    <div className={s.chartDataFirst}> */}
+                {/*      <div className={s.chartDataPriceName}>Current price</div> */}
+                {/*      <div className={s.chartDataPrice}> */}
+                {/*        {!addressTwo && '$'} */}
+                {/*        {prettyPrice(priceChart || price.toString() || '-')} {tokenReceive?.symbol} */}
+                {/*      </div> */}
+                {/*    </div> */}
+                {/*    <div className={s.chartDataSecond}> */}
+                {/*      <div className={s.chartDataPeriod}> */}
+                {/*        <div */}
+                {/*          role="button" */}
+                {/*          tabIndex={0} */}
+                {/*          data-active={period === 1} */}
+                {/*          onClick={() => handleSetPeriod(1)} */}
+                {/*          onKeyDown={() => {}} */}
+                {/*        > */}
+                {/*          24H */}
+                {/*        </div> */}
+                {/*        <div */}
+                {/*          role="button" */}
+                {/*          tabIndex={0} */}
+                {/*          data-active={period === 7} */}
+                {/*          onClick={() => handleSetPeriod(7)} */}
+                {/*          onKeyDown={() => {}} */}
+                {/*        > */}
+                {/*          1W */}
+                {/*        </div> */}
+                {/*        <div */}
+                {/*          role="button" */}
+                {/*          tabIndex={0} */}
+                {/*          data-active={period === 30} */}
+                {/*          onClick={() => handleSetPeriod(30)} */}
+                {/*          onKeyDown={() => {}} */}
+                {/*        > */}
+                {/*          1M */}
+                {/*        </div> */}
+                {/*      </div> */}
+                {/*      <div */}
+                {/*        className={s.chartDataPriceChange} */}
+                {/*        data-positive={isPriceChangePositive} */}
+                {/*        data-negative={isPriceChangeNegative} */}
+                {/*      > */}
+                {/*        {priceChange || 0}% */}
+                {/*      </div> */}
+                {/*    </div> */}
+                {/*  </div> */}
+                {/* </section> */}
+              </>
+            )}
+          </>
         ) : (
-          ''
+          <div className={s.containerWrapperSkeleton} />
         )}
-        <div className={s.containerTradingButton}>
-          {userAddress ? (
-            (isAllowed && isCustomAllowance) || isAddressPayETH ? (
-              <Button onClick={handleTrade} disabled={isTradeDisabled || waiting}>
-                {waiting ? 'Waiting...' : 'Trade'}
-              </Button>
-            ) : (
-              <Button onClick={handleApprove} disabled={isTradeDisabled || waiting}>
-                {waiting ? 'Waiting...' : 'Approve'}
-              </Button>
-            )
-          ) : (
-            <Button onClick={handleConnect}>Connect wallet</Button>
-          )}
-        </div>
-      </section>
-
-      <section className={s.containerTokenInfo}>
-        <a
-          href={`https://etherscan.io/token/${tokenPay?.address}`}
-          target="_blank"
-          rel="noreferrer"
-          className={s.tokenInfo}
-        >
-          <img src={tokenPay?.image} alt="" />
-          <div>
-            <span>{tokenPay?.name}</span>
-            <div>
-              {tokenPay?.address
-                ? `${tokenPay?.address.slice(0, 6)}...${tokenPay?.address.slice(-4)}`
-                : ''}
-            </div>
-          </div>
-          <div className={s.etherscan}>
-            Etherscan
-            <IconLink />
-          </div>
-        </a>
-      </section>
-
-      <section className={s.containerChart}>
-        <div className={s.chart}>
-          {points.length > 0 && points[0] !== null && points[0] !== undefined ? (
-            <LineChart
-              interactive
-              data={points}
-              dateTime={dateTime}
-              chartHeight={140}
-              padding={20}
-              onHover={handleHoverChart}
-            />
-          ) : (
-            <div className={s.chartWithoutData}>
-              <div>No data yet</div>
-            </div>
-          )}
-        </div>
-        <div className={s.chartData}>
-          <div className={s.chartDataFirst}>
-            <div className={s.chartDataPriceName}>Current price</div>
-            <div className={s.chartDataPrice}>
-              {!addressTwo && '$'}
-              {prettyPrice(priceChart || price.toString() || '-')} {tokenReceive?.symbol}
-            </div>
-          </div>
-          <div className={s.chartDataSecond}>
-            <div className={s.chartDataPeriod}>
-              <div
-                role="button"
-                tabIndex={0}
-                data-active={period === 1}
-                onClick={() => handleSetPeriod(1)}
-                onKeyDown={() => {}}
-              >
-                24H
-              </div>
-              <div
-                role="button"
-                tabIndex={0}
-                data-active={period === 7}
-                onClick={() => handleSetPeriod(7)}
-                onKeyDown={() => {}}
-              >
-                1W
-              </div>
-              <div
-                role="button"
-                tabIndex={0}
-                data-active={period === 30}
-                onClick={() => handleSetPeriod(30)}
-                onKeyDown={() => {}}
-              >
-                1M
-              </div>
-            </div>
-            <div
-              className={s.chartDataPriceChange}
-              data-positive={isPriceChangePositive}
-              data-negative={isPriceChangeNegative}
-            >
-              {priceChange || 0}%
-            </div>
-          </div>
-        </div>
-      </section>
+      </div>
     </div>
   );
 });

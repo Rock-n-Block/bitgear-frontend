@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { v1 as uuid } from 'uuid';
 
+import Arrow from '../../assets/icons/arrow-right.svg';
 import { ReactComponent as IconSearch } from '../../assets/icons/search.svg';
 import { InputWithDropdown } from '../InputWithDropdown';
 
@@ -30,7 +31,7 @@ const Label: React.FC = () => {
   return (
     <div className={s.label}>
       <Link to="/explore" className={s.button}>
-        Explore
+        <img src={Arrow} alt="arrow" />
       </Link>
     </div>
   );
@@ -98,7 +99,7 @@ export const Search: React.FC<TypeSearchProps> = React.memo(({ wide = true }) =>
   };
 
   return (
-    <div>
+    <>
       {wide ? (
         <>
           <InputWithDropdown
@@ -122,7 +123,7 @@ export const Search: React.FC<TypeSearchProps> = React.memo(({ wide = true }) =>
           placeholder="Search or input token"
         />
       )}
-    </div>
+    </>
   );
 });
 

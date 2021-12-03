@@ -1,9 +1,10 @@
-@import "../../scss/theme";
-@import "../../scss/mixins";
+@import '../../scss/theme';
+@import '../../scss/mixins';
 
 .container {
-  max-width: 1100px;
   padding: 10px;
+
+  max-width: 1100px;
 }
 
 .containerTitle {
@@ -11,10 +12,12 @@
   @include b('mobile') {
     padding: 60px 0 0;
   }
+
   h1 {
-    max-width: 800px;
-    text-align: center;
     margin: 16px auto 40px;
+
+    max-width: 800px;
+
+    text-align: center;
   }
 }
-

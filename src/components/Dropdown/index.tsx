@@ -1,10 +1,11 @@
 import React from 'react';
 import cns from 'classnames';
 
+import './transition.scss';
 import s from './style.module.scss';
 
 type TypeDropdownProps = {
-  open: boolean;
+  open?: boolean;
   left?: boolean;
   right?: boolean;
   label?: React.ReactElement;
@@ -18,7 +19,7 @@ export const Dropdown: React.FC<TypeDropdownProps> = React.memo(
   ({
     label = <div>Dropdown</div>,
     children = [],
-    open = false,
+    open = true,
     left = false,
     right = false,
     classNameDropdown,
@@ -27,10 +28,12 @@ export const Dropdown: React.FC<TypeDropdownProps> = React.memo(
     const classNameSide = right ? s.right : left ? s.left : null;
 
     return (
-      <div className={s.container}>
-        {label}
-        <div className={cns(s.dropdown, !open && s.hidden, classNameSide, classNameDropdown)}>
-          <div className={cns(s.dropdownInner, classNameDropdownInner)}>{children}</div>
+      <div className="transition">
+        <div className={s.container}>
+          {label}
+          <div className={cns(s.dropdown, !open && s.hidden, classNameSide, classNameDropdown)}>
+            <div className={cns(s.dropdownInner, classNameDropdownInner)}>{children}</div>
+          </div>
         </div>
       </div>
     );

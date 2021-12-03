@@ -5,39 +5,51 @@ $font2: 'Baloo 2', normal;
 // colors
 
 // background
-$color-bg: #07092a;
+$color-bg: rgba(3, 13, 34, 1);
+//$color-bg: #07092a;
 $color-bg-section: #212443;
-$color-bg-header: #07092a;
+$color-bg-header: linear-gradient(180deg, #030d22 0%, rgba(3, 13, 34, 0) 195.12%);
+//$color-bg-header: #07092a;
 $color-bg-footer: #07092a;
 $color-bg-error: #c88a38;
-$color-bg-input: #07092a;
+$color-bg-input: linear-gradient(180deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0) 100%),
+  linear-gradient(0deg, #0f2043, #0f2043);
+//$color-bg-input: #07092a;
 $color-bg-input-small: #212443;
 $color-bg-pagination: #07092a;
 $color-bg-image: rgba(255, 255, 255, 0.15);
 $color-bg-select: #2c2d4b;
 $color-bg-select-item: #2c2d4b;
 $color-bg-select-item-hover: #212443;
-$color-bg-checkbox: #0197E2;
+$color-bg-checkbox: #0197e2;
 $color-bg-radio: #2c2d4b;
-$color-bg-radio-point: #0197E2;
+$color-bg-radio-point: #0197e2;
 $color-bg-chart: #212443;
-$color-bg-dropdown: #07092a;
+$color-bg-dropdown-wc: rgba(7, 9, 42, 1);
+$color-bg-dropdown: rgba(9, 35, 73, 1);
+//$color-bg-dropdown: #07092a;
 $color-bg-dropdown-item: #212443;
 $color-bg-button: #0197e2;
-$color-bg-card: rgba(1, 151, 226, 0.3);
+$color-bg-input-market: rgba(5, 26, 56, 1);
+$color-bg-card: linear-gradient(180deg, #183775 0%, rgba(15, 32, 67, 0) 100%);
+//$color-bg-card: rgba(1, 151, 226, 0.3);
 $color-bg-button-primary: linear-gradient(322.71deg, #007fef 16.86%, #00e3b6 95.37%), #0197e2;
-$color-bg-button-primary-hover: #0197E2;
-$color-bg-button-secondary: #0197E2;
+$color-bg-button-primary-hover: #0197e2;
+$color-bg-button-secondary: #0197e2;
 $color-bg-button-secondary-hover: #70bde3;
 $color-bg-button-normal: transparent;
 $color-bg-login-item-hover: #0197e23d;
+$color-bg-card-market: linear-gradient(180deg, #030d22 74.94%, rgba(3, 13, 34, 0) 100%);
+$color-boxsh-bg1: rgba(0, 227, 182, 0.3);
+$color-boxsh-bg2: rgba(0, 127, 239, 0.4);
 // text
 $color-text-primary: #fff;
 $color-text-secondary: rgba(255, 255, 255, 0.5);
 $color-text-bright: #fff;
 $color-text-link: #0197e2;
+$color-text-wc: linear-gradient(294.07deg, #0278df 41.96%, #6bffc1 117.07%);
 $color-text-span: #0197e2;
-$color-text-span-green: #00E3B6;
+$color-text-span-green: #00e3b6;
 $color-text-header: #fff;
 $color-text-footer: #fff;
 $color-text-input: #fff;
@@ -54,7 +66,7 @@ $color-gradient-button-start: rgba(208, 208, 208, 1);
 $color-gradient-button-end: rgba(208, 208, 208, 1);
 $color-gradient-button: linear-gradient(
   90deg,
-  $color-gradient-button-start 0px,
+  $color-gradient-button-start 0,
   $color-gradient-button-start 7px,
   $color-gradient-button-end 7px,
   $color-gradient-button-end 100%
@@ -70,10 +82,17 @@ $color-gradient-header: linear-gradient(
 $color-border-header-start: rgba(255, 255, 255, 0);
 $color-border-header-end: rgba(255, 255, 255, 0.25);
 $color-border-header: linear-gradient(
-  90deg,
-  $color-border-header-start 0%,
-  $color-border-header-end 100%
+  270deg,
+  rgba(255, 255, 255, 0) 0%,
+  #fff 25%,
+  rgba(255, 255, 255, 0) 100%
 );
+
+//$color-border-header: linear-gradient(
+//    90deg,
+//    $color-border-header-start 0%,
+//    $color-border-header-end 100%
+//);
 $color-border-login-item: #0197e238;
 $color-border-account-menu-item: #303355;
 $color-border-bottom-span: #0197e2;
@@ -86,10 +105,11 @@ $color-chart-line-vertical: rgba(255, 255, 255, 0.3);
 // borders
 
 $border-header: 1px solid $color-border-header;
-$border-input: 2px solid rgba(1, 151, 226, 0.5);
+$border-input: 2px solid rgba(1, 151, 226, 1);
+//$border-input: 2px solid rgba(1, 151, 226, 0.5);
 $border-pagination: 2px solid rgba(1, 151, 226, 0.5);
 $border-input-dropdown: 1px solid rgba(1, 151, 226, 0.5);
-$border-card: 2px solid #203054;
+$border-card: 2px solid rgba(32, 48, 84, 0.74);
 $border-tab: 2px solid #203054;
 $border-form: 3px solid rgba(1, 151, 226, 0.5);
 
@@ -97,15 +117,15 @@ $border-form: 3px solid rgba(1, 151, 226, 0.5);
 // shadows
 
 $color-shadow-menu: #0197e2;
-$shadow-container: 0px 4px 60px rgba(0, 0, 0, 0.05);
-$shadow-dropdown: 0px 8px 15px rgba(0, 0, 0, 0.15);
+$shadow-container: 0 4px 60px rgba(0, 0, 0, 0.05);
+$shadow-dropdown: 0 8px 15px rgba(0, 0, 0, 0.15);
 $shadow-menu: 0 4px 40px $color-shadow-menu;
 $shadow-border: 0 0 0 1px lightgrey inset;
 
 // ============================================
 // dimentions
 
-$height-input: 70px;
+$height-input: 76px;
 $height-input-small: 55px;
 $height-header: 83px;
 $height-header-mobile: 69px;
