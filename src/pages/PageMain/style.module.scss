@@ -135,7 +135,7 @@
     color: $color-text-primary;
     background: transparent;
 
-    border-radius: 12px;
+    border-radius: 20px;
     outline: $border-card;
     flex-basis: 320px;
     flex-shrink: 1;
@@ -153,26 +153,7 @@
         outline: none;
       }
     }
-
-    .skeleton {
-      position: absolute;
-      top: 0;
-      right: 0;
-      left: 0;
-      bottom: 0;
-
-      width: 100%;
-
-      background: linear-gradient(
-          90deg,
-          $color-bg 0,
-          rgba(255, 255, 255, 0.07) 80px,
-          $color-bg 105px
-      );
-
-      animation: loading 2s infinite;
-    }
-
+    
     &Container {
       @include flex(row, flex-start, space-between, nowrap);
 
@@ -288,12 +269,12 @@
   }
 }
 
-@keyframes loading {
-  0% {
-    transform: translateX(-100%);
-  }
-
-  100% {
-    transform: translateX(100%);
-  }
-}
+//@keyframes loading {
+//  0% {
+//    transform: translateX(-100%);
+//  }
+//
+//  100% {
+//    transform: translateX(100%);
+//  }
+//}

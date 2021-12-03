@@ -7,7 +7,7 @@ import { v1 as uuid } from 'uuid';
 
 import HotNew from '../../assets/icons/hot-new.svg';
 import TopPerfomance from '../../assets/icons/top-perf.svg';
-import { Search } from '../../components';
+import { Search, SkeletonLoader } from '../../components';
 import { CoinMarketCapService } from '../../services/CoinMarketCap';
 import { CryptoCompareService } from '../../services/CryptoCompareService';
 import { prettyPrice, prettyPriceChange } from '../../utils/prettifiers';
@@ -106,20 +106,47 @@ export const CardToken: React.FC<TypeCardProps> = ({ token, to = '/', isLoading 
 
   return (
     <Link to={to} className={cn(s.card, { [s.cardHover]: !isLoading })}>
-      <div className={cn({ [s.skeleton]: isLoading })}>
-        {!isLoading && (
-          <div className={s.cardContainer}>
-            <div className={s.cardContainerFirst}>
-              <div className={s.cardSymbol}>{symbol}</div>
-              <div className={s.cardPrice}>${price}</div>
-              <div className={classPriceChange}>{newPriceChange}%</div>
-            </div>
-            <div className={s.cardContainerSecond}>
-              <img src={image} alt="logo" className={s.cardImage} />
-            </div>
+      {/* <div className={cn({ [s.skeleton]: isLoading })}> */}
+      {/* {!isLoading && ( */}
+      <div className={s.cardContainer}>
+        <div className={s.cardContainerFirst}>
+          <div className={cn(s.cardSymbol)}>
+            {!isLoading ? (
+              `${symbol}`
+            ) : (
+              <SkeletonLoader width="200px" height="30px" borderRadius="12px" />
+            )}
           </div>
-        )}
+          <div className={cn(s.cardPrice)}>
+            {!isLoading ? (
+              `$${price}`
+            ) : (
+              <SkeletonLoader width="200px" height="30px" borderRadius="12px" />
+            )}
+          </div>
+          <div className={cn(classPriceChange)}>
+            {!isLoading ? (
+              `${newPriceChange}%`
+            ) : (
+              <SkeletonLoader
+                width="70px"
+                height="30px"
+                borderRadius="12px"
+                style={{ bottom: '20px' }}
+              />
+            )}
+          </div>
+        </div>
+        <div className={cn(s.cardContainerSecond)}>
+          {!isLoading ? (
+            <img src={image} alt="logo" className={s.cardImage} />
+          ) : (
+            <SkeletonLoader width="50px" height="50px" circle />
+          )}
+        </div>
       </div>
+      {/* )} */}
+      {/* </div> */}
     </Link>
   );
 };

@@ -17,3 +17,4 @@ export { Loader } from './Loader';
 export { RadioSelect } from './RadioSelect';
 export { NetworkDropDown } from './NetworkDropDown';
 export { DropDownCurrent } from './DropDownCurrent';
+export { SkeletonLoader } from './Skeleton';
