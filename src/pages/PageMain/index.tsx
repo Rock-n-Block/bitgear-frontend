@@ -106,22 +106,20 @@ export const CardToken: React.FC<TypeCardProps> = ({ token, to = '/', isLoading 
 
   return (
     <Link to={to} className={cn(s.card, { [s.cardHover]: !isLoading })}>
-      {/* <div className={cn({ [s.skeleton]: isLoading })}> */}
-      {/* {!isLoading && ( */}
       <div className={s.cardContainer}>
         <div className={s.cardContainerFirst}>
           <div className={cn(s.cardSymbol)}>
             {!isLoading ? (
               `${symbol}`
             ) : (
-              <SkeletonLoader width="200px" height="30px" borderRadius="12px" />
+              <SkeletonLoader width="200px" height="30px" borderRadius="4px" />
             )}
           </div>
           <div className={cn(s.cardPrice)}>
             {!isLoading ? (
               `$${price}`
             ) : (
-              <SkeletonLoader width="200px" height="30px" borderRadius="12px" />
+              <SkeletonLoader width="200px" height="30px" borderRadius="4px" />
             )}
           </div>
           <div className={cn(classPriceChange)}>
@@ -131,7 +129,7 @@ export const CardToken: React.FC<TypeCardProps> = ({ token, to = '/', isLoading 
               <SkeletonLoader
                 width="70px"
                 height="30px"
-                borderRadius="12px"
+                borderRadius="4px"
                 style={{ bottom: '20px' }}
               />
             )}
@@ -145,8 +143,6 @@ export const CardToken: React.FC<TypeCardProps> = ({ token, to = '/', isLoading 
           )}
         </div>
       </div>
-      {/* )} */}
-      {/* </div> */}
     </Link>
   );
 };

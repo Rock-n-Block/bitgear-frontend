@@ -18,7 +18,7 @@
 
     min-width: 470px;
     max-width: 470px;
-    height: 500px;
+    min-height: 739px;
 
     background: $color-bg;
     border-radius: 12px;
@@ -43,10 +43,10 @@
       width: 100%;
 
       background: linear-gradient(
-        90deg,
-        $color-bg 0,
-        rgba(255, 255, 255, 0.07) 80px,
-        $color-bg 105px
+          90deg,
+          $color-bg 0,
+          rgba(255, 255, 255, 0.07) 80px,
+          $color-bg 105px
       );
 
       animation: loading 2s infinite;
@@ -225,10 +225,12 @@
   &Card {
     @include flex(column, flex-start, flex-end, nowrap);
     border-radius: 20px;
+    width: 100%;
 
     &Inner {
       margin-top: 6px;
       padding: 10px 20px 5px;
+      width: 100%;
 
       @include flex(column, flex-start, center, nowrap);
       background: $color-bg-input-market;
