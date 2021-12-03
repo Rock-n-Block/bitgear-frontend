@@ -128,13 +128,11 @@ export const PageMain: React.FC = () => {
   const { tokens } = useSelector(({ zx }: any) => zx);
 
   const [tokensList, setTokensList] = React.useState<TypeToken[]>(
-    new Array(4).fill('').map(() => {
-      return {
-        symbol: '',
-        name: '',
-        address: '',
-      };
-    }),
+    new Array(4).fill('').map(() => ({
+      symbol: '',
+      name: '',
+      address: '',
+    })),
   );
 
   const isWide = useMedia({ minWidth: '767px' });
