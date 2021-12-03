@@ -41,7 +41,6 @@
   @include b('mobile') {
     max-width: 160px;
   }
-
   font-size: 16px;
   line-height: 160%;
 
@@ -97,7 +96,6 @@
   right: 0;
   left: 0;
 
-
   padding: 10px;
 
   visibility: hidden;
@@ -105,7 +103,9 @@
   width: 269px;
   @include b('mobile') {
     top: 60px;
+
     width: 160px;
+
     background: $color-bg-input-market;
   }
   background: $color-bg;
@@ -158,9 +158,9 @@
   height: 56px;
   @include b('mobile') {
     padding: 16px;
+
     height: 70px;
   }
-
   font-size: 14px;
   font-weight: 500;
 
