@@ -281,11 +281,12 @@
           @include flex(row, center, flex-start, nowrap);
         }
 
-        &Image {
-          //position: absolute;
-          //top: 50px;
-          //right: 80px;
-          //cursor: pointer;
+        transition: all 250ms ease-in-out;
+
+        &:hover,
+        &:focus,
+        &:active {
+          box-shadow: 0 0 10px 0.5px rgba(255, 255, 255, 0.55);
         }
       }
 
@@ -566,6 +567,10 @@
 
       &Rotate {
         transform: rotate(180deg);
+      }
+
+      &Disable {
+        cursor: not-allowed;
       }
     }
   }

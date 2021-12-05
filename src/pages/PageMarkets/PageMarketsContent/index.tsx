@@ -639,6 +639,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
       if (result.status === 'SUCCESS') {
         newPrice = result.data.price;
         setPriceMarket(newPrice);
+        setLoaded(true);
       }
     } catch (e) {
       console.error(e);
@@ -1348,7 +1349,6 @@ export const PageMarketsContent: React.FC = React.memo(() => {
       });
       // console.log('matchSearch:', result);
       setSearchTokensResultPay(result);
-      setLoaded(true);
     } catch (e) {
       console.error(e);
     }
@@ -2051,36 +2051,43 @@ export const PageMarketsContent: React.FC = React.memo(() => {
 
             <section className={s.containerTitle}>
               <div className={s.containerTitleFirst}>
-                <div
-                  role="button"
-                  tabIndex={0}
-                  className={
-                    isModeMarket ? s.containerTitleFirstItemActive : s.containerTitleFirstItem
-                  }
-                  onClick={() => {
-                    handleSetMode('market');
-                    setCustomAddress('');
-                    setIsCustomAddress(false);
-                  }}
-                  onKeyDown={() => {}}
-                >
-                  Market
-                </div>
-                <div
-                  role="button"
-                  tabIndex={0}
-                  className={
-                    isModeLimit ? s.containerTitleFirstItemActive : s.containerTitleFirstItem
-                  }
-                  onClick={() => {
-                    handleSetMode('limit');
-                    setCustomAddress('');
-                    setIsCustomAddress(false);
-                  }}
-                  onKeyDown={() => {}}
-                >
-                  Limit
-                </div>
+                {isLoaded ? (
+                  <>
+                    <div
+                      role="button"
+                      tabIndex={0}
+                      className={
+                        isModeMarket ? s.containerTitleFirstItemActive : s.containerTitleFirstItem
+                      }
+                      onClick={() => {
+                        handleSetMode('market');
+                        setCustomAddress('');
+                        setIsCustomAddress(false);
+                      }}
+                      onKeyDown={() => {}}
+                    >
+                      Market
+                    </div>
+                    <div
+                      role="button"
+                      tabIndex={0}
+                      className={
+                        isModeLimit ? s.containerTitleFirstItemActive : s.containerTitleFirstItem
+                      }
+                      onClick={() => {
+                        handleSetMode('limit');
+                        setCustomAddress('');
+                        setIsCustomAddress(false);
+                      }}
+                      onKeyDown={() => {}}
+                    >
+                      Limit
+                    </div>
+                  </>
+                ) : (
+                  <SkeletonLoader width="100px" height="30px" borderRadius="4px" />
+                )}
+
                 {/* <div className={s.containerTitleName}> */}
                 {/*  {tokenPay?.name} ({tokenPay?.symbol}) */}
                 {/* </div> */}
@@ -2110,7 +2117,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
                 {/* </div> */}
               </div>
               <div className={s.containerTitleSecond}>
-                {isModeMarket && (
+                {isModeMarket && isLoaded ? (
                   <div
                     className={s.containerTitleSecondItem}
                     onClick={handleOpenSettings}
@@ -2120,6 +2127,8 @@ export const PageMarketsContent: React.FC = React.memo(() => {
                   >
                     <IconSettings className={s.containerTitleSecondItemImg} />
                   </div>
+                ) : (
+                  <SkeletonLoader width="50px" height="50px" circle />
                 )}
               </div>
             </section>
@@ -2131,7 +2140,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
                   <div>You Sell</div>
                   {addressPay && (
                     <div className={s.containerTradingCardBalance}>
-                      {isLoaded || searchTokensResultPay.length ? (
+                      {isLoaded ? (
                         <>
                           Balance:
                           <span>{prettyBalance(String(balanceOfTokenPay))}</span>
@@ -2144,7 +2153,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
                 </div>
                 <div className={s.containerTradingCardInner}>
                   <div className={s.containerTradingCardInnerName}>
-                    {isLoaded || searchTokensResultPay.length ? (
+                    {isLoaded ? (
                       <>{tokenPay?.name}</>
                     ) : (
                       <SkeletonLoader width="70px" height="30px" borderRadius="4px" />
@@ -2152,7 +2161,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
                   </div>
                   <div className={s.containerTradingCardInnerRow}>
                     <div className={s.containerTradingCardImage}>
-                      {isLoaded || searchTokensResultPay.length ? (
+                      {isLoaded ? (
                         <img src={tokenPay?.image} alt="" />
                       ) : (
                         <SkeletonLoader
@@ -2164,7 +2173,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
                       )}
                     </div>
                     <div className={s.containerTradingCardContainer}>
-                      {isLoaded || searchTokensResultPay.length ? (
+                      {isLoaded ? (
                         <>
                           <div className={s.containerTradingCardContainerRow}>
                             <Dropdown label={DropdownLabelPay}>
@@ -2258,7 +2267,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
                           {messageYouPay && <div className={s.error}>{messageYouPay}</div>}
                         </>
                       ) : (
-                        <SkeletonLoader width="200px" height="40px" borderRadius="4px" />
+                        <SkeletonLoader width="200px" height="30px" borderRadius="4px" />
                       )}
                     </div>
                   </div>
@@ -2376,7 +2385,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
                   <div>You Receive</div>
                   {addressReceive && (
                     <div className={s.containerTradingCardBalance}>
-                      {isLoaded || searchTokensResultPay.length ? (
+                      {isLoaded ? (
                         <>
                           Balance:
                           <span>{prettyBalance(String(balanceOfTokenReceive))}</span>
@@ -2389,7 +2398,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
                 </div>
                 <div className={s.containerTradingCardInner}>
                   <div className={s.containerTradingCardInnerName}>
-                    {isLoaded || searchTokensResultPay.length ? (
+                    {isLoaded ? (
                       <>{tokenReceive?.name}</>
                     ) : (
                       <SkeletonLoader width="70px" height="30px" borderRadius="4px" />
@@ -2397,7 +2406,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
                   </div>
                   <div className={s.containerTradingCardInnerRow}>
                     <div className={s.containerTradingCardImage}>
-                      {isLoaded || searchTokensResultPay.length ? (
+                      {isLoaded ? (
                         <img src={tokenReceive?.image} alt="" />
                       ) : (
                         <SkeletonLoader
@@ -2410,7 +2419,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
                     </div>
                     <div className={s.containerTradingCardContainer}>
                       <>
-                        {isLoaded || searchTokensResultPay.length ? (
+                        {isLoaded ? (
                           <>
                             <div className={s.containerTradingCardContainerRow}>
                               <Dropdown label={DropdownLabelReceive}>
@@ -2501,7 +2510,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
                             </div>
                           </>
                         ) : (
-                          <SkeletonLoader width="200px" height="40px" borderRadius="4px" />
+                          <SkeletonLoader width="200px" height="30px" borderRadius="4px" />
                         )}
                       </>
                     </div>
