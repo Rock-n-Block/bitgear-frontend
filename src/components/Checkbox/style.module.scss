@@ -36,7 +36,7 @@
     background-repeat: no-repeat;
     background-position: center center;
     background-size: 50% 50%;
-    border: 2px solid #adb5bd;
+    outline: 1px solid #adb5bd;
     border-radius: 4px;
     flex-shrink: 0;
     flex-grow: 0;
@@ -44,13 +44,16 @@
 }
 
 .checkbox:checked + label::before {
-  background: $color-text-wc;
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%23fff' d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26 2.974 7.25 8 2.193z'/%3e%3c/svg%3e");
-  border-color: $color-bg-checkbox;
+  background: url('../../assets/icons/checked-checkbox.svg') center;
+  background-size: cover;
+  //background: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%23fff' d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26 2.974 7.25 8 2.193z'/%3e%3c/svg%3e");
+  //border-color: $color-bg-checkbox;
+  outline: none;
 }
 
 .checkbox:not(:disabled):not(:checked) + label:hover::before {
-  border-color: #fff;
+  outline: 1px solid #adb5bd;
+  //border-color: #fff;
 }
 
 .checkbox:not(:disabled):active + label::before {

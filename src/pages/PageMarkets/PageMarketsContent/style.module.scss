@@ -787,10 +787,15 @@
     }
 
     &CustomAddress {
+      padding: 5px 20px;
       margin-top: 16.5px !important;
+      @include flex(row-reverse, center, space-between, nowrap);
+      background: $color-bg-input-market;
+      border-radius: 12px;
     }
 
     &PremiumBadge {
+      padding: 8px;
       margin-bottom: 5px;
 
       display: flex;
@@ -801,7 +806,9 @@
       font-weight: 500;
       line-height: 25px;
 
-      color: $color-text-span;
+      color: rgba(248, 182, 76, 1);
+      border: 1px solid rgba(248, 182, 76, 1);
+      border-radius: 12px;
 
       svg {
         margin-right: 6px;
