@@ -277,8 +277,8 @@ export const PageMarketsContent: React.FC = React.memo(() => {
   const [dividerRotate, setRotateDivider] = React.useState(1);
   const [tokensFiltered, setTokensFiltered] = React.useState<any[]>(tokens);
   const [, setPrice] = React.useState<number>(0);
-  const [, setPriceMarket] = React.useState<number>(0);
-  const [, setPriceChange] = React.useState<number>(0);
+  const [priceMarket, setPriceMarket] = React.useState<number>(0);
+  const [priceChange, setPriceChange] = React.useState<number>(0);
   // const [priceChart, setPriceChart] = React.useState<string | null>();
   const [marketHistory, setMarketHistory] = React.useState<any[]>([]);
   const [, setPoints] = React.useState<number[]>([]);
@@ -336,9 +336,9 @@ export const PageMarketsContent: React.FC = React.memo(() => {
   const isModeMarket = mode === 'market';
   const isModeLimit = mode === 'limit';
 
-  // const classPriceChange = s.containerTitlePriceChange;
-  // const isPriceChangePositive = +priceChange > 0;
-  // const isPriceChangeNegative = +priceChange < 0;
+  const classPriceChange = s.containerCostsPriceChange;
+  const isPriceChangePositive = +priceChange > 0;
+  const isPriceChangeNegative = +priceChange < 0;
 
   const isGasPriceTypeFast = gasPriceType === 'fast';
   const isGasPriceTypeVeryFast = gasPriceType === 'veryFast';
@@ -1843,7 +1843,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
       tabIndex={0}
       onKeyDown={() => {}}
     >
-      <div className={s.containerTradingCardSearchName}>{tokenPay?.name}</div>
+      <div className={s.containerTradingCardSearchName}>{tokenPay?.symbol}</div>
       <IconArrowDownWhite className={s.containerTradingCardSearchArrowDown} />
     </div>
   );
@@ -1857,7 +1857,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
       tabIndex={0}
       onKeyDown={() => {}}
     >
-      <div className={s.containerTradingCardSearchName}>{tokenReceive?.name}</div>
+      <div className={s.containerTradingCardSearchName}>{tokenReceive?.symbol}</div>
       <IconArrowDownWhite className={s.containerTradingCardSearchArrowDown} />
     </div>
   );
@@ -2087,48 +2087,24 @@ export const PageMarketsContent: React.FC = React.memo(() => {
                 ) : (
                   <SkeletonLoader width="100px" height="30px" borderRadius="4px" />
                 )}
-
-                {/* <div className={s.containerTitleName}> */}
-                {/*  {tokenPay?.name} ({tokenPay?.symbol}) */}
-                {/* </div> */}
-                {/* <div className={s.containerTitlePrice}> */}
-                {/*  {!tokenReceive?.symbol && '$'} */}
-                {/*  {priceMarket */}
-                {/*    ? prettyPrice(priceMarket?.toString()) */}
-                {/*    : tokenReceive?.symbol === 'USDC' && !addressReceive */}
-                {/*    ? marketHistory[0]?.quote?.USD?.close */}
-                {/*    : '-'}{' '} */}
-                {/*  {tokenReceive?.symbol} */}
-                {/* </div> */}
-                {/* <div */}
-                {/*  className={classPriceChange} */}
-                {/*  data-positive={isPriceChangePositive} */}
-                {/*  data-negative={isPriceChangeNegative} */}
-                {/* > */}
-                {/*  {isPriceChangePositive && '+'} */}
-                {/*  {!!priceChange && `${priceChange}%`}{' '} */}
-                {/*  {!!priceChange && period === 1 */}
-                {/*    ? 'past 24 hours' */}
-                {/*    : period === 7 */}
-                {/*    ? 'past week' */}
-                {/*    : period === 30 */}
-                {/*    ? 'past month' */}
-                {/*    : ''} */}
-                {/* </div> */}
               </div>
               <div className={s.containerTitleSecond}>
-                {isModeMarket && isLoaded ? (
-                  <div
-                    className={s.containerTitleSecondItem}
-                    onClick={handleOpenSettings}
-                    role="button"
-                    tabIndex={0}
-                    onKeyDown={() => {}}
-                  >
-                    <IconSettings className={s.containerTitleSecondItemImg} />
-                  </div>
-                ) : (
-                  <SkeletonLoader width="50px" height="50px" circle />
+                {isModeMarket && (
+                  <>
+                    {isLoaded ? (
+                      <div
+                        className={s.containerTitleSecondItem}
+                        onClick={handleOpenSettings}
+                        role="button"
+                        tabIndex={0}
+                        onKeyDown={() => {}}
+                      >
+                        <IconSettings className={s.containerTitleSecondItemImg} />
+                      </div>
+                    ) : (
+                      <SkeletonLoader width="50px" height="50px" circle />
+                    )}
+                  </>
                 )}
               </div>
             </section>
@@ -2558,20 +2534,55 @@ export const PageMarketsContent: React.FC = React.memo(() => {
             </section>
 
             <section className={s.containerCosts}>
-              <ul>
-                <li>
-                  <span>1 eth cost</span>
-                  <span>3,849.8736641 DAI</span>
-                </li>
-                <li>
-                  <span>1 dai cost</span>
-                  <span>0.0002597 ETH</span>
-                </li>
-                <li>
-                  <span>transaction cost</span>
-                  <span>0.008</span>
-                </li>
-              </ul>
+              {isLoaded ? (
+                <ul>
+                  <li>
+                    <span>1 {tokenPay?.symbol} cost</span>
+                    <span>
+                      {priceMarket
+                        ? prettyPrice(priceMarket?.toString())
+                        : tokenReceive?.symbol === 'USDC' && !addressReceive
+                        ? marketHistory[0]?.quote?.USD?.close
+                        : '-'}{' '}
+                      {tokenReceive?.symbol}
+                    </span>
+                  </li>
+                  <li>
+                    <div
+                      className={classPriceChange}
+                      data-positive={isPriceChangePositive}
+                      data-negative={isPriceChangeNegative}
+                    >
+                      {isPriceChangePositive && '+'}
+                      {!!priceChange && `${priceChange}%`}{' '}
+                      {!!priceChange && period === 1
+                        ? 'past 24 hours'
+                        : period === 7
+                        ? 'past week'
+                        : period === 30
+                        ? 'past month'
+                        : ''}
+                    </div>
+                  </li>
+                  {/* <li> */}
+                  {/*  <span>1 {tokenReceive?.symbol} cost</span> */}
+                  {/*  <span> */}
+                  {/*    {priceMarket */}
+                  {/*      ? prettyPrice(priceMarket?.toString()) */}
+                  {/*      : tokenPay?.symbol === 'USDC' && !addressPay */}
+                  {/*      ? marketHistory[1]?.quote?.USD?.close */}
+                  {/*      : '-'}{' '} */}
+                  {/*    {tokenPay?.symbol} */}
+                  {/*  </span> */}
+                  {/* </li> */}
+                  {/* <li> */}
+                  {/*  <span>transaction cost</span> */}
+                  {/*  <span>0.008</span> */}
+                  {/* </li> */}
+                </ul>
+              ) : (
+                <SkeletonLoader width="200px" height="40px" borderRadius="4px" />
+              )}
             </section>
 
             {/* <section className={s.containerTokenInfo}> */}

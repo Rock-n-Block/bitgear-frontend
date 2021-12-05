@@ -179,33 +179,33 @@
     line-height: 78px;
   }
 
-  &PriceChange {
-    margin: -13px 0 0 0;
-
-    font-size: 20px;
-    font-weight: 400;
-    line-height: 31px;
-
-    &[data-positive='true'] {
-      margin: -13px 0 0 0;
-
-      font-size: 20px;
-      font-weight: 400;
-      line-height: 31px;
-
-      color: $color-text-green;
-    }
-
-    &[data-negative='true'] {
-      margin: -13px 0 0 0;
-
-      font-size: 20px;
-      font-weight: 400;
-      line-height: 31px;
-
-      color: $color-text-red;
-    }
-  }
+  //&PriceChange {
+  //  margin: 10px 0 0;
+  //
+  //  font-size: 20px;
+  //  font-weight: 400;
+  //  line-height: 31px;
+  //
+  //  &[data-positive='true'] {
+  //    margin: -13px 0 0 0;
+  //
+  //    font-size: 20px;
+  //    font-weight: 400;
+  //    line-height: 31px;
+  //
+  //    color: $color-text-green;
+  //  }
+  //
+  //  &[data-negative='true'] {
+  //    margin: -13px 0 0 0;
+  //
+  //    font-size: 20px;
+  //    font-weight: 400;
+  //    line-height: 31px;
+  //
+  //    color: $color-text-red;
+  //  }
+  //}
 }
 
 .containerTrading {
@@ -1001,6 +1001,38 @@
           color: $color-text-secondary;
         }
       }
+
+      &:last-child {
+        margin-top: 20px;
+      }
+    }
+  }
+
+  &PriceChange {
+    margin: 10px 0 0;
+
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 31px;
+
+    &[data-positive='true'] {
+      margin: -13px 0 0 0;
+
+      font-size: 20px;
+      font-weight: 400;
+      line-height: 31px;
+
+      color: $color-text-green;
+    }
+
+    &[data-negative='true'] {
+      margin: -13px 0 0 0;
+
+      font-size: 20px;
+      font-weight: 400;
+      line-height: 31px;
+
+      color: $color-text-red;
     }
   }
 }
