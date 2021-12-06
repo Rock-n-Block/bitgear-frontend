@@ -1599,6 +1599,13 @@ export const PageMarketsContent: React.FC = React.memo(() => {
     }
   };
 
+  const handleSetMaxReceive = () => {
+    setAmountReceive(balanceOfTokenReceive);
+  };
+  const handleSetMaxSell = () => {
+    setAmountPay(balanceOfTokenPay);
+  };
+
   React.useEffect(() => {
     document.addEventListener('click', (e) => {
       handleClickOutsideDropdownPay(e);
@@ -2119,7 +2126,14 @@ export const PageMarketsContent: React.FC = React.memo(() => {
                       {isLoaded ? (
                         <>
                           Balance:
-                          <span>{prettyBalance(String(balanceOfTokenPay))}</span>
+                          <span>{(+prettyBalance(String(balanceOfTokenPay))).toFixed(5)}</span>
+                          <button
+                            type="button"
+                            className={s.containerTradingCardBalanceBtn}
+                            onClick={handleSetMaxSell}
+                          >
+                            MAX
+                          </button>
                         </>
                       ) : (
                         <SkeletonLoader width="70px" height="25px" borderRadius="4px" />
@@ -2364,7 +2378,14 @@ export const PageMarketsContent: React.FC = React.memo(() => {
                       {isLoaded ? (
                         <>
                           Balance:
-                          <span>{prettyBalance(String(balanceOfTokenReceive))}</span>
+                          <span>{(+prettyBalance(String(balanceOfTokenReceive))).toFixed(5)}</span>
+                          <button
+                            type="button"
+                            className={s.containerTradingCardBalanceBtn}
+                            onClick={handleSetMaxReceive}
+                          >
+                            MAX
+                          </button>
                         </>
                       ) : (
                         <SkeletonLoader width="70px" height="25px" borderRadius="4px" />
