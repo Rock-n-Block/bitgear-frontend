@@ -9,15 +9,9 @@
   background-image: url('../../assets/images/bg-with-shadow.png');
   background-repeat: no-repeat;
   background-position: center;
-  background-size: contain;
-  @include b('tablet') {
-    background-size: cover;
-  }
+  background-size: cover;
   @include flex(row, center, center, nowrap);
 
-  &Cover {
-    background-size: cover;
-  }
 }
 
 .container {
@@ -35,7 +29,7 @@
 
 .containerTitle {
   padding: 120px 0 0;
-  @include flex(column, flex-start, flex-start, nowrap);
+  @include flex(column, center, center, nowrap);
 
   @include b('mobile') {
     padding: 0;
@@ -153,6 +147,9 @@ table {
         padding: 12px 0 12px 10px;
         //padding-left: 10px;
         max-height: 60px;
+        @include b('mobile') {
+          min-height: 80px;
+        }
 
         color: $color-text-primary;
         @include b('mobile') {

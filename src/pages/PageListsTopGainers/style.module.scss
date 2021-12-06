@@ -9,15 +9,9 @@
   background-image: url('../../assets/images/bg-with-shadow.png');
   background-repeat: no-repeat;
   background-position: center;
-  background-size: contain;
-  @include b('tablet') {
-    background-size: cover;
-  }
+  background-size: cover;
   @include flex(row, center, center, nowrap);
 
-  &Cover {
-    background-size: cover !important;
-  }
 }
 
 .container {
@@ -44,7 +38,8 @@
 }
 
 .containerSearch {
-  margin: 40px 0 60px 0;
+  margin: 40px auto 60px;
+  @include flex(row, center, center, nowrap);
   @include b('mobile') {
     margin: 40px 0 40px 0;
   }

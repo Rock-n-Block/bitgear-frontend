@@ -2,12 +2,11 @@ import React from 'react';
 import { Helmet } from 'react-helmet';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import cn from 'classnames';
 import { useMedia } from 'use-media';
 
 import HotNew from '../../assets/icons/hot-new.svg';
 import TopPerf from '../../assets/icons/top-perf.svg';
-import { Loader, MainTable, Pagination, Search } from '../../components';
+import { MainTable, Pagination, Search } from '../../components';
 // import excludedCoins from '../../data/excludedCoins';
 // import excludedSymbols from '../../data/excludedSymbols';
 import { tableActions } from '../../redux/actions';
@@ -180,11 +179,7 @@ export const PageExplore: React.FC = () => {
   }, [data, isWide]);
 
   return (
-    <div
-      className={cn(s.wrapper, {
-        [s.wrapperCover]: dataForTable.length || dataForTableMobile.length,
-      })}
-    >
+    <div className={s.wrapper}>
       <div className={s.container}>
         <Helmet>
           <title>Bitgear | Explore</title>
@@ -203,19 +198,19 @@ export const PageExplore: React.FC = () => {
             <img src={TopPerf} alt="RocketIcon" /> <span> Top performers</span>
           </Link>
         </section>
-        {dataForTable.length || dataForTableMobile.length ? (
-          <section className={s.ExploreTable}>
-            <MainTable
-              data={dataForTable}
-              dataForMobile={dataForTableMobile}
-              emitSorting={emitSorting}
-              activeColumn={activeColumn}
-              isArrowUp={isArrowUp}
-            />
-          </section>
-        ) : (
-          <Loader className={s.ExploreLoader} color="white" />
-        )}
+        {/* {dataForTable.length || dataForTableMobile.length ? ( */}
+        <section className={s.ExploreTable}>
+          <MainTable
+            data={dataForTable}
+            dataForMobile={dataForTableMobile}
+            emitSorting={emitSorting}
+            activeColumn={activeColumn}
+            isArrowUp={isArrowUp}
+          />
+        </section>
+        {/* ) : ( */}
+        {/*  <Loader className={s.ExploreLoader} color="white" /> */}
+        {/* )} */}
         <section className={s.paginationContainer}>
           <Pagination
             pageCountProp={pageCount}

@@ -237,3 +237,13 @@ table {
 .priceChangeUp {
   color: #01c9c5;
 }
+
+.whenLoading {
+  //&:nth-child(odd) {
+  //  background: $color-bg-input-market;
+  //}
+
+  &:hover {
+    box-shadow: none;
+  }
+}

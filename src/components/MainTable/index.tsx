@@ -10,6 +10,7 @@ import ArrowUpIcon from '../../assets/icons/arrow-up-icon.svg';
 import { CoinMarketCapService } from '../../services/CoinMarketCap';
 import { numberTransform } from '../../utils/numberTransform';
 import { LineChartWrapper } from '../LineChartWrapper';
+import { SkeletonLoader } from '../Skeleton';
 
 import s from './style.module.scss';
 
@@ -130,6 +131,7 @@ export const MainTable: React.FC<TableTypeProps> = React.memo(
         <table>
           {isWide ? (
             <thead>
+              {/* {!!data.length && ( */}
               <tr>
                 <th
                   className={cns(isActiveColumnName ? s.ExploreTableActive : null)}
@@ -207,6 +209,7 @@ export const MainTable: React.FC<TableTypeProps> = React.memo(
                 {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
                 <th />
               </tr>
+              {/* )} */}
             </thead>
           ) : (
             <thead>
@@ -242,97 +245,131 @@ export const MainTable: React.FC<TableTypeProps> = React.memo(
           )}
           {isWide ? (
             <tbody>
-              {data.map((item: any, index: number) => {
-                const { name, symbol, address, price, priceChange, marketCap, volume } = item;
-                const link = `/markets/${address}`;
-                let priceChangeModel = (
-                  <td className={s.priceChangeUp}>
-                    <img src={ArrowUpIcon} alt="arrow up" /> {`${numberTransform(priceChange)}`}%
-                  </td>
-                );
+              {data.length
+                ? data.map((item: any, index: number) => {
+                    const { name, symbol, address, price, priceChange, marketCap, volume } = item;
+                    const link = `/markets/${address}`;
+                    let priceChangeModel = (
+                      <td className={s.priceChangeUp}>
+                        <img src={ArrowUpIcon} alt="arrow up" /> {`${numberTransform(priceChange)}`}
+                        %
+                      </td>
+                    );
 
-                if (priceChange < 0) {
-                  priceChangeModel = (
-                    <td className={`${s.ExploreTableDown}`}>
-                      <img src={ArrowDownIcon} alt="arrow down" />
-                      {numberTransform(priceChange)}%
-                    </td>
-                  );
-                }
-                if (priceChange === 0) {
-                  priceChangeModel = <td>{`${numberTransform(priceChange)}%`}</td>;
-                }
-                return (
-                  <tr key={uuid()}>
-                    <td>
-                      <Link to={link}>{name}</Link>
-                    </td>
-                    <td>
-                      <Link to={link}>{symbol}</Link>
-                    </td>
-                    <td>${numberTransform(price)}</td>
-                    {priceChangeModel}
-                    <td>{marketCap ? numberTransform(marketCap) : '-'}</td>
-                    <td>{volume ? numberTransform(volume) : '-'}</td>
-                    <td>
-                      <LineChartWrapper points={points[index]} />
-                    </td>
-                  </tr>
-                );
-              })}
+                    if (priceChange < 0) {
+                      priceChangeModel = (
+                        <td className={`${s.ExploreTableDown}`}>
+                          <img src={ArrowDownIcon} alt="arrow down" />
+                          {numberTransform(priceChange)}%
+                        </td>
+                      );
+                    }
+                    if (priceChange === 0) {
+                      priceChangeModel = <td>{`${numberTransform(priceChange)}%`}</td>;
+                    }
+                    return (
+                      <tr key={uuid()}>
+                        <td>
+                          <Link to={link}>{name}</Link>
+                        </td>
+                        <td>
+                          <Link to={link}>{symbol}</Link>
+                        </td>
+                        <td>${numberTransform(price)}</td>
+                        {priceChangeModel}
+                        <td>{marketCap ? numberTransform(marketCap) : '-'}</td>
+                        <td>{volume ? numberTransform(volume) : '-'}</td>
+                        <td>
+                          <LineChartWrapper points={points[index]} />
+                        </td>
+                      </tr>
+                    );
+                  })
+                : new Array(10).fill('').map(() => {
+                    return (
+                      <tr key={uuid()} className={s.whenLoading}>
+                        {/* <SkeletonLoader widthMax height="30px" borderRadius="4px" /> */}
+                        {new Array(7).fill('').map(() => {
+                          return (
+                            <td key={uuid()}>
+                              <SkeletonLoader width="70px" height="30px" borderRadius="4px" />
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    );
+                  })}
             </tbody>
           ) : (
             <tbody>
-              {dataForMobile.map((token: any, index: number) => {
-                const { symbol, name, address, price, priceChange } = token;
-                const link = `/markets/${address}`;
-                let priceChangeModel = (
-                  <div className={`${s.mobilePriceChangeModel}`}>
-                    <div className={s.flexContainerRow}>
-                      <img src={ArrowUpIcon} alt="arrow up" />
-                      {numberTransform(priceChange)}%
-                    </div>
-                  </div>
-                );
-
-                if (priceChange < 0) {
-                  priceChangeModel = (
-                    <div className={`${s.mobilePriceChangeModelDown}`}>
+              {dataForMobile.length ? (
+                dataForMobile.map((token: any, index: number) => {
+                  const { symbol, name, address, price, priceChange } = token;
+                  const link = `/markets/${address}`;
+                  let priceChangeModel = (
+                    <div className={`${s.mobilePriceChangeModel}`}>
                       <div className={s.flexContainerRow}>
-                        <img src={ArrowDownIcon} alt="arrow down" />
+                        <img src={ArrowUpIcon} alt="arrow up" />
                         {numberTransform(priceChange)}%
                       </div>
                     </div>
                   );
-                }
-                if (priceChange === 0) {
-                  priceChangeModel = <div>{`${numberTransform(priceChange)}%`}</div>;
-                }
 
-                return (
-                  <>
-                    <tr key={uuid()}>
-                      <td>
-                        <Link to={link}>
-                          <div>
-                            {name}
-                            <div className={s.mobileSymbol}>{symbol}</div>
-                          </div>
-                        </Link>
-                      </td>
-                      <td>
-                        <LineChartWrapper points={points[index]} />
-                      </td>
-                      <td>
-                        <div className={s.mobilePriceAndChangeContainer}>
-                          <div className={s.mobilePrice}>${numberTransform(price)}</div>
-                          {priceChangeModel}
+                  if (priceChange < 0) {
+                    priceChangeModel = (
+                      <div className={`${s.mobilePriceChangeModelDown}`}>
+                        <div className={s.flexContainerRow}>
+                          <img src={ArrowDownIcon} alt="arrow down" />
+                          {numberTransform(priceChange)}%
                         </div>
-                      </td>
-                    </tr>
-                  </>
-                );
-              })}
+                      </div>
+                    );
+                  }
+                  if (priceChange === 0) {
+                    priceChangeModel = <div>{`${numberTransform(priceChange)}%`}</div>;
+                  }
+
+                  return (
+                    <>
+                      <tr key={uuid()}>
+                        <td>
+                          <Link to={link}>
+                            <div>
+                              {name}
+                              <div className={s.mobileSymbol}>{symbol}</div>
+                            </div>
+                          </Link>
+                        </td>
+                        <td>
+                          <LineChartWrapper points={points[index]} />
+                        </td>
+                        <td>
+                          <div className={s.mobilePriceAndChangeContainer}>
+                            <div className={s.mobilePrice}>${numberTransform(price)}</div>
+                            {priceChangeModel}
+                          </div>
+                        </td>
+                      </tr>
+                    </>
+                  );
+                })
+              ) : (
+                <>
+                  {new Array(10).fill('').map(() => {
+                    return (
+                      <tr key={uuid()}>
+                        {new Array(3).fill('').map(() => {
+                          return (
+                            <td>
+                              <SkeletonLoader width="70px" height="30px" borderRadius="4px" />
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    );
+                  })}
+                </>
+              )}
             </tbody>
           )}
         </table>

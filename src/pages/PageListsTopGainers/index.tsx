@@ -1,10 +1,9 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
 import { useSelector } from 'react-redux';
-import cn from 'classnames';
 import { useMedia } from 'use-media';
 
-import { Loader, MainTable, Search } from '../../components';
+import { MainTable, Search } from '../../components';
 import excludedCoins from '../../data/excludedCoins';
 import excludedSymbols from '../../data/excludedSymbols';
 import { CoinMarketCapService } from '../../services/CoinMarketCap';
@@ -149,11 +148,7 @@ export const PageListsTopGainers: React.FC = React.memo(() => {
   }, [data]);
 
   return (
-    <div
-      className={cn(s.wrapper, {
-        [s.wrapperCover]: dataForTable.length || dataForTableMobile.length,
-      })}
-    >
+    <div className={s.wrapper}>
       <div className={s.container}>
         <Helmet>
           <title>Bitgear | Top performers</title>
@@ -168,19 +163,19 @@ export const PageListsTopGainers: React.FC = React.memo(() => {
         <section className={s.containerSearch}>
           <Search wide={isWide} />
         </section>
-        {dataForTableMobile.length || dataForTable.length ? (
-          <section className={s.ExploreTable}>
-            <MainTable
-              data={dataForTable}
-              emitSorting={emitSorting}
-              activeColumn={activeColumn}
-              isArrowUp={isArrowUp}
-              dataForMobile={dataForTableMobile}
-            />
-          </section>
-        ) : (
-          <Loader className={s.ExploreLoader} color="white" />
-        )}
+        {/* {dataForTableMobile.length || dataForTable.length ? ( */}
+        <section className={s.ExploreTable}>
+          <MainTable
+            data={dataForTable}
+            emitSorting={emitSorting}
+            activeColumn={activeColumn}
+            isArrowUp={isArrowUp}
+            dataForMobile={dataForTableMobile}
+          />
+        </section>
+        {/* ) : ( */}
+        {/*  <Loader className={s.ExploreLoader} color="white" /> */}
+        {/* )} */}
       </div>
     </div>
   );

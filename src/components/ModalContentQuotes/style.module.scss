@@ -38,17 +38,18 @@
 }
 
 .buttonBack {
+  padding: 5px;
+
   @include flex(row, center);
-  margin: 0 10px;
-
   width: 100px;
-
+  border-radius: 12px;
   font-size: 20px;
   font-weight: 400;
   line-height: 31px;
   text-align: left;
 
   cursor: pointer;
+  transition: all 250ms ease-in-out;
 
   color: $color-text-link;
 
@@ -58,6 +59,11 @@
 
   @include b('mobile') {
     margin: 20px 10px 0 10px;
+  }
+
+  &:hover {
+
+    box-shadow: 0 0 7px 3px rgba(1, 151, 226, 0.6);
   }
 }
 
@@ -97,7 +103,8 @@
   @include grid(58px 1fr, 1fr, 20px);
   padding: 11px 25px;
 
-  background: $color-bg-section;
+  background: $color-bg-input-market;
+  //background: $color-bg-section;
   border-radius: 20px;
 
   img {
@@ -122,6 +129,9 @@
   font-size: 30px;
   font-weight: 500;
   line-height: 47px;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .tokenBalance {

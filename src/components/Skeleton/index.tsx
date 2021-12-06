@@ -1,10 +1,13 @@
 import React from 'react';
 import Skeleton, { SkeletonProps } from 'react-loading-skeleton';
+import cn from 'classnames';
 
 import 'react-loading-skeleton/dist/skeleton.css';
+import s from './style.module.scss';
 
 interface ISkeleton extends SkeletonProps {
   colorScheme?: 'primary';
+  widthMax?: boolean;
 }
 
 export const SkeletonLoader: React.FC<ISkeleton> = ({
@@ -14,6 +17,8 @@ export const SkeletonLoader: React.FC<ISkeleton> = ({
   borderRadius,
   style,
   colorScheme = 'primary',
+  widthMax = false,
+  className,
 }) => {
   let highlightColor;
   let baseColor;
@@ -35,6 +40,7 @@ export const SkeletonLoader: React.FC<ISkeleton> = ({
       borderRadius={borderRadius}
       highlightColor={highlightColor}
       baseColor={baseColor}
+      className={cn(s.skeleton, { [s.skeleton_widthMax]: widthMax }, className)}
     />
   );
 };

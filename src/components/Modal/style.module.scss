@@ -45,7 +45,7 @@
   overflow: auto;
 
   min-width: 300px;
-  max-width: 600px;
+  max-width: 403px;
   min-height: 150px;
   max-height: 100vh;
 
@@ -54,8 +54,10 @@
   text-align: center;
 
   color: $color-text-primary;
-  background-color: $color-bg;
-  border: $border-form;
+  background: $color-bg-dropdown-wc;
+  //background-color: $color-bg;
+  //border: $border-form;
+  border: 2px solid $color-border-bottom-span;
   border-radius: 20px;
 
   @include b('mobile') {
@@ -95,7 +97,6 @@
   padding: 0;
 
   width: calc(100% - 46px);
-  width: 100%;
 
   font-size: 24px;
   font-weight: 700;
