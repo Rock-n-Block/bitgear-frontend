@@ -43,10 +43,10 @@
       width: 100%;
 
       background: linear-gradient(
-          90deg,
-          $color-bg 0,
-          rgba(255, 255, 255, 0.07) 80px,
-          $color-bg 105px
+        90deg,
+        $color-bg 0,
+        rgba(255, 255, 255, 0.07) 80px,
+        $color-bg 105px
       );
 
       animation: loading 2s infinite;
@@ -224,19 +224,22 @@
 
   &Card {
     @include flex(column, flex-start, flex-end, nowrap);
-    border-radius: 20px;
     width: 100%;
+
+    border-radius: 20px;
 
     &Inner {
       margin-top: 6px;
       padding: 10px 20px 5px;
+
       width: 100%;
 
-      @include flex(column, flex-start, center, nowrap);
       background: $color-bg-input-market;
       border-radius: 12px;
 
       transition: all 250ms ease-in-out;
+
+      @include flex(column, flex-start, center, nowrap);
 
       &:hover,
       &:focus,
@@ -260,10 +263,10 @@
       margin-top: 10px;
 
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      grid-gap: 10px;
 
       width: 100%;
+      grid-template-columns: repeat(2, 1fr);
+      grid-gap: 10px;
 
       &Inner {
         padding: 12px 20px;
@@ -273,20 +276,20 @@
 
         background: $color-bg-input-market;
         border-radius: 12px;
-        @include b('mobile') {
-          max-width: 140px;
-        }
+
+        transition: all 250ms ease-in-out;
 
         &Row {
           @include flex(row, center, flex-start, nowrap);
         }
 
-        transition: all 250ms ease-in-out;
-
         &:hover,
         &:focus,
         &:active {
           box-shadow: 0 0 10px 0.5px rgba(255, 255, 255, 0.55);
+        }
+        @include b('mobile') {
+          max-width: 140px;
         }
       }
 
@@ -340,7 +343,7 @@
 
     &Label {
       padding: 0 5px;
-      @include flex(row, flex-end, space-between, nowrap);
+
       width: 100%;
 
       font-size: 16px;
@@ -350,6 +353,7 @@
 
       color: $color-text-link;
       background: $color-bg;
+      @include flex(row, flex-end, space-between, nowrap);
     }
 
     &Image {
@@ -787,16 +791,17 @@
     }
 
     &CustomAddress {
-      padding: 5px 20px;
       margin-top: 16.5px !important;
-      @include flex(row-reverse, center, space-between, nowrap);
+      padding: 5px 20px;
+
       background: $color-bg-input-market;
       border-radius: 12px;
+      @include flex(row-reverse, center, space-between, nowrap);
     }
 
     &PremiumBadge {
-      padding: 8px;
       margin-bottom: 5px;
+      padding: 8px;
 
       display: flex;
       align-items: center;
