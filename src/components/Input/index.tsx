@@ -1,3 +1,5 @@
+/* eslint-disable react/require-default-props */
+
 import React from 'react';
 import cns from 'classnames';
 import { v1 as uuid } from 'uuid';

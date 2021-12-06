@@ -1,3 +1,5 @@
+/* eslint-disable react/require-default-props */
+
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import BigNumber from 'bignumber.js/bignumber';
@@ -21,8 +23,10 @@ import s from './style.module.scss';
 const Zx = new Service0x();
 
 type TypeButtonProps = {
+  // eslint-disable-next-line react/no-unused-prop-types
   open?: boolean;
   onClose?: () => void;
+  // eslint-disable-next-line react/no-unused-prop-types
   onButtonClick?: () => void;
   tokenPay?: any;
   tokenReceive?: any;

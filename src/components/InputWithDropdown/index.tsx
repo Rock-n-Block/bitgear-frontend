@@ -1,3 +1,5 @@
+/* eslint-disable react/require-default-props */
+
 import React from 'react';
 import cns from 'classnames';
 
@@ -6,6 +8,7 @@ import s from './style.module.scss';
 type InputWithDropdownProps = {
   type?: string;
   disabled?: boolean;
+  // eslint-disable-next-line react/no-unused-prop-types
   open?: boolean;
   error?: boolean;
   label?: React.ReactElement;

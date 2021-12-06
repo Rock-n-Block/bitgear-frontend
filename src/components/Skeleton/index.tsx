@@ -1,3 +1,5 @@
+/* eslint-disable react/require-default-props */
+
 import React from 'react';
 import Skeleton, { SkeletonProps } from 'react-loading-skeleton';
 import cn from 'classnames';

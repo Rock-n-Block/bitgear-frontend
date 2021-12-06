@@ -44,9 +44,10 @@ export const PageExplore: React.FC = () => {
 
   const dispatch = useDispatch();
 
-  const setDataStore = React.useCallback((props: any) => dispatch(tableActions.setData(props)), [
-    dispatch,
-  ]);
+  const setDataStore = React.useCallback(
+    (props: any) => dispatch(tableActions.setData(props)),
+    [dispatch],
+  );
 
   const getAllCoinsInfo = async (symbols: any): Promise<any> => {
     try {

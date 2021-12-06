@@ -15,27 +15,19 @@ type TypeDropdownProps = {
   classNameDropdownInner?: any;
 };
 
-export const Dropdown: React.FC<TypeDropdownProps> = React.memo(
-  ({
-    label = <div>Dropdown</div>,
-    children = [],
-    open = true,
-    left = false,
-    right = false,
-    classNameDropdown,
-    classNameDropdownInner,
-  }) => {
-    const classNameSide = right ? s.right : left ? s.left : null;
+export const Dropdown: React.FC<TypeDropdownProps> = React.memo(({ label = <div>
+      Dropdown
+    </div>, children = [], open = true, left = false, right = false, classNameDropdown, classNameDropdownInner }) => {
+  const classNameSide = right ? s.right : left ? s.left : null;
 
-    return (
-      <div className="transition">
-        <div className={s.container}>
-          {label}
-          <div className={cns(s.dropdown, !open && s.hidden, classNameSide, classNameDropdown)}>
-            <div className={cns(s.dropdownInner, classNameDropdownInner)}>{children}</div>
-          </div>
+  return (
+    <div className="transition">
+      <div className={s.container}>
+        {label}
+        <div className={cns(s.dropdown, !open && s.hidden, classNameSide, classNameDropdown)}>
+          <div className={cns(s.dropdownInner, classNameDropdownInner)}>{children}</div>
         </div>
       </div>
-    );
-  },
-);
+    </div>
+  );
+});

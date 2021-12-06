@@ -32,7 +32,7 @@ export class EtherscanService {
         status: 'SUCCESS',
         data: JSON.parse(result.data.result),
       };
-    } catch (e) {
+    } catch (e: any) {
       // console.error(e);
       return { status: 'ERROR', data: undefined, error: e.response.data };
     }
@@ -57,7 +57,7 @@ export class EtherscanService {
         status: 'SUCCESS',
         data: +result.data.result.ProposeGasPrice,
       };
-    } catch (e) {
+    } catch (e: any) {
       // console.error(e);
       return { status: 'ERROR', data: undefined, error: e.response.data };
     }

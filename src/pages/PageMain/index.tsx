@@ -29,6 +29,7 @@ type TypeToken = {
 type TypeCardProps = {
   token: TypeToken;
   to: string;
+  // eslint-disable-next-line react/require-default-props
   isLoading?: boolean;
 };
 

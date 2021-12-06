@@ -72,15 +72,18 @@ export const App: React.FC = () => {
   });
 
   const dispatch = useDispatch();
-  const setTokens = React.useCallback((props: any) => dispatch(zxActions.setTokens(props)), [
-    dispatch,
-  ]);
-  const setUserData = React.useCallback((props: any) => dispatch(userActions.setUserData(props)), [
-    dispatch,
-  ]);
-  const setStatus = React.useCallback((props: any) => dispatch(statusActions.setStatus(props)), [
-    dispatch,
-  ]);
+  const setTokens = React.useCallback(
+    (props: any) => dispatch(zxActions.setTokens(props)),
+    [dispatch],
+  );
+  const setUserData = React.useCallback(
+    (props: any) => dispatch(userActions.setUserData(props)),
+    [dispatch],
+  );
+  const setStatus = React.useCallback(
+    (props: any) => dispatch(statusActions.setStatus(props)),
+    [dispatch],
+  );
   const { address: userAddress = '' } = useSelector(({ user }: any) => user);
 
   const [tokenAddresses, setTokenAddresses] = React.useState<string[]>([]);

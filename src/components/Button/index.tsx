@@ -1,6 +1,9 @@
+/* eslint-disable react/require-default-props */
+
 import React from 'react';
 import cns from 'classnames';
 
+/* eslint-disable react/require-default-props */
 import s from './style.module.scss';
 
 type TypeButtonProps = {

@@ -25,9 +25,10 @@ const Connector: React.FC = ({ children }) => {
 
   const { counter: initCounter, type } = useSelector(({ wallet }: any) => wallet);
   const dispatch = useDispatch();
-  const setUserData = React.useCallback((props: any) => dispatch(userActions.setUserData(props)), [
-    dispatch,
-  ]);
+  const setUserData = React.useCallback(
+    (props: any) => dispatch(userActions.setUserData(props)),
+    [dispatch],
+  );
   const toggleModal = React.useCallback(
     (props: TypeModalParams) => dispatch(modalActions.toggleModal(props)),
     [dispatch],

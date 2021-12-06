@@ -89,9 +89,10 @@ export const PageAccount: React.FC = () => {
 
   // const [gearBalance, setGearBalance] = React.useState<number | string>(0);
 
-  const userBalancesAsArray = React.useMemo(() => Object.entries(userBalancesFiltered), [
-    userBalancesFiltered,
-  ]);
+  const userBalancesAsArray = React.useMemo(
+    () => Object.entries(userBalancesFiltered),
+    [userBalancesFiltered],
+  );
 
   const isWide = useMedia({ minWidth: '767px' });
 

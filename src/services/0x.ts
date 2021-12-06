@@ -93,7 +93,7 @@ export class Service0x {
         status: 'SUCCESS',
         data: result.data.records,
       };
-    } catch (e) {
+    } catch (e: any) {
       // console.error(e);
       return { status: 'ERROR', data: undefined, error: e.response.data };
     }
@@ -115,7 +115,7 @@ export class Service0x {
         status: 'SUCCESS',
         data: result.data,
       };
-    } catch (e) {
+    } catch (e: any) {
       // console.error(e);
       return { status: 'ERROR', data: undefined, error: e.response.data };
     }
@@ -141,7 +141,7 @@ export class Service0x {
         status: 'SUCCESS',
         data: result.data,
       };
-    } catch (e) {
+    } catch (e: any) {
       // console.error(e);
       return { status: 'ERROR', data: undefined, error: e.response.data };
     }
@@ -161,7 +161,7 @@ export class Service0x {
         status: 'SUCCESS',
         data: result.data,
       };
-    } catch (e) {
+    } catch (e: any) {
       // console.error(e);
       return { status: 'ERROR', data: undefined, error: e.response.data };
     }
@@ -176,7 +176,7 @@ export class Service0x {
         status: 'SUCCESS',
         data: result.data,
       };
-    } catch (e) {
+    } catch (e: any) {
       // console.error(e);
       return { status: 'ERROR', data: undefined, error: e.response.data };
     }
@@ -243,7 +243,7 @@ export class Service0x {
       order.takerAmount = order.takerAmount.toString();
       order.takerTokenFeeAmount = order.takerTokenFeeAmount.toString();
       return { status: 'SUCCESS', data: order };
-    } catch (e) {
+    } catch (e: any) {
       return { status: 'ERROR', data: undefined, error: e.response.data };
     }
   };
@@ -258,7 +258,7 @@ export class Service0x {
         status: 'SUCCESS',
         data: result.data,
       };
-    } catch (e) {
+    } catch (e: any) {
       // console.error(e);
       return { status: 'ERROR', data: undefined, error: e.response.data };
     }

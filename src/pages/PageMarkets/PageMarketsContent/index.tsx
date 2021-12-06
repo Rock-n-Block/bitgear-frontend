@@ -247,19 +247,18 @@ export const PageMarketsContent: React.FC = React.memo(() => {
     (props: string) => dispatch(walletActions.setWalletType(props)),
     [dispatch],
   );
-  const setStatus = React.useCallback((props: any) => dispatch(statusActions.setStatus(props)), [
-    dispatch,
-  ]);
+  const setStatus = React.useCallback(
+    (props: any) => dispatch(statusActions.setStatus(props)),
+    [dispatch],
+  );
 
   const { address: userAddress, balances: userBalances } = useSelector(({ user }: any) => user);
   const { tokens, tokensBySymbol, tokensByAddress } = useSelector(({ zx }: any) => zx);
   const { chainId } = useSelector(({ wallet }: any) => wallet);
   const { messageYouPay } = useSelector(({ status }: any) => status);
 
-  let {
-    addressOne = '',
-    addressTwo = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
-  } = useParams<TypeUseParams>();
+  let { addressOne = '', addressTwo = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee' } =
+    useParams<TypeUseParams>();
   addressOne = addressOne.toLowerCase();
   addressTwo = addressTwo.toLowerCase();
 
@@ -297,9 +296,8 @@ export const PageMarketsContent: React.FC = React.memo(() => {
   const [searchTokensResultPay, setSearchTokensResultPay] = React.useState<TypeToken[]>(tokens);
   const [isLoaded, setLoaded] = React.useState(false);
   const [tokensReceive, setTokensReceive] = React.useState<TypeToken[]>([]);
-  const [searchTokensResultReceive, setSearchTokensResultReceive] = React.useState<TypeToken[]>(
-    tokensReceive,
-  );
+  const [searchTokensResultReceive, setSearchTokensResultReceive] =
+    React.useState<TypeToken[]>(tokensReceive);
   // const [tokenNamePay, setTokenNamePay] = React.useState<string>('');
   const [addressPay, setAddressPay] = React.useState<string>(addressOne.toUpperCase());
   const [addressReceive, setAddressReceive] = React.useState<string>(

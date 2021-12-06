@@ -1,3 +1,5 @@
+/* eslint-disable react/require-default-props */
+
 import React from 'react';
 import OutsideClickHandler from 'react-outside-click-handler';
 import cn from 'classnames';
