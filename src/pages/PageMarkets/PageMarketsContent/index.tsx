@@ -1835,7 +1835,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
     >
       <div>{prettyExpiration(expiration)}</div>
       {/* <IconArrowDownWhite /> */}
-      <img src={ArrowDown} alt="arrowDown" className={s.containerTradingCardLimitInnerImage} />
+      <img src={ArrowDown} alt="arrowDown" className={s.containerSettingsSelectLabelImage} />
     </div>
   );
 
@@ -2255,7 +2255,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
                           {messageYouPay && <div className={s.error}>{messageYouPay}</div>}
                         </>
                       ) : (
-                        <SkeletonLoader width="200px" height="30px" borderRadius="4px" />
+                        <SkeletonLoader width="150px" height="30px" borderRadius="4px" />
                       )}
                     </div>
                   </div>
@@ -2505,7 +2505,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
                             </div>
                           </>
                         ) : (
-                          <SkeletonLoader width="200px" height="30px" borderRadius="4px" />
+                          <SkeletonLoader width="150px" height="30px" borderRadius="4px" />
                         )}
                       </>
                     </div>
