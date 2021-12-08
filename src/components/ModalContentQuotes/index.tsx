@@ -471,15 +471,19 @@ const ModalContentQuotes: React.FC<TypeButtonProps> = ({
 
       <div className={s.labelSecondary}>Rate</div>
       <div className={s.containerRate}>
-        <div>
-          {amountPay} {symbolPay}
-        </div>
-        <div>
-          <IconArrowFilledRight />
-        </div>
-        <div>
-          {amountReceiveNew || amountReceive} {symbolReceive}
-        </div>
+        <ul>
+          <li>
+            <div>{amountPay}</div>
+            <strong>{symbolPay}</strong>
+          </li>
+          <li>
+            <IconArrowFilledRight />
+          </li>
+          <li>
+            <div>{amountReceiveNew || amountReceive}</div>
+            <strong>{symbolReceive}</strong>
+          </li>
+        </ul>
       </div>
 
       <div className={s.divider} />
