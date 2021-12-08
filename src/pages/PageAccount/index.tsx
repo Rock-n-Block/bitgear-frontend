@@ -462,15 +462,15 @@ export const PageAccount: React.FC = () => {
                 })}
               </section>
               <section className={s.accountTiersWrapper}>
-                <div className={s.accountTiersAddress}>
-                  <div className={s.accountTiersAddressTitle}>Deposit more funds</div>
-                  <CopyToClipboard text={userAddress}>
-                    <div className={s.accountTiersAddressCopy}>
-                      <div className={s.accountTiersAddressCopyBtn}>{userAddress}</div>
-                      <IconCopy />
-                    </div>
-                  </CopyToClipboard>
-                </div>
+                {/* <div className={s.accountTiersAddress}> */}
+                <div className={s.accountTiersAddressTitle}>Deposit more funds</div>
+                {/*  <CopyToClipboard text={userAddress}> */}
+                {/*    <div className={s.accountTiersAddressCopy}> */}
+                {/*      <div className={s.accountTiersAddressCopyBtn}>{userAddress}</div> */}
+                {/*      <IconCopy /> */}
+                {/*    </div> */}
+                {/*  </CopyToClipboard> */}
+                {/* </div> */}
                 <div className={s.accountTiers}>
                   {tiers.map((tier, index) => (
                     <div
