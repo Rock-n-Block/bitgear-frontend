@@ -115,6 +115,7 @@ export const ListOfTokenBalances: React.FC = () => {
   }, [tokens, tokensByAddress, filterAndSortUserBalances]);
 
   if (userBalancesFiltered.length === 0) {
+    // eslint-disable-next-line no-debugger
     return (
       <div className={s.headerDropdownItemTokens}>
         {isLoadingBalancesDone
@@ -129,7 +130,13 @@ export const ListOfTokenBalances: React.FC = () => {
     <div className={s.headerDropdownItemTokensList}>
       {userBalancesFiltered.map((item: any) => {
         const { address, balance } = item;
-        if (+balance === 0) return null;
+        if (+balance === 0 && userBalancesFiltered.length !== 1) {
+          return null;
+          // return <div className={s.headerDropdownItemTokens}>You do not have any tokens</div>;
+        }
+        if (+balance === 0 && userBalancesFiltered.length === 1) {
+          return <div className={s.headerDropdownItemTokens}>You do not have any tokens</div>;
+        }
         return <ItemTokenBalance key={uuid()} address={address} balance={balance} />;
       })}
     </div>

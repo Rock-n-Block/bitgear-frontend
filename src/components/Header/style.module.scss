@@ -382,7 +382,7 @@ $fs: 16px;
 
     min-height: 100px;
 
-    background: $color-bg-input-small;
+    background: $color-bg-item-token;
     border-radius: 4px;
   }
 
@@ -393,7 +393,7 @@ $fs: 16px;
 
     min-height: 78px;
 
-    background: $color-bg-input-small;
+    background: $color-bg-item-token;
     border-radius: 4px;
 
     @include b('mobile') {
