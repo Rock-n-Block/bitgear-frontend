@@ -15,6 +15,7 @@ export const PageMarkets: React.FC = () => {
 
   return (
     <div className={s.marketWrapper}>
+      <div className="shadowCenter" />
       <div className={s.container}>
         <Switch>
           <Route path={path} exact>

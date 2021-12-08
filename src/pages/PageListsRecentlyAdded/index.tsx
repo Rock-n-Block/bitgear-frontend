@@ -149,6 +149,7 @@ export const PageListsRecentlyAdded: React.FC = React.memo(() => {
 
   return (
     <div className={s.wrapper}>
+      <div className="shadowTop" />
       <div className={s.container}>
         <Helmet>
           <title>Bitgear | Hot and new</title>

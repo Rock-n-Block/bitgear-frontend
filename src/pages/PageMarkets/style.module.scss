@@ -2,13 +2,19 @@
 @import '../../scss/mixins';
 
 .marketWrapper {
+  position: relative;
+  z-index: 1;
   width: 100%;
 
   background-image: url('../../assets/images/bg-market.svg');
-  background-repeat: repeat-y;
-  background-position: center;
-  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: top;
+  //background-size: cover;
   @include flex(row, center, center, nowrap);
+
+  //@include b('mobile') {
+  //  background-position: center;
+  //}
 }
 
 .container {

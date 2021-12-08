@@ -19,12 +19,14 @@
     min-width: 470px;
     max-width: 470px;
     min-height: 739px;
+    //box-shadow: 0 -60px 70px 20px rgba(0, 127, 239, 0.35), 0 -60px 80px 20px rgba(0, 227, 182, 0.35);
 
     background: $color-bg;
     border-radius: 12px;
     @include flex(column, center, center, nowrap);
     @include b('mobile') {
       min-width: 300px;
+      width: 100%;
     }
 
     &Bg {
@@ -43,10 +45,10 @@
       width: 100%;
 
       background: linear-gradient(
-        90deg,
-        $color-bg 0,
-        rgba(255, 255, 255, 0.07) 80px,
-        $color-bg 105px
+          90deg,
+          $color-bg 0,
+          rgba(255, 255, 255, 0.07) 80px,
+          $color-bg 105px
       );
 
       animation: loading 2s infinite;

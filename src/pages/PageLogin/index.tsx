@@ -40,53 +40,56 @@ export const PageLogin: React.FC = () => {
   }, [userAddress]);
 
   return (
-    <div className={s.container}>
-      <section className={s.containerTitle}>
-        <h1>
-          Connect your <strong>wallet</strong>
-        </h1>
-        <span>Connect with one of available wallet providers or create a new wallet.</span>
-      </section>
-      <div className={s.login_methods}>
-        {/* <div */}
-        {/*  role="button" */}
-        {/*  tabIndex={0} */}
-        {/*  className={s.login_methods_item} // TODO change for FORMATIC */}
-        {/*  onClick={handleWalletConnectLogin} */}
-        {/*  onKeyDown={() => {}} */}
-        {/* > */}
-        {/*  <img src={FormaticLogo} alt="Formatic logo" /> */}
-        {/*  <span>Formatic</span> */}
-        {/* </div> */}
-        <div
-          role="button"
-          tabIndex={0}
-          className={s.login_methods_item}
-          onClick={handleWalletConnectLogin}
-          onKeyDown={() => {}}
-        >
-          <img src={WalletConnectLogo} alt="WalletConnect logo" />
-          <span>WalletConnect</span>
-        </div>
-        {/* <div */}
-        {/*  role="button" */}
-        {/*  tabIndex={0} */}
-        {/*  className={s.login_methods_item} */}
-        {/*  onClick={handleMetamaskLogin} // TODO change for Coinbase */}
-        {/*  onKeyDown={() => {}} */}
-        {/* > */}
-        {/*  <img src={CoinbaseLogo} alt="Coinbase logo" /> */}
-        {/*  <span>Coinbase wallet</span> */}
-        {/* </div> */}
-        <div
-          role="button"
-          tabIndex={0}
-          className={s.login_methods_item}
-          onClick={handleMetamaskLogin}
-          onKeyDown={() => {}}
-        >
-          <img src={MetamaskLogo} alt="Metamask logo" />
-          <span>Metamask Wallet</span>
+    <div className={s.wrapper}>
+      <div className="shadowTop" />
+      <div className={s.container}>
+        <section className={s.containerTitle}>
+          <h1>
+            Connect your <strong>wallet</strong>
+          </h1>
+          <span>Connect with one of available wallet providers or create a new wallet.</span>
+        </section>
+        <div className={s.login_methods}>
+          {/* <div */}
+          {/*  role="button" */}
+          {/*  tabIndex={0} */}
+          {/*  className={s.login_methods_item} // TODO change for FORMATIC */}
+          {/*  onClick={handleWalletConnectLogin} */}
+          {/*  onKeyDown={() => {}} */}
+          {/* > */}
+          {/*  <img src={FormaticLogo} alt="Formatic logo" /> */}
+          {/*  <span>Formatic</span> */}
+          {/* </div> */}
+          <div
+            role="button"
+            tabIndex={0}
+            className={s.login_methods_item}
+            onClick={handleWalletConnectLogin}
+            onKeyDown={() => {}}
+          >
+            <img src={WalletConnectLogo} alt="WalletConnect logo" />
+            <span>WalletConnect</span>
+          </div>
+          {/* <div */}
+          {/*  role="button" */}
+          {/*  tabIndex={0} */}
+          {/*  className={s.login_methods_item} */}
+          {/*  onClick={handleMetamaskLogin} // TODO change for Coinbase */}
+          {/*  onKeyDown={() => {}} */}
+          {/* > */}
+          {/*  <img src={CoinbaseLogo} alt="Coinbase logo" /> */}
+          {/*  <span>Coinbase wallet</span> */}
+          {/* </div> */}
+          <div
+            role="button"
+            tabIndex={0}
+            className={s.login_methods_item}
+            onClick={handleMetamaskLogin}
+            onKeyDown={() => {}}
+          >
+            <img src={MetamaskLogo} alt="Metamask logo" />
+            <span>Metamask Wallet</span>
+          </div>
         </div>
       </div>
     </div>
