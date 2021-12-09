@@ -7,8 +7,9 @@
 
   color: $color-text-primary;
 
-  @include b('mobile') {
+  @include b('tablet') {
     margin-bottom: 20px;
+    width: 100%;
   }
 
   &.active {
@@ -38,8 +39,8 @@
   padding: 8px 48px 8px 16px;
 
   height: 42px;
-  @include b('mobile') {
-    max-width: 160px;
+  @include b('tablet') {
+    width: 100%;
   }
   font-size: 16px;
   line-height: 160%;
@@ -101,10 +102,10 @@
   visibility: hidden;
 
   width: 269px;
-  @include b('mobile') {
+  @include b('tablet') {
     top: 60px;
 
-    width: 160px;
+    width: 100%;
 
     background: $color-bg-input-market;
   }

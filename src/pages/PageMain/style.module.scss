@@ -79,7 +79,7 @@
 
     color: $color-text-primary;
     border-radius: 12px;
-    outline: $border-card;
+    border: $border-card;
 
     //transition: transform 0.5s cubic-bezier(0.2, 3, 0.4, 1) 0s, background-color 0.4s ease;
     flex-grow: 1;
@@ -87,7 +87,6 @@
 
     &:hover {
       background: $color-bg-card;
-      outline: none;
       //background-color: $color-bg-login-item-hover;
     }
 
@@ -142,7 +141,7 @@
     background: transparent;
 
     border-radius: 20px;
-    outline: $border-card;
+    border: $border-card;
     flex-basis: 320px;
     flex-shrink: 1;
     flex-grow: 1;
@@ -156,7 +155,6 @@
     &Hover {
       &:hover {
         background: $color-bg-card;
-        outline: none;
       }
     }
 
@@ -201,7 +199,6 @@
 
       font-size: 25px;
       font-weight: bold;
-      //line-height: 63px;
 
       @include b('mobile') {
         font-size: 30px;

@@ -23,7 +23,8 @@
   @include b('mobile') {
     padding: 120px 10px 100px 10px;
 
-    max-width: 300px;
+    width: 100%;
+    //max-width: 300px;
   }
 }
 

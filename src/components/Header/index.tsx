@@ -277,52 +277,6 @@ export const Header: React.FC = () => {
           <div className={s.headerItemMobile}>
             <NetworkDropDown />
           </div>
-          <div
-            className={s.headerItem}
-            role="button"
-            tabIndex={0}
-            onKeyDown={() => {}}
-            onClick={handleCloseDropdownMenuMobile}
-          >
-            <NavLink
-              to="/"
-              isActive={() => window.location.pathname === '/'}
-              activeClassName={s.headerItemActive}
-              onClick={() => setOpenMenu(false)}
-            >
-              Home
-            </NavLink>
-          </div>
-          <div
-            className={s.headerItem}
-            role="button"
-            tabIndex={0}
-            onKeyDown={() => {}}
-            onClick={handleCloseDropdownMenuMobile}
-          >
-            <NavLink
-              isActive={() => window.location.pathname === '/explore'}
-              activeClassName={s.headerItemActive}
-              to="/explore"
-              onClick={() => setOpenMenu(false)}
-            >
-              Explore
-            </NavLink>
-          </div>
-          <div
-            className={s.headerItem}
-            role="button"
-            tabIndex={0}
-            onKeyDown={() => {}}
-            onClick={handleCloseDropdownMenuMobile}
-          >
-            <a href="https://farm.bitgear.io" target="_blank" rel="noreferrer">
-              Farm
-            </a>
-          </div>
-          <div className={s.headerItemDesktop}>
-            <NetworkDropDown />
-          </div>
           {userAddress && isMobile ? (
             <>
               {dropdownMenuMobile ? (
@@ -402,6 +356,52 @@ export const Header: React.FC = () => {
               ) : null}
             </>
           )}
+          <div
+            className={s.headerItem}
+            role="button"
+            tabIndex={0}
+            onKeyDown={() => {}}
+            onClick={handleCloseDropdownMenuMobile}
+          >
+            <NavLink
+              to="/"
+              isActive={() => window.location.pathname === '/'}
+              activeClassName={s.headerItemActive}
+              onClick={() => setOpenMenu(false)}
+            >
+              Home
+            </NavLink>
+          </div>
+          <div
+            className={s.headerItem}
+            role="button"
+            tabIndex={0}
+            onKeyDown={() => {}}
+            onClick={handleCloseDropdownMenuMobile}
+          >
+            <NavLink
+              isActive={() => window.location.pathname === '/explore'}
+              activeClassName={s.headerItemActive}
+              to="/explore"
+              onClick={() => setOpenMenu(false)}
+            >
+              Explore
+            </NavLink>
+          </div>
+          <div
+            className={s.headerItem}
+            role="button"
+            tabIndex={0}
+            onKeyDown={() => {}}
+            onClick={handleCloseDropdownMenuMobile}
+          >
+            <a href="https://farm.bitgear.io" target="_blank" rel="noreferrer">
+              Farm
+            </a>
+          </div>
+          <div className={s.headerItemDesktop}>
+            <NetworkDropDown />
+          </div>
           {!isMobile ? (
             <>
               {userAddress ? (
