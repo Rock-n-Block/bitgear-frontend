@@ -457,16 +457,28 @@ $fs: 16px;
 }
 
 .dropdownMobile {
+  padding: 10px;
   position: absolute;
   z-index: 99999;
-  top: 120px;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  width: 100%;
 
-  margin: 10px;
-  padding: 16px;
+  background: rgba(3, 13, 34, 1);
+  //background: $color-bg-dropdown-wc;
+  //border: 2px solid $color-border-bottom-span;
+  //border-radius: 20px;
+  .headerDropdownItem {
+    &:first-child {
+      @include flex(row, center, space-between, nowrap);
+    }
 
-  height: 58vh;
-
-  background: $color-bg-dropdown-wc;
-  border: 2px solid $color-border-bottom-span;
-  border-radius: 20px;
+    span, a {
+      font-size: 16px;
+      white-space: nowrap;
+      text-transform: none;
+    }
+  }
 }

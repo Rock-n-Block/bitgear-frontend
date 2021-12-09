@@ -295,7 +295,8 @@ export const Header: React.FC = () => {
                 <div className={s.dropdownMobile} ref={refDropdown}>
                   <div className={s.headerDropdownItem}>
                     <span>
-                      {userBalance?.toString().slice(0, 8)} ETH ({`${userAddress.slice(0, 8)}...`})
+                      Balance ({`${userAddress.slice(0, 8)}...`})
+                      {/* {userBalance?.toString().slice(0, 8)} ETH ({`${userAddress.slice(0, 8)}...`}) */}
                     </span>
                     <Link
                       to="/account"
