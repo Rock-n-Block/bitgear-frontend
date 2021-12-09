@@ -13,8 +13,9 @@ import ArrowDownIcon from '../../assets/icons/arrow-down-icon.svg';
 import { ReactComponent as IconArrowDownWhite } from '../../assets/icons/arrow-down-white.svg';
 import ArrowUpIcon from '../../assets/icons/arrow-up-icon.svg';
 import { ReactComponent as IconCopy } from '../../assets/icons/copy-icon.svg';
+import GearIcon from '../../assets/icons/gear-token-icon.png';
+import EthIcon from '../../assets/icons/icon-eth.svg';
 import TierCheckIcon from '../../assets/icons/tier-check.svg';
-import EthGlassIcon from '../../assets/images/logo/eth-glass-icon.svg';
 import imageTokenPay from '../../assets/images/token.png';
 import { Pagination } from '../../components';
 import ethToken from '../../data/ethToken';
@@ -410,7 +411,8 @@ export const PageAccount: React.FC = () => {
                 <Link to={`/markets/${ethToken.address}`} className={s.accountFundsCard}>
                   <h3>Your balance:</h3>
                   <span>{prettyPrice(userBalance)} ETH</span>
-                  <img src={EthGlassIcon} alt="ehereum logo" />
+                  <img src={EthIcon} alt="ehereum logo" />
+                  {/* <img src={EthGlassIcon} alt="ehereum logo" /> */}
                 </Link>
                 <Link
                   key={uuid()}
@@ -421,7 +423,8 @@ export const PageAccount: React.FC = () => {
                   <span>
                     {prettyPrice(userBalancesFiltered[gearToken.address.toLowerCase()] || 0)} GEAR
                   </span>
-                  <img src={tokensBySymbol?.GEAR?.image || imageTokenPay} alt="ehereum logo" />
+                  <img src={GearIcon} alt="ehereum logo" />
+                  {/* <img src={tokensBySymbol?.GEAR?.image || imageTokenPay} alt="ehereum logo" /> */}
                 </Link>
                 {isNoBalances && (
                   <div>
@@ -439,8 +442,14 @@ export const PageAccount: React.FC = () => {
                     address.toLowerCase() === gearToken.address.toLowerCase()
                   )
                     return null;
-                  const image =
-                    (tokensByAddress && tokensByAddress[address]?.image) || imageTokenPay;
+                  let image: any;
+                  if (tokensByAddress[address]?.symbol.toLowerCase() === 'gear') {
+                    image = GearIcon;
+                  } else if (tokensByAddress[address]?.symbol.toLowerCase() === 'eth') {
+                    image = EthIcon;
+                  } else {
+                    image = (tokensByAddress && tokensByAddress[address]?.image) || imageTokenPay;
+                  }
                   const symbol = tokensByAddress && tokensByAddress[address]?.symbol;
                   return (
                     <>

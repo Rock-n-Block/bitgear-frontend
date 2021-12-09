@@ -13,7 +13,9 @@ import ArrowBack from '../../../assets/icons/arrow-back.svg';
 import ArrowDown from '../../../assets/icons/arrow-down-blue.svg';
 import { ReactComponent as IconArrowDownWhite } from '../../../assets/icons/arrow-down-white.svg';
 import { ReactComponent as IconExchange } from '../../../assets/icons/exchange.svg';
+import GearIcon from '../../../assets/icons/gear-token-icon.png';
 import { ReactComponent as IconDiamond } from '../../../assets/icons/icon-diamond.svg';
+import EthIcon from '../../../assets/icons/icon-eth.svg';
 import { ReactComponent as IconSearchWhite } from '../../../assets/icons/search-white.svg';
 import { ReactComponent as IconSettings } from '../../../assets/icons/switcher-settings.svg';
 import imageTokenPay from '../../../assets/images/token.png';
@@ -2150,7 +2152,16 @@ export const PageMarketsContent: React.FC = React.memo(() => {
                   <div className={s.containerTradingCardInnerRow}>
                     <div className={s.containerTradingCardImage}>
                       {isLoaded ? (
-                        <img src={tokenPay?.image} alt="" />
+                        <img
+                          src={
+                            tokenPay?.symbol.toLowerCase() === 'gear'
+                              ? GearIcon
+                              : tokenPay?.symbol.toLowerCase() === 'eth'
+                              ? EthIcon
+                              : tokenPay?.image
+                          }
+                          alt=""
+                        />
                       ) : (
                         <SkeletonLoader
                           circle
@@ -2188,6 +2199,15 @@ export const PageMarketsContent: React.FC = React.memo(() => {
                                       address,
                                       decimals,
                                     } = token;
+                                    let newImage: any;
+                                    if (symbol.toLowerCase() === 'gear') {
+                                      newImage = GearIcon;
+                                    } else if (symbol.toLowerCase() === 'eth') {
+                                      newImage = EthIcon;
+                                    } else {
+                                      newImage = image;
+                                    }
+
                                     const isBalanceZero = !userBalances[address];
                                     const newBalance = !isBalanceZero
                                       ? new BigNumber(userBalances[address])
@@ -2205,7 +2225,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
                                         onKeyDown={() => {}}
                                       >
                                         <img
-                                          src={image}
+                                          src={newImage}
                                           alt=""
                                           className={s.containerTradingCardSearchItemImage}
                                         />
@@ -2402,7 +2422,16 @@ export const PageMarketsContent: React.FC = React.memo(() => {
                   <div className={s.containerTradingCardInnerRow}>
                     <div className={s.containerTradingCardImage}>
                       {isLoaded ? (
-                        <img src={tokenReceive?.image} alt="" />
+                        <img
+                          src={
+                            tokenReceive?.symbol.toLowerCase() === 'gear'
+                              ? GearIcon
+                              : tokenReceive?.symbol.toLowerCase() === 'eth'
+                              ? EthIcon
+                              : tokenReceive?.image
+                          }
+                          alt=""
+                        />
                       ) : (
                         <SkeletonLoader
                           circle
@@ -2440,6 +2469,14 @@ export const PageMarketsContent: React.FC = React.memo(() => {
                                         address,
                                         decimals,
                                       } = token;
+                                      let newImage: any;
+                                      if (symbol.toLowerCase() === 'gear') {
+                                        newImage = GearIcon;
+                                      } else if (symbol.toLowerCase() === 'eth') {
+                                        newImage = EthIcon;
+                                      } else {
+                                        newImage = image;
+                                      }
                                       const isBalanceZero = !userBalances[address];
                                       const newBalance = !isBalanceZero
                                         ? new BigNumber(userBalances[address])
@@ -2457,7 +2494,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
                                           onKeyDown={() => {}}
                                         >
                                           <img
-                                            src={image}
+                                            src={newImage}
                                             alt=""
                                             className={s.containerTradingCardSearchItemImage}
                                           />

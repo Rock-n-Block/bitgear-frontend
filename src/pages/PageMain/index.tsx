@@ -5,7 +5,9 @@ import cn from 'classnames';
 import { useMedia } from 'use-media';
 import { v1 as uuid } from 'uuid';
 
+import GearIcon from '../../assets/icons/gear-token-icon.png';
 import HotNew from '../../assets/icons/hot-new.svg';
+import EthIcon from '../../assets/icons/icon-eth.svg';
 import TopPerfomance from '../../assets/icons/top-perf.svg';
 import { Search, SkeletonLoader } from '../../components';
 import { CoinMarketCapService } from '../../services/CoinMarketCap';
@@ -138,7 +140,17 @@ export const CardToken: React.FC<TypeCardProps> = ({ token, to = '/', isLoading 
         </div>
         <div className={cn(s.cardContainerSecond)}>
           {!isLoading ? (
-            <img src={image} alt="logo" className={s.cardImage} />
+            <img
+              src={
+                token.symbol.toLocaleLowerCase() === 'gear'
+                  ? GearIcon
+                  : token.symbol.toLocaleLowerCase() === 'eth'
+                  ? EthIcon
+                  : image
+              }
+              alt="logo"
+              className={s.cardImage}
+            />
           ) : (
             <SkeletonLoader width="50px" height="50px" circle />
           )}

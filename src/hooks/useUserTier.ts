@@ -32,10 +32,6 @@ export const useUserTier = () => {
   const changeCurrentTier = useCallback(() => {
     const tiers: ITierBounds[] = [
       {
-        lowerBound: 0,
-        upperBound: 70000,
-      },
-      {
         lowerBound: 70000,
         upperBound: 300000,
       },
@@ -43,6 +39,10 @@ export const useUserTier = () => {
         lowerBound: 300000,
         upperBound: Infinity,
       },
+      // {
+      //   lowerBound: Infinity,
+      //   upperBound: Infinity,
+      // },
     ];
     tiers.forEach((tier, index) => {
       if (tier.lowerBound <= gearBalance && tier.upperBound > gearBalance) {

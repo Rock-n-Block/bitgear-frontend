@@ -121,6 +121,7 @@ export const App: React.FC = () => {
           Symbol: symbol,
           ImageUrl: image,
         } = data;
+
         const newImage = image ? `https://www.cryptocompare.com${image}` : null;
         newTokensFormatted.push({ symbol, name, address, decimals, image: newImage });
       }

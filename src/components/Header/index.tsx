@@ -8,6 +8,8 @@ import { v1 as uuid } from 'uuid';
 
 import { ReactComponent as IconCopy } from '../../assets/icons/copy-icon.svg';
 import { ReactComponent as IconExit } from '../../assets/icons/exit.svg';
+import GearIcon from '../../assets/icons/gear-token-icon.png';
+import EthIcon from '../../assets/icons/icon-eth.svg';
 import { ReactComponent as IconMedium } from '../../assets/icons/social/medium.svg';
 import { ReactComponent as IconTelegram } from '../../assets/icons/social/telegram.svg';
 import { ReactComponent as IconTwitter } from '../../assets/icons/social/twitter.svg';
@@ -39,15 +41,24 @@ export const ItemTokenBalance: React.FC<TypeItemTokenBalanceProps> = ({ address,
   const [symbol, setSymbol] = React.useState<string>('');
 
   const { tokensByAddress } = useSelector(({ zx }: any) => zx);
-
   const handleClick = () => {
     history.push(`/markets/${address}`);
   };
 
   const getTokenInfo = React.useCallback(() => {
     // console.log('ItemTokenBalance:', tokensByAddress, address);
-    const newImage =
-      tokensByAddress && tokensByAddress[address] ? tokensByAddress[address].image : imageTokenPay;
+    let newImage: any;
+    if (tokensByAddress[address].symbol.toLowerCase() === 'gear') {
+      newImage = GearIcon;
+    } else if (tokensByAddress[address].symbol.toLowerCase() === 'eth') {
+      newImage = EthIcon;
+    } else {
+      newImage =
+        tokensByAddress && tokensByAddress[address]
+          ? tokensByAddress[address].image
+          : imageTokenPay;
+    }
+
     const newSymbol =
       tokensByAddress && tokensByAddress[address] && tokensByAddress[address].symbol;
     setImage(newImage);
