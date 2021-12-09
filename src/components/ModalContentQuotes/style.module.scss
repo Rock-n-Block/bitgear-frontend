@@ -214,9 +214,9 @@
   ul {
     margin: 5px 0;
     padding: 0;
+
     list-style: none;
     @include flex(row, center, flex-start, nowrap);
-
 
     li {
       @include flex(row, center, flex-start, nowrap);
@@ -224,8 +224,11 @@
 
       div {
         margin-right: 10px;
-        width: 90px !important;
+
         overflow: hidden !important;
+
+        width: 90px !important;
+
         text-overflow: ellipsis;
         @include b('mobile') {
           width: 50px !important;

@@ -20,14 +20,14 @@
     max-width: 470px;
     min-height: 739px;
     //box-shadow: 0 -60px 70px 20px rgba(0, 127, 239, 0.35), 0 -60px 80px 20px rgba(0, 227, 182, 0.35);
-
     background: $color-bg;
     border-radius: 12px;
     @include flex(column, center, flex-start, nowrap);
     @include b('mobile') {
       padding: 10px 10px 125px;
-      min-width: 300px;
+
       width: 100%;
+      min-width: 300px;
     }
 
     &Bg {
@@ -46,10 +46,10 @@
       width: 100%;
 
       background: linear-gradient(
-          90deg,
-          $color-bg 0,
-          rgba(255, 255, 255, 0.07) 80px,
-          $color-bg 105px
+        90deg,
+        $color-bg 0,
+        rgba(255, 255, 255, 0.07) 80px,
+        $color-bg 105px
       );
 
       animation: loading 2s infinite;
@@ -301,8 +301,8 @@
         font-size: 16px;
         font-weight: 900;
         line-height: 25px;
-        text-transform: uppercase;
         white-space: nowrap;
+        text-transform: uppercase;
 
         color: $color-text-secondary;
         background: $color-bg-input-market;
@@ -536,7 +536,6 @@
       margin: 11px 0 0 0;
 
       @include flex(row, center, center, nowrap);
-
       font-size: 16px;
       font-weight: 400;
       line-height: 1.1;
@@ -553,19 +552,23 @@
       }
 
       &Btn {
-        padding: 0;
         margin-left: 5px;
-        border: none;
+        padding: 0;
 
         text-transform: uppercase;
+
+        cursor: pointer;
+
         color: $color-text-link;
         background: transparent;
+        border: none;
         border-bottom: 1px solid rgba(0, 0, 0, 0);
-        cursor: pointer;
+
         transition: all 250ms ease-in-out;
 
         &:hover {
           font-weight: 900;
+
           border-bottom: 1px solid $color-text-link;
         }
       }
@@ -835,8 +838,6 @@
       padding: 8px;
 
       @include flex(row, center, center, nowrap);
-
-
       font-family: $font;
       font-size: 16px;
       font-weight: 500;
@@ -938,6 +939,7 @@
     font-weight: 500;
     line-height: 34px;
     white-space: nowrap;
+
     cursor: pointer;
 
     background: $color-bg-input-market;
@@ -946,7 +948,6 @@
       margin: 0;
       @include b('mobile') {
         margin-left: 5px;
-
       }
     }
   }

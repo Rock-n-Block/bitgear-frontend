@@ -23,7 +23,7 @@ $fs: 16px;
   color: $color-text-header;
 
   background: linear-gradient(180deg, #030d22 0%, rgba(3, 13, 34, 0) 195.12%),
-  linear-gradient(0deg, rgba(3, 13, 35, 0.25), rgba(3, 13, 35, 0.25));
+    linear-gradient(0deg, rgba(3, 13, 35, 0.25), rgba(3, 13, 35, 0.25));
 
   transition: top 0.4s;
 
@@ -133,7 +133,6 @@ $fs: 16px;
 
       @include b('tablet') {
         width: 100%;
-
       }
     }
 
@@ -153,6 +152,7 @@ $fs: 16px;
         padding: 20px 0 0;
 
         display: block;
+
         width: 100%;
       }
     }
@@ -378,6 +378,7 @@ $fs: 16px;
 
     @include b('mobile') {
       margin-bottom: 10px;
+
       max-height: 30vh;
     }
   }
@@ -457,13 +458,15 @@ $fs: 16px;
 }
 
 .dropdownMobile {
-  padding: 10px;
   position: absolute;
   z-index: 99999;
   top: 0;
   right: 0;
   left: 0;
   bottom: 0;
+
+  padding: 10px;
+
   width: 100%;
 
   background: rgba(3, 13, 34, 1);
@@ -475,7 +478,8 @@ $fs: 16px;
       @include flex(row, center, space-between, nowrap);
     }
 
-    span, a {
+    span,
+    a {
       font-size: 16px;
       white-space: nowrap;
       text-transform: none;

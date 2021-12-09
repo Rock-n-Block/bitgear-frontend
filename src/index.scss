@@ -197,32 +197,39 @@ a {
   top: -400px;
   right: 0;
   left: 0;
+
   width: 395px;
   height: 395px;
-  border-radius: 50%;
+
   background: transparent;
-  box-shadow: 600px 20px 350px 120px rgba(0, 127, 239, 0.62), 600px 20px 100px 25px #00E3B6;
+  border-radius: 50%;
+  box-shadow: 600px 20px 350px 120px rgba(0, 127, 239, 0.62), 600px 20px 100px 25px #00e3b6;
   @include b('mobile') {
     top: -300px;
+
     width: 295px;
     height: 295px;
-    box-shadow: 100px 0 350px 120px #007FEF, 100px 0 100px 25px #00E3B6;
+
+    box-shadow: 100px 0 350px 120px #007fef, 100px 0 100px 25px #00e3b6;
   }
 }
 
 .shadowCenter {
-  margin: 250px auto 0;
   position: absolute;
+  z-index: -1;
   top: 0;
-  bottom: 0;
   right: 0;
   left: 0;
-  z-index: -1;
+  bottom: 0;
+
+  margin: 250px auto 0;
+
   width: 395px;
   height: 395px;
-  border-radius: 50%;
+
   background: transparent;
-  box-shadow: 0 0 350px 120px rgba(0, 127, 239, 0.62), 0 0 100px 25px #00E3B6;
+  border-radius: 50%;
+  box-shadow: 0 0 350px 120px rgba(0, 127, 239, 0.62), 0 0 100px 25px #00e3b6;
   @include b('mobile') {
     width: 200px;
     height: 200px;
