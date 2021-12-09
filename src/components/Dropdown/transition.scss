@@ -9,6 +9,7 @@
   position: absolute;
   z-index: 2;
   top: 30px;
+
   left: -50px;
 
   padding: 20px 0 16px 0;
@@ -23,7 +24,9 @@
 
   transition: all 250ms ease-out;
   @include b('mobile') {
-    width: 278px;
+    top: 37px;
+    left: -46px;
+    width: 290px;
   }
 }
 
@@ -44,7 +47,9 @@
   border-bottom-left-radius: 12px;
   opacity: 1;
   @include b('mobile') {
-    width: 278px;
+    top: 37px;
+    left: -46px;
+    width: 290px;
   }
 }
 
@@ -70,6 +75,8 @@
   border-bottom-right-radius: 12px;
   border-bottom-left-radius: 12px;
   @include b('mobile') {
-    width: 278px;
+    top: 37px;
+    left: -46px;
+    width: 290px;
   }
 }

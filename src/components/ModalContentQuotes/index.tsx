@@ -3,12 +3,11 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import BigNumber from 'bignumber.js/bignumber';
-import { useMedia } from 'use-media';
 
 import { ReactComponent as IconArrowFilledRight } from '../../assets/icons/arrow-filled-right.svg';
 import { ReactComponent as IconArrowLeft } from '../../assets/icons/arrow-left-blue.svg';
-import { ReactComponent as IconClose } from '../../assets/icons/close.svg';
-import Logo from '../../assets/images/logo/HQ2.png';
+import GearIcon from '../../assets/icons/gear-token-icon.png';
+import EthIcon from '../../assets/icons/icon-eth.svg';
 import imageTokenPay from '../../assets/images/token.png';
 import { useWalletConnectorContext } from '../../contexts/WalletConnect';
 import ethToken from '../../data/ethToken';
@@ -102,7 +101,7 @@ const ModalContentQuotes: React.FC<TypeButtonProps> = ({
     ? new BigNumber(balanceReceive).dividedBy(new BigNumber(10).pow(decimalsReceive)).toString(10)
     : '0';
 
-  const isWide = useMedia({ minWidth: '767px' });
+  // const isWide = useMedia({ minWidth: '767px' });
 
   const getPriceInUSDC = async (tokenAddress: string) => {
     try {
@@ -399,12 +398,12 @@ const ModalContentQuotes: React.FC<TypeButtonProps> = ({
 
   return (
     <div className={s.container}>
-      {!isWide && (
-        <div className={s.header}>
-          <img className={s.logo} src={Logo} alt="" />
-          <IconClose className={s.buttonClose} />
-        </div>
-      )}
+      {/* {!isWide && ( */}
+      {/*  <div className={s.header}> */}
+      {/*    <img className={s.logo} src={Logo} alt="" /> */}
+      {/*    <IconClose className={s.buttonClose} /> */}
+      {/*  </div> */}
+      {/* )} */}
 
       <div
         className={s.buttonBack}
@@ -427,7 +426,16 @@ const ModalContentQuotes: React.FC<TypeButtonProps> = ({
 
       <div className={s.label}>You pay</div>
       <section className={s.section}>
-        <img src={imagePay} alt="" />
+        <img
+          src={
+            symbolPay.toLowerCase() === 'gear'
+              ? GearIcon
+              : symbolPay.toLowerCase() === 'eth'
+              ? EthIcon
+              : imagePay
+          }
+          alt=""
+        />
         <div>
           <div className={s.tokenName}>{namePay}</div>
           <div className={s.tokenPrice}>{amountPay}</div>
@@ -439,7 +447,16 @@ const ModalContentQuotes: React.FC<TypeButtonProps> = ({
 
       <div className={s.label}>You receive</div>
       <section className={s.section}>
-        <img src={imageReceive} alt="" />
+        <img
+          src={
+            symbolReceive.toLowerCase() === 'gear'
+              ? GearIcon
+              : symbolReceive.toLowerCase() === 'eth'
+              ? EthIcon
+              : imageReceive
+          }
+          alt=""
+        />
         <div>
           <div className={s.tokenName}>{nameReceive}</div>
           <div className={s.tokenPrice}>{amountReceiveNew || amountReceive}</div>
@@ -459,11 +476,11 @@ const ModalContentQuotes: React.FC<TypeButtonProps> = ({
 
       <div className={s.containerButton}>
         {isNeedToRefresh ? (
-          <Button primary onClick={getQuote}>
+          <Button primary onClick={getQuote} classNameCustom={s.containerButtonSubmit}>
             Quote expired. Refresh.
           </Button>
         ) : (
-          <Button primary onClick={trade}>
+          <Button primary onClick={trade} classNameCustom={s.containerButtonSubmit}>
             Place order
           </Button>
         )}

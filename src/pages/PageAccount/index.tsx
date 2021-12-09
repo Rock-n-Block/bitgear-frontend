@@ -497,7 +497,11 @@ export const PageAccount: React.FC = () => {
                       >
                         {index + 1 === userCurrentTier ? <img src={TierCheckIcon} alt="" /> : ''}
                       </div>
-                      {tiers[index] ? <div className={s.accountTiersCardLine} /> : ''}
+                      {tiers[index] && index !== tiers.length - 1 ? (
+                        <div className={s.accountTiersCardLine} />
+                      ) : (
+                        ''
+                      )}
                       <div className={s.accountTiersCardTitle}>
                         <span>{`TIER ${index + 1}`}</span>
                         {/* {tier.amount &&

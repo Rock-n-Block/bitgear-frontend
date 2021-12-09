@@ -46,10 +46,10 @@
       width: 100%;
 
       background: linear-gradient(
-        90deg,
-        $color-bg 0,
-        rgba(255, 255, 255, 0.07) 80px,
-        $color-bg 105px
+          90deg,
+          $color-bg 0,
+          rgba(255, 255, 255, 0.07) 80px,
+          $color-bg 105px
       );
 
       animation: loading 2s infinite;
@@ -511,6 +511,9 @@
 
       input {
         padding: 0 20px;
+        @include b('mobile') {
+          padding: 0;
+        }
 
         width: 100%;
         max-height: 40px !important;
