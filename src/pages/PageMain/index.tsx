@@ -199,7 +199,7 @@ export const PageMain: React.FC = () => {
         <div className={s.container}>
           <section className={s.containerTitle}>
             <h1>
-              Gear up for <span>best prices</span> across exchanges
+              Gear up for <strong>best prices</strong> across exchanges
             </h1>
             <Search wide={isWide} />
           </section>
