@@ -260,6 +260,11 @@
       &Row {
         @include flex(row, center, space-between, nowrap);
       }
+
+      @include b('mobile') {
+        margin: 0 auto;
+        max-width: 95vw !important;
+      }
     }
 
     &Limit {
@@ -283,6 +288,7 @@
         transition: all 250ms ease-in-out;
 
         &Row {
+          position: relative;
           @include flex(row, center, flex-start, nowrap);
         }
 
@@ -381,6 +387,10 @@
 
     &Container {
       @include flex(row, center, space-between, nowrap);
+
+      &Row {
+        position: relative;
+      }
     }
 
     &ContainerInner {
@@ -389,6 +399,7 @@
     }
 
     &Search {
+      position: relative;
       margin: 0 10px;
       @include flex(row, center, normal, nowrap);
 
@@ -508,6 +519,11 @@
 
     &Input {
       @include flex(row, center, flex-end, nowrap);
+      @include b('mobile') {
+        width: 100%;
+        min-width: 150px !important;
+        z-index: 15;
+      }
 
       input {
         padding: 0 20px;

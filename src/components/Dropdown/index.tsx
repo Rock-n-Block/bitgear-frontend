@@ -21,8 +21,8 @@ export const Dropdown: React.FC<TypeDropdownProps> = React.memo(({ label = <div>
   const classNameSide = right ? s.right : left ? s.left : null;
 
   return (
-    <div className="transition">
-      <div className={s.container}>
+    <div className={s.container}>
+      <div className="transition">
         {label}
         <div className={cns(s.dropdown, !open && s.hidden, classNameSide, classNameDropdown)}>
           <div className={cns(s.dropdownInner, classNameDropdownInner)}>{children}</div>

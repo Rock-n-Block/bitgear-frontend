@@ -68,7 +68,7 @@
 
     border-radius: 10px;
 
-    outline: $border-card;
+    border: $border-card;
 
     transition: transform 0.5s cubic-bezier(0.2, 3, 0.4, 1) 0s, background-color 0.4s ease;
     @include b('mobile') {
@@ -84,7 +84,6 @@
 
     &:hover {
       background: $color-bg-card;
-      outline: none;
     }
 
     &:active,

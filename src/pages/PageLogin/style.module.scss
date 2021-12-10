@@ -80,7 +80,7 @@
 
       border-radius: 10px;
 
-      outline: 2px solid $color-border-login-item;
+      border: 2px solid $color-border-login-item;
 
       transition: transform 0.5s cubic-bezier(0.2, 3, 0.4, 1) 0s, background-color 0.4s ease;
       grid-template-columns: 120px 1fr;
@@ -91,7 +91,6 @@
 
       &:hover {
         background: $color-bg-card;
-        outline: none;
       }
 
       &:active,

@@ -3,6 +3,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, NavLink, useHistory, useLocation } from 'react-router-dom';
 import BigNumber from 'bignumber.js/bignumber';
+import cns from 'classnames';
 import useMedia from 'use-media';
 import { v1 as uuid } from 'uuid';
 
@@ -99,6 +100,7 @@ export const ListOfTokenBalances: React.FC = () => {
   const { loadingBalances } = useSelector(({ status }: any) => status);
 
   const [userBalancesFiltered, setUserBalancesFiltered] = React.useState<any>([]);
+  const [canScrollingList, setCanScrollingList] = React.useState(false);
 
   const isLoadingBalancesDone = loadingBalances === 'done';
   const isLoadingBalancesError = loadingBalances === 'error';
@@ -138,19 +140,38 @@ export const ListOfTokenBalances: React.FC = () => {
     );
   }
   return (
-    <div className={s.headerDropdownItemTokensList}>
-      {userBalancesFiltered.map((item: any) => {
-        const { address, balance } = item;
-        if (+balance === 0 && userBalancesFiltered.length !== 1) {
-          return null;
-          // return <div className={s.headerDropdownItemTokens}>You do not have any tokens</div>;
-        }
-        if (+balance === 0 && userBalancesFiltered.length === 1) {
-          return <div className={s.headerDropdownItemTokens}>You do not have any tokens</div>;
-        }
-        return <ItemTokenBalance key={uuid()} address={address} balance={balance} />;
-      })}
-    </div>
+    <>
+      <div
+        className={cns(s.headerDropdownItemTokensList, {
+          [s.headerDropdownItemTokensListScroll]: canScrollingList,
+        })}
+      >
+        {userBalancesFiltered.map((item: any) => {
+          const { address, balance } = item;
+          if (+balance === 0 && userBalancesFiltered.length !== 1) {
+            return null;
+            // return <div className={s.headerDropdownItemTokens}>You do not have any tokens</div>;
+          }
+          if (+balance === 0 && userBalancesFiltered.length === 1) {
+            return <div className={s.headerDropdownItemTokens}>You do not have any tokens</div>;
+          }
+          return <ItemTokenBalance key={uuid()} address={address} balance={balance} />;
+        })}
+      </div>
+      <div className={s.headerDropdownScroll}>
+        {!canScrollingList && (
+          <div
+            role="button"
+            onClick={() => setCanScrollingList(true)}
+            onKeyDown={() => {}}
+            tabIndex={0}
+            className={s.headerDropdownScrollBtn}
+          >
+            Show all
+          </div>
+        )}
+      </div>
+    </>
   );
 };
 
@@ -238,6 +259,14 @@ export const Header: React.FC = () => {
       });
     };
   }, []);
+
+  React.useEffect(() => {
+    if (!dropdownMenuMobile || openMenu) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+  }, [dropdownMenuMobile, openMenu]);
 
   return (
     <header className={s.header}>
