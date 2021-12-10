@@ -132,7 +132,7 @@
   width: 100%;
 
   @include b('mobile') {
-    max-width: 300px;
+    width: 100%;
   }
 
   background: $color-bg-input-market;
@@ -219,9 +219,7 @@
   &Submit {
     text-align: center;
     width: 100%;
-    @include b('mobile') {
-      max-width: 300px;
-    }
+    
   }
 }
 
