@@ -8,6 +8,7 @@
   text-align: left;
 
   @include b('mobile') {
+    padding-bottom: 70px;
     position: fixed;
     z-index: 1000;
     top: 70px;
@@ -15,15 +16,10 @@
     right: 0;
     bottom: 0;
     height: 100%;
-    background: rgba(0, 0, 0, 1);
+    background: rgba(7, 9, 42, 1);
+    overflow: auto;
     @include flex(column, center, flex-start, nowrap);
-    //& > div {
-    //padding-left: 20px;
-    //width: 100%;
-    //@include flex(row, center, flex-start, nowrap);
-    //}
   }
-
 }
 
 .header {
@@ -131,11 +127,11 @@
 
 .section {
   @include grid(58px 1fr, 1fr, 20px);
-  padding: 11px 25px;
+  padding: 11px 15px;
+  width: 100%;
 
   @include b('mobile') {
     max-width: 300px;
-
   }
 
   background: $color-bg-input-market;
@@ -211,6 +207,7 @@
 
 .containerButton {
   margin: 17px 0 10px 0;
+  width: 100%;
 
   @include b('mobile') {
     margin: 0 auto;
@@ -220,8 +217,8 @@
 
   &Submit {
     text-align: center;
+    width: 100%;
     @include b('mobile') {
-      width: 100%;
       max-width: 300px;
     }
   }

@@ -1777,6 +1777,14 @@ export const PageMarketsContent: React.FC = React.memo(() => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addressReceive, addressPay, amountPayDebounced, userAddress, waiting, customAddress]);
 
+  React.useEffect(() => {
+    if (openQuotes) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+  }, [openQuotes]);
+
   const RadioLabelFast = (
     <div className={s.radioLabelGas}>
       <div>Fast</div>
