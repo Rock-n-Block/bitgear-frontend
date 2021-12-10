@@ -23,7 +23,7 @@ $fs: 16px;
   color: $color-text-header;
 
   background: linear-gradient(180deg, #030d22 0%, rgba(3, 13, 34, 0) 195.12%),
-  linear-gradient(0deg, rgba(3, 13, 35, 0.25), rgba(3, 13, 35, 0.25));
+    linear-gradient(0deg, rgba(3, 13, 35, 0.25), rgba(3, 13, 35, 0.25));
 
   transition: top 0.4s;
 
@@ -413,7 +413,6 @@ $fs: 16px;
     border-radius: 4px;
     @include b('mobile') {
       width: 100%;
-
     }
   }
 
@@ -522,5 +521,3 @@ $fs: 16px;
     }
   }
 }
-
-
