@@ -1,32 +1,32 @@
 import React from 'react';
-import {CopyToClipboard} from 'react-copy-to-clipboard';
-import {useDispatch, useSelector} from 'react-redux';
-import {Link, NavLink, useHistory, useLocation} from 'react-router-dom';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link, NavLink, useHistory, useLocation } from 'react-router-dom';
 import BigNumber from 'bignumber.js/bignumber';
 import cns from 'classnames';
 import useMedia from 'use-media';
-import {v1 as uuid} from 'uuid';
+import { v1 as uuid } from 'uuid';
 
-import {ReactComponent as IconCopy} from '../../assets/icons/copy-icon.svg';
-import {ReactComponent as IconExit} from '../../assets/icons/exit.svg';
+import { ReactComponent as IconCopy } from '../../assets/icons/copy-icon.svg';
+import { ReactComponent as IconExit } from '../../assets/icons/exit.svg';
 import GearIcon from '../../assets/icons/gear-token-icon.png';
 import EthIcon from '../../assets/icons/icon-eth.svg';
-import {ReactComponent as IconMedium} from '../../assets/icons/social/medium.svg';
-import {ReactComponent as IconTelegram} from '../../assets/icons/social/telegram.svg';
-import {ReactComponent as IconTwitter} from '../../assets/icons/social/twitter.svg';
+import { ReactComponent as IconMedium } from '../../assets/icons/social/medium.svg';
+import { ReactComponent as IconTelegram } from '../../assets/icons/social/telegram.svg';
+import { ReactComponent as IconTwitter } from '../../assets/icons/social/twitter.svg';
 import IconLogo from '../../assets/images/logo/HQ2.png';
-import {ReactComponent as IconMetamask} from '../../assets/images/logo/metamask-logo.svg';
-import {ReactComponent as IconWalletConnect} from '../../assets/images/logo/wallet-connect-logo.svg';
+import { ReactComponent as IconMetamask } from '../../assets/images/logo/metamask-logo.svg';
+import { ReactComponent as IconWalletConnect } from '../../assets/images/logo/wallet-connect-logo.svg';
 import imageTokenPay from '../../assets/images/token.png';
 import config from '../../config';
-import {useWalletConnectorContext} from '../../contexts/WalletConnect';
-import {useUserTier} from '../../hooks/useUserTier';
-import {userActions} from '../../redux/actions';
-import {getFromStorage, setToStorage} from '../../utils/localStorage';
-import {prettyAmount} from '../../utils/prettifiers';
-import {Burger} from '../Burger';
-import {Dropdown} from '../Dropdown';
-import {NetworkDropDown} from '../NetworkDropDown';
+import { useWalletConnectorContext } from '../../contexts/WalletConnect';
+import { useUserTier } from '../../hooks/useUserTier';
+import { userActions } from '../../redux/actions';
+import { getFromStorage, setToStorage } from '../../utils/localStorage';
+import { prettyAmount } from '../../utils/prettifiers';
+import { Burger } from '../Burger';
+import { Dropdown } from '../Dropdown';
+import { NetworkDropDown } from '../NetworkDropDown';
 
 import s from './style.module.scss';
 
@@ -35,13 +35,13 @@ type TypeItemTokenBalanceProps = {
   balance: string;
 };
 
-export const ItemTokenBalance: React.FC<TypeItemTokenBalanceProps> = ({address, balance}) => {
+export const ItemTokenBalance: React.FC<TypeItemTokenBalanceProps> = ({ address, balance }) => {
   const history = useHistory();
 
   const [image, setImage] = React.useState<any>(imageTokenPay);
   const [symbol, setSymbol] = React.useState<string>('');
 
-  const {tokensByAddress} = useSelector(({zx}: any) => zx);
+  const { tokensByAddress } = useSelector(({ zx }: any) => zx);
   const handleClick = () => {
     history.push(`/markets/${address}`);
   };
@@ -84,7 +84,7 @@ export const ItemTokenBalance: React.FC<TypeItemTokenBalanceProps> = ({address, 
       onClick={handleClick}
     >
       <div className={s.headerDropdownItemTokenImageWrap}>
-        <img src={image} alt="" className={s.headerDropdownItemTokenImage}/>
+        <img src={image} alt="" className={s.headerDropdownItemTokenImage} />
       </div>
       <div>
         <div className={s.headerDropdownItemTokenSymbol}>{symbol}:</div>
@@ -95,9 +95,9 @@ export const ItemTokenBalance: React.FC<TypeItemTokenBalanceProps> = ({address, 
 };
 
 export const ListOfTokenBalances: React.FC = () => {
-  const {balances: userBalances} = useSelector(({user}: any) => user);
-  const {tokens, tokensByAddress} = useSelector(({zx}: any) => zx);
-  const {loadingBalances} = useSelector(({status}: any) => status);
+  const { balances: userBalances } = useSelector(({ user }: any) => user);
+  const { tokens, tokensByAddress } = useSelector(({ zx }: any) => zx);
+  const { loadingBalances } = useSelector(({ status }: any) => status);
 
   const [userBalancesFiltered, setUserBalancesFiltered] = React.useState<any>([]);
   const [canScrollingList, setCanScrollingList] = React.useState(false);
@@ -110,9 +110,9 @@ export const ListOfTokenBalances: React.FC = () => {
       console.log('Header filterAndSortUserBalances:', userBalances);
       const newBalances = Object.entries(userBalances).map((item) => {
         const [address, balance]: any = item;
-        const {decimals} = tokensByAddress[address];
+        const { decimals } = tokensByAddress[address];
         const newBalance = new BigNumber(balance).dividedBy(new BigNumber(10).pow(decimals));
-        return {address, balance: newBalance};
+        return { address, balance: newBalance };
       });
       console.log('Header filterAndSortUserBalances:', newBalances);
       setUserBalancesFiltered(newBalances);
@@ -134,8 +134,8 @@ export const ListOfTokenBalances: React.FC = () => {
         {isLoadingBalancesDone
           ? 'You do not have any tokens'
           : isLoadingBalancesError
-            ? 'Not loaded'
-            : 'Loading...'}
+          ? 'Not loaded'
+          : 'Loading...'}
       </div>
     );
   }
@@ -147,7 +147,7 @@ export const ListOfTokenBalances: React.FC = () => {
         })}
       >
         {userBalancesFiltered.map((item: any) => {
-          const {address, balance} = item;
+          const { address, balance } = item;
           if (+balance === 0 && userBalancesFiltered.length !== 1) {
             return null;
             // return <div className={s.headerDropdownItemTokens}>You do not have any tokens</div>;
@@ -155,7 +155,7 @@ export const ListOfTokenBalances: React.FC = () => {
           if (+balance === 0 && userBalancesFiltered.length === 1) {
             return <div className={s.headerDropdownItemTokens}>You do not have any tokens</div>;
           }
-          return <ItemTokenBalance key={uuid()} address={address} balance={balance}/>;
+          return <ItemTokenBalance key={uuid()} address={address} balance={balance} />;
         })}
       </div>
       <div className={s.headerDropdownScroll}>
@@ -163,8 +163,7 @@ export const ListOfTokenBalances: React.FC = () => {
           <div
             role="button"
             onClick={() => setCanScrollingList(true)}
-            onKeyDown={() => {
-            }}
+            onKeyDown={() => {}}
             tabIndex={0}
             className={s.headerDropdownScrollBtn}
           >
@@ -177,17 +176,17 @@ export const ListOfTokenBalances: React.FC = () => {
 };
 
 export const Header: React.FC = () => {
-  const {pathname} = useLocation();
+  const { pathname } = useLocation();
 
-  const {web3Provider} = useWalletConnectorContext();
+  const { web3Provider } = useWalletConnectorContext();
 
-  const {userCurrentTier} = useUserTier();
+  const { userCurrentTier } = useUserTier();
 
   const dispatch = useDispatch();
-  const {address: userAddress, balance: userBalance} = useSelector(({user}: any) => user);
-  const setUserData = (props: any) => dispatch(userActions.setUserData(props));§
+  const { address: userAddress, balance: userBalance } = useSelector(({ user }: any) => user);
+  const setUserData = (props: any) => dispatch(userActions.setUserData(props));
 
-  const isMobile = useMedia({maxWidth: 1000});
+  const isMobile = useMedia({ maxWidth: 1000 });
 
   const refDropdownLabel = React.useRef<HTMLDivElement>(null);
   const refDropdown = React.useRef<HTMLDivElement>(null);
@@ -208,7 +207,7 @@ export const Header: React.FC = () => {
   const handleDisconnect = () => {
     setToStorage('walletType', '');
     if (walletType === 'walletConnect' && web3Provider) web3Provider.disconnect();
-    setUserData({address: undefined, balance: 0});
+    setUserData({ address: undefined, balance: 0 });
   };
 
   const DropdownLabel = (
@@ -218,11 +217,10 @@ export const Header: React.FC = () => {
       onClick={handleOpenDropdown}
       role="button"
       tabIndex={0}
-      onKeyDown={() => {
-      }}
+      onKeyDown={() => {}}
     >
-      {isMetamask && <IconMetamask className={s.headerWalletLogo}/>}
-      {isWalletConnect && <IconWalletConnect className={s.headerWalletLogo}/>}
+      {isMetamask && <IconMetamask className={s.headerWalletLogo} />}
+      {isWalletConnect && <IconWalletConnect className={s.headerWalletLogo} />}
       {`${userAddress?.slice(0, 12)}...`}
     </div>
   );
@@ -275,7 +273,7 @@ export const Header: React.FC = () => {
       <div className={s.headerContainer}>
         <div className={s.headerLeftGroup}>
           <Link to="/">
-            <img src={IconLogo} alt="" className={s.headerLogo}/>
+            <img src={IconLogo} alt="" className={s.headerLogo} />
           </Link>
           {userAddress && (
             <div
@@ -300,7 +298,7 @@ export const Header: React.FC = () => {
             onKeyDown={() => setOpenMenu(!openMenu)}
           >
             {/* {!openMenu ? 'Menu' : 'Close'} */}
-            <Burger onClick={() => setOpenMenu(!openMenu)} isMenuOpen={openMenu}/>
+            <Burger onClick={() => setOpenMenu(!openMenu)} isMenuOpen={openMenu} />
           </div>
         )}
 
@@ -314,7 +312,7 @@ export const Header: React.FC = () => {
           }
         >
           <div className={s.headerItemMobile}>
-            <NetworkDropDown/>
+            <NetworkDropDown />
           </div>
           {userAddress && isMobile ? (
             <>
@@ -323,12 +321,11 @@ export const Header: React.FC = () => {
                   className={s.headerItemBtn}
                   role="button"
                   tabIndex={0}
-                  onKeyDown={() => {
-                  }}
+                  onKeyDown={() => {}}
                   onClick={handleDropdownMenuMobile}
                 >
-                  {isMetamask && <IconMetamask className={s.headerWalletLogo}/>}
-                  {isWalletConnect && <IconWalletConnect className={s.headerWalletLogo}/>}
+                  {isMetamask && <IconMetamask className={s.headerWalletLogo} />}
+                  {isWalletConnect && <IconWalletConnect className={s.headerWalletLogo} />}
                   {`${userAddress?.slice(0, 12)}...`}
                 </div>
               ) : (
@@ -350,39 +347,35 @@ export const Header: React.FC = () => {
                   </div>
 
                   <div className={s.headerDropdownItemLabel}>Your balance</div>
-                  <ListOfTokenBalances/>
+                  <ListOfTokenBalances />
 
                   <CopyToClipboard text={userAddress} onCopy={handleCopyAddress}>
                     <div
                       role="button"
                       tabIndex={0}
-                      onKeyDown={() => {
-                      }}
+                      onKeyDown={() => {}}
                       className={s.headerDropdownItem}
-                      onClick={() => {
-                      }}
+                      onClick={() => {}}
                     >
-                      <IconCopy/>
+                      <IconCopy />
                       {isAddressCopied ? 'Copied!' : 'Copy address'}
                     </div>
                   </CopyToClipboard>
                   <div
                     role="button"
                     tabIndex={0}
-                    onKeyDown={() => {
-                    }}
+                    onKeyDown={() => {}}
                     className={s.headerDropdownItem}
                     onClick={handleDisconnect}
                   >
-                    <IconExit/>
+                    <IconExit />
                     Disconnect
                   </div>
                   <div
                     className={s.headerDropdownItem}
                     onClick={handleDropdownMenuMobile}
                     tabIndex={0}
-                    onKeyDown={() => {
-                    }}
+                    onKeyDown={() => {}}
                     role="button"
                   >
                     Close
@@ -405,8 +398,7 @@ export const Header: React.FC = () => {
             className={s.headerItem}
             role="button"
             tabIndex={0}
-            onKeyDown={() => {
-            }}
+            onKeyDown={() => {}}
             onClick={handleCloseDropdownMenuMobile}
           >
             <NavLink
@@ -422,8 +414,7 @@ export const Header: React.FC = () => {
             className={s.headerItem}
             role="button"
             tabIndex={0}
-            onKeyDown={() => {
-            }}
+            onKeyDown={() => {}}
             onClick={handleCloseDropdownMenuMobile}
           >
             <NavLink
@@ -439,8 +430,7 @@ export const Header: React.FC = () => {
             className={s.headerItem}
             role="button"
             tabIndex={0}
-            onKeyDown={() => {
-            }}
+            onKeyDown={() => {}}
             onClick={handleCloseDropdownMenuMobile}
           >
             <a href="https://farm.bitgear.io" target="_blank" rel="noreferrer">
@@ -448,7 +438,7 @@ export const Header: React.FC = () => {
             </a>
           </div>
           <div className={s.headerItemDesktop}>
-            <NetworkDropDown/>
+            <NetworkDropDown />
           </div>
           {!isMobile ? (
             <>
@@ -472,31 +462,28 @@ export const Header: React.FC = () => {
                     </div>
 
                     <div className={s.headerDropdownItemLabel}>Your balance</div>
-                    <ListOfTokenBalances/>
+                    <ListOfTokenBalances />
 
                     <CopyToClipboard text={userAddress} onCopy={handleCopyAddress}>
                       <div
                         role="button"
                         tabIndex={0}
-                        onKeyDown={() => {
-                        }}
+                        onKeyDown={() => {}}
                         className={s.headerDropdownItem}
-                        onClick={() => {
-                        }}
+                        onClick={() => {}}
                       >
-                        <IconCopy/>
+                        <IconCopy />
                         {isAddressCopied ? 'Copied!' : 'Copy address'}
                       </div>
                     </CopyToClipboard>
                     <div
                       role="button"
                       tabIndex={0}
-                      onKeyDown={() => {
-                      }}
+                      onKeyDown={() => {}}
                       className={s.headerDropdownItem}
                       onClick={handleDisconnect}
                     >
-                      <IconExit/>
+                      <IconExit />
                       Disconnect
                     </div>
                   </div>
@@ -519,13 +506,13 @@ export const Header: React.FC = () => {
             <div className={s.headerMenuFooter}>
               <div className={s.headerMenuFooterLogoGroup}>
                 <a href={config.links.medium} target="_blank" rel="noreferrer noopener">
-                  <IconMedium className={s.headerMenuFooterLogo}/>
+                  <IconMedium className={s.headerMenuFooterLogo} />
                 </a>
                 <a href={config.links.twitter} target="_blank" rel="noreferrer noopener">
-                  <IconTwitter className={s.headerMenuFooterLogo}/>
+                  <IconTwitter className={s.headerMenuFooterLogo} />
                 </a>
                 <a href={config.links.telegram} target="_blank" rel="noreferrer noopener">
-                  <IconTelegram className={s.headerMenuFooterLogo}/>
+                  <IconTelegram className={s.headerMenuFooterLogo} />
                 </a>
               </div>
               <div className={s.headerMenuFooterCopyright}>© 2021 Bitgear. All Rights Reserved</div>
@@ -533,7 +520,7 @@ export const Header: React.FC = () => {
           )}
         </nav>
       </div>
-      <div className={s.headerWrapper}/>
+      <div className={s.headerWrapper} />
     </header>
   );
 };

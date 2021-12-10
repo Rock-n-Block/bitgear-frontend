@@ -9,6 +9,7 @@
 
   @include b('mobile') {
     padding-bottom: 70px;
+    padding-left: 5px;
     position: fixed;
     z-index: 1000;
     top: 70px;
@@ -17,7 +18,7 @@
     bottom: 0;
     height: 100%;
     background: rgba(7, 9, 42, 1);
-    overflow: auto;
+    overflow-x: hidden;
     @include flex(column, center, flex-start, nowrap);
   }
 }
