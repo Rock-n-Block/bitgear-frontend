@@ -235,6 +235,7 @@ export const DropdownItems: React.FC<TypeDropdownItemsParams> = React.memo(
 
 export const PageMarketsContent: React.FC = React.memo(() => {
   const receiveInputRef = useRef<any>();
+  const customAddressRef = useRef<any>();
   const sellInputRef = useRef<any>();
   const history = useHistory();
 
@@ -2558,14 +2559,25 @@ export const PageMarketsContent: React.FC = React.memo(() => {
                 </div>
               </div>
               {isCustomAddress && gearBalance > 4000 ? (
-                <div className={s.CustomAddress}>
+                <div
+                  className={s.CustomAddress}
+                  onClick={() => customAddressRef.current.focus()}
+                  role="button"
+                  onKeyDown={() => {}}
+                  tabIndex={0}
+                >
                   <div className={s.CustomAddressTitle}>Custom address</div>
-                  <Input
-                    value={customAddress}
-                    placeholder="Enter custom address to receive the tokens"
-                    onChange={(value) => setCustomAddress(value)}
-                    className={s.CustomAddressInput}
-                  />
+                  <div className={cns(s.containerTradingCardInner, s.CustomAddressInner)}>
+                    <input
+                      value={customAddress}
+                      onChange={(e) => setCustomAddress(e.target.value)}
+                      className={s.CustomAddressInput}
+                      ref={customAddressRef}
+                    />
+                  </div>
+                  <div className={s.CustomAddressSubtitle}>
+                    Enter custom address to receive the tokens
+                  </div>
                 </div>
               ) : (
                 ''
