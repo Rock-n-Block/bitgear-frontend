@@ -2572,7 +2572,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
                   (isAllowed && isCustomAllowance) || isAddressPayETH ? (
                     <Button
                       onClick={handleTrade}
-                      disabled={isTradeDisabled || waiting}
+                      disabled={isTradeDisabled || waiting || (isCustomAddress && !customAddress)}
                       classNameCustom={s.containerTradingButtonBtn}
                     >
                       {waiting ? 'Waiting...' : 'Trade'}
