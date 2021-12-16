@@ -22,6 +22,7 @@ import config from '../../config';
 import { useWalletConnectorContext } from '../../contexts/WalletConnect';
 import { useUserTier } from '../../hooks/useUserTier';
 import { userActions, walletActions } from '../../redux/actions';
+import addressWithDots from '../../utils/addressWithDots';
 import { getFromStorage, setToStorage } from '../../utils/localStorage';
 import { prettyAmount } from '../../utils/prettifiers';
 import { Burger } from '../Burger';
@@ -222,7 +223,7 @@ export const Header: React.FC = () => {
     >
       {isMetamask && <IconMetamask className={s.headerWalletLogo} />}
       {isWalletConnect && <IconWalletConnect className={s.headerWalletLogo} />}
-      {`${userAddress?.slice(0, 12)}...`}
+      {addressWithDots(userAddress)}
     </div>
   );
 
@@ -327,13 +328,13 @@ export const Header: React.FC = () => {
                 >
                   {isMetamask && <IconMetamask className={s.headerWalletLogo} />}
                   {isWalletConnect && <IconWalletConnect className={s.headerWalletLogo} />}
-                  {`${userAddress?.slice(0, 12)}...`}
+                  {addressWithDots(userAddress)}
                 </div>
               ) : (
                 <div className={s.dropdownMobile} ref={refDropdown}>
                   <div className={s.headerDropdownItem}>
                     <span>
-                      Balance ({`${userAddress.slice(0, 8)}...`})
+                      Balance ({addressWithDots(userAddress)})
                       {/* {userBalance?.toString().slice(0, 8)} ETH ({`${userAddress.slice(0, 8)}...`}) */}
                     </span>
                     <Link
@@ -454,8 +455,7 @@ export const Header: React.FC = () => {
                   <div ref={refDropdown}>
                     <div className={s.headerDropdownItem}>
                       <span>
-                        {userBalance?.toString().slice(0, 8)} ETH ({`${userAddress.slice(0, 8)}...`}
-                        )
+                        {userBalance?.toString().slice(0, 8)} ETH ({addressWithDots(userAddress)})
                       </span>
                       <Link to="/account" onClick={() => setOpenMenu(false)}>
                         Your account
