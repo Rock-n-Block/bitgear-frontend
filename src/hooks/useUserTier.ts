@@ -36,7 +36,7 @@ export const useUserTier = () => {
       //   upperBound: 300000,
       // },
       {
-        lowerBound: 0,
+        lowerBound: 4000,
         upperBound: 300000,
       },
       {
