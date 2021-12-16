@@ -59,7 +59,10 @@ export class EtherscanService {
       };
     } catch (e: any) {
       // console.error(e);
-      return { status: 'ERROR', data: undefined, error: e.response.data };
+      if (e.response) {
+        return { status: 'ERROR', data: undefined, error: e.response.data };
+      }
+      return { status: 'ERROR', data: undefined, error: '' };
     }
   };
 }
