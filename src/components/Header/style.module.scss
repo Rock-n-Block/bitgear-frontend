@@ -205,23 +205,23 @@ $fs: 16px;
     line-height: 14px;
     text-transform: uppercase;
 
-    border: 1px solid $color-text-link;
-
     background-color: $color-text-link;
     background-image: linear-gradient(294.07deg, #0278df 41.96%, #6bffc1 117.07%);
     -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+
+    border: 1px solid $color-text-link;
 
     border-radius: 12px;
+    -webkit-text-fill-color: transparent;
 
     &Zero {
+      color: rgba(139, 139, 139, 1);
       background-color: rgba(139, 139, 139, 1);
       background-image: none;
-      color: rgba(139, 139, 139, 1);
       -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
 
       border: 1px solid #d6d6d6;
+      -webkit-text-fill-color: transparent;
     }
   }
 
@@ -230,12 +230,12 @@ $fs: 16px;
   }
 
   &MenuMobileOpen {
-    padding: 0 10px 10px;
-    @include flex(column, center, flex-start, nowrap);
     position: fixed;
     z-index: 1000;
     top: $height-header - 14px;
     left: 0;
+
+    padding: 0 10px 10px;
 
     box-sizing: border-box;
     width: 100vw;
@@ -243,6 +243,7 @@ $fs: 16px;
 
     background-color: $color-bg;
     flex-grow: 0;
+    @include flex(column, center, flex-start, nowrap);
   }
 }
 
@@ -394,8 +395,9 @@ $fs: 16px;
     @include b('mobile') {
       margin: 0 auto 10px;
 
-      max-height: 34vh;
       max-width: 97%;
+
+      max-height: 34vh;
     }
 
     &Scroll {
@@ -473,13 +475,16 @@ $fs: 16px;
 
   &Scroll {
     margin: 10px 0;
-    background: transparent;
+
     height: 20px;
 
+    background: transparent;
+
     &Btn {
+      text-transform: none;
+
       color: $color-text-link;
       font-width: 900;
-      text-transform: none;
     }
   }
 }

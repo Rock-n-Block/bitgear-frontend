@@ -58,9 +58,11 @@
 }
 
 .CustomAddress {
-  width: 100%;
   position: relative;
+
   margin-top: 24px;
+
+  width: 100%;
 
   border-radius: 20px;
   grid-column: 1 / 4;
@@ -70,28 +72,33 @@
   }
 
   input {
-    background: unset;
-    color: white;
-    border: none;
-    border-radius: 0;
     width: 100%;
+
     font-size: 24px;
     line-height: 47px;
+
+    color: white;
+    background: unset;
+    border: none;
+    border-radius: 0;
   }
 
   &Title {
     font-size: 16px;
+    font-weight: bold;
     line-height: 25px;
+    text-transform: uppercase;
 
     color: $color-bg-checkbox;
-    text-transform: uppercase;
-    font-weight: bold;
   }
+
   &Subtitle {
+    margin-top: 7px;
+
     font-size: 16px;
     line-height: 25px;
     text-transform: uppercase;
-    margin-top: 7px;
+
     color: #7c8ba8;
   }
 
@@ -275,6 +282,7 @@
 
       @include b('mobile') {
         margin: 0 auto;
+
         max-width: 95vw !important;
       }
     }
@@ -412,6 +420,7 @@
 
     &Search {
       position: relative;
+
       margin: 0 10px;
       @include flex(row, center, normal, nowrap);
 
@@ -532,9 +541,10 @@
     &Input {
       @include flex(row, center, flex-end, nowrap);
       @include b('mobile') {
+        z-index: 15;
+
         width: 100%;
         min-width: 150px !important;
-        z-index: 15;
       }
 
       input {
@@ -542,7 +552,6 @@
         @include b('mobile') {
           padding: 0;
         }
-
         width: 100%;
         max-height: 40px !important;
         //height: $height-input-small;

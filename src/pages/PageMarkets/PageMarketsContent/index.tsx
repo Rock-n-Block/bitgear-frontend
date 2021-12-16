@@ -32,8 +32,8 @@ import ModalContentQuotes from '../../../components/ModalContentQuotes';
 import config from '../../../config';
 import { useWalletConnectorContext } from '../../../contexts/WalletConnect';
 import erc20Abi from '../../../data/erc20Abi.json';
-import gearToken from '../../../data/gearToken';
 import useDebounce from '../../../hooks/useDebounce';
+import { useUserTier } from '../../../hooks/useUserTier';
 import { modalActions, statusActions, walletActions } from '../../../redux/actions';
 import { Service0x } from '../../../services/0x';
 import { CoinMarketCapService } from '../../../services/CoinMarketCap';
@@ -296,6 +296,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
   const [, setOpenSelectSlippage] = React.useState<boolean>(false);
   const [openSettings, setOpenSettings] = React.useState<boolean>(false);
   const [mode, setMode] = React.useState<string>('market');
+  const { userCurrentTier } = useUserTier();
   const [searchTokensResultPay, setSearchTokensResultPay] = React.useState<TypeToken[]>(tokens);
   const [isLoaded, setLoaded] = React.useState(false);
   const [tokensReceive, setTokensReceive] = React.useState<TypeToken[]>([]);
@@ -325,7 +326,6 @@ export const PageMarketsContent: React.FC = React.memo(() => {
   const [exchangesWithLiquidity, setExchangesWithLiquidity] = React.useState<string[]>();
   const [isCustomAddress, setIsCustomAddress] = React.useState<boolean>(false);
   const [customAddress, setCustomAddress] = React.useState<string>('');
-  const [gearBalance, setGearBalance] = React.useState<string | number>(0);
 
   const isWide = useMedia({ minWidth: '767px' });
 
@@ -954,21 +954,6 @@ export const PageMarketsContent: React.FC = React.memo(() => {
       console.error(e);
     }
   }, [userAddress, web3Provider, tokenReceive]);
-
-  const getGearBalance = React.useCallback(async () => {
-    const resultBalanceOfReceive = await web3Provider.balanceOf({
-      address: userAddress,
-      contractAddress: gearToken.address,
-      contractAbi: erc20Abi,
-    });
-    setGearBalance(resultBalanceOfReceive);
-  }, [userAddress, web3Provider]);
-
-  React.useEffect(() => {
-    if (userAddress) {
-      getGearBalance();
-    }
-  }, [userAddress, getGearBalance]);
 
   // const validateTradeErrors = React.useCallback(
   //   (error) => {
@@ -1972,7 +1957,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
                       {RadioLabelCustom}
                     </label>
                   </div>
-                  {gearBalance > 4000 ? (
+                  {+userCurrentTier >= 1 ? (
                     <div className={s.containerSettingsGasCustomAddress}>
                       <div className={s.containerSettingsGasPremiumBadge}>
                         <IconDiamond />
@@ -2558,7 +2543,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
                   </div>
                 </div>
               </div>
-              {isCustomAddress && gearBalance > 4000 ? (
+              {isCustomAddress && +userCurrentTier >= 1 ? (
                 <div
                   className={s.CustomAddress}
                   onClick={() => customAddressRef.current.focus()}

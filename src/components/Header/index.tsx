@@ -21,7 +21,7 @@ import imageTokenPay from '../../assets/images/token.png';
 import config from '../../config';
 import { useWalletConnectorContext } from '../../contexts/WalletConnect';
 import { useUserTier } from '../../hooks/useUserTier';
-import { userActions } from '../../redux/actions';
+import { userActions, walletActions } from '../../redux/actions';
 import { getFromStorage, setToStorage } from '../../utils/localStorage';
 import { prettyAmount } from '../../utils/prettifiers';
 import { Burger } from '../Burger';
@@ -208,6 +208,7 @@ export const Header: React.FC = () => {
     setToStorage('walletType', '');
     if (walletType === 'walletConnect' && web3Provider) web3Provider.disconnect();
     setUserData({ address: undefined, balance: 0 });
+    dispatch(walletActions.setWalletType(''));
   };
 
   const DropdownLabel = (
