@@ -371,11 +371,10 @@ export const PageMarketsContent: React.FC = React.memo(() => {
     // console.log('PageMarketsContent:', symbolPay, allowance, decimals10, amountPayInWei);
   }
 
-  const isValidCustomAddress = React.useMemo(async () => {
+  const isValidCustomAddress = React.useMemo(() => {
     try {
       if (customAddress) {
-        const isValid = await web3Provider.isAddress(customAddress);
-        return isValid;
+        return web3Provider.isAddress(customAddress);
       }
       return true;
     } catch (error) {

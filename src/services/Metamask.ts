@@ -101,13 +101,8 @@ export default class MetamaskService {
     return tx;
   };
 
-  public isAddress = async (address: string) => {
-    try {
-      const isAddr = await this.web3Provider.utils.isAddress(address);
-      return isAddr;
-    } catch (error) {
-      return false;
-    }
+  public isAddress = (address: string) => {
+    return this.web3Provider.utils.isAddress(address);
   };
 
   public balanceOf = async ({ address, contractAddress, contractAbi }: any) => {
