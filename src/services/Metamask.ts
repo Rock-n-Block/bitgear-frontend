@@ -41,12 +41,20 @@ export default class MetamaskService {
     const usedNet = chainIdsByType.Ethereum.id;
     const netVersion = this.provider.chainId;
     const neededNetName = chainIdsByType.Ethereum.name;
-    console.log('MetamaskService checkNetwork:', usedNet, netVersion, neededNetName);
-    if (usedNet.includes(netVersion)) return { status: 'SUCCESS', data: usedNet[0] };
-    return {
-      status: 'ERROR',
-      message: `Please, change network to ${neededNetName}`,
-    };
+    try {
+      await this.provider.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: '0x1' }],
+      });
+      return { status: 'SUCCESS', data: usedNet[0] };
+    } catch (error) {
+      console.log('MetamaskService checkNetwork:', usedNet, netVersion, neededNetName);
+      if (usedNet.includes(netVersion)) return { status: 'SUCCESS', data: usedNet[0] };
+      return {
+        status: 'ERROR',
+        message: `Please, change network to ${neededNetName}`,
+      };
+    }
   };
 
   public connect = async () => {

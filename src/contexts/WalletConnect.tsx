@@ -66,9 +66,9 @@ const Connector: React.FC = ({ children }) => {
         } else {
           console.log('login chainId:', resultCheckNetwork.data);
           setChainId(resultCheckNetwork.data);
+          console.log('login balance:', balance);
+          setUserData({ address: addresses[0], balance });
         }
-        console.log('login balance:', balance);
-        setUserData({ address: addresses[0], balance });
       } catch (e) {
         console.error('login:', e);
         setToStorage('walletType', '');
