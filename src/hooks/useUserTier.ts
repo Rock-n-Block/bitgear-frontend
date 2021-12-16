@@ -13,20 +13,25 @@ export const useUserTier = () => {
   const [gearBalance, setGearBalance] = React.useState<number | string>(0);
   const [userCurrentTier, setUserCurrentTier] = React.useState<number | string>(0);
   const { balances: userBalances } = useSelector(({ user }: any) => user);
-  const userBalancesAsArray = React.useMemo(() => Object.entries(userBalances), [userBalances]);
+  const userBalancesAsArray = React.useMemo(() => {
+    return Object.entries(userBalances);
+  }, [userBalances]);
 
   const getGearBalance = useCallback(() => {
-    userBalancesAsArray.forEach((item: any) => {
-      const [address, balance] = item;
-      const { decimals, address: gearTokenAddress } = gearToken;
+    const { decimals, address: gearTokenAddress } = gearToken;
+    const gearT: any = userBalancesAsArray.find(
+      (token) => token[0].toLowerCase() === gearTokenAddress.toLowerCase(),
+    );
+    if (gearT) {
+      const [, balance]: [string, string] = gearT;
       const newBalance = +new BigNumber(balance)
         .dividedBy(new BigNumber(10).pow(decimals))
         .toString();
-      if (address.toLowerCase() === gearTokenAddress.toLowerCase()) {
-        setGearBalance(newBalance);
-      }
-      // const { decimals } = tokensByAddress[address];
-    });
+      setGearBalance(newBalance);
+    } else {
+      setGearBalance('0');
+    }
+    setUserCurrentTier(0);
   }, [userBalancesAsArray]);
 
   const changeCurrentTier = useCallback(() => {
