@@ -23,6 +23,7 @@ import gearToken from '../../data/gearToken';
 import { useUserTier } from '../../hooks/useUserTier';
 import { Service0x } from '../../services/0x';
 import { CryptoCompareService } from '../../services/CryptoCompareService';
+import addressWithDots from '../../utils/addressWithDots';
 import { numberTransform } from '../../utils/numberTransform';
 import { prettyPrice } from '../../utils/prettifiers';
 import { sortColumn } from '../../utils/sortColumn';
@@ -383,7 +384,7 @@ export const PageAccount: React.FC = () => {
             <h1>Your Account</h1>
             <CopyToClipboard text={userAddress} onCopy={handleCopyAddress}>
               <span>
-                {isAddressCopied ? 'Copied to clipboard!' : `${userAddress.slice(0, 12)}...`}
+                {isAddressCopied ? 'Copied to clipboard!' : `${addressWithDots(userAddress)}`}
                 <IconCopy />
               </span>
             </CopyToClipboard>

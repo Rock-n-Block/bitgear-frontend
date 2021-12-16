@@ -325,6 +325,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
   const [openQuotes, setOpenQuotes] = React.useState<boolean>(false);
   const [exchangesWithLiquidity, setExchangesWithLiquidity] = React.useState<string[]>();
   const [isCustomAddress, setIsCustomAddress] = React.useState<boolean>(false);
+  console.log(isCustomAddress, 'isCustomAddress');
   const [customAddress, setCustomAddress] = React.useState<string>('');
 
   const isWide = useMedia({ minWidth: '767px' });
