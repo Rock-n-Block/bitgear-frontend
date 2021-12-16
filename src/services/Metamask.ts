@@ -93,6 +93,15 @@ export default class MetamaskService {
     return tx;
   };
 
+  public isAddress = async (address: string) => {
+    try {
+      const isAddr = await this.web3Provider.utils.isAddress(address);
+      return isAddr;
+    } catch (error) {
+      return false;
+    }
+  };
+
   public balanceOf = async ({ address, contractAddress, contractAbi }: any) => {
     const contract = new this.web3Provider.eth.Contract(contractAbi, contractAddress);
     const balance = await contract.methods.balanceOf(address).call();

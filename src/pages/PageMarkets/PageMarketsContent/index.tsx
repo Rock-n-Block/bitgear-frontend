@@ -371,6 +371,18 @@ export const PageMarketsContent: React.FC = React.memo(() => {
     // console.log('PageMarketsContent:', symbolPay, allowance, decimals10, amountPayInWei);
   }
 
+  const isValidCustomAddress = React.useMemo(async () => {
+    try {
+      if (customAddress) {
+        const isValid = await web3Provider.isAddress(customAddress);
+        return isValid;
+      }
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }, [customAddress, web3Provider]);
+
   const isTradeDisabled = userAddress
     ? +amountReceive === 0 || !balanceOfTokenPay || +balanceOfTokenPay < +amountPay
     : false;
@@ -2573,7 +2585,12 @@ export const PageMarketsContent: React.FC = React.memo(() => {
                   (isAllowed && isCustomAllowance) || isAddressPayETH ? (
                     <Button
                       onClick={handleTrade}
-                      disabled={isTradeDisabled || waiting || (isCustomAddress && !customAddress)}
+                      disabled={
+                        isTradeDisabled ||
+                        waiting ||
+                        (isCustomAddress && !customAddress) ||
+                        !isValidCustomAddress
+                      }
                       classNameCustom={s.containerTradingButtonBtn}
                     >
                       {waiting ? 'Waiting...' : 'Trade'}
