@@ -36,12 +36,8 @@ export const useUserTier = () => {
 
   const changeCurrentTier = useCallback(() => {
     const tiers: ITierBounds[] = [
-      // {
-      //   lowerBound: 70000,
-      //   upperBound: 300000,
-      // },
       {
-        lowerBound: 4000,
+        lowerBound: 70000,
         upperBound: 300000,
       },
       {
