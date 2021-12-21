@@ -2592,7 +2592,16 @@ export const PageMarketsContent: React.FC = React.memo(() => {
                       }
                       classNameCustom={s.containerTradingButtonBtn}
                     >
-                      {waiting ? 'Waiting...' : 'Trade'}
+                      {waiting ? (
+                        <>
+                          Waiting
+                          <span>.</span>
+                          <span>.</span>
+                          <span>.</span>
+                        </>
+                      ) : (
+                        'Trade'
+                      )}
                     </Button>
                   ) : (
                     <Button
@@ -2600,7 +2609,16 @@ export const PageMarketsContent: React.FC = React.memo(() => {
                       disabled={isTradeDisabled || waiting}
                       classNameCustom={s.containerTradingButtonBtn}
                     >
-                      {waiting ? 'Waiting...' : 'Approve'}
+                      {waiting ? (
+                        <>
+                          Waiting
+                          <span>.</span>
+                          <span>.</span>
+                          <span>.</span>
+                        </>
+                      ) : (
+                        'Approve'
+                      )}
                     </Button>
                   )
                 ) : (
