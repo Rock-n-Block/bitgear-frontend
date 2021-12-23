@@ -324,7 +324,9 @@ export const PageMarketsContent: React.FC = React.memo(() => {
   const [allowanceCustom, setAllowanceCustom] = React.useState<number>(0);
   const [openQuotes, setOpenQuotes] = React.useState<boolean>(false);
   const [exchangesWithLiquidity, setExchangesWithLiquidity] = React.useState<string[]>();
-  const [isCustomAddress, setIsCustomAddress] = React.useState<boolean>(false);
+  const [isCustomAddress, setIsCustomAddress] = React.useState<boolean>(
+    localStorage.bitgear_customAddress || false,
+  );
   const [customAddress, setCustomAddress] = React.useState<string>('');
 
   const isWide = useMedia({ minWidth: '767px' });
@@ -370,6 +372,14 @@ export const PageMarketsContent: React.FC = React.memo(() => {
     }
     // console.log('PageMarketsContent:', symbolPay, allowance, decimals10, amountPayInWei);
   }
+
+  React.useEffect(() => {
+    if (isCustomAddress) {
+      localStorage.bitgear_customAddress = isCustomAddress;
+    } else {
+      delete localStorage.bitgear_customAddress;
+    }
+  }, [isCustomAddress]);
 
   const isValidCustomAddress = React.useMemo(() => {
     try {
