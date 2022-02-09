@@ -59,6 +59,7 @@ export class CoinMarketCapService {
 
   getTwoCoinsInfo = async ({ symbolOne, symbolTwo }: getTwoCoinsProps) => {
     try {
+      if (!symbolOne) return { status: 'ERROR', data: undefined };
       let url;
       if (symbolTwo) {
         url = `/v1/cryptocurrency/quotes/latest?symbol=${symbolOne.toUpperCase()},${symbolTwo.toUpperCase()}`;
