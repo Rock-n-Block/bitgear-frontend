@@ -29,7 +29,7 @@ export default {
     'coinGecko': 'https://api.coingecko.com/api/v3',
     'covalent': 'https://api.covalenthq.com/v1',
     'alchemy': IS_PRODUCTION
-      ? 'https://eth.alchemyapi.io/v2/'
+      ? 'https://eth-mainnet.alchemyapi.io/v2/'
       : IS_TESTING_ON_ROPSTEN
       ? 'https://eth-ropsten.alchemyapi.io/v2/'
       : 'https://eth-kovan.alchemyapi.io/v2/',
