@@ -14,7 +14,7 @@ import ArrowDown from '../../../assets/icons/arrow-down-blue.svg';
 import { ReactComponent as IconArrowDownWhite } from '../../../assets/icons/arrow-down-white.svg';
 import { ReactComponent as IconExchange } from '../../../assets/icons/exchange.svg';
 import GearIcon from '../../../assets/icons/gear-token-icon.png';
-// import { ReactComponent as IconDiamond } from '../../../assets/icons/icon-diamond.svg';
+import { ReactComponent as IconDiamond } from '../../../assets/icons/icon-diamond.svg';
 import EthIcon from '../../../assets/icons/icon-eth.svg';
 import { ReactComponent as IconSearchWhite } from '../../../assets/icons/search-white.svg';
 import { ReactComponent as IconSettings } from '../../../assets/icons/switcher-settings.svg';
@@ -33,7 +33,7 @@ import config from '../../../config';
 import { useWalletConnectorContext } from '../../../contexts/WalletConnect';
 import erc20Abi from '../../../data/erc20Abi.json';
 import useDebounce from '../../../hooks/useDebounce';
-// import { useUserTier } from '../../../hooks/useUserTier';
+import { useUserTier } from '../../../hooks/useUserTier';
 import { modalActions, statusActions, walletActions } from '../../../redux/actions';
 import { Service0x } from '../../../services/0x';
 import { CoinMarketCapService } from '../../../services/CoinMarketCap';
@@ -235,7 +235,7 @@ export const DropdownItems: React.FC<TypeDropdownItemsParams> = React.memo(
 
 export const PageMarketsContent: React.FC = React.memo(() => {
   const receiveInputRef = useRef<any>();
-  // const customAddressRef = useRef<any>();
+  const customAddressRef = useRef<any>();
   const sellInputRef = useRef<any>();
   const history = useHistory();
 
@@ -296,7 +296,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
   const [, setOpenSelectSlippage] = React.useState<boolean>(false);
   const [openSettings, setOpenSettings] = React.useState<boolean>(false);
   const [mode, setMode] = React.useState<string>('market');
-  // const { userCurrentTier } = useUserTier();
+  const { userCurrentTier } = useUserTier();
   const [searchTokensResultPay, setSearchTokensResultPay] = React.useState<TypeToken[]>(tokens);
   const [isLoaded, setLoaded] = React.useState(false);
   const [tokensReceive, setTokensReceive] = React.useState<TypeToken[]>([]);
@@ -1978,7 +1978,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
                       {RadioLabelCustom}
                     </label>
                   </div>
-                  {/* {+userCurrentTier >= 1 ? (
+                  {+userCurrentTier >= 1 ? (
                     <div className={s.containerSettingsGasCustomAddress}>
                       <div className={s.containerSettingsGasPremiumBadge}>
                         <IconDiamond />
@@ -1997,7 +1997,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
                     </div>
                   ) : (
                     ''
-                  )} */}
+                  )}
                 </div>
               </div>
               <div className={s.containerSettingsExchanges}>
@@ -2565,7 +2565,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
                   </div>
                 </div>
               </div>
-              {/* {isCustomAddress && +userCurrentTier >= 1 ? (
+              {isCustomAddress && +userCurrentTier >= 1 ? (
                 <div
                   className={s.CustomAddress}
                   onClick={() => customAddressRef.current.focus()}
@@ -2588,7 +2588,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
                 </div>
               ) : (
                 ''
-              )} */}
+              )}
               <div className={s.containerTradingButton}>
                 {userAddress ? (
                   (isAllowed && isCustomAllowance) || isAddressPayETH ? (
