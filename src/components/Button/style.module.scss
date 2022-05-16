@@ -8,7 +8,6 @@
   font-size: 20px;
   font-weight: 500;
   line-height: 26px;
-  text-transform: uppercase;
 
   cursor: pointer;
 
@@ -62,8 +61,66 @@
   }
 }
 
+.blue {
+  color: $color-text-primary;
+  background: $color-blue;
+
+  &:hover {
+    filter: brightness(85%);
+  }
+}
+
+.outlined {
+  color: $color-blue;
+  border: 1px solid $color-blue;
+  background: none;
+
+  &:hover {
+    filter: brightness(85%);
+  }
+
+  &:focus {
+    background: none !important;
+  }
+
+  &:active {
+    filter: brightness(65%);
+  }
+}
+
 .disabled {
   filter: opacity(0.7) grayscale(1);
 
   cursor: default;
+}
+
+.uppercase {
+  text-transform: uppercase;
+}
+
+.icon {
+  margin-left: 8px;
+}
+
+.iconButton {
+  background: none;
+  padding: 0;
+  &:hover {
+    box-shadow: none;
+  }
+  &:focus {
+    background: none !important;
+  }
+}
+
+.text {
+  background: none;
+  padding: 0;
+  
+  &:hover {
+    box-shadow: none;
+  }
+  &:focus {
+    background: none !important;
+  }
 }

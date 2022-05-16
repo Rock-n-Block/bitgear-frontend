@@ -7,3 +7,4 @@ export { PageMarkets } from './PageMarkets';
 export { PageSettings } from './PageSettings';
 export { PageLogin } from './PageLogin';
 export { PageAccount } from './PageAccount';
+export { PageStake } from './PageStake';

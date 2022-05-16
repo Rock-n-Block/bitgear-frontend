@@ -1413,14 +1413,14 @@ export const PageMarketsContent: React.FC = React.memo(() => {
             <div className={s.messageContent}>
               <p>Please, connect wallet</p>
               <Button
-                secondary
+                variant="secondary"
                 onClick={handleWalletConnectLogin}
                 classNameCustom={s.containerTradingModalButton}
               >
                 WalletConnect
               </Button>
               <Button
-                secondary
+                variant="secondary"
                 onClick={handleMetamaskLogin}
                 classNameCustom={s.containerTradingModalButton}
               >
@@ -2024,7 +2024,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
               </div>
               <div className={s.containerSettingsButtons}>
                 <Button
-                  normal
+                  variant="normal"
                   classNameCustom={s.containerSettingsButtonsButton}
                   onClick={() => handleResetSettings()}
                 >
@@ -2032,7 +2032,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
                 </Button>
                 {exchanges.length === exchangesList.length ? (
                   <Button
-                    normal
+                    variant="normal"
                     classNameCustom={s.containerSettingsButtonsButtonSelectAll}
                     onClick={() => handleDeselectAllExchanges()}
                   >
@@ -2040,7 +2040,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
                   </Button>
                 ) : (
                   <Button
-                    normal
+                    variant="normal"
                     classNameCustom={s.containerSettingsButtonsButtonSelectAll}
                     onClick={() => handleSelectAllExchanges()}
                   >

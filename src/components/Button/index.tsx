@@ -1,17 +1,17 @@
 /* eslint-disable react/require-default-props */
 
 import React from 'react';
-import cns from 'classnames';
+import cn from 'classnames';
 
-/* eslint-disable react/require-default-props */
 import s from './style.module.scss';
 
 type TypeButtonProps = {
   children?: React.ReactElement | string;
   onClick?: () => void;
-  primary?: boolean;
-  secondary?: boolean;
-  normal?: boolean;
+  variant?: 'normal' | 'primary' | 'secondary' | 'blue' | 'outlined' | 'iconButton' | 'text';
+  uppercase?: boolean;
+  // eslint-disable-next-line react/no-unused-prop-types
+  icon?: any;
   classNameCustom?: any;
   disabled?: boolean;
 };
@@ -19,13 +19,12 @@ type TypeButtonProps = {
 const Button: React.FC<TypeButtonProps> = ({
   children,
   onClick,
-  primary = false,
-  secondary = false,
-  normal = false,
+  variant = 'primary',
+  uppercase = true,
+  icon,
   classNameCustom,
   disabled = false,
 }) => {
-  const className = primary ? s.primary : secondary ? s.secondary : normal ? s.normal : null;
   const classNameDisabled = disabled ? s.disabled : null;
 
   const handleClick = () => {
@@ -35,15 +34,22 @@ const Button: React.FC<TypeButtonProps> = ({
   };
 
   return (
-    <div
-      role="button"
+    <button
+      type="button"
       tabIndex={0}
       onClick={handleClick}
       onKeyDown={() => {}}
-      className={cns(s.button, classNameCustom, className, classNameDisabled)}
+      className={cn(
+        s.button,
+        classNameCustom,
+        s[variant],
+        { [s.uppercase]: uppercase },
+        classNameDisabled,
+      )}
     >
       {children}
-    </div>
+      {icon && <img className={icon && variant !== 'iconButton' ? s.icon : ''} src={icon} alt="" />}
+    </button>
   );
 };
 

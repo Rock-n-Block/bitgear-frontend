@@ -1,0 +1,166 @@
+@import '../../../../scss/theme';
+@import '../../../../scss/mixins';
+
+.stakeContainer {
+  max-width: 800px;
+  height: 710px;
+  background: $color-dark-blue;
+  border-radius: 16px;
+  border: 1px solid $color-blue;
+  padding: 24px;
+  transition: 200ms;
+
+
+  p {
+    margin: 0;
+  }
+
+  &.isContainerExpanded {
+    height: 80px;
+    overflow: hidden;
+  }
+}
+
+.titleBlock {
+  @include flexbox(space-between);
+  padding-bottom: 16px;
+  border-bottom: 1px solid $color-blue;
+}
+
+.textFlex {
+  @include flexbox(space-between);
+}
+
+.text {
+  font-size: 24px; 
+}
+
+.grayText {
+  color: $color-gray-100;
+}
+
+.smallText {
+  font-size: 16px;
+}
+.collapseBtnContainer {
+  @include flexbox();
+}
+
+.expandButton {
+  margin-left: 8px;
+  transform: rotate(0) !important;
+  transition: 200ms !important;
+}
+
+.isExpanded {
+  transform: rotate(180deg) translateX(0) !important;
+}
+
+.stakeUnstakeSelectorBlock {
+  height: 40px;
+  margin-top: 24px;
+  @include flexbox();
+  background: $color-black-new;
+  border-radius: 21px;
+
+  .isSelected {
+    background: $color-blue !important;
+  }
+
+  & > button {
+    height: 100%;
+    width: 50%;
+    border-radius: 21px;
+  }
+}
+
+.inputBlock {
+  @include flexbox();
+  height: 70px;
+  background: $color-black-new;
+  border-radius: 16px;
+  padding: 0 16px;
+
+  border: 1px solid $color-gray-100;
+
+  margin-top: 24px;
+
+  input {
+    height: 70px !important;
+    background: none !important;
+  }
+
+  button {
+    @include flexbox();
+    width: 70px;
+    height: 38px;
+    padding: 0;
+    font-size: 24px;
+    background: $color-blue-01;
+  }
+}
+
+.stakeUnstakeBlock {
+  padding: 24px 0;
+  border-bottom: 1px solid $color-blue;
+
+  & > p:not(:last-child) {
+    margin-bottom: 8px;
+  }
+}
+
+.stakeUnstakeButton {
+  margin-top: 24px;
+  width: 270px;
+}
+
+.collectEthRewardsBlock {
+  padding: 24px 0;
+}
+
+.tooltipIcon {
+  margin-left: 16px;
+}
+
+.ethRewardsBlock {
+  @include flexbox(space-between);
+  margin: 24px 0;
+}
+
+.ethRewardAmountBlock {
+  margin: 24px 0 0;
+  height: 80px;
+  background: $color-black-new;
+  border-radius: 16px;
+  padding: 0 24px;
+  @include flexbox(flex-start);
+  & > *:not(:last-child) {
+    margin-right: 16px;
+  }
+}
+
+.compoundGearBlock {
+  padding-top: 24px;
+  & > *:not(:last-child) {
+    margin-bottom: 16px;
+  }
+}
+
+.bitGearIcon {
+  margin-right: 16px;
+}
+
+@include b('mobile') {
+  .stakeContainer {
+    height: 620px;
+    padding: 20px;
+  }
+
+  .text {
+    font-size: 16px;
+  }
+
+  .smallText {
+    font-size: 12px;
+  }
+}

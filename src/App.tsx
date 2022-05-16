@@ -503,6 +503,9 @@ export const App: React.FC = () => {
             <Route path="/markets">
               <Pages.PageMarkets />
             </Route>
+            <Route path="/stake">
+              <Pages.PageStake />
+            </Route>
             <Route path="/settings">
               <Pages.PageSettings />
             </Route>

@@ -6,6 +6,15 @@
   flex-wrap: $wrap;
 }
 
+$defaultFlexJustify: center;
+$defaultFlexAlign: center;
+
+@mixin flexbox($justify: $defaultFlexJustify, $align: $defaultFlexAlign) {
+  display: flex;
+  justify-content: $justify;
+  align-items: $align;
+}
+
 @mixin grid($columns: repeat(2, 1fr), $rows: 1fr, $gap: 10px) {
   display: grid;
   grid-template-columns: $columns;

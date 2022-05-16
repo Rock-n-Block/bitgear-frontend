@@ -239,3 +239,12 @@ a {
 .no-scroll {
   overflow: hidden;
 }
+
+
+.flexCenter {
+  @include flexbox();
+}
+
+.flexSpaceBetween {
+  @include flexbox(space-between);
+}

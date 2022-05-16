@@ -12,7 +12,7 @@ type TypeInputProps = {
   placeholder?: string;
   label?: React.ReactElement | string;
   type?: string;
-  onChange?: (e: string) => void;
+  onChange?: (e: any) => void;
   inline?: boolean;
   className?: string;
 };
@@ -38,19 +38,13 @@ export const Input: React.FC<TypeInputProps> = ({
     [autoFocus],
   );
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onChange(e.target.value);
-  };
-
   return (
     <div className={cns(s.container, className)}>
-      {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
       {label && (
         <label className={s.label} htmlFor={id}>
           {label}
         </label>
       )}
-      {/* eslint-disable */}
       <input
         ref={refInput}
         className={cns(s.input, inline && s.inline)}
@@ -58,9 +52,8 @@ export const Input: React.FC<TypeInputProps> = ({
         type={type}
         placeholder={placeholder}
         value={value}
-        onChange={handleChange}
+        onChange={onChange}
       />
-      {/* eslint-enable */}
     </div>
   );
 };

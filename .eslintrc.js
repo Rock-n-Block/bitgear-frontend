@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/extensions
 const prettierConfig = require('./.prettierrc.js');
 
 module.exports = {
@@ -53,6 +54,7 @@ module.exports = {
     '@typescript-eslint/no-unused-vars': 'error',
     'prettier/prettier': ['error', prettierConfig],
     'quote-props': ['error', 'consistent-as-needed'],
+    'react/require-default-props': 1,
     'react/prop-types': 'off',
     'react/destructuring-assignment': 'off',
     'react/jsx-filename-extension': ['error', { extensions: ['.jsx', '.tsx'] }],

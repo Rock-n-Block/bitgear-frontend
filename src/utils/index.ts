@@ -1,0 +1,1 @@
+export { validateOnlyNumbers } from './validateOnlyNumbers';

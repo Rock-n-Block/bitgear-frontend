@@ -476,11 +476,11 @@ const ModalContentQuotes: React.FC<TypeButtonProps> = ({
 
       <div className={s.containerButton}>
         {isNeedToRefresh ? (
-          <Button primary onClick={getQuote} classNameCustom={s.containerButtonSubmit}>
+          <Button variant="primary" onClick={getQuote} classNameCustom={s.containerButtonSubmit}>
             Quote expired. Refresh.
           </Button>
         ) : (
-          <Button primary onClick={trade} classNameCustom={s.containerButtonSubmit}>
+          <Button variant="primary" onClick={trade} classNameCustom={s.containerButtonSubmit}>
             Place order
           </Button>
         )}
