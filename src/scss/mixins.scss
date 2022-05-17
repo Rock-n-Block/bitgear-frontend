@@ -1,3 +1,5 @@
+@import './mixins/spacing';
+
 @mixin flex($direction: row, $alignment: normal, $justification: normal, $wrap: wrap) {
   display: flex;
   flex-direction: $direction;

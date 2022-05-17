@@ -20,3 +20,4 @@ export { DropDownCurrent } from './DropDownCurrent';
 export { SkeletonLoader } from './Skeleton';
 export { Switch } from './Switch';
 export { default as Button } from './Button';
+export { Tooltip } from './Tooltip';

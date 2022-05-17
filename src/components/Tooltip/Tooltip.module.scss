@@ -1,0 +1,18 @@
+@import '../../scss/theme.scss';
+@import '../../scss/mixins.scss';
+
+.tooltip {
+  padding: spacing(2) !important;
+  margin-top: spacing(2) !important;
+  border-radius: spacing(1) !important;
+
+  background: $color-bg-tooltip !important;
+  border: 1px solid $color-border-tooltip !important;
+
+  &:after {
+    border-bottom-color: $color-bg-tooltip !important;
+  }
+  &:before {
+    border-bottom-color: $color-border-tooltip !important;
+  }
+}
