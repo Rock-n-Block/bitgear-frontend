@@ -32,7 +32,7 @@
 }
 
 .text {
-  font-size: 24px; 
+  font-size: 24px;
 }
 
 .grayText {
@@ -123,6 +123,9 @@
   margin-left: 16px;
 }
 
+.collectRewardsTooltipContent {
+  max-width: 235px;
+}
 
 @include b('mobile') {
   .stakeContainer {
