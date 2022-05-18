@@ -7,3 +7,4 @@ export { TooltipApy } from './TooltipApy';
 export { TooltipCollectRewardsWhatsThis } from './TooltipCollectRewardsWhatsThis';
 export { TooltipCollectRewardsCompounding } from './TooltipCollectRewardsCompounding';
 export { TooltipStakeCollectRewards } from './TooltipStakeCollectRewards';
+export { SectionHead } from './SectionHead';
