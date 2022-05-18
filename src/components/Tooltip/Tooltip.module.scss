@@ -11,8 +11,10 @@
 
   &:after {
     border-bottom-color: $color-bg-tooltip !important;
+    border-top-color: $color-bg-tooltip !important;
   }
   &:before {
     border-bottom-color: $color-border-tooltip !important;
+    border-top-color: $color-border-tooltip !important;
   }
 }
