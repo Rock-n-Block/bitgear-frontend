@@ -6,7 +6,7 @@ import { Button } from '../../../../components';
 import { TooltipCollectRewardsCompounding } from '../TooltipCollectRewardsCompounding';
 import { TooltipCollectRewardsWhatsThis } from '../TooltipCollectRewardsWhatsThis';
 
-import styles from './styles.module.scss';
+import styles from './Reward.module.scss';
 
 interface RewardProps {
   stakeAmount: string | number;

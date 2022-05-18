@@ -5,7 +5,7 @@ import gearToken from '../../data/gearToken';
 
 import { Banner, Reward, Stake, TooltipApr, TooltipApy } from './components';
 
-import styles from './styles.module.scss';
+import styles from './PageStake.module.scss';
 
 export const PageStake: FC = () => {
   return (
