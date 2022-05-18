@@ -1,0 +1,66 @@
+@import '../../../../scss/theme';
+@import '../../../../scss/mixins';
+
+.sectionHead {
+  @include flexbox(flex-start, flex-start);
+
+  &Logo {
+    position: relative;
+    width: 54px;
+    height: 54px;
+  }
+
+  &Info {
+    margin-left: spacing(3.75);
+
+    &Title {
+      font-weight: 500;
+      font-size: 24px;
+      line-height: 38px;
+    }
+
+    &Subtitle {
+      margin-top: spacing(1);
+
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 26px;
+
+      &>span {
+        color: $color-blue;
+      }
+    }
+
+    &Description {
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 26px;
+    }
+
+    &Additional {
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 26px;
+
+      color: $color-white-semi-50;
+    }
+
+    &Performance {
+      @include flexbox(flex-start);
+      margin-top: spacing(2);
+
+      font-weight: 600;
+      font-size: 30px;
+      line-height: 45px;
+    }
+  }
+}
+
+.pairedToken {
+  position: absolute;
+  right: -#{spacing(1)};
+  bottom: -#{spacing(1.5)};
+
+  width: 50%;
+  height: 50%;
+}

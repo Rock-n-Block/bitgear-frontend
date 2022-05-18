@@ -41,6 +41,10 @@
     width: 156px;
     height: 44px;
     font-size: 16px;
+
+    &:not(:last-child) {
+      margin-right: spacing(1);
+    }
   }
 }
 
@@ -49,10 +53,6 @@
 }
 
 @include b(mobile) {
-  .container {
-    flex-direction: column;
-  }
-
   .h1 {
     font-size: 48px;
   }

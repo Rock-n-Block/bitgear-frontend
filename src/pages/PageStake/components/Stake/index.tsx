@@ -6,7 +6,7 @@ import { Button, Input, Switch } from '../../../../components';
 import { validateOnlyNumbers } from '../../../../utils';
 import { TooltipStakeCollectRewards } from '../TooltipStakeCollectRewards';
 
-import styles from './styles.module.scss';
+import styles from './Stake.module.scss';
 
 interface StakeProps {
   stakeAmount: string | number;

@@ -5,7 +5,7 @@ import { arrowSquareOutIcon, plusCircleIcon } from '../../../../assets/icons';
 import { bigGear } from '../../../../assets/images';
 import { Button } from '../../../../components';
 
-import styles from './styles.module.scss';
+import styles from './Banner.module.scss';
 
 interface BannerProps {
   apy: string | number;

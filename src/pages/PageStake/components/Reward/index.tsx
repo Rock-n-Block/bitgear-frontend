@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import cn from 'classnames';
 
-import { ethIcon, gearTokenIcon, triangleArrow } from '../../../../assets/icons';
+import { bitGearTokenIcon, ethTokenIcon, triangleArrow } from '../../../../assets/icons';
 import { Button } from '../../../../components';
 import { TooltipCollectRewardsCompounding } from '../TooltipCollectRewardsCompounding';
 import { TooltipCollectRewardsWhatsThis } from '../TooltipCollectRewardsWhatsThis';
 
-import styles from './styles.module.scss';
+import styles from './Reward.module.scss';
 
 interface RewardProps {
   stakeAmount: string | number;
@@ -65,7 +65,7 @@ export const Reward: React.FC<RewardProps> = ({
         </span>
       </div>
       <div className={styles.ethRewardAmountBlock}>
-        <img src={ethIcon} alt="eth icon" />
+        <img src={ethTokenIcon} alt="eth icon" />
         <p>{`${ethReward} ETH`}</p>
       </div>
       <div className={styles.stakeUnstakeBlock}>
@@ -96,7 +96,7 @@ export const Reward: React.FC<RewardProps> = ({
         </p>
         <div className={styles.textFlex}>
           <span className="flexCenter">
-            <img className={styles.bitGearIcon} src={gearTokenIcon} alt="gear token icon" />
+            <img className={styles.bitGearIcon} src={bitGearTokenIcon} alt="gear token icon" />
             <p className={styles.text}>BITGEAR</p>
           </span>
           <span className="flexCenter">

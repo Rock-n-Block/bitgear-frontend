@@ -1,0 +1,44 @@
+@import '../../scss/theme';
+@import '../../scss/mixins';
+
+.container {
+  width: 100%;
+  max-width: 1270px;
+  padding: 120px 20px;
+}
+
+.section {
+  @include flexbox(space-between, flex-start);
+  padding: 0 spacing(2);
+  margin-top: spacing(10.75);
+
+  &Body {
+    flex: 0.9;
+    padding-left: spacing(2);
+    & > :not(:last-child) {
+      margin-bottom: spacing(4.5);
+    }
+  }
+}
+
+.infoIcon {
+  margin-left: spacing(1.5);
+}
+
+@include b('mobile') {
+  .container {
+    padding: 60px 0 120px;
+  }
+
+  .section {
+    flex-direction: column;
+    align-items: center;
+
+    margin-top: spacing(4);
+
+    &Body {
+      padding-left: 0;
+      margin-top: spacing(3);
+    }
+  }
+}
