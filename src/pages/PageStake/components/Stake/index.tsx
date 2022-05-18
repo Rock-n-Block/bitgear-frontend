@@ -4,7 +4,7 @@ import cn from 'classnames';
 import { triangleArrow } from '../../../../assets/icons';
 import { Button, Input, Switch } from '../../../../components';
 import { validateOnlyNumbers } from '../../../../utils';
-import { TooltipStakeCollectRewards } from '..';
+import { TooltipStakeCollectRewards } from '../TooltipStakeCollectRewards';
 
 import styles from './styles.module.scss';
 
