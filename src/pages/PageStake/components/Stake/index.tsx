@@ -1,9 +1,10 @@
 import React, { ChangeEvent, useMemo, useState } from 'react';
 import cn from 'classnames';
 
-import { infoRound, triangleArrow } from '../../../../assets/icons';
-import { Button, Input, Switch, Tooltip } from '../../../../components';
+import { triangleArrow } from '../../../../assets/icons';
+import { Button, Input, Switch } from '../../../../components';
 import { validateOnlyNumbers } from '../../../../utils';
+import { TooltipStakeCollectRewards } from '..';
 
 import styles from './styles.module.scss';
 
@@ -15,9 +16,6 @@ interface StakeProps {
   onUnstakeClick: () => void;
   className?: number;
 }
-
-const COLLECT_REWARDS_TOOLTIP = `You can collect pending rewards while staking or unstaking from this contract.
-You’ll have to pay a little more in transaction fees for this.`;
 
 export const Stake: React.FC<StakeProps> = ({
   stakeAmount,
@@ -106,13 +104,7 @@ export const Stake: React.FC<StakeProps> = ({
         <span className="flexCenter">
           <p className={cn(styles.text, styles.grayText)}>Collect 0 ETH rewards?</p>
           <div className={styles.tooltipIcon}>
-            <Tooltip
-              className={styles.collectRewardsTooltipContent}
-              name="tooltip"
-              target={<Button icon={infoRound} variant="iconButton" />}
-              content={<p className={styles.tooltipText}>{COLLECT_REWARDS_TOOLTIP}</p>}
-              event="click"
-            />
+            <TooltipStakeCollectRewards />
           </div>
         </span>
         <Switch

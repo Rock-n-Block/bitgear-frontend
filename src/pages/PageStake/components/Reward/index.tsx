@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import cn from 'classnames';
 
-import { ethIcon, gearTokenIcon, infoRound, triangleArrow } from '../../../../assets/icons';
+import { ethIcon, gearTokenIcon, triangleArrow } from '../../../../assets/icons';
 import { Button } from '../../../../components';
+import { TooltipCollectRewardsCompounding } from '../TooltipCollectRewardsCompounding';
+import { TooltipCollectRewardsWhatsThis } from '../TooltipCollectRewardsWhatsThis';
 
 import styles from './styles.module.scss';
 
@@ -57,7 +59,9 @@ export const Reward: React.FC<RewardProps> = ({
         </p>
         <span className="flexCenter">
           <p className={cn(styles.text, styles.grayText)}>What`s this?</p>
-          <Button classNameCustom={styles.tooltipIcon} icon={infoRound} variant="iconButton" />
+          <div className={styles.tooltipIcon}>
+            <TooltipCollectRewardsWhatsThis tokenSymbol="GEAR" />
+          </div>
         </span>
       </div>
       <div className={styles.ethRewardAmountBlock}>
@@ -97,7 +101,9 @@ export const Reward: React.FC<RewardProps> = ({
           </span>
           <span className="flexCenter">
             <p className={cn(styles.text, styles.grayText)}>Compounding</p>
-            <Button classNameCustom={styles.tooltipIcon} icon={infoRound} variant="iconButton" />
+            <div className={styles.tooltipIcon}>
+              <TooltipCollectRewardsCompounding tokenSymbol="GEAR" />
+            </div>
           </span>
         </div>
         <div className={styles.textFlex}>
