@@ -1,0 +1,18 @@
+$defaultSpacingUnit: 8;
+@function spacing($top, $right: 0, $bottom: 0, $left: 0) {
+  @if $top != 0 and $right == 0 and $bottom == 0 and $left == 0 {
+    @return #{$top * $defaultSpacingUnit}#{"px"};
+  }
+
+  @if $top != 0 and $right != 0 and $bottom == 0 and $left == 0 {
+    @return #{$top * $defaultSpacingUnit}#{"px"} #{$right * $defaultSpacingUnit}#{"px"};
+  }
+
+  @if $top != 0 and $right != 0 and $bottom != 0 and $left == 0 {
+    @return #{$top * $defaultSpacingUnit}#{"px"} #{$right * $defaultSpacingUnit}#{"px"} #{$bottom * $defaultSpacingUnit}#{"px"};
+  }
+
+  @if $top != 0 and $right != 0 and $bottom != 0 and $left != 0 {
+    @return #{$top * $defaultSpacingUnit}#{"px"} #{$right * $defaultSpacingUnit}#{"px"} #{$bottom * $defaultSpacingUnit}#{"px"} #{$left * $defaultSpacingUnit}#{"px"};
+  }
+}

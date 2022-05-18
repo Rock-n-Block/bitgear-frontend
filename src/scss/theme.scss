@@ -11,12 +11,13 @@ $color-gray: #303849;
 $color-black-new: #030D22;
 $color-gray-100: #7C8BA8;
 $color-gray-200: #364963;
+$color-white-semi-80: rgba(white, 0.8);
 
 // background
 $color-bg: rgba(3, 13, 34, 1);
 //$color-bg: #07092a;
 $color-bg-section: #212443;
-$color-bg-header: linear-gradient(180deg, #030d22 0%, rgba(3, 13, 34, 0) 195.12%);
+$color-bg-header: linear-gradient(180deg, $color-black-new 0%, rgba(3, 13, 34, 0) 195.12%);
 //$color-bg-header: #07092a;
 $color-bg-footer: #07092a;
 $color-bg-error: #c88a38;
@@ -48,9 +49,12 @@ $color-bg-button-secondary: #0197e2;
 $color-bg-button-secondary-hover: #70bde3;
 $color-bg-button-normal: transparent;
 $color-bg-login-item-hover: #0197e23d;
-$color-bg-card-market: linear-gradient(180deg, #030d22 74.94%, rgba(3, 13, 34, 0) 100%);
+$color-bg-card-market: linear-gradient(180deg, $color-black-new 74.94%, rgba(3, 13, 34, 0) 100%);
 $color-boxsh-bg1: rgba(0, 227, 182, 0.3);
 $color-boxsh-bg2: rgba(0, 127, 239, 0.4);
+
+$color-bg-tooltip: $color-black-new;
+
 // text
 $color-text-primary: #fff;
 $color-text-secondary: rgba(255, 255, 255, 0.5);
@@ -106,6 +110,9 @@ $color-border-header: linear-gradient(
 $color-border-login-item: #0197e238;
 $color-border-account-menu-item: #303355;
 $color-border-bottom-span: #0197e2;
+
+$color-border-tooltip: $color-gray-100;
+
 // others
 $color-cursor-input: #fff;
 $color-chart-line: #01c9c5;
@@ -139,3 +146,5 @@ $height-input: 76px;
 $height-input-small: 55px;
 $height-header: 83px;
 $height-header-mobile: 69px;
+
+@import './components/tooltip';

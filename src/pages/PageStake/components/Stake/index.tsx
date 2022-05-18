@@ -1,9 +1,10 @@
 import React, { ChangeEvent, useMemo, useState } from 'react';
 import cn from 'classnames';
 
-import { infoRound, triangleArrow } from '../../../../assets/icons';
+import { triangleArrow } from '../../../../assets/icons';
 import { Button, Input, Switch } from '../../../../components';
 import { validateOnlyNumbers } from '../../../../utils';
+import { TooltipStakeCollectRewards } from '../TooltipStakeCollectRewards';
 
 import styles from './styles.module.scss';
 
@@ -102,7 +103,9 @@ export const Stake: React.FC<StakeProps> = ({
       <div className={cn(styles.collectEthRewardsBlock, styles.textFlex)}>
         <span className="flexCenter">
           <p className={cn(styles.text, styles.grayText)}>Collect 0 ETH rewards?</p>
-          <Button classNameCustom={styles.tooltipIcon} icon={infoRound} variant="iconButton" />
+          <div className={styles.tooltipIcon}>
+            <TooltipStakeCollectRewards />
+          </div>
         </span>
         <Switch
           checked={shouldCollectEthRewards}

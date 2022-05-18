@@ -1,0 +1,24 @@
+@import '../../../../scss/theme';
+@import '../../../../scss/mixins';
+
+.tooltipApy {
+  max-width: 280px;
+}
+
+.formula {
+  font-weight: 700;
+}
+
+.line {
+  @include flexbox(space-between);
+}
+
+.container {
+  &:not(:last-child) {
+    margin-bottom: spacing(1);
+  }
+}
+
+.divider {
+  border-color: $color-gray-100;
+}

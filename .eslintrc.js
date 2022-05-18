@@ -13,6 +13,7 @@ module.exports = {
     'airbnb/hooks',
     'plugin:import/typescript',
     'plugin:@typescript-eslint/recommended',
+    'plugin:react/jsx-runtime',
     'plugin:prettier/recommended',
     'prettier/@typescript-eslint',
     'prettier/react',
