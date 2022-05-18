@@ -1,6 +1,8 @@
 import { FC } from 'react';
 import { noop } from 'lodash';
 
+import gearToken from '../../data/gearToken';
+
 import { Banner, Reward, Stake, TooltipApr, TooltipApy } from './components';
 
 import styles from './styles.module.scss';
@@ -9,14 +11,19 @@ export const PageStake: FC = () => {
   return (
     <div className={styles.container}>
       <Banner apy={160.41} />
-      <div>
+      <div className={styles.section}>
         APR
-        <TooltipApr tokenSymbol1="GEAR" tokenSymbol2="ETH" tokenApr1="21,92" tokenApr2="46,01" />
+        <TooltipApr
+          tokenSymbol1={gearToken.symbol}
+          tokenSymbol2="ETH"
+          tokenApr1="21,92"
+          tokenApr2="46,01"
+        />
         Stake container
         <Stake
           onStakeClick={noop}
           onUnstakeClick={noop}
-          tokenName="GEAR"
+          tokenName={gearToken.symbol}
           stakeAmount={0}
           tokenBalance={25}
         />
@@ -26,7 +33,7 @@ export const PageStake: FC = () => {
         GEAR Compounder APY
         <TooltipApy
           token1={{
-            symbol: 'GEAR',
+            symbol: gearToken.symbol,
             apr: '21,60',
           }}
           token2={{
@@ -39,7 +46,7 @@ export const PageStake: FC = () => {
       </div>
 
       <Reward
-        tokenName="GEAR"
+        tokenName={gearToken.symbol}
         stakeAmount={0}
         ethReward={75}
         lastCollectedTimestamp={1652703791}

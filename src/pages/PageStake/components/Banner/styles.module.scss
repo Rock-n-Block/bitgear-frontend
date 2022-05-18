@@ -49,10 +49,6 @@
 }
 
 @include b(mobile) {
-  .container {
-    flex-direction: column;
-  }
-
   .h1 {
     font-size: 48px;
   }
