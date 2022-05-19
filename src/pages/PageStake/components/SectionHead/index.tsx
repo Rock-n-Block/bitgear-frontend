@@ -39,7 +39,7 @@ export const SectionHead: FC<SectionHeadProps> = ({
       <div className={styles.sectionHeadInfo}>
         <div className={styles.sectionHeadInfoTitle}>{title}</div>
         <div className={styles.sectionHeadInfoSubtitle}>
-          Stake <span>{stakeToken}</span> | Earn{' '}
+          Stake <span>{stakeToken}</span> <div>|</div> Earn{' '}
           {isCompounder ? earnToken : `${stakeToken} & ${earnToken}`}
         </div>
         <div className={styles.sectionHeadInfoDescription}>
