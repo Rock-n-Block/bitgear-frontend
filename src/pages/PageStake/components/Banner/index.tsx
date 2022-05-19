@@ -4,6 +4,8 @@ import cn from 'classnames';
 import { arrowSquareOutIcon, plusCircleIcon } from '../../../../assets/icons';
 import { bigGear } from '../../../../assets/images';
 import { Button } from '../../../../components';
+import gearToken from '../../../../data/gearToken';
+import { addTokenToWallet } from '../../../../utils';
 
 import styles from './Banner.module.scss';
 
@@ -13,6 +15,15 @@ interface BannerProps {
 }
 
 export const Banner: React.FC<BannerProps> = ({ apy, className }) => {
+  const handleAddToken = () => {
+    if (!window.ethereum) return;
+    addTokenToWallet({
+      address: gearToken.address,
+      symbol: gearToken.symbol,
+      decimals: gearToken.decimals,
+      image: gearToken.image,
+    });
+  };
   return (
     <div className={cn(styles.container, className)}>
       <div className={styles.bannerLogicContainer}>
@@ -25,7 +36,7 @@ export const Banner: React.FC<BannerProps> = ({ apy, className }) => {
           <Button variant="outlined" icon={arrowSquareOutIcon} uppercase={false}>
             Buy GEAR
           </Button>
-          <Button variant="blue" icon={plusCircleIcon} uppercase={false}>
+          <Button variant="blue" icon={plusCircleIcon} uppercase={false} onClick={handleAddToken}>
             Add to Wallet
           </Button>
         </div>
