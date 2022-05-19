@@ -10,6 +10,10 @@
   padding: 24px;
   transition: 200ms;
 
+  &_compounder {
+    height: 630px;
+  }
+
 
   p {
     margin: 0;
@@ -123,10 +127,30 @@
   margin-left: 16px;
 }
 
+.compounderText {
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 26px;
+
+  color: $color-gray-100;
+}
+
+@include b('tablet') {
+  .stakeContainer {
+    &_compounder {
+      height: 750px;
+    }
+  }
+}
+
 @include b('mobile') {
   .stakeContainer {
     height: 480px;
     padding: 20px;
+
+    &_compounder {
+      height: 600px;
+    }
   }
 
   .text {
