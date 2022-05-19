@@ -10,7 +10,6 @@
   padding: 24px;
   transition: 200ms;
 
-
   p {
     margin: 0;
   }
@@ -152,7 +151,7 @@
 
 @include b('mobile') {
   .stakeContainer {
-    height: 620px;
+    height: 580px;
     padding: 20px;
   }
 

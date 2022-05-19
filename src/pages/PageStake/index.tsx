@@ -41,12 +41,13 @@ export const PageStake: FC = () => {
           <Stake
             onStakeClick={noop}
             onUnstakeClick={noop}
-            tokenName={gearToken.symbol}
+            stakeToken={gearToken.symbol}
             stakeAmount={0}
             tokenBalance={25}
           />
           <Reward
-            tokenName={gearToken.symbol}
+            stakeToken={gearToken.symbol}
+            earnToken={gearToken.symbol}
             stakeAmount={0}
             ethReward={75}
             lastCollectedTimestamp={1652703791}
@@ -86,12 +87,13 @@ export const PageStake: FC = () => {
           <Stake
             onStakeClick={noop}
             onUnstakeClick={noop}
-            tokenName={gearToken.symbol}
+            stakeToken={gearToken.symbol}
             stakeAmount={0}
             tokenBalance={25}
           />
           <Reward
-            tokenName={gearToken.symbol}
+            stakeToken={gearToken.symbol}
+            earnToken={gearToken.symbol}
             stakeAmount={0}
             ethReward={75}
             lastCollectedTimestamp={1652703791}
@@ -136,20 +138,14 @@ export const PageStake: FC = () => {
         />
         <div className={styles.sectionBody}>
           <Stake
+            isCompounder
             onStakeClick={noop}
             onUnstakeClick={noop}
-            tokenName={gearToken.symbol}
+            stakeToken={gearToken.symbol}
+            earnToken={gearToken.symbol}
+            earnedToDate="0.123456"
             stakeAmount={0}
             tokenBalance={25}
-          />
-          <Reward
-            tokenName={gearToken.symbol}
-            stakeAmount={0}
-            ethReward={75}
-            lastCollectedTimestamp={1652703791}
-            collectedToDate={40}
-            earnedToDate={30}
-            onCollectRewardClick={noop}
           />
         </div>
       </div>

@@ -1,0 +1,8 @@
+@import '../../scss/theme.scss';
+@import '../../scss/mixins.scss';
+
+.__react_component_tooltip {
+  &.place-top {
+    margin-top: -#{spacing(2)} !important;
+  }
+}

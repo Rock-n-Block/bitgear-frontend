@@ -5,6 +5,7 @@ import { noop } from 'lodash';
 
 import { Event } from './Tooltip.types';
 
+import './Tooltip.override.scss';
 import styles from './Tooltip.module.scss';
 
 export interface TooltipProps {

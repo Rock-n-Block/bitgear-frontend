@@ -3,24 +3,30 @@ import cn from 'classnames';
 
 import { triangleArrow } from '../../../../assets/icons';
 import { Button, Input, Switch } from '../../../../components';
-import { validateOnlyNumbers } from '../../../../utils';
+import { getDollarAmount, validateOnlyNumbers } from '../../../../utils';
 import { TooltipStakeCollectRewards } from '../TooltipStakeCollectRewards';
 
 import styles from './Stake.module.scss';
 
 interface StakeProps {
+  isCompounder?: boolean;
   stakeAmount: string | number;
   tokenBalance: string | number;
-  tokenName: string;
+  stakeToken: string;
+  earnToken?: string;
+  earnedToDate?: string | number;
   onStakeClick: () => void;
   onUnstakeClick: () => void;
   className?: number;
 }
 
 export const Stake: React.FC<StakeProps> = ({
+  isCompounder = false,
   stakeAmount,
   tokenBalance,
-  tokenName,
+  stakeToken,
+  earnToken = '',
+  earnedToDate = '',
   onStakeClick,
   onUnstakeClick,
   className,
@@ -44,12 +50,19 @@ export const Stake: React.FC<StakeProps> = ({
   }, [stakeAmount]);
   return (
     <div
-      className={cn(styles.stakeContainer, { [styles.isContainerExpanded]: isExpanded }, className)}
+      className={cn(
+        styles.stakeContainer,
+        {
+          [styles.isContainerExpanded]: isExpanded,
+          [styles.stakeContainer_compounder]: isCompounder,
+        },
+        className,
+      )}
     >
       <div className={styles.titleBlock}>
         <p className={styles.text}>Your stake</p>
         <div className={styles.collapseBtnContainer}>
-          <p className={styles.text}>{`${stakeAmount} ${tokenName}`}</p>
+          <p className={styles.text}>{`${stakeAmount} ${stakeToken}`}</p>
           <Button
             variant="iconButton"
             icon={triangleArrow}
@@ -82,9 +95,10 @@ export const Stake: React.FC<StakeProps> = ({
       </div>
       <div className={styles.stakeUnstakeBlock}>
         <div className={styles.textFlex}>
-          <p className={cn(styles.text, styles.grayText)}>{`${tokenName} in wallet:`}</p>
+          <p className={cn(styles.text, styles.grayText)}>{`${stakeToken} in wallet:`}</p>
           <p className={styles.text}>{tokenBalance}</p>
         </div>
+
         <div className={styles.textFlex}>
           <p className={cn(styles.text, styles.grayText)}>Your Stake (Compounding):</p>
           <p className={styles.text}>
@@ -92,6 +106,20 @@ export const Stake: React.FC<StakeProps> = ({
             <span className={cn(styles.grayText)}>{`($${stakedDollarAmount})`}</span>
           </p>
         </div>
+
+        {isCompounder && (
+          <div className={styles.textFlex}>
+            <p className={cn(styles.text, styles.grayText)}>Earned to date:</p>
+            <p className={styles.text}>
+              {earnedToDate}
+              <span className={cn(styles.grayText)}>{`($${getDollarAmount(
+                earnedToDate,
+                earnToken,
+              )})`}</span>
+            </p>
+          </div>
+        )}
+
         <Button
           onClick={isStakeSelected ? onStakeClick : onUnstakeClick}
           classNameCustom={styles.stakeUnstakeButton}
@@ -101,16 +129,27 @@ export const Stake: React.FC<StakeProps> = ({
         </Button>
       </div>
       <div className={cn(styles.collectEthRewardsBlock, styles.textFlex)}>
-        <span className="flexCenter">
-          <p className={cn(styles.text, styles.grayText)}>Collect 0 ETH rewards?</p>
-          <div className={styles.tooltipIcon}>
-            <TooltipStakeCollectRewards />
-          </div>
-        </span>
-        <Switch
-          checked={shouldCollectEthRewards}
-          onChange={() => setCollectEthRewards(!shouldCollectEthRewards)}
-        />
+        {isCompounder ? (
+          <span className={styles.compounderText}>
+            <div>
+              WETH you earn is automatically converted to BITGEAR, which is received over time.
+            </div>
+            <div>BITGEAR rewards are automatically compounded - no need to collect!</div>
+          </span>
+        ) : (
+          <>
+            <span className="flexCenter">
+              <p className={cn(styles.text, styles.grayText)}>Collect 0 ETH rewards?</p>
+              <div className={styles.tooltipIcon}>
+                <TooltipStakeCollectRewards />
+              </div>
+            </span>
+            <Switch
+              checked={shouldCollectEthRewards}
+              onChange={() => setCollectEthRewards(!shouldCollectEthRewards)}
+            />
+          </>
+        )}
       </div>
     </div>
   );

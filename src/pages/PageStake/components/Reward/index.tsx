@@ -3,6 +3,7 @@ import cn from 'classnames';
 
 import { bitGearTokenIcon, ethTokenIcon, triangleArrow } from '../../../../assets/icons';
 import { Button } from '../../../../components';
+import { getDollarAmount } from '../../../../utils';
 import { TooltipCollectRewardsCompounding } from '../TooltipCollectRewardsCompounding';
 import { TooltipCollectRewardsWhatsThis } from '../TooltipCollectRewardsWhatsThis';
 
@@ -10,7 +11,8 @@ import styles from './Reward.module.scss';
 
 interface RewardProps {
   stakeAmount: string | number;
-  tokenName: string;
+  stakeToken: string;
+  earnToken: string;
   ethReward: string | number;
   lastCollectedTimestamp: string | number;
   collectedToDate: string | number;
@@ -21,7 +23,8 @@ interface RewardProps {
 
 export const Reward: React.FC<RewardProps> = ({
   stakeAmount,
-  tokenName,
+  stakeToken,
+  earnToken,
   className,
   ethReward,
   lastCollectedTimestamp,
@@ -31,12 +34,6 @@ export const Reward: React.FC<RewardProps> = ({
 }) => {
   const [isExpanded, setExpanded] = useState(false);
 
-  const getDollarAmount = (amount: string | number, token: string) => {
-    // TODO: move to utils, create logic
-    console.log(token);
-    return amount;
-  };
-
   return (
     <div
       className={cn(styles.stakeContainer, { [styles.isContainerExpanded]: isExpanded }, className)}
@@ -44,7 +41,7 @@ export const Reward: React.FC<RewardProps> = ({
       <div className={styles.titleBlock}>
         <p className={styles.text}>Rewards to collect</p>
         <div className={styles.collapseBtnContainer}>
-          <p className={styles.text}>{`${stakeAmount} ${tokenName}`}</p>
+          <p className={styles.text}>{`${stakeAmount} ${stakeToken}`}</p>
           <Button
             variant="iconButton"
             icon={triangleArrow}
@@ -78,7 +75,8 @@ export const Reward: React.FC<RewardProps> = ({
           <p className={styles.text}>
             {collectedToDate}
             <span className={cn(styles.grayText)}>
-              {`($${getDollarAmount(collectedToDate, '')})`}
+              {/* TODO: check if collecting earnToken */}
+              {`($${getDollarAmount(collectedToDate, earnToken)})`}
             </span>
           </p>
         </div>
@@ -110,7 +108,10 @@ export const Reward: React.FC<RewardProps> = ({
           <p className={cn(styles.text, styles.grayText)}>Earned to date:</p>
           <p className={styles.text}>
             {earnedToDate}
-            <span className={cn(styles.grayText)}>{`($${getDollarAmount(earnedToDate, '')})`}</span>
+            <span className={cn(styles.grayText)}>{`($${getDollarAmount(
+              earnedToDate,
+              earnToken,
+            )})`}</span>
           </p>
         </div>
       </div>

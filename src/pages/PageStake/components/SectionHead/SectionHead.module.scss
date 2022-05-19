@@ -29,6 +29,10 @@
       &>span {
         color: $color-blue;
       }
+      &>div {
+        display: inline-block;
+        padding: 0 spacing(1);
+      }
     }
 
     &Description {
