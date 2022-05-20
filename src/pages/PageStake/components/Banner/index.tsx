@@ -16,7 +16,6 @@ interface BannerProps {
 
 export const Banner: React.FC<BannerProps> = ({ apy, className }) => {
   const handleAddToken = () => {
-    if (!window.ethereum) return;
     addTokenToWallet({
       address: gearToken.address,
       symbol: gearToken.symbol,
@@ -36,9 +35,11 @@ export const Banner: React.FC<BannerProps> = ({ apy, className }) => {
           <Button variant="outlined" icon={arrowSquareOutIcon} uppercase={false}>
             Buy GEAR
           </Button>
-          <Button variant="blue" icon={plusCircleIcon} uppercase={false} onClick={handleAddToken}>
-            Add to Wallet
-          </Button>
+          {window.ethereum && (
+            <Button variant="blue" icon={plusCircleIcon} uppercase={false} onClick={handleAddToken}>
+              Add to Wallet
+            </Button>
+          )}
         </div>
       </div>
       <img className={styles.gear} src={bigGear} alt="big gear" />
