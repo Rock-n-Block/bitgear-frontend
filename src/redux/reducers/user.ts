@@ -1,4 +1,6 @@
-const initialState = {
+import { UserState } from '../../types';
+
+const initialState: UserState = {
   address: null,
   network: null,
   balance: 0,
