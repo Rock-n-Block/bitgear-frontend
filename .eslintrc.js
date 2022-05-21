@@ -73,6 +73,7 @@ module.exports = {
       },
     ],
     'sort-imports': 'off',
+    'import/no-cycle': 1,
     'import/order': 'off',
     'import/first': 'error',
     'import/newline-after-import': 'error',
