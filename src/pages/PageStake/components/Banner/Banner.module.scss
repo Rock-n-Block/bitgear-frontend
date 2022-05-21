@@ -2,6 +2,7 @@
 @import '../../../../scss/mixins';
 
 .container {
+  overflow: hidden;
   padding: 10px 10px 0;
   @include flexbox(space-between);
   border-bottom: 1px solid $color-gray;
