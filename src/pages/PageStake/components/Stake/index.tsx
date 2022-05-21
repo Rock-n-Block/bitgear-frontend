@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useMemo, useState } from 'react';
+import React, { ChangeEvent, ReactNode, useMemo, useState } from 'react';
 import cn from 'classnames';
 
 import { triangleArrow } from '../../../../assets/icons';
@@ -9,6 +9,7 @@ import { TooltipStakeCollectRewards } from '../TooltipStakeCollectRewards';
 import styles from './Stake.module.scss';
 
 interface StakeProps {
+  noDataPlaceholder?: ReactNode;
   isCompounder?: boolean;
   stakeAmount: string | number;
   tokenBalance: string | number;
@@ -21,6 +22,7 @@ interface StakeProps {
 }
 
 export const Stake: React.FC<StakeProps> = ({
+  noDataPlaceholder,
   isCompounder = false,
   stakeAmount,
   tokenBalance,
@@ -55,6 +57,7 @@ export const Stake: React.FC<StakeProps> = ({
         {
           [styles.isContainerExpanded]: isExpanded,
           [styles.stakeContainer_compounder]: isCompounder,
+          [styles.stakeContainer_noDataPlaceholder]: !!noDataPlaceholder,
         },
         className,
       )}
@@ -62,7 +65,7 @@ export const Stake: React.FC<StakeProps> = ({
       <div className={styles.titleBlock}>
         <p className={styles.text}>Your stake</p>
         <div className={styles.collapseBtnContainer}>
-          <p className={styles.text}>{`${stakeAmount} ${stakeToken}`}</p>
+          {!noDataPlaceholder && <p className={styles.text}>{`${stakeAmount} ${stakeToken}`}</p>}
           <Button
             variant="iconButton"
             icon={triangleArrow}
@@ -71,86 +74,90 @@ export const Stake: React.FC<StakeProps> = ({
           />
         </div>
       </div>
-      <div className={styles.stakeUnstakeSelectorBlock}>
-        <Button
-          classNameCustom={cn({ [styles.isSelected]: isStakeSelected })}
-          onClick={() => setStakeSelected(true)}
-          variant="text"
-        >
-          Stake
-        </Button>
-        <Button
-          classNameCustom={cn({ [styles.isSelected]: !isStakeSelected })}
-          onClick={() => setStakeSelected(false)}
-          variant="text"
-        >
-          Unstake
-        </Button>
-      </div>
-      <div className={styles.inputBlock}>
-        <Input value={inputValue} onChange={handleInputValueChange} />
-        <Button uppercase={false} variant="outlined">
-          Max
-        </Button>
-      </div>
-      <div className={styles.stakeUnstakeBlock}>
-        <div className={styles.textFlex}>
-          <p className={cn(styles.text, styles.grayText)}>{`${stakeToken} in wallet:`}</p>
-          <p className={styles.text}>{tokenBalance}</p>
-        </div>
-
-        <div className={styles.textFlex}>
-          <p className={cn(styles.text, styles.grayText)}>Your Stake (Compounding):</p>
-          <p className={styles.text}>
-            {stakeAmount}
-            <span className={cn(styles.grayText)}>{`($${stakedDollarAmount})`}</span>
-          </p>
-        </div>
-
-        {isCompounder && (
-          <div className={styles.textFlex}>
-            <p className={cn(styles.text, styles.grayText)}>Earned to date:</p>
-            <p className={styles.text}>
-              {earnedToDate}
-              <span className={cn(styles.grayText)}>{`($${getDollarAmount(
-                earnedToDate,
-                earnToken,
-              )})`}</span>
-            </p>
+      {noDataPlaceholder || (
+        <>
+          <div className={styles.stakeUnstakeSelectorBlock}>
+            <Button
+              classNameCustom={cn({ [styles.isSelected]: isStakeSelected })}
+              onClick={() => setStakeSelected(true)}
+              variant="text"
+            >
+              Stake
+            </Button>
+            <Button
+              classNameCustom={cn({ [styles.isSelected]: !isStakeSelected })}
+              onClick={() => setStakeSelected(false)}
+              variant="text"
+            >
+              Unstake
+            </Button>
           </div>
-        )}
-
-        <Button
-          onClick={isStakeSelected ? onStakeClick : onUnstakeClick}
-          classNameCustom={styles.stakeUnstakeButton}
-          variant="blue"
-        >
-          {isStakeSelected ? 'Stake' : 'Unstake'}
-        </Button>
-      </div>
-      <div className={cn(styles.collectEthRewardsBlock, styles.textFlex)}>
-        {isCompounder ? (
-          <span className={styles.compounderText}>
-            <div>
-              WETH you earn is automatically converted to BITGEAR, which is received over time.
+          <div className={styles.inputBlock}>
+            <Input value={inputValue} onChange={handleInputValueChange} />
+            <Button uppercase={false} variant="outlined">
+              Max
+            </Button>
+          </div>
+          <div className={styles.stakeUnstakeBlock}>
+            <div className={styles.textFlex}>
+              <p className={cn(styles.text, styles.grayText)}>{`${stakeToken} in wallet:`}</p>
+              <p className={styles.text}>{tokenBalance}</p>
             </div>
-            <div>BITGEAR rewards are automatically compounded - no need to collect!</div>
-          </span>
-        ) : (
-          <>
-            <span className="flexCenter">
-              <p className={cn(styles.text, styles.grayText)}>Collect 0 ETH rewards?</p>
-              <div className={styles.tooltipIcon}>
-                <TooltipStakeCollectRewards />
+
+            <div className={styles.textFlex}>
+              <p className={cn(styles.text, styles.grayText)}>Your Stake (Compounding):</p>
+              <p className={styles.text}>
+                {stakeAmount}
+                <span className={cn(styles.grayText)}>{`($${stakedDollarAmount})`}</span>
+              </p>
+            </div>
+
+            {isCompounder && (
+              <div className={styles.textFlex}>
+                <p className={cn(styles.text, styles.grayText)}>Earned to date:</p>
+                <p className={styles.text}>
+                  {earnedToDate}
+                  <span className={cn(styles.grayText)}>{`($${getDollarAmount(
+                    earnedToDate,
+                    earnToken,
+                  )})`}</span>
+                </p>
               </div>
-            </span>
-            <Switch
-              checked={shouldCollectEthRewards}
-              onChange={() => setCollectEthRewards(!shouldCollectEthRewards)}
-            />
-          </>
-        )}
-      </div>
+            )}
+
+            <Button
+              onClick={isStakeSelected ? onStakeClick : onUnstakeClick}
+              classNameCustom={styles.stakeUnstakeButton}
+              variant="blue"
+            >
+              {isStakeSelected ? 'Stake' : 'Unstake'}
+            </Button>
+          </div>
+          <div className={cn(styles.collectEthRewardsBlock, styles.textFlex)}>
+            {isCompounder ? (
+              <span className={styles.compounderText}>
+                <div>
+                  WETH you earn is automatically converted to BITGEAR, which is received over time.
+                </div>
+                <div>BITGEAR rewards are automatically compounded - no need to collect!</div>
+              </span>
+            ) : (
+              <>
+                <span className="flexCenter">
+                  <p className={cn(styles.text, styles.grayText)}>Collect 0 ETH rewards?</p>
+                  <div className={styles.tooltipIcon}>
+                    <TooltipStakeCollectRewards />
+                  </div>
+                </span>
+                <Switch
+                  checked={shouldCollectEthRewards}
+                  onChange={() => setCollectEthRewards(!shouldCollectEthRewards)}
+                />
+              </>
+            )}
+          </div>
+        </>
+      )}
     </div>
   );
 };

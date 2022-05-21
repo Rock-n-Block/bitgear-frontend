@@ -1,14 +1,25 @@
 import { FC } from 'react';
+import { useSelector } from 'react-redux';
 import { noop } from 'lodash';
 
 import ethToken from '../../data/ethToken';
 import gearToken from '../../data/gearToken';
+import { userSelectors } from '../../redux/selectors';
 
-import { Banner, Reward, SectionHead, Stake, TooltipApr, TooltipApy } from './components';
+import {
+  Banner,
+  NoConnectWalletPlaceholder,
+  Reward,
+  SectionHead,
+  Stake,
+  TooltipApr,
+  TooltipApy,
+} from './components';
 
 import styles from './PageStake.module.scss';
 
 export const PageStake: FC = () => {
+  const { address: userWalletAddress } = useSelector(userSelectors.getUser);
   return (
     <div className={styles.container}>
       <Banner apy={160.41} />
@@ -39,6 +50,7 @@ export const PageStake: FC = () => {
         />
         <div className={styles.sectionBody}>
           <Stake
+            noDataPlaceholder={!userWalletAddress ? <NoConnectWalletPlaceholder /> : null}
             onStakeClick={noop}
             onUnstakeClick={noop}
             stakeToken={gearToken.symbol}
@@ -46,6 +58,7 @@ export const PageStake: FC = () => {
             tokenBalance={25}
           />
           <Reward
+            noDataPlaceholder={!userWalletAddress ? <NoConnectWalletPlaceholder /> : null}
             stakeToken={gearToken.symbol}
             earnToken={gearToken.symbol}
             stakeAmount={0}
@@ -85,6 +98,7 @@ export const PageStake: FC = () => {
         />
         <div className={styles.sectionBody}>
           <Stake
+            noDataPlaceholder={!userWalletAddress ? <NoConnectWalletPlaceholder /> : null}
             onStakeClick={noop}
             onUnstakeClick={noop}
             stakeToken={gearToken.symbol}
@@ -92,6 +106,7 @@ export const PageStake: FC = () => {
             tokenBalance={25}
           />
           <Reward
+            noDataPlaceholder={!userWalletAddress ? <NoConnectWalletPlaceholder /> : null}
             stakeToken={gearToken.symbol}
             earnToken={gearToken.symbol}
             stakeAmount={0}
@@ -138,6 +153,7 @@ export const PageStake: FC = () => {
         />
         <div className={styles.sectionBody}>
           <Stake
+            noDataPlaceholder={!userWalletAddress ? <NoConnectWalletPlaceholder /> : null}
             isCompounder
             onStakeClick={noop}
             onUnstakeClick={noop}
