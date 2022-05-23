@@ -109,4 +109,7 @@ export default {
       allowanceTargetLimit: '0xdef1c0ded9bec7f1a1670819833240f027b25eff',
     },
   },
+  staking: {
+    regularPid: 0, // CoinStaking contract === Pancake's Master contract
+  },
 };

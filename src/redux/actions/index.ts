@@ -5,3 +5,4 @@ export { default as modalActions } from './modal';
 export { default as statusActions } from './status';
 export { default as tableActions } from './table';
 export { default as uiActions } from './ui';
+export { default as stakingActions } from './staking';

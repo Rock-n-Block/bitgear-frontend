@@ -2,6 +2,7 @@ import { combineReducers } from 'redux';
 
 import zx from './0x';
 import modal from './modal';
+import staking from './staking';
 import status from './status';
 import table from './table';
 import ui from './ui';
@@ -16,4 +17,5 @@ export default combineReducers({
   status,
   table,
   ui,
+  staking,
 });

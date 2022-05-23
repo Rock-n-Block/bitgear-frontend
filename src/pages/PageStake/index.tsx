@@ -4,6 +4,7 @@ import { noop } from 'lodash';
 
 import ethToken from '../../data/ethToken';
 import gearToken from '../../data/gearToken';
+import { usePollRegular } from '../../hooks';
 import { userSelectors } from '../../redux/selectors';
 
 import {
@@ -20,6 +21,9 @@ import styles from './PageStake.module.scss';
 
 export const PageStake: FC = () => {
   const { address: userWalletAddress } = useSelector(userSelectors.getUser);
+
+  usePollRegular();
+
   return (
     <div className={styles.container}>
       <Banner apy={160.41} />
