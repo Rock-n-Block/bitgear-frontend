@@ -4,6 +4,7 @@ import zx from './0x';
 import modal from './modal';
 import status from './status';
 import table from './table';
+import ui from './ui';
 import user from './user';
 import wallet from './wallet';
 
@@ -14,4 +15,5 @@ export default combineReducers({
   modal,
   status,
   table,
+  ui,
 });
