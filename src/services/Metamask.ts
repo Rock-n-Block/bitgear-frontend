@@ -29,7 +29,7 @@ export default class MetamaskService {
   public addresses: any;
 
   constructor() {
-    this.provider = (window as any).ethereum;
+    this.provider = window.ethereum;
     this.web3Provider = new Web3(this.provider);
     this.addresses = config.addresses;
     // this.allowanceTarget = this.addresses[config.netType].allowanceTarget;

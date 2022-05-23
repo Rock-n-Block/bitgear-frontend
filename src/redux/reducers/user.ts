@@ -1,8 +1,8 @@
-import { UserState } from '../../types';
+import { Chains, UserState } from '../../types';
 
 const initialState: UserState = {
   address: null,
-  network: null,
+  network: Chains.eth,
   balance: 0,
   balances: {},
   allowances: {},

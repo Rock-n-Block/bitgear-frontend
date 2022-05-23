@@ -1,3 +1,5 @@
+import { Chains } from '../walletConnect';
+
 /**
  * @example {
  *   [spenderAddress]: '100000000000',
@@ -16,7 +18,7 @@ type MapTokenAddressToMapSpenderAddressToAllowance = Record<string, MapSpenderAd
 
 export type UserState = {
   address?: string | null;
-  network: null; // literally isn't used, don't know why this is added to 'wallet/chainId'
+  network: Chains;
   balance: number;
   /**
    * map address to tokenBalance value
