@@ -5,6 +5,7 @@ const initialState: UserState = {
   network: null,
   balance: 0,
   balances: {},
+  allowances: {},
 };
 
 export default (state = initialState, params: any) => {
