@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js/bignumber';
 import cn from 'classnames';
 
 import { triangleArrow } from '../../../../assets/icons';
-import { Button, Input, Switch } from '../../../../components';
+import { Button, Input, SkeletonLoader, Switch } from '../../../../components';
 import useDebounce from '../../../../hooks/useDebounce';
 import { RequestStatus } from '../../../../types';
 import { getDollarAmount, serialize, validateOnlyNumbers } from '../../../../utils';
@@ -30,6 +30,7 @@ interface StakeProps {
   onStakeClick: (value: string) => void;
   onUnstakeClick: (value: string) => void;
   onMaxClick: () => string | void;
+  isUserDataLoading: boolean;
   className?: number;
 }
 
@@ -46,6 +47,7 @@ export const Stake: React.FC<StakeProps> = ({
   onStakeClick,
   onUnstakeClick,
   onMaxClick,
+  isUserDataLoading,
   className,
 }) => {
   const [isExpanded, setExpanded] = useState(false);
@@ -129,7 +131,13 @@ export const Stake: React.FC<StakeProps> = ({
       <div className={styles.titleBlock}>
         <p className={styles.text}>Your stake</p>
         <div className={styles.collapseBtnContainer}>
-          {!noDataPlaceholder && <p className={styles.text}>{`${stakeAmount} ${stakeToken}`}</p>}
+          {(() => {
+            if (isUserDataLoading)
+              return <SkeletonLoader width="120px" height="30px" borderRadius="4px" />;
+            if (!noDataPlaceholder)
+              return <p className={styles.text}>{`${stakeAmount} ${stakeToken}`}</p>;
+            return null;
+          })()}
           <Button
             variant="iconButton"
             icon={triangleArrow}
@@ -165,18 +173,26 @@ export const Stake: React.FC<StakeProps> = ({
           <div className={styles.stakeUnstakeBlock}>
             <div className={styles.textFlex}>
               <p className={cn(styles.text, styles.grayText)}>{`${stakeToken} in wallet:`}</p>
-              <p className={styles.text}>{tokenBalance}</p>
+              {isUserDataLoading ? (
+                <SkeletonLoader width="100px" height="30px" borderRadius="4px" />
+              ) : (
+                <p className={styles.text}>{tokenBalance}</p>
+              )}
             </div>
 
             <div className={styles.textFlex}>
               <p className={cn(styles.text, styles.grayText)}>Your Stake (Compounding):</p>
-              <p className={styles.text}>
-                {stakeAmount}
-                <span className={cn(styles.grayText)}>{`($${getDollarAmount(
-                  stakeAmount,
-                  stakeToken,
-                )})`}</span>
-              </p>
+              {isUserDataLoading ? (
+                <SkeletonLoader width="150px" height="30px" borderRadius="4px" />
+              ) : (
+                <p className={styles.text}>
+                  {stakeAmount}
+                  <span className={cn(styles.grayText)}>{`($${getDollarAmount(
+                    stakeAmount,
+                    stakeToken,
+                  )})`}</span>
+                </p>
+              )}
             </div>
 
             {isCompounder && (

@@ -1,7 +1,10 @@
+import gearToken from '../../../../data/gearToken';
+import { Web3Provider } from '../../../../types';
 import { stakingActions } from '../../../actions';
 import * as apiActions from '../../../actions/ui';
 import { stakingActionTypes } from '../../../actionTypes';
 import store from '../../../store';
+import { fetchBalance } from '../../erc20/balanceOf';
 
 const fetchPublicData = async ({
   type = stakingActionTypes.SET_REGULAR_PUBLIC_DATA,
@@ -17,13 +20,19 @@ const fetchPublicData = async ({
   }
 };
 
-const fetchUserData = async ({
-  type = stakingActionTypes.SET_REGULAR_USER_DATA,
-  payload,
-}: Partial<ReturnType<typeof stakingActions.setRegularUserData>>): Promise<void> => {
+type FetchUserData = Web3Provider & {
+  userWalletAddress: string;
+};
+
+const fetchUserData = async ({ provider, userWalletAddress }: FetchUserData): Promise<void> => {
+  const type = stakingActionTypes.SET_REGULAR_USER_DATA;
   try {
     store.dispatch(apiActions.request(type));
-    console.log('Test', payload);
+
+    await Promise.all([
+      fetchBalance({ provider, ownerAddress: userWalletAddress, tokenAddress: gearToken.address }),
+    ]);
+
     store.dispatch(apiActions.success(type));
   } catch (err) {
     console.log('Redux/Staking/Regular', err);

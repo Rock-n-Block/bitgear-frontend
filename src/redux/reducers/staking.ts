@@ -48,6 +48,24 @@ export default (state = initialState, params: any): StakingState => {
       };
     }
 
+    case stakingActionTypes.SET_BALANCES: {
+      // lower case all of the addresses
+      const newBalances = Object.entries(params.payload as StakingState['balances']).reduce(
+        (acc, [address, value]) => {
+          acc[address.toLowerCase()] = value;
+          return acc;
+        },
+        {} as StakingState['balances'],
+      );
+      return {
+        ...state,
+        balances: {
+          ...state.balances,
+          ...newBalances,
+        },
+      };
+    }
+
     default:
       return state;
   }

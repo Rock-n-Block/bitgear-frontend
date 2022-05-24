@@ -1,3 +1,4 @@
+import { StakingState } from '../../types';
 import { stakingActionTypes } from '../actionTypes';
 
 type SetRegularPublicDataPayload = {};
@@ -12,6 +13,11 @@ export default {
   }),
   setRegularUserData: (payload: SetRegularUserDataPayload) => ({
     type: stakingActionTypes.SET_REGULAR_USER_DATA,
+    payload,
+  }),
+
+  setBalance: (payload: StakingState['balances']) => ({
+    type: stakingActionTypes.SET_BALANCES,
     payload,
   }),
 };

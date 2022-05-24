@@ -6,6 +6,7 @@ import ethToken from '../../data/ethToken';
 import gearToken from '../../data/gearToken';
 import { usePollRegular, useStakingRegular } from '../../hooks';
 import { userSelectors } from '../../redux/selectors';
+import { RequestStatus } from '../../types';
 
 import {
   Banner,
@@ -112,6 +113,7 @@ export const PageStake: FC = () => {
             stakeTokenAllowance={stakingRegular.stakeTokenAllowance}
             stakeAmount={0}
             tokenBalance={stakingRegular.userData.balance}
+            isUserDataLoading={stakingRegular.userData.fetchStatus === RequestStatus.REQUEST}
           />
           <Reward
             noDataPlaceholder={!userWalletAddress ? <NoConnectWalletPlaceholder /> : null}

@@ -12,5 +12,5 @@ export type StakingState = {
     public: {}; // publicData
     user: {}; // userData
   };
-  balances: {};
+  balances: Record<string, string>;
 };
