@@ -46,6 +46,7 @@ const Button: React.FC<TypeButtonProps> = ({
         { [s.uppercase]: uppercase },
         classNameDisabled,
       )}
+      disabled={disabled}
     >
       {children}
       {icon && <img className={icon && variant !== 'iconButton' ? s.icon : ''} src={icon} alt="" />}
