@@ -111,7 +111,7 @@ export const PageStake: FC = () => {
             stakeToken={gearToken.symbol}
             maxDecimals={gearToken.decimals}
             stakeTokenAllowance={stakingRegular.stakeTokenAllowance}
-            stakeAmount={0}
+            stakeAmount={stakingRegular.userData.stakeAmount}
             tokenBalance={stakingRegular.userData.balance}
             isUserDataLoading={stakingRegular.userData.fetchStatus === RequestStatus.REQUEST}
           />

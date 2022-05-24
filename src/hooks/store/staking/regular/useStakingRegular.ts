@@ -1,9 +1,9 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 
 import gearToken from '../../../../data/gearToken';
 import { stakingActionTypes } from '../../../../redux/actionTypes';
 import { stakingSelectors, uiSelectors, userSelectors } from '../../../../redux/selectors';
-import { ContractsNames } from '../../../../types';
+import { ContractsNames, RequestStatus } from '../../../../types';
 import { contractsHelper, deserialize, serialize } from '../../../../utils';
 import { useShallowSelector } from '../../../useShallowSelector';
 import { useAllowance, useApprove } from '../../erc20';
@@ -41,15 +41,23 @@ export const useStakingRegular = () => {
   const stakeTokenUserBalance = useShallowSelector(
     stakingSelectors.selectBalance(STAKE_TOKEN.address),
   );
+  // TODO: take stakeAmount from store/stakingSelectors/regular
+  const stakeAmount = '5000000000000000000';
 
   const fetchUserDataRequestStatus = useShallowSelector(
     uiSelectors.getProp(stakingActionTypes.SET_REGULAR_USER_DATA),
   );
 
+  useEffect(() => {
+    if (approveStatus !== RequestStatus.SUCCESS) return;
+    handleCheckAllowance();
+  }, [approveStatus, handleCheckAllowance]);
+
   const userData = useMemo(
     () => ({
-      balance: deserialize(stakeTokenUserBalance, STAKE_TOKEN.decimals),
       fetchStatus: fetchUserDataRequestStatus,
+      balance: deserialize(stakeTokenUserBalance, STAKE_TOKEN.decimals),
+      stakeAmount: deserialize(stakeAmount, STAKE_TOKEN.decimals),
     }),
     [fetchUserDataRequestStatus, stakeTokenUserBalance],
   );

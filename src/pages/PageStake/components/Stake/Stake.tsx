@@ -109,12 +109,14 @@ export const Stake: React.FC<StakeProps> = ({
   const isDisabledSubmitButton = useMemo(() => {
     if (isLoadingSubmitButton) return true;
 
-    const hasInputValue = +inputValue > 0;
-    if (!isEnoughAllowance) return false;
+    if (!isStakeSelected && new BigNumber(inputValue).gt(stakeAmount)) return true;
+    if (isStakeSelected && !isEnoughAllowance) return false;
 
+    const hasInputValue = +inputValue > 0;
     if (!hasInputValue) return true;
+
     return false;
-  }, [inputValue, isEnoughAllowance, isLoadingSubmitButton]);
+  }, [inputValue, isEnoughAllowance, isLoadingSubmitButton, isStakeSelected, stakeAmount]);
 
   return (
     <div
