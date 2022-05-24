@@ -14,6 +14,7 @@ interface StakeProps {
   stakeAmount: string | number;
   tokenBalance: string | number;
   stakeToken: string;
+  maxDecimals: number;
   earnToken?: string;
   earnedToDate?: string | number;
   onStakeClick: () => void;
@@ -27,6 +28,7 @@ export const Stake: React.FC<StakeProps> = ({
   stakeAmount,
   tokenBalance,
   stakeToken,
+  maxDecimals,
   earnToken = '',
   earnedToDate = '',
   onStakeClick,
@@ -41,7 +43,7 @@ export const Stake: React.FC<StakeProps> = ({
   const handleInputValueChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
 
-    if (validateOnlyNumbers(value)) {
+    if (validateOnlyNumbers(value, maxDecimals)) {
       setInputValue(value);
     }
   };
