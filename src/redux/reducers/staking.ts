@@ -20,7 +20,7 @@ const initialState: StakingState = {
   balances: {},
 };
 
-export default (state = initialState, params: any) => {
+export default (state = initialState, params: any): StakingState => {
   switch (params.type) {
     case stakingActionTypes.SET_REGULAR_PUBLIC_DATA: {
       return {

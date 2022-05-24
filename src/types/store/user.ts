@@ -5,7 +5,7 @@ import { Chains } from '../walletConnect';
  *   [spenderAddress]: '100000000000',
  * }
  */
-type MapSpenderAddressToAllowance = Record<string, string>;
+export type MapSpenderAddressToAllowance = Record<string, string>;
 
 /**
  * @example {
@@ -14,7 +14,10 @@ type MapSpenderAddressToAllowance = Record<string, string>;
  *    }
  * }
  */
-type MapTokenAddressToMapSpenderAddressToAllowance = Record<string, MapSpenderAddressToAllowance>;
+export type MapTokenAddressToMapSpenderAddressToAllowance = Record<
+  string,
+  MapSpenderAddressToAllowance
+>;
 
 export type UserState = {
   address?: string | null;
