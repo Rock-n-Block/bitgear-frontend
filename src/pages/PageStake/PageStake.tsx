@@ -1,13 +1,11 @@
-import { FC, useEffect } from 'react';
+import { FC } from 'react';
 import { useSelector } from 'react-redux';
 import { noop } from 'lodash';
 
 import ethToken from '../../data/ethToken';
 import gearToken from '../../data/gearToken';
-import { usePollRegular, useWeb3Provider } from '../../hooks';
+import { usePollRegular, useStakingRegular } from '../../hooks';
 import { userSelectors } from '../../redux/selectors';
-import { ContractsNames } from '../../types';
-import { contractsHelper } from '../../utils';
 
 import {
   Banner,
@@ -22,22 +20,15 @@ import {
 import styles from './PageStake.module.scss';
 
 export const PageStake: FC = () => {
-  const { address: userWalletAddress, network } = useSelector(userSelectors.getUser);
-  const { web3Provider } = useWeb3Provider();
+  const { address: userWalletAddress } = useSelector(userSelectors.getUser);
 
   usePollRegular();
-
-  // TODO: remove due to test
-  useEffect(() => {
-    const { address } = contractsHelper.getContractData(ContractsNames.coinStaking, network);
-    const contract = contractsHelper.getCoinStakingContract(web3Provider, address);
-    contract.methods.deposit(1, 1).send({ from: '0x945318935109de2c621C31900Cc22751492f327d' });
-  }, [network, web3Provider]);
+  const stakingRegular = useStakingRegular();
 
   return (
     <div className={styles.container}>
       <Banner apy={160.41} />
-      <div className={styles.section}>
+      {/* <div className={styles.section}>
         <SectionHead
           title="LP Token Staking"
           stakeToken={gearToken.symbol}
@@ -83,7 +74,7 @@ export const PageStake: FC = () => {
             onCollectRewardClick={noop}
           />
         </div>
-      </div>
+      </div> */}
 
       <div className={styles.section}>
         <SectionHead
@@ -113,11 +104,14 @@ export const PageStake: FC = () => {
         <div className={styles.sectionBody}>
           <Stake
             noDataPlaceholder={!userWalletAddress ? <NoConnectWalletPlaceholder /> : null}
-            onStakeClick={noop}
+            onStakeClick={stakingRegular.handleStake}
             onUnstakeClick={noop}
+            onMaxClick={() => stakingRegular.userData.balance}
             stakeToken={gearToken.symbol}
+            maxDecimals={gearToken.decimals}
+            stakeTokenAllowance={stakingRegular.stakeTokenAllowance}
             stakeAmount={0}
-            tokenBalance={25}
+            tokenBalance={stakingRegular.userData.balance}
           />
           <Reward
             noDataPlaceholder={!userWalletAddress ? <NoConnectWalletPlaceholder /> : null}
@@ -165,7 +159,7 @@ export const PageStake: FC = () => {
             // eslint-disable-next-line prettier/prettier
           )}
         />
-        <div className={styles.sectionBody}>
+        {/* <div className={styles.sectionBody}>
           <Stake
             noDataPlaceholder={!userWalletAddress ? <NoConnectWalletPlaceholder /> : null}
             isCompounder
@@ -177,7 +171,7 @@ export const PageStake: FC = () => {
             stakeAmount={0}
             tokenBalance={25}
           />
-        </div>
+        </div> */}
       </div>
     </div>
   );

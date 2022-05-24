@@ -1,9 +1,12 @@
-import React, { ChangeEvent, ReactNode, useCallback, useState } from 'react';
+import React, { ChangeEvent, ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
+import BigNumber from 'bignumber.js/bignumber';
 import cn from 'classnames';
 
 import { triangleArrow } from '../../../../assets/icons';
 import { Button, Input, Switch } from '../../../../components';
-import { getDollarAmount, validateOnlyNumbers } from '../../../../utils';
+import useDebounce from '../../../../hooks/useDebounce';
+import { RequestStatus } from '../../../../types';
+import { getDollarAmount, serialize, validateOnlyNumbers } from '../../../../utils';
 import { TooltipStakeCollectRewards } from '../TooltipStakeCollectRewards';
 
 import styles from './Stake.module.scss';
@@ -15,8 +18,17 @@ interface StakeProps {
   tokenBalance: string | number;
   stakeToken: string;
   maxDecimals: number;
+  stakeTokenAllowance: {
+    isAllowanceLoading: boolean;
+    allowance: string;
+    handleCheckAllowance: () => void;
+    handleApprove: (amount: string) => void;
+    approveStatus: RequestStatus;
+  };
   earnToken?: string;
   earnedToDate?: string | number;
+  onStakeClick: (value: string) => void;
+  onUnstakeClick: (value: string) => void;
   onMaxClick: () => string | void;
   className?: number;
 }
@@ -28,6 +40,7 @@ export const Stake: React.FC<StakeProps> = ({
   tokenBalance,
   stakeToken,
   maxDecimals,
+  stakeTokenAllowance,
   earnToken = '',
   earnedToDate = '',
   onStakeClick,
@@ -53,6 +66,14 @@ export const Stake: React.FC<StakeProps> = ({
     validateAndChangeInputValue(value);
   };
 
+  const handleStake = useCallback(() => {
+    onStakeClick(inputValue);
+  }, [inputValue, onStakeClick]);
+
+  const handleUnstake = useCallback(() => {
+    onUnstakeClick(inputValue);
+  }, [inputValue, onUnstakeClick]);
+
   const handleMax = useCallback(async () => {
     let maxValue: string | void;
     if (isStakeSelected) {
@@ -65,6 +86,34 @@ export const Stake: React.FC<StakeProps> = ({
       validateAndChangeInputValue(maxValue);
     }
   }, [isStakeSelected, onMaxClick, stakeAmount, validateAndChangeInputValue]);
+  const handleApprove = useCallback(() => {
+    stakeTokenAllowance.handleApprove(inputValue || '0');
+  }, [inputValue, stakeTokenAllowance]);
+
+  const debouncedCheckAllowance = useDebounce(inputValue, 1000);
+  useEffect(() => {
+    stakeTokenAllowance.handleCheckAllowance();
+    // disable-reason: prevent re-rendering due to this effect should run only if inputValue is changed
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debouncedCheckAllowance]);
+  const isEnoughAllowance = new BigNumber(stakeTokenAllowance.allowance).isGreaterThanOrEqualTo(
+    serialize(inputValue || '0', maxDecimals),
+  );
+  const isLoadingSubmitButton = useMemo(() => {
+    if (stakeTokenAllowance.isAllowanceLoading) return true;
+    if (stakeTokenAllowance.approveStatus === RequestStatus.REQUEST) return true;
+    return false;
+  }, [stakeTokenAllowance.approveStatus, stakeTokenAllowance.isAllowanceLoading]);
+  const isDisabledSubmitButton = useMemo(() => {
+    if (isLoadingSubmitButton) return true;
+
+    const hasInputValue = +inputValue > 0;
+    if (!isEnoughAllowance) return false;
+
+    if (!hasInputValue) return true;
+    return false;
+  }, [inputValue, isEnoughAllowance, isLoadingSubmitButton]);
+
   return (
     <div
       className={cn(
@@ -123,7 +172,10 @@ export const Stake: React.FC<StakeProps> = ({
               <p className={cn(styles.text, styles.grayText)}>Your Stake (Compounding):</p>
               <p className={styles.text}>
                 {stakeAmount}
-                <span className={cn(styles.grayText)}>{`($${stakedDollarAmount})`}</span>
+                <span className={cn(styles.grayText)}>{`($${getDollarAmount(
+                  stakeAmount,
+                  stakeToken,
+                )})`}</span>
               </p>
             </div>
 
@@ -140,13 +192,41 @@ export const Stake: React.FC<StakeProps> = ({
               </div>
             )}
 
-            <Button
-              onClick={isStakeSelected ? onStakeClick : onUnstakeClick}
-              classNameCustom={styles.stakeUnstakeButton}
-              variant="blue"
-            >
-              {isStakeSelected ? 'Stake' : 'Unstake'}
-            </Button>
+            {(() => {
+              if (isLoadingSubmitButton)
+                return (
+                  <Button
+                    classNameCustom={styles.stakeUnstakeButton}
+                    variant="blue"
+                    disabled={isDisabledSubmitButton}
+                  >
+                    Loading...
+                  </Button>
+                );
+
+              if (isEnoughAllowance || !isStakeSelected) {
+                return (
+                  <Button
+                    onClick={isStakeSelected ? handleStake : handleUnstake}
+                    classNameCustom={styles.stakeUnstakeButton}
+                    variant="blue"
+                    disabled={isDisabledSubmitButton}
+                  >
+                    {isStakeSelected ? 'Stake' : 'Unstake'}
+                  </Button>
+                );
+              }
+              return (
+                <Button
+                  onClick={handleApprove}
+                  classNameCustom={styles.stakeUnstakeButton}
+                  variant="blue"
+                  disabled={isDisabledSubmitButton}
+                >
+                  Approve
+                </Button>
+              );
+            })()}
           </div>
           <div className={cn(styles.collectEthRewardsBlock, styles.textFlex)}>
             {isCompounder ? (
