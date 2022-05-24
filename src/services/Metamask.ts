@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js/bignumber';
 import Web3 from 'web3';
 
 import config from '../config';
-import customSwapAbi from '../data/customSwapAbi.json';
+import { customSwapAbi } from '../config/abi';
 
 type TypeAllowance = {
   userAddress: string;

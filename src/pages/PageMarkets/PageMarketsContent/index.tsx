@@ -30,8 +30,8 @@ import {
 import Button from '../../../components/Button';
 import ModalContentQuotes from '../../../components/ModalContentQuotes';
 import config from '../../../config';
+import { erc20Abi } from '../../../config/abi';
 import { useWalletConnectorContext } from '../../../contexts/WalletConnect';
-import erc20Abi from '../../../data/erc20Abi.json';
 import useDebounce from '../../../hooks/useDebounce';
 import { useUserTier } from '../../../hooks/useUserTier';
 import { modalActions, statusActions, walletActions } from '../../../redux/actions';
