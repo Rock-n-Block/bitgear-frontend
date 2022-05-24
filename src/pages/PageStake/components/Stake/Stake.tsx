@@ -1,4 +1,4 @@
-import React, { ChangeEvent, ReactNode, useMemo, useState } from 'react';
+import React, { ChangeEvent, ReactNode, useCallback, useState } from 'react';
 import cn from 'classnames';
 
 import { triangleArrow } from '../../../../assets/icons';
@@ -17,8 +17,7 @@ interface StakeProps {
   maxDecimals: number;
   earnToken?: string;
   earnedToDate?: string | number;
-  onStakeClick: () => void;
-  onUnstakeClick: () => void;
+  onMaxClick: () => string | void;
   className?: number;
 }
 
@@ -33,6 +32,7 @@ export const Stake: React.FC<StakeProps> = ({
   earnedToDate = '',
   onStakeClick,
   onUnstakeClick,
+  onMaxClick,
   className,
 }) => {
   const [isExpanded, setExpanded] = useState(false);
@@ -40,18 +40,31 @@ export const Stake: React.FC<StakeProps> = ({
   const [inputValue, setInputValue] = useState('');
   const [shouldCollectEthRewards, setCollectEthRewards] = useState(false);
 
+  const validateAndChangeInputValue = useCallback(
+    (value: string) => {
+      if (validateOnlyNumbers(value, maxDecimals)) {
+        setInputValue(value);
+      }
+    },
+    [maxDecimals],
+  );
   const handleInputValueChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
-
-    if (validateOnlyNumbers(value, maxDecimals)) {
-      setInputValue(value);
-    }
+    validateAndChangeInputValue(value);
   };
 
-  const stakedDollarAmount = useMemo(() => {
-    // TODO: do some logic;
-    return stakeAmount;
-  }, [stakeAmount]);
+  const handleMax = useCallback(async () => {
+    let maxValue: string | void;
+    if (isStakeSelected) {
+      maxValue = await onMaxClick();
+    } else {
+      maxValue = String(stakeAmount);
+    }
+
+    if (maxValue !== undefined) {
+      validateAndChangeInputValue(maxValue);
+    }
+  }, [isStakeSelected, onMaxClick, stakeAmount, validateAndChangeInputValue]);
   return (
     <div
       className={cn(
@@ -96,7 +109,7 @@ export const Stake: React.FC<StakeProps> = ({
           </div>
           <div className={styles.inputBlock}>
             <Input value={inputValue} onChange={handleInputValueChange} />
-            <Button uppercase={false} variant="outlined">
+            <Button uppercase={false} variant="outlined" onClick={handleMax}>
               Max
             </Button>
           </div>
