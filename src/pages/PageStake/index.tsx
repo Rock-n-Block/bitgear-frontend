@@ -1,11 +1,13 @@
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { noop } from 'lodash';
 
 import ethToken from '../../data/ethToken';
 import gearToken from '../../data/gearToken';
-import { usePollRegular } from '../../hooks';
+import { usePollRegular, useWeb3Provider } from '../../hooks';
 import { userSelectors } from '../../redux/selectors';
+import { ContractsNames } from '../../types';
+import { contractsHelper } from '../../utils';
 
 import {
   Banner,
@@ -20,9 +22,17 @@ import {
 import styles from './PageStake.module.scss';
 
 export const PageStake: FC = () => {
-  const { address: userWalletAddress } = useSelector(userSelectors.getUser);
+  const { address: userWalletAddress, network } = useSelector(userSelectors.getUser);
+  const { web3Provider } = useWeb3Provider();
 
   usePollRegular();
+
+  // TODO: remove due to test
+  useEffect(() => {
+    const { address } = contractsHelper.getContractData(ContractsNames.coinStaking, network);
+    const contract = contractsHelper.getCoinStakingContract(web3Provider, address);
+    contract.methods.deposit(1, 1).send({ from: '0x945318935109de2c621C31900Cc22751492f327d' });
+  }, [network, web3Provider]);
 
   return (
     <div className={styles.container}>

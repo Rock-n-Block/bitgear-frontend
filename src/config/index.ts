@@ -1,23 +1,8 @@
-import { Chains } from '../types';
+import { Chains, SupportedTestnets, TChainIds } from '../types';
 
 const IS_PRODUCTION = false;
-const TESTING_NET = 'rinkeby' as 'rinkeby' | 'ropsten' | 'kovan';
+const TESTING_NET = 'rinkeby' as SupportedTestnets;
 const SHOW_CONSOLE_LOGS = true;
-
-type TChainIds = {
-  mainnet: {
-    [key in Chains]: {
-      name: string;
-      id: (number | string)[];
-    };
-  };
-  testnet: {
-    [key in Chains]: {
-      name: string;
-      id: (number | string)[];
-    };
-  };
-};
 
 const keys = {
   infura: '1964ef9a752c4405b7631cb49ab373fa', // ok
@@ -163,3 +148,5 @@ export const mapChainIdToRpc: Record<number, string> = {
   97: 'https://data-seed-prebsc-1-s1.binance.org:8545/',
   // TODO: fill another chain ids
 };
+
+export * from './contracts';

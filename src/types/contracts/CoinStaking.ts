@@ -8,7 +8,6 @@ import type { EventLog } from "web3-core";
 import type { EventEmitter } from "events";
 import type {
   Callback,
-  PayableTransactionObject,
   NonPayableTransactionObject,
   BlockType,
   ContractEventLog,

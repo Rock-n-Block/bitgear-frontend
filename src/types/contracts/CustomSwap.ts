@@ -11,7 +11,6 @@ import type {
   PayableTransactionObject,
   NonPayableTransactionObject,
   BlockType,
-  ContractEventLog,
   BaseContract,
 } from "./types";
 
