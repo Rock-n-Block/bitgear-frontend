@@ -1,9 +1,12 @@
 import gearToken from '../../../../data/gearToken';
-import { Web3Provider } from '../../../../types';
+import { ContractsNames, Web3Provider } from '../../../../types';
+import { contractsHelper } from '../../../../utils';
 import { stakingActions } from '../../../actions';
 import * as apiActions from '../../../actions/ui';
 import { stakingActionTypes } from '../../../actionTypes';
+import { userSelectors } from '../../../selectors';
 import store from '../../../store';
+import { fetchAllowance } from '../../erc20';
 import { fetchBalance } from '../../erc20/balanceOf';
 
 const fetchPublicData = async ({
@@ -29,8 +32,21 @@ const fetchUserData = async ({ provider, userWalletAddress }: FetchUserData): Pr
   try {
     store.dispatch(apiActions.request(type));
 
+    const state = store.getState();
+    const { network } = userSelectors.getUser(state);
+    const { address: spenderAddress } = contractsHelper.getContractData(
+      ContractsNames.coinStaking,
+      network,
+    );
+
     await Promise.all([
       fetchBalance({ provider, ownerAddress: userWalletAddress, tokenAddress: gearToken.address }),
+      fetchAllowance({
+        provider,
+        ownerAddress: userWalletAddress,
+        tokenAddress: gearToken.address,
+        spenderAddress,
+      }),
     ]);
 
     store.dispatch(apiActions.success(type));
