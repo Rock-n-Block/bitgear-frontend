@@ -1,6 +1,5 @@
 import { FC } from 'react';
 import { useSelector } from 'react-redux';
-import { noop } from 'lodash';
 
 import ethToken from '../../data/ethToken';
 import gearToken from '../../data/gearToken';
@@ -128,7 +127,8 @@ export const PageStake: FC = () => {
             lastCollectedTimestamp={1652703791}
             collectedToDate={40}
             earnedToDate={30}
-            onCollectRewardClick={noop}
+            onCollectRewardClick={stakingRegular.handleCollectReward}
+            isPendingTx={stakingRegular.collectRewardRequestStatus === RequestStatus.REQUEST}
           />
         </div>
       </div>

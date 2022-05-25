@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from 'react';
+import React, { ReactNode, useMemo, useState } from 'react';
 import cn from 'classnames';
 
 import { bitGearTokenIcon, ethTokenIcon, triangleArrow } from '../../../../assets/icons';
@@ -19,6 +19,7 @@ interface RewardProps {
   collectedToDate: string | number;
   earnedToDate: string | number;
   onCollectRewardClick: () => void;
+  isPendingTx: boolean;
   className?: string;
 }
 
@@ -33,8 +34,14 @@ export const Reward: React.FC<RewardProps> = ({
   collectedToDate,
   onCollectRewardClick,
   earnedToDate,
+  isPendingTx,
 }) => {
   const [isExpanded, setExpanded] = useState(false);
+
+  const isDisabledSubmitButton = useMemo(() => {
+    if (isPendingTx) return true;
+    return false;
+  }, [isPendingTx]);
 
   return (
     <div
@@ -91,13 +98,24 @@ export const Reward: React.FC<RewardProps> = ({
                 </span>
               </p>
             </div>
-            <Button
-              onClick={onCollectRewardClick}
-              classNameCustom={styles.stakeUnstakeButton}
-              variant="blue"
-            >
-              Collect
-            </Button>
+            {isPendingTx ? (
+              <Button
+                classNameCustom={styles.stakeUnstakeButton}
+                variant="blue"
+                disabled={isDisabledSubmitButton}
+              >
+                Loading...
+              </Button>
+            ) : (
+              <Button
+                onClick={onCollectRewardClick}
+                classNameCustom={styles.stakeUnstakeButton}
+                variant="blue"
+                disabled={isDisabledSubmitButton}
+              >
+                Collect
+              </Button>
+            )}
           </div>
           <div className={cn(styles.compoundGearBlock)}>
             <p className={cn(styles.text, styles.grayText, styles.smallText)}>

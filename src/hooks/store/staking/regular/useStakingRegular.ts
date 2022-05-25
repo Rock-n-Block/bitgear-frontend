@@ -57,6 +57,12 @@ export const useStakingRegular = () => {
     },
     [userWalletAddress, web3Provider],
   );
+  const handleCollectReward = useCallback(() => {
+    regularStaking.collectReward({
+      provider: web3Provider,
+      userWalletAddress: userWalletAddress || '',
+    });
+  }, [userWalletAddress, web3Provider]);
 
   const stakeTokenUserBalance = useShallowSelector(
     stakingSelectors.selectBalance(STAKE_TOKEN.address),
@@ -72,6 +78,9 @@ export const useStakingRegular = () => {
   );
   const unstakeRequestStatus = useShallowSelector(
     uiSelectors.getProp(stakingActionTypes.REGULAR_UNSTAKE),
+  );
+  const collectRewardRequestStatus = useShallowSelector(
+    uiSelectors.getProp(stakingActionTypes.REGULAR_COLLECT_REWARD),
   );
 
   useEffect(() => {
@@ -96,6 +105,10 @@ export const useStakingRegular = () => {
     if (unstakeRequestStatus !== RequestStatus.SUCCESS) return;
     refetchData();
   }, [refetchData, unstakeRequestStatus]);
+  useEffect(() => {
+    if (collectRewardRequestStatus !== RequestStatus.SUCCESS) return;
+    refetchData();
+  }, [refetchData, collectRewardRequestStatus]);
 
   const userData = useMemo(
     () => ({
@@ -109,6 +122,7 @@ export const useStakingRegular = () => {
   const ret = {
     handleStake,
     handleUnstake,
+    handleCollectReward,
     userData,
 
     stakeTokenAllowance: {
@@ -121,6 +135,7 @@ export const useStakingRegular = () => {
 
     stakeRequestStatus,
     unstakeRequestStatus,
+    collectRewardRequestStatus,
   };
   return ret;
 };
