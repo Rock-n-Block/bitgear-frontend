@@ -47,6 +47,16 @@ export const useStakingRegular = () => {
     },
     [userWalletAddress, web3Provider],
   );
+  const handleUnstake = useCallback(
+    (amount) => {
+      regularStaking.unstake({
+        provider: web3Provider,
+        userWalletAddress: userWalletAddress || '',
+        amount: serialize(amount, STAKE_TOKEN.decimals),
+      });
+    },
+    [userWalletAddress, web3Provider],
+  );
 
   const stakeTokenUserBalance = useShallowSelector(
     stakingSelectors.selectBalance(STAKE_TOKEN.address),
@@ -57,8 +67,11 @@ export const useStakingRegular = () => {
   const fetchUserDataRequestStatus = useShallowSelector(
     uiSelectors.getProp(stakingActionTypes.SET_REGULAR_USER_DATA),
   );
-  const stakingRequestStatus = useShallowSelector(
+  const stakeRequestStatus = useShallowSelector(
     uiSelectors.getProp(stakingActionTypes.REGULAR_STAKE),
+  );
+  const unstakeRequestStatus = useShallowSelector(
+    uiSelectors.getProp(stakingActionTypes.REGULAR_UNSTAKE),
   );
 
   useEffect(() => {
@@ -76,9 +89,13 @@ export const useStakingRegular = () => {
   }, [userWalletAddress, web3Provider]);
 
   useEffect(() => {
-    if (stakingRequestStatus !== RequestStatus.SUCCESS) return;
+    if (stakeRequestStatus !== RequestStatus.SUCCESS) return;
     refetchData();
-  }, [refetchData, stakingRequestStatus]);
+  }, [refetchData, stakeRequestStatus]);
+  useEffect(() => {
+    if (unstakeRequestStatus !== RequestStatus.SUCCESS) return;
+    refetchData();
+  }, [refetchData, unstakeRequestStatus]);
 
   const userData = useMemo(
     () => ({
@@ -91,6 +108,7 @@ export const useStakingRegular = () => {
 
   const ret = {
     handleStake,
+    handleUnstake,
     userData,
 
     stakeTokenAllowance: {
@@ -101,7 +119,8 @@ export const useStakingRegular = () => {
       approveStatus,
     },
 
-    stakingRequestStatus,
+    stakeRequestStatus,
+    unstakeRequestStatus,
   };
   return ret;
 };

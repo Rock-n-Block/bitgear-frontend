@@ -4,6 +4,7 @@ const SET_REGULAR_PUBLIC_DATA = `${SLICE_NAME}:SET_REGULAR_PUBLIC_DATA` as const
 const SET_REGULAR_USER_DATA = `${SLICE_NAME}:SET_REGULAR_USER_DATA` as const;
 const SET_BALANCES = `${SLICE_NAME}:SET_BALANCES` as const;
 const REGULAR_STAKE = `${SLICE_NAME}:REGULAR_STAKE` as const;
+const REGULAR_UNSTAKE = `${SLICE_NAME}:REGULAR_UNSTAKE` as const;
 
 const actionTypes = {
   SET_REGULAR_PUBLIC_DATA,
@@ -11,6 +12,7 @@ const actionTypes = {
   SET_BALANCES,
 
   REGULAR_STAKE,
+  REGULAR_UNSTAKE,
 };
 
 export default actionTypes;

@@ -106,7 +106,7 @@ export const PageStake: FC = () => {
           <Stake
             noDataPlaceholder={!userWalletAddress ? <NoConnectWalletPlaceholder /> : null}
             onStakeClick={stakingRegular.handleStake}
-            onUnstakeClick={noop}
+            onUnstakeClick={stakingRegular.handleUnstake}
             onMaxClick={() => stakingRegular.userData.balance}
             stakeToken={gearToken.symbol}
             maxDecimals={gearToken.decimals}
@@ -114,7 +114,10 @@ export const PageStake: FC = () => {
             stakeAmount={stakingRegular.userData.stakeAmount}
             tokenBalance={stakingRegular.userData.balance}
             isUserDataLoading={stakingRegular.userData.fetchStatus === RequestStatus.REQUEST}
-            isPendingTx={stakingRegular.stakingRequestStatus === RequestStatus.REQUEST}
+            isPendingTx={
+              stakingRegular.stakeRequestStatus === RequestStatus.REQUEST ||
+              stakingRegular.unstakeRequestStatus === RequestStatus.REQUEST
+            }
           />
           <Reward
             noDataPlaceholder={!userWalletAddress ? <NoConnectWalletPlaceholder /> : null}
