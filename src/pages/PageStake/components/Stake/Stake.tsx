@@ -7,7 +7,9 @@ import { Button, Input, SkeletonLoader, Switch } from '../../../../components';
 import useDebounce from '../../../../hooks/useDebounce';
 import { RequestStatus } from '../../../../types';
 import { getDollarAmount, serialize, validateOnlyNumbers } from '../../../../utils';
+import { numberTransform } from '../../../../utils/numberTransform';
 import { TooltipStakeCollectRewards } from '../TooltipStakeCollectRewards';
+import { TooltipValue } from '../TooltipValue';
 
 import styles from './Stake.module.scss';
 
@@ -140,7 +142,14 @@ export const Stake: React.FC<StakeProps> = ({
             if (isUserDataLoading)
               return <SkeletonLoader width="120px" height="30px" borderRadius="4px" />;
             if (!noDataPlaceholder)
-              return <p className={styles.text}>{`${stakeAmount} ${stakeToken}`}</p>;
+              return (
+                <TooltipValue
+                  target={
+                    <p className={styles.text}>{`${numberTransform(stakeAmount)} ${stakeToken}`}</p>
+                  }
+                  value={stakeAmount}
+                />
+              );
             return null;
           })()}
           <Button
@@ -181,7 +190,10 @@ export const Stake: React.FC<StakeProps> = ({
               {isUserDataLoading ? (
                 <SkeletonLoader width="100px" height="30px" borderRadius="4px" />
               ) : (
-                <p className={styles.text}>{tokenBalance}</p>
+                <TooltipValue
+                  target={<p className={styles.text}>{numberTransform(tokenBalance)}</p>}
+                  value={tokenBalance}
+                />
               )}
             </div>
 
@@ -190,13 +202,19 @@ export const Stake: React.FC<StakeProps> = ({
               {isUserDataLoading ? (
                 <SkeletonLoader width="150px" height="30px" borderRadius="4px" />
               ) : (
-                <p className={styles.text}>
-                  {stakeAmount}
-                  <span className={cn(styles.grayText)}>{`($${getDollarAmount(
-                    stakeAmount,
-                    stakeToken,
-                  )})`}</span>
-                </p>
+                <TooltipValue
+                  // eslint-disable-next-line prettier/prettier
+                  target={(
+                    <p className={styles.text}>
+                      {numberTransform(stakeAmount)}
+                      <span className={cn(styles.grayText)}>{`($${numberTransform(
+                        getDollarAmount(stakeAmount, stakeToken),
+                      )})`}</span>
+                    </p>
+                    // eslint-disable-next-line prettier/prettier
+                  )}
+                  value={`${stakeAmount}($${getDollarAmount(stakeAmount, stakeToken)})`}
+                />
               )}
             </div>
 

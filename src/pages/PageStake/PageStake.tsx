@@ -6,6 +6,7 @@ import gearToken from '../../data/gearToken';
 import { usePollRegular, useStakingRegular } from '../../hooks';
 import { userSelectors } from '../../redux/selectors';
 import { RequestStatus } from '../../types';
+import { getDollarAmount } from '../../utils';
 
 import {
   Banner,
@@ -82,8 +83,8 @@ export const PageStake: FC = () => {
           stakeToken={gearToken.symbol}
           earnToken={ethToken.symbol}
           totalStaked={{
-            token: '164,869,690',
-            usd: '265,876,000',
+            token: stakingRegular.totalStaked,
+            usd: getDollarAmount(stakingRegular.totalStaked, gearToken.symbol),
           }}
           // eslint-disable-next-line prettier/prettier
           performance={(
@@ -100,6 +101,7 @@ export const PageStake: FC = () => {
             </>
             // eslint-disable-next-line prettier/prettier
           )}
+          isLoading={stakingRegular.publicDataRequestStatus === RequestStatus.REQUEST}
         />
         <div className={styles.sectionBody}>
           <Stake
@@ -122,11 +124,11 @@ export const PageStake: FC = () => {
             noDataPlaceholder={!userWalletAddress ? <NoConnectWalletPlaceholder /> : null}
             stakeToken={gearToken.symbol}
             earnToken={gearToken.symbol}
-            stakeAmount={0}
+            stakeAmount={stakingRegular.userData.pendingReward}
             ethReward={75}
-            lastCollectedTimestamp={1652703791}
-            collectedToDate={40}
-            earnedToDate={30}
+            lastCollectedTimestamp={stakingRegular.lastRewardTime}
+            collectedToDate={stakingRegular.userData.pendingReward}
+            earnedToDate="?"
             onCollectRewardClick={stakingRegular.handleCollectReward}
             isPendingTx={stakingRegular.collectRewardRequestStatus === RequestStatus.REQUEST}
           />
@@ -164,6 +166,7 @@ export const PageStake: FC = () => {
             </>
             // eslint-disable-next-line prettier/prettier
           )}
+          isLoading
         />
         {/* <div className={styles.sectionBody}>
           <Stake

@@ -9,8 +9,14 @@ export type StakingState = {
     user: {}; // userData
   };
   regular: {
-    public: {}; // publicData
-    user: {}; // userData
+    public: {
+      totalStaked: string;
+      lastRewardTime: string;
+    }; // publicData
+    user: {
+      stakedAmount: string;
+      pendingReward: string;
+    }; // userData
   };
   balances: Record<string, string>;
 };

@@ -4,8 +4,10 @@ import cn from 'classnames';
 import { bitGearTokenIcon, ethTokenIcon, triangleArrow } from '../../../../assets/icons';
 import { Button } from '../../../../components';
 import { getDollarAmount } from '../../../../utils';
+import { numberTransform } from '../../../../utils/numberTransform';
 import { TooltipCollectRewardsCompounding } from '../TooltipCollectRewardsCompounding';
 import { TooltipCollectRewardsWhatsThis } from '../TooltipCollectRewardsWhatsThis';
+import { TooltipValue } from '../TooltipValue';
 
 import styles from './Reward.module.scss';
 
@@ -90,13 +92,20 @@ export const Reward: React.FC<RewardProps> = ({
             </div>
             <div className={styles.textFlex}>
               <p className={cn(styles.text, styles.grayText)}>Collected to date:</p>
-              <p className={styles.text}>
-                {collectedToDate}
-                <span className={cn(styles.grayText)}>
-                  {/* TODO: check if collecting earnToken */}
-                  {`($${getDollarAmount(collectedToDate, earnToken)})`}
-                </span>
-              </p>
+              <TooltipValue
+                // eslint-disable-next-line prettier/prettier
+                target={(
+                  <p className={styles.text}>
+                    {numberTransform(collectedToDate)}
+                    <span className={cn(styles.grayText)}>
+                      {/* TODO: check if collecting earnToken */}
+                      {`($${numberTransform(getDollarAmount(collectedToDate, earnToken))})`}
+                    </span>
+                  </p>
+                  // eslint-disable-next-line prettier/prettier
+                )}
+                value={`${collectedToDate}($${getDollarAmount(collectedToDate, earnToken)})`}
+              />
             </div>
             {isPendingTx ? (
               <Button

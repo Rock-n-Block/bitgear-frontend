@@ -1,17 +1,12 @@
 import { StakingState } from '../../types';
 import { stakingActionTypes } from '../actionTypes';
 
-type SetRegularPublicDataPayload = {};
-type SetRegularUserDataPayload = {
-  userWalletAddress: string;
-};
-
 export default {
-  setRegularPublicData: (payload: SetRegularPublicDataPayload) => ({
+  setRegularPublicData: (payload: Partial<StakingState['regular']['public']>) => ({
     type: stakingActionTypes.SET_REGULAR_PUBLIC_DATA,
     payload,
   }),
-  setRegularUserData: (payload: SetRegularUserDataPayload) => ({
+  setRegularUserData: (payload: Partial<StakingState['regular']['user']>) => ({
     type: stakingActionTypes.SET_REGULAR_USER_DATA,
     payload,
   }),

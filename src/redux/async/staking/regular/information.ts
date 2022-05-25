@@ -1,24 +1,27 @@
 import gearToken from '../../../../data/gearToken';
 import { ContractsNames, Web3Provider } from '../../../../types';
 import { contractsHelper } from '../../../../utils';
-import { stakingActions } from '../../../actions';
 import * as apiActions from '../../../actions/ui';
 import { stakingActionTypes } from '../../../actionTypes';
 import { userSelectors } from '../../../selectors';
 import store from '../../../store';
-import { fetchAllowance } from '../../erc20';
-import { fetchBalance } from '../../erc20/balanceOf';
+import { fetchAllowance, fetchBalance } from '../../erc20';
 
-export const fetchPublicData = async ({
-  type = stakingActionTypes.SET_REGULAR_PUBLIC_DATA,
-  payload,
-}: Partial<ReturnType<typeof stakingActions.setRegularPublicData>>): Promise<void> => {
+import { fetchLastRewardTime, fetchTotalStaked } from './public';
+import { fetchPendingReward, fetchStakedAmount } from './user';
+
+type FetchPublicData = Web3Provider;
+
+export const fetchPublicData = async ({ provider }: FetchPublicData): Promise<void> => {
+  const type = stakingActionTypes.SET_REGULAR_PUBLIC_DATA;
   try {
     store.dispatch(apiActions.request(type));
-    console.log('Test', payload);
+
+    await Promise.all([fetchTotalStaked({ provider }), fetchLastRewardTime({ provider })]);
+
     store.dispatch(apiActions.success(type));
   } catch (err) {
-    console.log('Redux/Staking/Regular', err);
+    console.log('Redux/Staking/Regular/fetchPublicData', err);
     store.dispatch(apiActions.error(type, err));
   }
 };
@@ -50,11 +53,13 @@ export const fetchUserData = async ({
         tokenAddress: gearToken.address,
         spenderAddress,
       }),
+      fetchStakedAmount({ provider, userWalletAddress }),
+      fetchPendingReward({ provider, userWalletAddress }),
     ]);
 
     store.dispatch(apiActions.success(type));
   } catch (err) {
-    console.log('Redux/Staking/Regular', err);
+    console.log('Redux/Staking/Regular/fetchUserData', err);
     store.dispatch(apiActions.error(type, err));
   }
 };

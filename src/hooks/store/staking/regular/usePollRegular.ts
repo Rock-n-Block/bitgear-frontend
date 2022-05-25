@@ -12,8 +12,8 @@ export const usePollRegular = (): void => {
   const { web3Provider } = useWeb3Provider();
 
   useEffect(() => {
-    regularStaking.fetchPublicData({});
-  }, [slowRefresh]);
+    regularStaking.fetchPublicData({ provider: web3Provider });
+  }, [slowRefresh, web3Provider]);
 
   useEffect(() => {
     if (userWalletAddress) {

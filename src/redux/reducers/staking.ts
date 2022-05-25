@@ -11,12 +11,18 @@ const initialState: StakingState = {
     user: {},
   },
   regular: {
-    public: {},
-    user: {},
+    public: {
+      totalStaked: '',
+      lastRewardTime: '0',
+    },
+    user: {
+      stakedAmount: '',
+      pendingReward: '',
+    },
   },
 
   // user tokens' balances
-  // NOTE: this is almost duplicate of `store/reducer/user.ts` balances, due to unknown behaviour that causes to reset the state, not the EXTEND the state
+  // NOTE: this is almost duplicate of `store/reducer/user.ts` balances, due to its unknown behaviour that causes to reset the state, not the EXTEND the state
   balances: {},
 };
 

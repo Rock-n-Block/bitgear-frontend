@@ -67,8 +67,10 @@ export const useStakingRegular = () => {
   const stakeTokenUserBalance = useShallowSelector(
     stakingSelectors.selectBalance(STAKE_TOKEN.address),
   );
-  // TODO: take stakeAmount from store/stakingSelectors/regular
-  const stakeAmount = '5000000000000000000';
+  const {
+    user: { stakedAmount, pendingReward },
+    public: { lastRewardTime, totalStaked },
+  } = useShallowSelector(stakingSelectors.selectRegularStaking);
 
   const fetchUserDataRequestStatus = useShallowSelector(
     uiSelectors.getProp(stakingActionTypes.SET_REGULAR_USER_DATA),
@@ -82,6 +84,9 @@ export const useStakingRegular = () => {
   const collectRewardRequestStatus = useShallowSelector(
     uiSelectors.getProp(stakingActionTypes.REGULAR_COLLECT_REWARD),
   );
+  const publicDataRequestStatus = useShallowSelector(
+    uiSelectors.getProp(stakingActionTypes.SET_REGULAR_PUBLIC_DATA),
+  );
 
   useEffect(() => {
     if (approveStatus !== RequestStatus.SUCCESS) return;
@@ -89,7 +94,7 @@ export const useStakingRegular = () => {
   }, [approveStatus, handleCheckAllowance]);
 
   const refetchData = useCallback(() => {
-    regularStaking.fetchPublicData({});
+    regularStaking.fetchPublicData({ provider: web3Provider });
     if (!userWalletAddress) return;
     regularStaking.fetchUserData({
       provider: web3Provider,
@@ -114,9 +119,10 @@ export const useStakingRegular = () => {
     () => ({
       fetchStatus: fetchUserDataRequestStatus,
       balance: deserialize(stakeTokenUserBalance, STAKE_TOKEN.decimals),
-      stakeAmount: deserialize(stakeAmount, STAKE_TOKEN.decimals),
+      stakeAmount: deserialize(stakedAmount, STAKE_TOKEN.decimals),
+      pendingReward: deserialize(pendingReward, STAKE_TOKEN.decimals),
     }),
-    [fetchUserDataRequestStatus, stakeTokenUserBalance],
+    [fetchUserDataRequestStatus, pendingReward, stakeTokenUserBalance, stakedAmount],
   );
 
   const ret = {
@@ -124,6 +130,8 @@ export const useStakingRegular = () => {
     handleUnstake,
     handleCollectReward,
     userData,
+    totalStaked: deserialize(totalStaked, STAKE_TOKEN.decimals),
+    lastRewardTime: new Date(+lastRewardTime * 1000).toLocaleString(),
 
     stakeTokenAllowance: {
       isAllowanceLoading,
@@ -136,6 +144,8 @@ export const useStakingRegular = () => {
     stakeRequestStatus,
     unstakeRequestStatus,
     collectRewardRequestStatus,
+
+    publicDataRequestStatus,
   };
   return ret;
 };
