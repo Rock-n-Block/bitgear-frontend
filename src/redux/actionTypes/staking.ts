@@ -1,20 +1,42 @@
 const SLICE_NAME = 'STAKING' as const;
 
+const SET_BALANCES = `${SLICE_NAME}:SET_BALANCES` as const;
+
 const SET_REGULAR_PUBLIC_DATA = `${SLICE_NAME}:SET_REGULAR_PUBLIC_DATA` as const;
 const SET_REGULAR_USER_DATA = `${SLICE_NAME}:SET_REGULAR_USER_DATA` as const;
-const SET_BALANCES = `${SLICE_NAME}:SET_BALANCES` as const;
 const REGULAR_STAKE = `${SLICE_NAME}:REGULAR_STAKE` as const;
 const REGULAR_UNSTAKE = `${SLICE_NAME}:REGULAR_UNSTAKE` as const;
 const REGULAR_COLLECT_REWARD = `${SLICE_NAME}:REGULAR_COLLECT_REWARD` as const;
 
-const actionTypes = {
+const regularActionTypes = {
+  SET_BALANCES,
+
   SET_REGULAR_PUBLIC_DATA,
   SET_REGULAR_USER_DATA,
-  SET_BALANCES,
 
   REGULAR_STAKE,
   REGULAR_UNSTAKE,
   REGULAR_COLLECT_REWARD,
 };
 
-export default actionTypes;
+const SET_LP_PUBLIC_DATA = `${SLICE_NAME}:SET_LP_PUBLIC_DATA` as const;
+const SET_LP_USER_DATA = `${SLICE_NAME}:SET_LP_USER_DATA` as const;
+const LP_STAKE = `${SLICE_NAME}:LP_STAKE` as const;
+const LP_UNSTAKE = `${SLICE_NAME}:LP_UNSTAKE` as const;
+const LP_COLLECT_REWARD = `${SLICE_NAME}:LP_COLLECT_REWARD` as const;
+
+const lpActionTypes = {
+  SET_BALANCES,
+
+  SET_LP_PUBLIC_DATA,
+  SET_LP_USER_DATA,
+
+  LP_STAKE,
+  LP_UNSTAKE,
+  LP_COLLECT_REWARD,
+};
+
+export default {
+  ...regularActionTypes,
+  ...lpActionTypes,
+};
