@@ -114,6 +114,7 @@ export const PageStake: FC = () => {
             stakeAmount={stakingRegular.userData.stakeAmount}
             tokenBalance={stakingRegular.userData.balance}
             isUserDataLoading={stakingRegular.userData.fetchStatus === RequestStatus.REQUEST}
+            isPendingTx={stakingRegular.stakingRequestStatus === RequestStatus.REQUEST}
           />
           <Reward
             noDataPlaceholder={!userWalletAddress ? <NoConnectWalletPlaceholder /> : null}

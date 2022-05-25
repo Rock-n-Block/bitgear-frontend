@@ -2,16 +2,19 @@ import { useCallback, useEffect, useMemo } from 'react';
 
 import gearToken from '../../../../data/gearToken';
 import { stakingActionTypes } from '../../../../redux/actionTypes';
+import { regularStaking } from '../../../../redux/async';
 import { stakingSelectors, uiSelectors, userSelectors } from '../../../../redux/selectors';
 import { ContractsNames, RequestStatus } from '../../../../types';
 import { contractsHelper, deserialize, serialize } from '../../../../utils';
 import { useShallowSelector } from '../../../useShallowSelector';
+import { useWeb3Provider } from '../../../useWeb3Provider';
 import { useAllowance, useApprove } from '../../erc20';
 
 const STAKE_TOKEN = gearToken;
 
 export const useStakingRegular = () => {
-  const { network } = useShallowSelector(userSelectors.getUser);
+  const { web3Provider } = useWeb3Provider();
+  const { address: userWalletAddress, network } = useShallowSelector(userSelectors.getUser);
   const coinStakingAddress = useMemo(
     () => contractsHelper.getContractData(ContractsNames.coinStaking, network).address,
     [network],
@@ -34,9 +37,16 @@ export const useStakingRegular = () => {
     [approve, coinStakingAddress],
   );
 
-  const handleStake = useCallback((...args) => {
-    console.log('useStakingRegular/handleStake', args);
-  }, []);
+  const handleStake = useCallback(
+    (amount) => {
+      regularStaking.stake({
+        provider: web3Provider,
+        userWalletAddress: userWalletAddress || '',
+        amount: serialize(amount, STAKE_TOKEN.decimals),
+      });
+    },
+    [userWalletAddress, web3Provider],
+  );
 
   const stakeTokenUserBalance = useShallowSelector(
     stakingSelectors.selectBalance(STAKE_TOKEN.address),
@@ -47,11 +57,28 @@ export const useStakingRegular = () => {
   const fetchUserDataRequestStatus = useShallowSelector(
     uiSelectors.getProp(stakingActionTypes.SET_REGULAR_USER_DATA),
   );
+  const stakingRequestStatus = useShallowSelector(
+    uiSelectors.getProp(stakingActionTypes.REGULAR_STAKE),
+  );
 
   useEffect(() => {
     if (approveStatus !== RequestStatus.SUCCESS) return;
     handleCheckAllowance();
   }, [approveStatus, handleCheckAllowance]);
+
+  const refetchData = useCallback(() => {
+    regularStaking.fetchPublicData({});
+    if (!userWalletAddress) return;
+    regularStaking.fetchUserData({
+      provider: web3Provider,
+      userWalletAddress,
+    });
+  }, [userWalletAddress, web3Provider]);
+
+  useEffect(() => {
+    if (stakingRequestStatus !== RequestStatus.SUCCESS) return;
+    refetchData();
+  }, [refetchData, stakingRequestStatus]);
 
   const userData = useMemo(
     () => ({
@@ -73,6 +100,8 @@ export const useStakingRegular = () => {
       handleApprove,
       approveStatus,
     },
+
+    stakingRequestStatus,
   };
   return ret;
 };

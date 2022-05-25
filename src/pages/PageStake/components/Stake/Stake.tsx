@@ -31,6 +31,7 @@ interface StakeProps {
   onUnstakeClick: (value: string) => void;
   onMaxClick: () => string | void;
   isUserDataLoading: boolean;
+  isPendingTx: boolean;
   className?: number;
 }
 
@@ -48,6 +49,7 @@ export const Stake: React.FC<StakeProps> = ({
   onUnstakeClick,
   onMaxClick,
   isUserDataLoading,
+  isPendingTx,
   className,
 }) => {
   const [isExpanded, setExpanded] = useState(false);
@@ -104,8 +106,9 @@ export const Stake: React.FC<StakeProps> = ({
   const isLoadingSubmitButton = useMemo(() => {
     if (stakeTokenAllowance.isAllowanceLoading) return true;
     if (stakeTokenAllowance.approveStatus === RequestStatus.REQUEST) return true;
+    if (isPendingTx) return true;
     return false;
-  }, [stakeTokenAllowance.approveStatus, stakeTokenAllowance.isAllowanceLoading]);
+  }, [isPendingTx, stakeTokenAllowance.approveStatus, stakeTokenAllowance.isAllowanceLoading]);
   const isDisabledSubmitButton = useMemo(() => {
     if (isLoadingSubmitButton) return true;
 
