@@ -1,4 +1,4 @@
-import gearToken from '../../../../data/gearToken';
+import gearEthLPToken from '../../../../data/gearEthLPToken';
 import { ContractsNames, Web3Provider } from '../../../../types';
 import { contractsHelper } from '../../../../utils';
 import * as apiActions from '../../../actions/ui';
@@ -13,7 +13,7 @@ import { fetchEarned, fetchPendingReward, fetchStakedAmount } from './user';
 type FetchPublicData = Web3Provider;
 
 export const fetchPublicData = async ({ provider }: FetchPublicData): Promise<void> => {
-  const type = stakingActionTypes.SET_REGULAR_PUBLIC_DATA;
+  const type = stakingActionTypes.SET_LP_PUBLIC_DATA;
   try {
     store.dispatch(apiActions.request(type));
 
@@ -21,7 +21,7 @@ export const fetchPublicData = async ({ provider }: FetchPublicData): Promise<vo
 
     store.dispatch(apiActions.success(type));
   } catch (err) {
-    console.log('Redux/Staking/Regular/fetchPublicData', err);
+    console.log('Redux/Staking/LP/fetchPublicData', err);
     store.dispatch(apiActions.error(type, err));
   }
 };
@@ -34,7 +34,7 @@ export const fetchUserData = async ({
   provider,
   userWalletAddress,
 }: FetchUserData): Promise<void> => {
-  const type = stakingActionTypes.SET_REGULAR_USER_DATA;
+  const type = stakingActionTypes.SET_LP_USER_DATA;
   try {
     store.dispatch(apiActions.request(type));
 
@@ -46,11 +46,15 @@ export const fetchUserData = async ({
     );
 
     await Promise.all([
-      fetchBalance({ provider, ownerAddress: userWalletAddress, tokenAddress: gearToken.address }),
+      fetchBalance({
+        provider,
+        ownerAddress: userWalletAddress,
+        tokenAddress: gearEthLPToken.address,
+      }),
       fetchAllowance({
         provider,
         ownerAddress: userWalletAddress,
-        tokenAddress: gearToken.address,
+        tokenAddress: gearEthLPToken.address,
         spenderAddress,
       }),
       fetchStakedAmount({ provider, userWalletAddress }),
@@ -60,7 +64,7 @@ export const fetchUserData = async ({
 
     store.dispatch(apiActions.success(type));
   } catch (err) {
-    console.log('Redux/Staking/Regular/fetchUserData', err);
+    console.log('Redux/Staking/LP/fetchUserData', err);
     store.dispatch(apiActions.error(type, err));
   }
 };

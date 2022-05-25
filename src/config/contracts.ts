@@ -1,6 +1,6 @@
 import { Chains, ContractsNames, IContracts } from '../types';
 
-import { coinStakingAbi, erc20Abi } from './abi';
+import { coinStakingAbi, erc20Abi, uniswapV2PairAbi } from './abi';
 
 export const contracts: IContracts = {
   [ContractsNames.erc20]: {
@@ -38,6 +38,44 @@ export const contracts: IContracts = {
       [Chains.moonriver]: {
         address: '',
         abi: erc20Abi,
+      },
+    },
+  },
+  [ContractsNames.uniswapV2Pair]: {
+    mainnet: {
+      [Chains.eth]: {
+        address: '',
+        abi: uniswapV2PairAbi,
+      },
+      [Chains.bsc]: {
+        address: '',
+        abi: uniswapV2PairAbi,
+      },
+      [Chains.polygon]: {
+        address: '',
+        abi: uniswapV2PairAbi,
+      },
+      [Chains.moonriver]: {
+        address: '',
+        abi: uniswapV2PairAbi,
+      },
+    },
+    testnet: {
+      [Chains.eth]: {
+        address: '',
+        abi: uniswapV2PairAbi,
+      },
+      [Chains.bsc]: {
+        address: '',
+        abi: uniswapV2PairAbi,
+      },
+      [Chains.polygon]: {
+        address: '',
+        abi: uniswapV2PairAbi,
+      },
+      [Chains.moonriver]: {
+        address: '',
+        abi: uniswapV2PairAbi,
       },
     },
   },

@@ -6,11 +6,13 @@ import { Button, Tooltip } from '../../../../components';
 import styles from './TooltipCollectRewardsCompounding.module.scss';
 
 type TooltipCollectRewardsCompoundingProps = {
-  tokenSymbol: string;
+  stakeTokenSymbol: string;
+  earnTokenSymbol: string;
 };
 
 export const TooltipCollectRewardsCompounding: FC<TooltipCollectRewardsCompoundingProps> = ({
-  tokenSymbol,
+  stakeTokenSymbol,
+  earnTokenSymbol,
 }) => {
   return (
     <Tooltip
@@ -20,7 +22,8 @@ export const TooltipCollectRewardsCompounding: FC<TooltipCollectRewardsCompoundi
       // eslint-disable-next-line prettier/prettier
       content={(
         <p className={styles.tooltipText}>
-          When you stake {tokenSymbol}, you also earn extra {tokenSymbol} as a bonus reward.
+          When you stake {stakeTokenSymbol}, you also earn extra {earnTokenSymbol} as a bonus
+          reward.
         </p>
         // eslint-disable-next-line prettier/prettier
       )}
