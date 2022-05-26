@@ -6,6 +6,7 @@ const initialState: StakingState = {
     public: {
       totalStaked: '',
       lastRewardTime: '0',
+      rewardPerSecond: '',
     },
     user: {
       stakedAmount: '',
@@ -27,6 +28,7 @@ const initialState: StakingState = {
     public: {
       totalStaked: '',
       lastRewardTime: '0',
+      rewardPerSecond: '',
     },
     user: {
       stakedAmount: '',

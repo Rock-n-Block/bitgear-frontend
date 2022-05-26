@@ -3,6 +3,7 @@ export type StakingState = {
     public: {
       totalStaked: string;
       lastRewardTime: string;
+      rewardPerSecond: string;
     };
     user: {
       stakedAmount: string;
@@ -24,6 +25,7 @@ export type StakingState = {
     public: {
       totalStaked: string;
       lastRewardTime: string;
+      rewardPerSecond: string;
     };
     user: {
       stakedAmount: string;
