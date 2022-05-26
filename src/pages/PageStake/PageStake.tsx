@@ -4,7 +4,14 @@ import { useSelector } from 'react-redux';
 import ethToken from '../../data/ethToken';
 import gearEthLPToken from '../../data/gearEthLPToken';
 import gearToken from '../../data/gearToken';
-import { usePollLp, usePollRegular, useStakingLp, useStakingRegular } from '../../hooks';
+import {
+  usePollCompounder,
+  usePollLp,
+  usePollRegular,
+  useStakingCompounder,
+  useStakingLp,
+  useStakingRegular,
+} from '../../hooks';
 import { userSelectors } from '../../redux/selectors';
 import { RequestStatus } from '../../types';
 import { getDollarAmount } from '../../utils';
@@ -29,6 +36,9 @@ export const PageStake: FC = () => {
 
   usePollLp();
   const stakingLp = useStakingLp();
+
+  usePollCompounder();
+  const stakingCompounder = useStakingCompounder();
 
   return (
     <div className={styles.container}>
@@ -154,8 +164,8 @@ export const PageStake: FC = () => {
           stakeToken={gearToken.symbol}
           earnToken={gearToken.symbol}
           totalStaked={{
-            token: '164,869,690',
-            usd: '265,876,000',
+            token: stakingCompounder.totalStaked,
+            usd: getDollarAmount(stakingCompounder.totalStaked, gearToken.symbol),
           }}
           // eslint-disable-next-line prettier/prettier
           performance={(
@@ -178,21 +188,29 @@ export const PageStake: FC = () => {
             </>
             // eslint-disable-next-line prettier/prettier
           )}
-          isLoading
+          isLoading={stakingRegular.publicDataRequestStatus === RequestStatus.REQUEST}
         />
-        {/* <div className={styles.sectionBody}>
+        <div className={styles.sectionBody}>
           <Stake
             noDataPlaceholder={!userWalletAddress ? <NoConnectWalletPlaceholder /> : null}
             isCompounder
-            onStakeClick={noop}
-            onUnstakeClick={noop}
+            onStakeClick={stakingCompounder.handleStake}
+            onUnstakeClick={stakingCompounder.handleUnstake}
+            onMaxClick={() => stakingCompounder.userData.balance}
             stakeToken={gearToken.symbol}
+            maxDecimals={gearToken.decimals}
+            stakeTokenAllowance={stakingCompounder.stakeTokenAllowance}
+            stakeAmount={stakingCompounder.userData.stakeAmount}
+            tokenBalance={stakingCompounder.userData.balance}
             earnToken={gearToken.symbol}
-            earnedToDate="0.123456"
-            stakeAmount={0}
-            tokenBalance={25}
+            earnedToDate={stakingCompounder.userData.earned}
+            isUserDataLoading={stakingCompounder.userData.fetchStatus === RequestStatus.REQUEST}
+            isPendingTx={
+              stakingCompounder.stakeRequestStatus === RequestStatus.REQUEST ||
+              stakingCompounder.unstakeRequestStatus === RequestStatus.REQUEST
+            }
           />
-        </div> */}
+        </div>
       </div>
     </div>
   );

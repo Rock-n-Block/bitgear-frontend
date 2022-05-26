@@ -6,6 +6,7 @@ export enum ContractsNames {
   erc20 = 'erc20',
   uniswapV2Pair = 'uniswapV2Pair',
   coinStaking = 'coinStaking',
+  tokenVault = 'tokenVault',
 }
 
 export enum Chains {

@@ -1,6 +1,6 @@
 import { Chains, ContractsNames, IContracts } from '../types';
 
-import { coinStakingAbi, erc20Abi, uniswapV2PairAbi } from './abi';
+import { coinStakingAbi, erc20Abi, tokenVaultAbi, uniswapV2PairAbi } from './abi';
 
 export const contracts: IContracts = {
   [ContractsNames.erc20]: {
@@ -114,6 +114,44 @@ export const contracts: IContracts = {
       [Chains.moonriver]: {
         address: '',
         abi: coinStakingAbi,
+      },
+    },
+  },
+  [ContractsNames.tokenVault]: {
+    mainnet: {
+      [Chains.eth]: {
+        address: '',
+        abi: tokenVaultAbi,
+      },
+      [Chains.bsc]: {
+        address: '',
+        abi: tokenVaultAbi,
+      },
+      [Chains.polygon]: {
+        address: '',
+        abi: tokenVaultAbi,
+      },
+      [Chains.moonriver]: {
+        address: '',
+        abi: tokenVaultAbi,
+      },
+    },
+    testnet: {
+      [Chains.eth]: {
+        address: '0xc8FD81056C4fe7689443D9a973A23B650B42313C', // rinkeby
+        abi: tokenVaultAbi,
+      },
+      [Chains.bsc]: {
+        address: '',
+        abi: tokenVaultAbi,
+      },
+      [Chains.polygon]: {
+        address: '',
+        abi: tokenVaultAbi,
+      },
+      [Chains.moonriver]: {
+        address: '',
+        abi: tokenVaultAbi,
       },
     },
   },

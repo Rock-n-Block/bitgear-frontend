@@ -262,13 +262,23 @@ export const Stake: React.FC<StakeProps> = ({
             {isCompounder && (
               <div className={styles.textFlex}>
                 <p className={cn(styles.text, styles.grayText)}>Earned to date:</p>
-                <p className={styles.text}>
-                  {earnedToDate}
-                  <span className={cn(styles.grayText)}>{`($${getDollarAmount(
-                    earnedToDate,
-                    earnToken,
-                  )})`}</span>
-                </p>
+                {isUserDataLoading ? (
+                  <SkeletonLoader width="120px" height="30px" borderRadius="4px" />
+                ) : (
+                  <TooltipValue
+                    // eslint-disable-next-line prettier/prettier
+                    target={(
+                      <p className={styles.text}>
+                        {numberTransform(earnedToDate)}
+                        <span className={cn(styles.grayText)}>
+                          {`($${numberTransform(getDollarAmount(earnedToDate, earnToken))})`}
+                        </span>
+                      </p>
+                      // eslint-disable-next-line prettier/prettier
+                    )}
+                    value={`${earnedToDate}($${getDollarAmount(earnedToDate, earnToken)})`}
+                  />
+                )}
               </div>
             )}
 

@@ -4,4 +4,5 @@
 export type { CoinStaking } from "./CoinStaking";
 export type { CustomSwap } from "./CustomSwap";
 export type { Erc20 } from "./Erc20";
+export type { TokenVault } from "./TokenVault";
 export type { UniswapV2Pair } from "./UniswapV2Pair";
