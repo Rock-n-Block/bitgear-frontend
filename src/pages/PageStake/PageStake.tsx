@@ -50,7 +50,7 @@ export const PageStake: FC = () => {
           earnToken={ethToken.symbol}
           totalStaked={{
             token: stakingLp.totalStaked,
-            usd: getDollarAmount(stakingLp.totalStaked, gearEthLPToken.symbol),
+            usd: getDollarAmount(stakingLp.totalStaked, gearEthLPToken.address),
           }}
           // eslint-disable-next-line prettier/prettier
           performance={(
@@ -76,6 +76,7 @@ export const PageStake: FC = () => {
             onUnstakeClick={stakingLp.handleUnstake}
             onMaxClick={() => stakingLp.userData.balance}
             stakeToken={gearEthLPToken.symbol}
+            stakeTokenAddress={gearEthLPToken.address}
             maxDecimals={gearEthLPToken.decimals}
             stakeTokenAllowance={stakingLp.stakeTokenAllowance}
             stakeAmount={stakingLp.userData.stakeAmount}
@@ -90,6 +91,7 @@ export const PageStake: FC = () => {
             noDataPlaceholder={!userWalletAddress ? <NoConnectWalletPlaceholder /> : null}
             stakeToken={gearToken.symbol}
             earnToken={gearToken.symbol}
+            earnTokenAddress={gearToken.address}
             stakeAmount={stakingLp.userData.pendingReward}
             lastCollectedTimestamp={stakingLp.lastRewardTime}
             earnedToDate={stakingLp.userData.earned}
@@ -107,7 +109,7 @@ export const PageStake: FC = () => {
           earnToken={ethToken.symbol}
           totalStaked={{
             token: stakingRegular.totalStaked,
-            usd: getDollarAmount(stakingRegular.totalStaked, gearToken.symbol),
+            usd: getDollarAmount(stakingRegular.totalStaked, gearToken.address),
           }}
           // eslint-disable-next-line prettier/prettier
           performance={(
@@ -133,6 +135,7 @@ export const PageStake: FC = () => {
             onUnstakeClick={stakingRegular.handleUnstake}
             onMaxClick={() => stakingRegular.userData.balance}
             stakeToken={gearToken.symbol}
+            stakeTokenAddress={gearToken.address}
             maxDecimals={gearToken.decimals}
             stakeTokenAllowance={stakingRegular.stakeTokenAllowance}
             stakeAmount={stakingRegular.userData.stakeAmount}
@@ -147,6 +150,7 @@ export const PageStake: FC = () => {
             noDataPlaceholder={!userWalletAddress ? <NoConnectWalletPlaceholder /> : null}
             stakeToken={gearToken.symbol}
             earnToken={gearToken.symbol}
+            earnTokenAddress={gearToken.address}
             stakeAmount={stakingRegular.userData.pendingReward}
             lastCollectedTimestamp={stakingRegular.lastRewardTime}
             earnedToDate={stakingRegular.userData.earned}
@@ -165,7 +169,7 @@ export const PageStake: FC = () => {
           earnToken={gearToken.symbol}
           totalStaked={{
             token: stakingCompounder.totalStaked,
-            usd: getDollarAmount(stakingCompounder.totalStaked, gearToken.symbol),
+            usd: getDollarAmount(stakingCompounder.totalStaked, gearToken.address),
           }}
           // eslint-disable-next-line prettier/prettier
           performance={(
@@ -198,11 +202,12 @@ export const PageStake: FC = () => {
             onUnstakeClick={stakingCompounder.handleUnstake}
             onMaxClick={() => stakingCompounder.userData.balance}
             stakeToken={gearToken.symbol}
+            stakeTokenAddress={gearToken.address}
             maxDecimals={gearToken.decimals}
             stakeTokenAllowance={stakingCompounder.stakeTokenAllowance}
             stakeAmount={stakingCompounder.userData.stakeAmount}
             tokenBalance={stakingCompounder.userData.balance}
-            earnToken={gearToken.symbol}
+            earnTokenAddress={gearToken.address}
             earnedToDate={stakingCompounder.userData.earned}
             isUserDataLoading={stakingCompounder.userData.fetchStatus === RequestStatus.REQUEST}
             isPendingTx={
