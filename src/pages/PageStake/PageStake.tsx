@@ -15,6 +15,7 @@ import {
 import { userSelectors } from '../../redux/selectors';
 import { RequestStatus } from '../../types';
 import { getDollarAmount } from '../../utils';
+import { prettyPrice } from '../../utils/prettifiers';
 
 import {
   Banner,
@@ -42,7 +43,7 @@ export const PageStake: FC = () => {
 
   return (
     <div className={styles.container}>
-      <Banner apy={160.41} />
+      <Banner apy={prettyPrice(stakingCompounder.apy)} />
       <div className={styles.section}>
         <SectionHead
           title="LP Token Staking"
@@ -55,7 +56,7 @@ export const PageStake: FC = () => {
           // eslint-disable-next-line prettier/prettier
           performance={(
             <>
-              166,01% APR
+              {stakingLp.apr}% APR
               <div className={styles.infoIcon}>
                 <TooltipApr
                   tokenSymbol1={gearToken.symbol}
@@ -114,7 +115,7 @@ export const PageStake: FC = () => {
           // eslint-disable-next-line prettier/prettier
           performance={(
             <>
-              166,01% APR
+              {stakingRegular.apr}% APR
               <div className={styles.infoIcon}>
                 <TooltipApr
                   tokenSymbol1={gearToken.symbol}
@@ -174,7 +175,7 @@ export const PageStake: FC = () => {
           // eslint-disable-next-line prettier/prettier
           performance={(
             <>
-              166,01% APY
+              {Number.isNaN(stakingCompounder.apy) ? '' : stakingCompounder.apy}% APY
               <div className={styles.infoIcon}>
                 <TooltipApy
                   token1={{

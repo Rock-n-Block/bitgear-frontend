@@ -37,6 +37,7 @@ export const useStakingCompounder = () => {
   );
   const totalStaked = useShallowSelector(stakingCompounderSelectors.selectTotalStaked);
   const stakedAmount = useShallowSelector(stakingCompounderSelectors.selectStakedAmount);
+  const apy = useShallowSelector(stakingCompounderSelectors.selectApy);
 
   const { checkAllowance, isLoading: isAllowanceLoading } = useAllowance();
   const handleCheckAllowance = useCallback(() => {
@@ -125,6 +126,7 @@ export const useStakingCompounder = () => {
     handleUnstake,
     userData,
     totalStaked: deserialize(totalStaked, STAKE_TOKEN.decimals),
+    apy,
 
     stakeTokenAllowance: {
       isAllowanceLoading,
