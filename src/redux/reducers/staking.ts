@@ -14,8 +14,14 @@ const initialState: StakingState = {
     },
   },
   compounder: {
-    public: {},
-    user: {},
+    public: {
+      pricePerShare: '',
+      totalShares: '',
+    },
+    user: {
+      stakedShares: '',
+      earned: '',
+    },
   },
   regular: {
     public: {
@@ -54,6 +60,7 @@ export default (state = initialState, params: any): StakingState => {
       };
     }
 
+    // Regular
     case stakingActionTypes.SET_REGULAR_PUBLIC_DATA: {
       return {
         ...state,
@@ -80,6 +87,7 @@ export default (state = initialState, params: any): StakingState => {
       };
     }
 
+    // LP
     case stakingActionTypes.SET_LP_PUBLIC_DATA: {
       return {
         ...state,
@@ -100,6 +108,33 @@ export default (state = initialState, params: any): StakingState => {
           ...state.liquidityPools,
           user: {
             ...state.liquidityPools.user,
+            ...params.payload,
+          },
+        },
+      };
+    }
+
+    // Compounder
+    case stakingActionTypes.SET_COMPOUNDER_PUBLIC_DATA: {
+      return {
+        ...state,
+        compounder: {
+          ...state.compounder,
+          public: {
+            ...state.compounder.public,
+            ...params.payload,
+          },
+        },
+      };
+    }
+
+    case stakingActionTypes.SET_COMPOUNDER_USER_DATA: {
+      return {
+        ...state,
+        compounder: {
+          ...state.compounder,
+          user: {
+            ...state.compounder.user,
             ...params.payload,
           },
         },
