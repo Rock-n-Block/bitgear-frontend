@@ -1,4 +1,5 @@
 import { StakingState } from './staking';
+import { TokensState } from './tokens';
 import { UIState } from './ui';
 import { UserState } from './user';
 
@@ -7,4 +8,5 @@ export type State = {
   user: UserState;
   ui: UIState;
   staking: StakingState;
+  tokens: TokensState;
 };

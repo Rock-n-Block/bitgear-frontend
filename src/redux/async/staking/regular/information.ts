@@ -6,6 +6,7 @@ import { stakingActionTypes } from '../../../actionTypes';
 import { userSelectors } from '../../../selectors';
 import store from '../../../store';
 import { fetchAllowance, fetchBalance } from '../../erc20';
+import { fetchUsdPrice } from '../../tokens';
 
 import { fetchLastRewardTime, fetchTotalStaked } from './public';
 import { fetchEarned, fetchPendingReward, fetchStakedAmount } from './user';
@@ -17,7 +18,11 @@ export const fetchPublicData = async ({ provider }: FetchPublicData): Promise<vo
   try {
     store.dispatch(apiActions.request(type));
 
-    await Promise.all([fetchTotalStaked({ provider }), fetchLastRewardTime({ provider })]);
+    await Promise.all([
+      fetchTotalStaked({ provider }),
+      fetchLastRewardTime({ provider }),
+      fetchUsdPrice({ symbol: gearToken.symbol, tokenAddress: gearToken.address }),
+    ]);
 
     store.dispatch(apiActions.success(type));
   } catch (err) {

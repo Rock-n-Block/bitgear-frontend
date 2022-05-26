@@ -20,6 +20,7 @@ interface RewardProps {
   stakeAmount: string | number;
   stakeToken: string;
   earnToken: string;
+  earnTokenAddress: string;
   // ethReward: string | number;
   lastCollectedTimestamp: string | number;
   // collectedToDate: string | number;
@@ -35,6 +36,7 @@ export const Reward: React.FC<RewardProps> = ({
   stakeAmount,
   stakeToken,
   earnToken,
+  earnTokenAddress,
   className,
   // ethReward,
   lastCollectedTimestamp,
@@ -126,12 +128,12 @@ export const Reward: React.FC<RewardProps> = ({
                       {numberTransform(earnedToDate)}
                       <span className={cn(styles.grayText)}>
                         {/* TODO: check if collecting earnToken */}
-                        {`($${numberTransform(getDollarAmount(earnedToDate, earnToken))})`}
+                        {`($${numberTransform(getDollarAmount(earnedToDate, earnTokenAddress))})`}
                       </span>
                     </p>
                     // eslint-disable-next-line prettier/prettier
                   )}
-                  value={`${earnedToDate}($${getDollarAmount(earnedToDate, earnToken)})`}
+                  value={`${earnedToDate}($${getDollarAmount(earnedToDate, earnTokenAddress)})`}
                 />
               )}
             </div>
