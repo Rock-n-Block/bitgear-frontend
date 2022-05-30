@@ -2406,6 +2406,12 @@ export const PageMarketsContent: React.FC = React.memo(() => {
                       {tokenReceive?.symbol}
                     </span>
                   </li>
+
+                  <li>
+                    <span>Swap platform fee</span>
+                    <span>{getService0xBuyQuoteTokenFees(isCustomAddress) * 100}%</span>
+                  </li>
+
                   <li>
                     <div
                       className={classPriceChange}
