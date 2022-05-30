@@ -6,7 +6,7 @@ import qs from 'query-string';
 import config from '../config';
 import tokensRopsten from '../data/tokensRopsten';
 
-type TypeGetQuoteProps = {
+export type TypeGetQuoteProps = {
   buyToken: string;
   sellToken: string;
   sellAmount: string;
@@ -14,6 +14,16 @@ type TypeGetQuoteProps = {
   includePriceComparisons?: boolean;
   excludedSources?: string;
   includedSources?: string;
+  /**
+   * (Optional) The ETH address that should receive affiliate fees specified with buyTokenPercentageFee. Can be used combination with buyTokenPercentageFee to set a commission/trading fee when using the API.
+   * @example feeRecipient=0xa8aac589a67ecfade31efde49a062cc21d68a64e
+   */
+  feeRecipient?: string;
+  /**
+   * (Optional) The percentage (between 0 - 1.0) of the buyAmount that should be attributed to feeRecipient as affiliate fees. Note that this requires that the feeRecipient parameter is also specified in the request.
+   * @example buyTokenPercentageFee=0.1
+   */
+  buyTokenPercentageFee?: string | number;
 };
 
 type TypeGetPriceProps = {
@@ -101,7 +111,6 @@ export class Service0x {
     try {
       const newProps = { ...props };
       const { decimals, sellAmount } = newProps;
-      // eslint-disable-next-line no-param-reassign
       newProps.sellAmount = new BigNumber(sellAmount)
         .multipliedBy(new BigNumber(10).pow(decimals))
         .toFixed(0);

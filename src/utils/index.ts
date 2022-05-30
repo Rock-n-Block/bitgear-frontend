@@ -5,3 +5,4 @@ export * from './getWeb3';
 export * from './contracts.helper';
 export * from './bigNumberSerializers';
 export * from './constructSwapUrls';
+export * from './trade';

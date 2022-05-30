@@ -12,7 +12,8 @@ import imageTokenPay from '../../assets/images/token.png';
 import { useWalletConnectorContext } from '../../contexts/WalletConnect';
 import ethToken from '../../data/ethToken';
 import { modalActions } from '../../redux/actions';
-import { Service0x } from '../../services/0x';
+import { userSelectors } from '../../redux/selectors';
+import { Service0x, TypeGetQuoteProps } from '../../services/0x';
 import { prettyPrice } from '../../utils/prettifiers';
 import { sleep } from '../../utils/promises';
 import Button from '../Button';
@@ -21,7 +22,7 @@ import s from './style.module.scss';
 
 const Zx = new Service0x();
 
-type TypeButtonProps = {
+export type TypeModalContentQuotesProps = {
   // eslint-disable-next-line react/no-unused-prop-types
   open?: boolean;
   onClose?: () => void;
@@ -31,7 +32,11 @@ type TypeButtonProps = {
   tokenReceive?: any;
   amountPay?: string;
   amountReceive?: string;
-  tradeProps?: any;
+  tradeProps: TypeGetQuoteProps & {
+    gasPrice: number;
+    slippagePercentage: number;
+    excludedSources: string;
+  };
   excludedSources: string;
   customAddress?: string;
 };
@@ -45,13 +50,13 @@ type TypeModalParams = {
   delay?: number;
 };
 
-const ModalContentQuotes: React.FC<TypeButtonProps> = ({
+const ModalContentQuotes: React.FC<TypeModalContentQuotesProps> = ({
   onClose = () => {},
   tokenPay,
   tokenReceive,
   amountPay = '',
   amountReceive = '',
-  tradeProps = {},
+  tradeProps,
   excludedSources,
   customAddress,
 }) => {
@@ -62,7 +67,7 @@ const ModalContentQuotes: React.FC<TypeButtonProps> = ({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const toggleModal = (props: TypeModalParams) => dispatch(modalActions.toggleModal(props));
 
-  const { address: userAddress, balances: userBalances } = useSelector(({ user }: any) => user);
+  const { address: userAddress, balances: userBalances } = useSelector(userSelectors.getUser);
 
   const [blockInterval, setBlockInterval] = React.useState<number>();
   const [timeToNextBlock, setTimeToNextBlock] = React.useState<number>();
@@ -206,14 +211,14 @@ const ModalContentQuotes: React.FC<TypeButtonProps> = ({
       setTimeToNextBlock(undefined);
       setIsNeedToRefresh(false);
       console.log('ModalContentQuotes getQuote tradeProps:', tradeProps);
-      const resultGetQuote = await Zx.getQuote(tradeProps);
+      const resultGetQuote = await Zx.getQuote(tradeProps as TypeGetQuoteProps);
       console.log('ModalContentQuotes getQuote:', resultGetQuote);
       if (resultGetQuote.status === 'SUCCESS') {
         const newQuote = { ...resultGetQuote.data };
         const exchanges = chooseExchangesWithBestPrice(newQuote.priceComparisons);
         if (exchanges) {
           for (let i = 0; i < exchanges.length; i += 1) {
-            const newTradeProps = { ...tradeProps };
+            const newTradeProps = { ...tradeProps } as TypeGetQuoteProps;
             newTradeProps.excludedSources = '';
             newTradeProps.includedSources = exchanges[i].name;
             const resultGetQuoteNew = await Zx.getQuote(newTradeProps);
