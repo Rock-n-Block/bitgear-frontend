@@ -28,17 +28,21 @@ import {
   SkeletonLoader,
 } from '../../../components';
 import Button from '../../../components/Button';
-import ModalContentQuotes from '../../../components/ModalContentQuotes';
+import ModalContentQuotes, {
+  TypeModalContentQuotesProps,
+} from '../../../components/ModalContentQuotes';
 import config from '../../../config';
 import { erc20Abi } from '../../../config/abi';
 import { useWalletConnectorContext } from '../../../contexts/WalletConnect';
 import useDebounce from '../../../hooks/useDebounce';
 import { useUserTier } from '../../../hooks/useUserTier';
 import { modalActions, statusActions, walletActions } from '../../../redux/actions';
-import { Service0x } from '../../../services/0x';
+import { userSelectors } from '../../../redux/selectors';
+import { Service0x, TypeGetQuoteProps } from '../../../services/0x';
 import { CoinMarketCapService } from '../../../services/CoinMarketCap';
 import { CryptoCompareService } from '../../../services/CryptoCompareService';
 import { EtherscanService } from '../../../services/Etherscan';
+import { getService0xBuyQuoteTokenFees } from '../../../utils';
 import { getFromStorage, setToStorage } from '../../../utils/localStorage';
 import {
   prettyBalance,
@@ -221,7 +225,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
     [dispatch],
   );
 
-  const { address: userAddress, balances: userBalances } = useSelector(({ user }: any) => user);
+  const { address: userAddress, balances: userBalances } = useSelector(userSelectors.getUser);
   const { tokens, tokensBySymbol, tokensByAddress } = useSelector(({ zx }: any) => zx);
   const { chainId } = useSelector(({ wallet }: any) => wallet);
   const { messageYouPay } = useSelector(({ status }: any) => status);
@@ -390,15 +394,18 @@ export const PageMarketsContent: React.FC = React.memo(() => {
         if (!addressReceive) return null;
         console.log('PageMarketsContent getQuoteBuy:', amount);
         const { decimals } = tokenPay;
-        const props = {
+        const tradeProps: TypeGetQuoteProps = {
           buyToken: addressReceive,
           sellToken: addressPay,
           sellAmount: amount,
           decimals,
           includePriceComparisons: true,
+          feeRecipient: config.addresses[config.netType].tradeFeeRecipient,
+          buyTokenPercentageFee: getService0xBuyQuoteTokenFees(isCustomAddress),
         };
-        const resultGetQuote = await Zx.getQuote(props);
-        console.log('PageMarketsContent getQuoteBuy:', props, resultGetQuote);
+
+        const resultGetQuote = await Zx.getQuote(tradeProps);
+        console.log('PageMarketsContent getQuoteBuy:', tradeProps, resultGetQuote);
         if (resultGetQuote.status === 'SUCCESS') {
           const newQuote = { ...resultGetQuote.data };
           const exchangesWithBestPrice =
@@ -411,7 +418,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
           setExchangesWithLiquidity(exchangesWithLiquidityNew);
           if (exchangesWithBestPrice) {
             for (let i = 0; i < exchangesWithBestPrice.length; i += 1) {
-              const newTradeProps: any = { ...props };
+              const newTradeProps = { ...tradeProps };
               newTradeProps.excludedSources = '';
               newTradeProps.includedSources = exchangesWithBestPrice[i].name;
               const resultGetQuoteNew = await Zx.getQuote(newTradeProps);
@@ -430,7 +437,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
         return null;
       }
     },
-    [tokenPay, addressPay, addressReceive, chooseExchangesWithBestPrice],
+    [tokenPay, addressReceive, addressPay, isCustomAddress, chooseExchangesWithBestPrice],
   );
 
   const getPriceBuy = React.useCallback(
@@ -902,17 +909,17 @@ export const PageMarketsContent: React.FC = React.memo(() => {
       const excludedSources = exchangesExcluded.join(',');
       const gasPriceSetting = getGasPriceSetting();
       const slippagePercentage = slippage / 100;
-      const props: any = {
+      const tradeProps = {
         buyToken: addressReceive,
         sellToken: addressPay,
         sellAmount: amountPay,
         decimals,
-      };
-      if (gasPriceSetting) props.gasPrice = gasPriceSetting;
-      if (slippagePercentage) props.slippagePercentage = slippagePercentage;
-      if (excludedSources) props.excludedSources = excludedSources;
-      props.includePriceComparisons = true;
-      console.log('trade props:', props);
+      } as TypeModalContentQuotesProps['tradeProps'];
+      if (gasPriceSetting) tradeProps.gasPrice = gasPriceSetting;
+      if (slippagePercentage) tradeProps.slippagePercentage = slippagePercentage;
+      if (excludedSources) tradeProps.excludedSources = excludedSources;
+      tradeProps.includePriceComparisons = true;
+      console.log('trade props:', tradeProps);
       setWaiting(false);
       setOpenQuotes(true);
       return toggleModal({
@@ -924,7 +931,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
             amountReceive={amountReceive}
             tokenPay={tokenPay}
             tokenReceive={tokenReceive}
-            tradeProps={props}
+            tradeProps={tradeProps}
             onClose={handleCloseQuotes}
             excludedSources={excludedSources}
             customAddress={customAddress}
@@ -969,10 +976,10 @@ export const PageMarketsContent: React.FC = React.memo(() => {
       const { decimals: decimalsPay }: any = tokenPay;
       const { decimals: decimalsReceive }: any = tokenReceive;
       const newExpiration = new Date().getTime() + expiration * 60 * 1000;
-      const props = {
+      const tradeProps = {
         provider: web3Provider,
         chainId,
-        userAddress,
+        userAddress: userAddress as string,
         addressPay,
         addressReceive,
         decimalsPay,
@@ -981,7 +988,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
         amountReceive: String(amountReceive),
         expiration: newExpiration,
       };
-      const resultSignOrder = await Zx.signOrder(props);
+      const resultSignOrder = await Zx.signOrder(tradeProps);
       console.log('tradeLimit resultSignOrder:', resultSignOrder);
       if (resultSignOrder.status === 'ERROR') {
         setWaiting(false);
