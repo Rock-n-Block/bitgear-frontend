@@ -137,24 +137,24 @@ export default {
     minTokenAmountToApplyLowerFees: 100000,
 
     /* Applied if: minTokenAmountToApplyLowerFees isn't reached */
-    regularFee: 0.15,
+    regularFee: 0.0015, // 0.15%
 
     /* Applied if: minTokenAmountToApplyLowerFees is reached */
-    reducedFee: 0.03,
+    reducedFee: 0.003, // 0.3%
 
     /**
      * Applied if:
      * 1) minTokenAmountToApplyLowerFees isn't reached
      * 2) if address to sent MUST BE different from user wallet address
      */
-    deviatingAddressRegularFee: 0.5,
+    deviatingAddressRegularFee: 0.005, // 0.5%
 
     /**
      * Applied if:
      * 1) minTokenAmountToApplyLowerFees is reached
      * 2) if address to sent MUST BE different from user wallet address
      */
-    deviatingAddressReducedFee: 0.25,
+    deviatingAddressReducedFee: 0.0025, // 0.25%
   },
 };
 

@@ -21,7 +21,7 @@ export type TypeGetQuoteProps = {
   feeRecipient?: string;
   /**
    * (Optional) The percentage (between 0 - 1.0) of the buyAmount that should be attributed to feeRecipient as affiliate fees. Note that this requires that the feeRecipient parameter is also specified in the request.
-   * @example buyTokenPercentageFee=0.1
+   * @example buyTokenPercentageFee=0.1 = 10%
    */
   buyTokenPercentageFee?: string | number;
 };
