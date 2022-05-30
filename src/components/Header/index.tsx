@@ -427,24 +427,13 @@ export const Header: React.FC = () => {
             onClick={handleCloseDropdownMenuMobile}
           >
             <NavLink
-              to="/stake"
-              isActive={() => window.location.pathname === '/stake'}
+              to="/farm"
+              isActive={() => window.location.pathname === '/farm'}
               activeClassName={s.headerItemActive}
               onClick={() => setOpenMenu(false)}
             >
-              Stake
-            </NavLink>
-          </div>
-          <div
-            className={s.headerItem}
-            role="button"
-            tabIndex={0}
-            onKeyDown={() => {}}
-            onClick={handleCloseDropdownMenuMobile}
-          >
-            <a href="https://farm.bitgear.io" target="_blank" rel="noreferrer">
               Farm
-            </a>
+            </NavLink>
           </div>
           <div className={s.headerItemDesktop}>
             <NetworkDropDown />
