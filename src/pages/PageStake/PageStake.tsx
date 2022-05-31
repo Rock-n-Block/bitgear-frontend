@@ -173,14 +173,7 @@ export const PageStake: FC = () => {
                 <TooltipApy
                   token1={{
                     symbol: gearToken.symbol,
-                    apr: '21,60',
                   }}
-                  token2={{
-                    symbol: 'WETH',
-                    apr: '40,79',
-                    apy: '50,37',
-                  }}
-                  dailyEstimatedCompounds={446}
                 />
               </div>
             </>
