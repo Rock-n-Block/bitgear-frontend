@@ -123,6 +123,42 @@ export const Stake: React.FC<StakeProps> = ({
     return false;
   }, [inputValue, isEnoughAllowance, isLoadingSubmitButton, isStakeSelected, stakeAmount]);
 
+  const submitButtonState = useMemo(() => {
+    if (isLoadingSubmitButton) {
+      return {
+        text: 'Loading...',
+      };
+    }
+    if (isEnoughAllowance && isStakeSelected) {
+      return {
+        text: 'Stake',
+        handler: handleStake,
+      };
+    }
+    if (!isStakeSelected) {
+      return {
+        text: 'Unstake',
+        handler: handleUnstake,
+      };
+    }
+    if (!isEnoughAllowance && isStakeSelected) {
+      return {
+        text: 'Approve',
+        handler: handleApprove,
+      };
+    }
+    return {
+      text: '',
+    };
+  }, [
+    handleApprove,
+    handleStake,
+    handleUnstake,
+    isEnoughAllowance,
+    isLoadingSubmitButton,
+    isStakeSelected,
+  ]);
+
   return (
     <div
       className={cn(
@@ -231,41 +267,14 @@ export const Stake: React.FC<StakeProps> = ({
               </div>
             )}
 
-            {(() => {
-              if (isLoadingSubmitButton)
-                return (
-                  <Button
-                    classNameCustom={styles.stakeUnstakeButton}
-                    variant="blue"
-                    disabled={isDisabledSubmitButton}
-                  >
-                    Loading...
-                  </Button>
-                );
-
-              if (isEnoughAllowance || !isStakeSelected) {
-                return (
-                  <Button
-                    onClick={isStakeSelected ? handleStake : handleUnstake}
-                    classNameCustom={styles.stakeUnstakeButton}
-                    variant="blue"
-                    disabled={isDisabledSubmitButton}
-                  >
-                    {isStakeSelected ? 'Stake' : 'Unstake'}
-                  </Button>
-                );
-              }
-              return (
-                <Button
-                  onClick={handleApprove}
-                  classNameCustom={styles.stakeUnstakeButton}
-                  variant="blue"
-                  disabled={isDisabledSubmitButton}
-                >
-                  Approve
-                </Button>
-              );
-            })()}
+            <Button
+              classNameCustom={styles.stakeUnstakeButton}
+              variant="blue"
+              disabled={isDisabledSubmitButton}
+              onClick={submitButtonState?.handler}
+            >
+              {submitButtonState?.text}
+            </Button>
           </div>
           <div className={cn(styles.collectEthRewardsBlock, styles.textFlex)}>
             {isCompounder ? (
