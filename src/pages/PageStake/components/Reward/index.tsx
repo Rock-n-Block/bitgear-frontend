@@ -40,10 +40,17 @@ export const Reward: React.FC<RewardProps> = ({
 }) => {
   const [isExpanded, setExpanded] = useState(false);
 
-  const isDisabledSubmitButton = useMemo(() => {
-    if (isPendingTx) return true;
-    return false;
-  }, [isPendingTx]);
+  const submitButtonState = useMemo(() => {
+    if (isPendingTx) {
+      return {
+        text: 'Loading...',
+      };
+    }
+    return {
+      text: 'Collect',
+      handler: onCollectRewardClick,
+    };
+  }, [isPendingTx, onCollectRewardClick]);
 
   return (
     <div
@@ -107,24 +114,14 @@ export const Reward: React.FC<RewardProps> = ({
                 value={`${collectedToDate}($${getDollarAmount(collectedToDate, earnToken)})`}
               />
             </div>
-            {isPendingTx ? (
-              <Button
-                classNameCustom={styles.stakeUnstakeButton}
-                variant="blue"
-                disabled={isDisabledSubmitButton}
-              >
-                Loading...
-              </Button>
-            ) : (
-              <Button
-                onClick={onCollectRewardClick}
-                classNameCustom={styles.stakeUnstakeButton}
-                variant="blue"
-                disabled={isDisabledSubmitButton}
-              >
-                Collect
-              </Button>
-            )}
+            <Button
+              classNameCustom={styles.stakeUnstakeButton}
+              variant="blue"
+              disabled={isPendingTx}
+              onClick={submitButtonState.handler}
+            >
+              {submitButtonState.text}
+            </Button>
           </div>
           <div className={cn(styles.compoundGearBlock)}>
             <p className={cn(styles.text, styles.grayText, styles.smallText)}>

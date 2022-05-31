@@ -14,14 +14,14 @@
 
   cursor: pointer;
 
-  color: #fff;
+  color: $color-text-primary;
   background: $color-text-wc;
   border-radius: 10px;
 
   transition: all 250ms ease-in-out;
 
   a {
-    color: #fff;
+    color: $color-text-primary;
   }
 
   &:hover {

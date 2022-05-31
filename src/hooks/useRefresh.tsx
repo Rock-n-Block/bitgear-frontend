@@ -35,7 +35,7 @@ export const RefreshContextProvider: React.FC = ({ children }) => {
   const isBrowserTabActiveRef = useIsBrowserTabActive();
 
   useEffect(() => {
-    const interval = setInterval(async () => {
+    const interval = setInterval(() => {
       if (isBrowserTabActiveRef.current) {
         setFast((prev) => prev + 1);
       }
@@ -44,7 +44,7 @@ export const RefreshContextProvider: React.FC = ({ children }) => {
   }, [isBrowserTabActiveRef]);
 
   useEffect(() => {
-    const interval = setInterval(async () => {
+    const interval = setInterval(() => {
       if (isBrowserTabActiveRef.current) {
         setSlow((prev) => prev + 1);
       }

@@ -125,7 +125,7 @@ export const useStakingRegular = () => {
     [fetchUserDataRequestStatus, pendingReward, stakeTokenUserBalance, stakedAmount],
   );
 
-  const ret = {
+  return {
     handleStake,
     handleUnstake,
     handleCollectReward,
@@ -147,5 +147,4 @@ export const useStakingRegular = () => {
 
     publicDataRequestStatus,
   };
-  return ret;
 };
