@@ -110,7 +110,6 @@
 
 .stakeUnstakeBlock {
   padding: 24px 0;
-  border-bottom: 1px solid $color-blue;
 
   & > p:not(:last-child) {
     margin-bottom: 8px;
@@ -124,6 +123,7 @@
 
 .collectEthRewardsBlock {
   padding: 24px 0;
+  border-top: 1px solid $color-blue;
 }
 
 .tooltipIcon {

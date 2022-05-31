@@ -1,25 +1,19 @@
-import React, { ChangeEvent, ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
+import { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import BigNumber from 'bignumber.js/bignumber';
 import cn from 'classnames';
 
 import { triangleArrow } from '../../../../assets/icons';
-import {
-  Button,
-  Input,
-  SkeletonLoader,
-  // Switch
-} from '../../../../components';
+import { Button, Input, SkeletonLoader } from '../../../../components';
 import useDebounce from '../../../../hooks/useDebounce';
 import { RequestStatus } from '../../../../types';
 import { getDollarAmount, serialize, validateOnlyNumbers } from '../../../../utils';
 import { numberTransform } from '../../../../utils/numberTransform';
-// import { TooltipStakeCollectRewards } from '../TooltipStakeCollectRewards';
+import { NoConnectWalletPlaceholder } from '../NoConnectWalletPlaceholder';
 import { TooltipValue } from '../TooltipValue';
 
 import styles from './Stake.module.scss';
 
 interface StakeProps {
-  noDataPlaceholder?: ReactNode;
   isCompounder?: boolean;
   stakeAmount: string | number;
   tokenBalance: string | number;
@@ -40,11 +34,11 @@ interface StakeProps {
   onMaxClick: () => string | void;
   isUserDataLoading: boolean;
   isPendingTx: boolean;
+  isConnectedWallet: boolean;
   className?: number;
 }
 
-export const Stake: React.FC<StakeProps> = ({
-  noDataPlaceholder,
+export const Stake: FC<StakeProps> = ({
   isCompounder = false,
   stakeAmount,
   tokenBalance,
@@ -59,12 +53,12 @@ export const Stake: React.FC<StakeProps> = ({
   onMaxClick,
   isUserDataLoading,
   isPendingTx,
+  isConnectedWallet,
   className,
 }) => {
   const [isExpanded, setExpanded] = useState(false);
   const [isStakeSelected, setStakeSelected] = useState(true);
   const [inputValue, setInputValue] = useState('');
-  // const [shouldCollectEthRewards, setCollectEthRewards] = useState(false);
 
   const validateAndChangeInputValue = useCallback(
     (value: string) => {
@@ -173,7 +167,7 @@ export const Stake: React.FC<StakeProps> = ({
         {
           [styles.isContainerExpanded]: isExpanded,
           [styles.stakeContainer_compounder]: isCompounder,
-          [styles.stakeContainer_noDataPlaceholder]: !!noDataPlaceholder,
+          // [styles.stakeContainer_noDataPlaceholder]: !!noDataPlaceholder,
         },
         className,
       )}
@@ -184,7 +178,7 @@ export const Stake: React.FC<StakeProps> = ({
           {(() => {
             if (isUserDataLoading)
               return <SkeletonLoader width="120px" height="30px" borderRadius="4px" />;
-            if (!noDataPlaceholder)
+            if (isConnectedWallet)
               return (
                 <TooltipValue
                   target={
@@ -203,31 +197,36 @@ export const Stake: React.FC<StakeProps> = ({
           />
         </div>
       </div>
-      {noDataPlaceholder || (
-        <>
-          <div className={styles.stakeUnstakeSelectorBlock}>
-            <Button
-              classNameCustom={cn({ [styles.isSelected]: isStakeSelected })}
-              onClick={() => setStakeSelected(true)}
-              variant="text"
-            >
-              Stake
-            </Button>
-            <Button
-              classNameCustom={cn({ [styles.isSelected]: !isStakeSelected })}
-              onClick={() => setStakeSelected(false)}
-              variant="text"
-            >
-              Unstake
-            </Button>
-          </div>
-          <div className={styles.inputBlock}>
-            <Input value={inputValue} onChange={handleInputValueChange} />
-            <Button uppercase={false} variant="outlined" onClick={handleMax}>
-              Max
-            </Button>
-          </div>
-          <div className={styles.stakeUnstakeBlock}>
+      <div className={styles.stakeUnstakeSelectorBlock}>
+        <Button
+          classNameCustom={cn({ [styles.isSelected]: isStakeSelected })}
+          onClick={() => setStakeSelected(true)}
+          variant="text"
+        >
+          Stake
+        </Button>
+        <Button
+          classNameCustom={cn({ [styles.isSelected]: !isStakeSelected })}
+          onClick={() => setStakeSelected(false)}
+          variant="text"
+        >
+          Unstake
+        </Button>
+      </div>
+      <div className={styles.inputBlock}>
+        <Input value={inputValue} onChange={handleInputValueChange} />
+        <Button
+          uppercase={false}
+          variant="outlined"
+          onClick={isConnectedWallet ? handleMax : undefined}
+          disabled={!isConnectedWallet}
+        >
+          Max
+        </Button>
+      </div>
+      <div className={styles.stakeUnstakeBlock}>
+        {isConnectedWallet && (
+          <>
             <div className={styles.textFlex}>
               <p className={cn(styles.text, styles.grayText)}>{`${stakeToken} in wallet:`}</p>
               {isUserDataLoading ? (
@@ -239,7 +238,6 @@ export const Stake: React.FC<StakeProps> = ({
                 />
               )}
             </div>
-
             <div className={styles.textFlex}>
               <p className={cn(styles.text, styles.grayText)}>Your Stake (Compounding):</p>
               {isUserDataLoading ? (
@@ -283,44 +281,31 @@ export const Stake: React.FC<StakeProps> = ({
                 )}
               </div>
             )}
+          </>
+        )}
 
-            <Button
-              classNameCustom={styles.stakeUnstakeButton}
-              variant="blue"
-              disabled={isDisabledSubmitButton}
-              onClick={submitButtonState?.handler}
-            >
-              {submitButtonState?.text}
-            </Button>
-          </div>
-          <div className={cn(styles.collectEthRewardsBlock, styles.textFlex)}>
-            {
-              isCompounder && (
-                <span className={styles.compounderText}>
-                  <div>
-                    WETH you earn is automatically converted to BITGEAR, which is received over
-                    time.
-                  </div>
-                  <div>BITGEAR rewards are automatically compounded - no need to collect!</div>
-                </span>
-              )
-              // : (
-              //   <>
-              //     <span className="flexCenter">
-              //       <p className={cn(styles.text, styles.grayText)}>Collect 0 ETH rewards?</p>
-              //       <div className={styles.tooltipIcon}>
-              //         <TooltipStakeCollectRewards />
-              //       </div>
-              //     </span>
-              //     <Switch
-              //       checked={shouldCollectEthRewards}
-              //       onChange={() => setCollectEthRewards(!shouldCollectEthRewards)}
-              //     />
-              //   </>
-              // )
-            }
-          </div>
-        </>
+        {isConnectedWallet ? (
+          <Button
+            classNameCustom={styles.stakeUnstakeButton}
+            variant="blue"
+            disabled={isDisabledSubmitButton}
+            onClick={submitButtonState?.handler}
+          >
+            {submitButtonState?.text}
+          </Button>
+        ) : (
+          <NoConnectWalletPlaceholder />
+        )}
+      </div>
+      {isCompounder && (
+        <div className={cn(styles.collectEthRewardsBlock, styles.textFlex)}>
+          <span className={styles.compounderText}>
+            <div>
+              WETH you earn is automatically converted to BITGEAR, which is received over time.
+            </div>
+            <div>BITGEAR rewards are automatically compounded - no need to collect!</div>
+          </span>
+        </div>
       )}
     </div>
   );

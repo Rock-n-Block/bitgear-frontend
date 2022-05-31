@@ -17,15 +17,7 @@ import { RequestStatus } from '../../types';
 import { getDollarAmount } from '../../utils';
 import { prettyPrice } from '../../utils/prettifiers';
 
-import {
-  Banner,
-  NoConnectWalletPlaceholder,
-  Reward,
-  SectionHead,
-  Stake,
-  TooltipApr,
-  TooltipApy,
-} from './components';
+import { Banner, Reward, SectionHead, Stake, TooltipApr, TooltipApy } from './components';
 
 import styles from './PageStake.module.scss';
 
@@ -72,7 +64,6 @@ export const PageStake: FC = () => {
         />
         <div className={styles.sectionBody}>
           <Stake
-            noDataPlaceholder={!userWalletAddress ? <NoConnectWalletPlaceholder /> : null}
             onStakeClick={stakingLp.handleStake}
             onUnstakeClick={stakingLp.handleUnstake}
             onMaxClick={() => stakingLp.userData.balance}
@@ -87,9 +78,10 @@ export const PageStake: FC = () => {
               stakingLp.stakeRequestStatus === RequestStatus.REQUEST ||
               stakingLp.unstakeRequestStatus === RequestStatus.REQUEST
             }
+            isConnectedWallet={!!userWalletAddress}
           />
           <Reward
-            noDataPlaceholder={!userWalletAddress ? <NoConnectWalletPlaceholder /> : null}
+            // noDataPlaceholder={!userWalletAddress ? <NoConnectWalletPlaceholder /> : null}
             stakeToken={gearToken.symbol}
             earnToken={gearToken.symbol}
             earnTokenAddress={gearToken.address}
@@ -99,6 +91,7 @@ export const PageStake: FC = () => {
             onCollectRewardClick={stakingLp.handleCollectReward}
             isUserDataLoading={stakingLp.userData.fetchStatus === RequestStatus.REQUEST}
             isPendingTx={stakingLp.collectRewardRequestStatus === RequestStatus.REQUEST}
+            isConnectedWallet={!!userWalletAddress}
           />
         </div>
       </div>
@@ -131,7 +124,6 @@ export const PageStake: FC = () => {
         />
         <div className={styles.sectionBody}>
           <Stake
-            noDataPlaceholder={!userWalletAddress ? <NoConnectWalletPlaceholder /> : null}
             onStakeClick={stakingRegular.handleStake}
             onUnstakeClick={stakingRegular.handleUnstake}
             onMaxClick={() => stakingRegular.userData.balance}
@@ -146,9 +138,9 @@ export const PageStake: FC = () => {
               stakingRegular.stakeRequestStatus === RequestStatus.REQUEST ||
               stakingRegular.unstakeRequestStatus === RequestStatus.REQUEST
             }
+            isConnectedWallet={!!userWalletAddress}
           />
           <Reward
-            noDataPlaceholder={!userWalletAddress ? <NoConnectWalletPlaceholder /> : null}
             stakeToken={gearToken.symbol}
             earnToken={gearToken.symbol}
             earnTokenAddress={gearToken.address}
@@ -158,6 +150,7 @@ export const PageStake: FC = () => {
             onCollectRewardClick={stakingRegular.handleCollectReward}
             isUserDataLoading={stakingRegular.userData.fetchStatus === RequestStatus.REQUEST}
             isPendingTx={stakingRegular.collectRewardRequestStatus === RequestStatus.REQUEST}
+            isConnectedWallet={!!userWalletAddress}
           />
         </div>
       </div>
@@ -197,7 +190,6 @@ export const PageStake: FC = () => {
         />
         <div className={styles.sectionBody}>
           <Stake
-            noDataPlaceholder={!userWalletAddress ? <NoConnectWalletPlaceholder /> : null}
             isCompounder
             onStakeClick={stakingCompounder.handleStake}
             onUnstakeClick={stakingCompounder.handleUnstake}
@@ -215,6 +207,7 @@ export const PageStake: FC = () => {
               stakingCompounder.stakeRequestStatus === RequestStatus.REQUEST ||
               stakingCompounder.unstakeRequestStatus === RequestStatus.REQUEST
             }
+            isConnectedWallet={!!userWalletAddress}
           />
         </div>
       </div>
