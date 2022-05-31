@@ -48,7 +48,6 @@ export const ItemTokenBalance: React.FC<TypeItemTokenBalanceProps> = ({ address,
   };
 
   const getTokenInfo = React.useCallback(() => {
-    // console.log('ItemTokenBalance:', tokensByAddress, address);
     let newImage: any;
     if (tokensByAddress[address].symbol.toLowerCase() === 'gear') {
       newImage = GearIcon;
@@ -76,14 +75,7 @@ export const ItemTokenBalance: React.FC<TypeItemTokenBalanceProps> = ({ address,
   }, [tokensByAddress]);
 
   return (
-    <Link
-      className={s.headerDropdownItemToken}
-      to={`/markets/${address}`}
-      // role="button"
-      // tabIndex={0}
-      // onKeyDown={() => {}}
-      onClick={handleClick}
-    >
+    <Link className={s.headerDropdownItemToken} to={`/markets/${address}`} onClick={handleClick}>
       <div className={s.headerDropdownItemTokenImageWrap}>
         <img src={image} alt="" className={s.headerDropdownItemTokenImage} />
       </div>
@@ -151,7 +143,6 @@ export const ListOfTokenBalances: React.FC = () => {
           const { address, balance } = item;
           if (+balance === 0 && userBalancesFiltered.length !== 1) {
             return null;
-            // return <div className={s.headerDropdownItemTokens}>You do not have any tokens</div>;
           }
           if (+balance === 0 && userBalancesFiltered.length === 1) {
             return <div className={s.headerDropdownItemTokens}>You do not have any tokens</div>;

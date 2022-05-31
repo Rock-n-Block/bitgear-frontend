@@ -10,7 +10,6 @@ type TypeButtonProps = {
   onClick?: () => void;
   variant?: 'normal' | 'primary' | 'secondary' | 'blue' | 'outlined' | 'iconButton' | 'text';
   uppercase?: boolean;
-  // eslint-disable-next-line react/no-unused-prop-types
   icon?: any;
   classNameCustom?: any;
   disabled?: boolean;

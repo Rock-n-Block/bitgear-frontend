@@ -44,10 +44,6 @@ export const useUserTier = () => {
         lowerBound: 300000,
         upperBound: Infinity,
       },
-      // {
-      //   lowerBound: Infinity,
-      //   upperBound: Infinity,
-      // },
     ];
     tiers.forEach((tier, index) => {
       if (tier.lowerBound <= gearBalance && tier.upperBound > gearBalance) {

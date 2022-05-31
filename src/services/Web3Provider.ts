@@ -26,8 +26,6 @@ export default class Web3Provider {
 
   public web3Provider: any;
 
-  // public allowanceTarget: string;
-
   public addresses: any;
 
   constructor() {
@@ -36,7 +34,6 @@ export default class Web3Provider {
     });
     this.web3Provider = new Web3(this.provider);
     this.addresses = config.addresses;
-    // this.allowanceTarget = this.addresses[config.netType].allowanceTarget;
 
     this.provider.on('accountsChanged', (accounts: string[]) => {
       const fromStorage = localStorage.getItem('accountsWalletConnect') || '{}';
@@ -185,7 +182,6 @@ export default class Web3Provider {
   };
 
   public approve = async ({
-    // amount,
     userAddress,
     allowanceTarget,
     contractAbi,

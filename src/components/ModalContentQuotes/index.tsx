@@ -101,8 +101,6 @@ const ModalContentQuotes: React.FC<TypeButtonProps> = ({
     ? new BigNumber(balanceReceive).dividedBy(new BigNumber(10).pow(decimalsReceive)).toString(10)
     : '0';
 
-  // const isWide = useMedia({ minWidth: '767px' });
-
   const getPriceInUSDC = async (tokenAddress: string) => {
     try {
       const newTradeProps = {
@@ -174,16 +172,7 @@ const ModalContentQuotes: React.FC<TypeButtonProps> = ({
 
   const getBlockInterval = async () => {
     try {
-      // if (!web3Provider) return null;
-      // const resultLastBlockInterval = await web3Provider.getLastBlockInverval();
-      // console.log('ModalContentQuotes getBlockInterval:', resultLastBlockInterval);
       const newBlockInterval = 30000;
-      // if (resultLastBlockInterval.status === 'SUCCESS') {
-      //   const modulo = resultLastBlockInterval.data % 1000;
-      //   newBlockInterval = resultLastBlockInterval.data - modulo;
-      // }
-      // if (newBlockInterval <= 15000) newBlockInterval = 15000;
-      // console.log('ModalContentQuotes getBlockInterval:', newBlockInterval);
       setBlockInterval(newBlockInterval);
       return null;
     } catch (e) {

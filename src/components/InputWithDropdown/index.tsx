@@ -92,7 +92,6 @@ export const InputWithDropdown: React.FC<InputWithDropdownProps> = ({
   }, []);
 
   React.useEffect(() => {
-    // console.log('Input useEffect:', value);
     if (isValueLengthOk) {
       setNewOpen(true);
     } else {

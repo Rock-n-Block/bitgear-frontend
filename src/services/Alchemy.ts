@@ -22,7 +22,6 @@ export class AlchemyService {
       const url = `/`;
       const { chainIds }: any = config;
       const chainId: any = chainIds[config.isMainnetOrTestnet];
-      // console.log('AlchemyService getBalances:', chainIds, chainId);
       const options = {
         jsonrpc: '2.0',
         method: 'alchemy_getTokenBalances',

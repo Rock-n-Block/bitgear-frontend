@@ -37,7 +37,6 @@ const Connector: React.FC = ({ children }) => {
     (props: string) => dispatch(walletActions.setChainId(props)),
     [dispatch],
   );
-  // const walletInit = React.useCallback(() => dispatch(walletActions.walletInit()), [dispatch]);
 
   const login = React.useCallback(
     async (web3: any) => {
@@ -72,7 +71,6 @@ const Connector: React.FC = ({ children }) => {
       } catch (e) {
         console.error('login:', e);
         setToStorage('walletType', '');
-        // init();
         window.location.reload();
       }
     },

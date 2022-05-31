@@ -10,12 +10,7 @@
   background-image: url('../../assets/images/bg-market.svg');
   background-repeat: no-repeat;
   background-position: top;
-  //background-size: cover;
   @include flex(row, center, center, nowrap);
-
-  //@include b('mobile') {
-  //  background-position: center;
-  //}
 }
 
 .container {

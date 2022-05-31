@@ -112,31 +112,6 @@ const initSlippage = [
   },
 ];
 
-// const exchangesListOld: string[] = [
-//   '0x',
-//   'Native',
-//   'Uniswap',
-//   'Uniswap_V2',
-//   'Uniswap_V3',
-//   'Eth2Dai',
-//   'Kyber',
-//   'KyberDMM',
-//   'Curve',
-//   'LiquidityProvider',
-//   'MultiBridge',
-//   'Balancer',
-//   'Cream',
-//   'Bancor',
-//   'MStable',
-//   'Mooniswap',
-//   'MultiHop',
-//   'Shell',
-//   'Swerve',
-//   'SnowSwap',
-//   'SushiSwap',
-//   'Dodo',
-// ];
-
 type TypeToken = {
   symbol: string;
   name: string;
@@ -191,18 +166,10 @@ export const DropdownItems: React.FC<TypeDropdownItemsParams> = React.memo(
       if (!refScrollContainer?.current) return;
       const { scrollHeight, clientHeight, scrollTop } = refScrollContainer.current;
       const isBottomReached = +scrollHeight - clientHeight - scrollTop < 100;
-      // console.log('DropdownItems handleScroll:', {
-      //   scrollTop,
-      //   scrollHeight,
-      //   clientHeight,
-      //   isBottomReached,
-      //   page,
-      // });
       if (isBottomReached) setPage(page + 1);
     }, [page]);
 
     React.useEffect(() => {
-      // console.log('DropdownItems useEffect:', { children, childrenShown, page });
       setChildrenShown(children.slice(0, countChildrenInPage * (page + 1)));
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [page, children]);
@@ -240,7 +207,6 @@ export const PageMarketsContent: React.FC = React.memo(() => {
   const history = useHistory();
 
   const periodDefault = Number(getFromStorage('chartPeriod'));
-  // console.log('PageMarketsContent periodDefault:', periodDefault, periodDefault > 0);
   const { web3Provider } = useWalletConnectorContext();
 
   const dispatch = useDispatch();
@@ -281,7 +247,6 @@ export const PageMarketsContent: React.FC = React.memo(() => {
   const [, setPrice] = React.useState<number>(0);
   const [priceMarket, setPriceMarket] = React.useState<number>(0);
   const [priceChange, setPriceChange] = React.useState<number>(0);
-  // const [priceChart, setPriceChart] = React.useState<string | null>();
   const [marketHistory, setMarketHistory] = React.useState<any[]>([]);
   const [, setPoints] = React.useState<number[]>([]);
   const [, setDateTime] = React.useState<number[]>([]);
@@ -302,7 +267,6 @@ export const PageMarketsContent: React.FC = React.memo(() => {
   const [tokensReceive, setTokensReceive] = React.useState<TypeToken[]>([]);
   const [searchTokensResultReceive, setSearchTokensResultReceive] =
     React.useState<TypeToken[]>(tokensReceive);
-  // const [tokenNamePay, setTokenNamePay] = React.useState<string>('');
   const [addressPay, setAddressPay] = React.useState<string>(addressOne.toUpperCase());
   const [addressReceive, setAddressReceive] = React.useState<string>(
     addressTwo?.toUpperCase() || '',
@@ -311,7 +275,6 @@ export const PageMarketsContent: React.FC = React.memo(() => {
   const [amountPay, setAmountPay] = React.useState<string>('0');
   const [amountReceive, setAmountReceive] = React.useState<string>('0');
   const [waiting, setWaiting] = React.useState<boolean>(false);
-  // const [approved, setApproved] = React.useState<boolean>(false);
   const [balanceOfTokenPay, setBalanceOfTokenPay] = React.useState<string>('0');
   const [balanceOfTokenReceive, setBalanceOfTokenReceive] = React.useState<string>('0');
   const [expiration, setExpiration] = React.useState<number>(60);
@@ -351,14 +314,6 @@ export const PageMarketsContent: React.FC = React.memo(() => {
   const tokenTwo = tokensByAddress && tokensByAddress[addressTwo];
   const tokenPay = tokensByAddress && tokensByAddress[addressPay];
   const tokenReceive = tokensByAddress && tokensByAddress[addressReceive];
-  // console.log(
-  //   'PageMarketsContent tokens:',
-  //   tokensByAddress,
-  //   tokenOne,
-  //   tokenTwo,
-  //   tokenPay,
-  //   tokenReceive,
-  // );
 
   let isAllowed;
   let isCustomAllowance = true;
@@ -370,7 +325,6 @@ export const PageMarketsContent: React.FC = React.memo(() => {
     if (customAddress) {
       isCustomAllowance = allowanceCustom >= +amountPayInWei;
     }
-    // console.log('PageMarketsContent:', symbolPay, allowance, decimals10, amountPayInWei);
   }
 
   React.useEffect(() => {
@@ -506,59 +460,6 @@ export const PageMarketsContent: React.FC = React.memo(() => {
     [tokenPay, addressPay, addressReceive],
   );
 
-  // const getQuoteSell = React.useCallback(
-  //   async ({ amount }) => {
-  //     try {
-  //       console.log('PageMarketsContent getQuoteSell:', amount);
-  //       if (!amount) return null;
-  //       if (!symbolReceive) return null;
-  //       const { decimals, address: addressPay } = getTokenBySymbol(symbolPay);
-  //       const { address: addressReceive } = getTokenBySymbol(symbolReceive);
-  //       const props = {
-  //         buyToken: addressReceive,
-  //         sellToken: addressPay,
-  //         sellAmount: amount,
-  //         decimals,
-  //       };
-  //       const result = await Zx.getQuote(props);
-  //       console.log('PageMarketsContent getQuoteSell:', props, result);
-  //       if (result.status === 'SUCCESS') return result.data.guaranteedPrice;
-  //       return null;
-  //     } catch (e) {
-  //       console.error('PageMarketsContent getQuoteSell:', e);
-  //       return null;
-  //     }
-  //   },
-  //   [getTokenBySymbol, symbolPay, symbolReceive],
-  // );
-  //
-  // const getPriceSell = React.useCallback(
-  //   async ({ amount }) => {
-  //     try {
-  //       console.log('PageMarketsContent getPriceSell:', amount);
-  //       if (!amount) return null;
-  //       if (!symbolReceive) return null;
-  //       const { decimals, address: addressPay } = getTokenBySymbol(symbolPay);
-  //       const { address: addressReceive } = getTokenBySymbol(symbolReceive);
-  //       const props = {
-  //         buyToken: addressReceive,
-  //         sellToken: addressPay,
-  //         sellAmount: amount,
-  //         decimals,
-  //       };
-  // props.includePriceComparisons = true;
-  //       const result = await Zx.getPrice(props);
-  //       console.log('PageMarketsContent getPriceSell:', props, result);
-  //       if (result.status === 'SUCCESS') return result.data.price;
-  //       return null;
-  //     } catch (e) {
-  //       console.error('PageMarketsContent getPrice:', e);
-  //       return null;
-  //     }
-  //   },
-  //   [getTokenBySymbol, symbolPay, symbolReceive],
-  // );
-
   const getPricePay = React.useCallback(async () => {
     try {
       if (!amountPayDebounced || amountPayDebounced === '0') return;
@@ -625,12 +526,10 @@ export const PageMarketsContent: React.FC = React.memo(() => {
 
   const getGasPrice = React.useCallback(async () => {
     const resultGetGasPrice = await Etherscan.getGasPrice();
-    // console.log('PageMarketsContent resultGetGasPrice:', resultGetGasPrice);
     if (resultGetGasPrice.status === 'SUCCESS') {
       setGasPriceFromNet(resultGetGasPrice.data);
     } else {
       const resultGetGasPriceFromWeb3 = await web3Provider.getGasPrice();
-      // console.log('PageMarketsContent resultGetGasPriceFromWeb3:', resultGetGasPriceFromWeb3);
       setGasPriceFromNet(resultGetGasPriceFromWeb3);
     }
   }, [web3Provider]);
@@ -646,7 +545,6 @@ export const PageMarketsContent: React.FC = React.memo(() => {
       if (!addressPay) return;
       if (!tokenPay) return;
       if (!tokensBySymbol) return;
-      // console.log('PageMarketsContent getPriceMarket:', symbolPay, symbolReceive, tokens);
       const { decimals } = tokenPay;
       const { address: addressUSDC } = tokensBySymbol.USDC;
       const result = await Zx.getPrice({
@@ -710,8 +608,6 @@ export const PageMarketsContent: React.FC = React.memo(() => {
         if (result.status === 'SUCCESS') {
           newPrice = result.data.PRICE;
           setPrice(newPrice);
-          // const newPriceChange = prettyPriceChange(result.data.CHANGEHOUR);
-          // setPriceChange(+newPriceChange);
         } else {
           setPrice(0);
         }
@@ -722,16 +618,6 @@ export const PageMarketsContent: React.FC = React.memo(() => {
       return null;
     }
   }, [tokenPay, setStatus, amountPayDebounced, addressPay, addressReceive]);
-
-  // const getTokenPay = React.useCallback(async () => {
-  //   try {
-  //     if (!tokenPay) return;
-  //     const { name } = tokenPay;
-  //     setTokenNamePay(name);
-  //   } catch (e) {
-  //     console.error(e);
-  //   }
-  // }, [tokenPay]);
 
   const filterTokens = React.useCallback(() => {
     try {
@@ -760,21 +646,6 @@ export const PageMarketsContent: React.FC = React.memo(() => {
     }
   }, [isModeLimit, tokens, userBalances]);
 
-  // const getTokensSymbolsReceive = async () => {
-  //   try {
-  //     const result = await Zx.getPrices({
-  //       sellToken: addressPay,
-  //     });
-  //     const prices = result.data.records;
-  //     const newPricesSymbols = prices.map((item: any) => item.address);
-  //     console.log('PageMarketsContent getTokensSymbolsReceive:', newPricesSymbols);
-  //     return newPricesSymbols;
-  //   } catch (e) {
-  //     console.error('PageMarketsContent getTokensSymbolsReceive:', e);
-  //     return [];
-  //   }
-  // };
-
   const getTokensReceive = React.useCallback(async () => {
     try {
       let newTokensReceive = tokensFiltered.filter((item: any) => item.address !== addressPay);
@@ -799,54 +670,6 @@ export const PageMarketsContent: React.FC = React.memo(() => {
       console.error(e);
     }
   }, [userBalances, addressPay, tokensFiltered]);
-
-  // const getHistoryDay = React.useCallback(async () => {
-  //   try {
-  //     const result = await CryptoCompare.getHistoryMinute({
-  //       symbolOne,
-  //       symbolTwo: symbolTwo || 'USD',
-  //       limit: 96,
-  //       aggregate: 15,
-  //       // exchange: 'oneinch',
-  //     });
-  //     console.log('getHistoryDay:', result);
-  //     setMarketHistory(result.data);
-  //   } catch (e) {
-  //     console.error(e);
-  //   }
-  // }, [symbolOne, symbolTwo]);
-  //
-  // const getHistoryHourWeek = React.useCallback(async () => {
-  //   try {
-  //     const result = await CryptoCompare.getHistoryHour({
-  //       symbolOne,
-  //       symbolTwo: symbolTwo || 'USD',
-  //       limit: 168,
-  //       aggregate: 1,
-  //       // exchange: 'oneinch',
-  //     });
-  //     console.log('getHistoryWeek:', result);
-  //     setMarketHistory(result.data);
-  //   } catch (e) {
-  //     console.error(e);
-  //   }
-  // }, [symbolOne, symbolTwo]);
-  //
-  // const getHistoryHourMonth = React.useCallback(async () => {
-  //   try {
-  //     const result = await CryptoCompare.getHistoryHour({
-  //       symbolOne,
-  //       symbolTwo: symbolTwo || 'USD',
-  //       limit: 180,
-  //       aggregate: 4,
-  //       // exchange: 'oneinch',
-  //     });
-  //     console.log('getHistoryMonth:', result);
-  //     setMarketHistory(result.data);
-  //   } catch (e) {
-  //     console.error(e);
-  //   }
-  // }, [symbolOne, symbolTwo]);
 
   const getHistoryDay = React.useCallback(async () => {
     try {
@@ -911,7 +734,6 @@ export const PageMarketsContent: React.FC = React.memo(() => {
       const newPriceChange = ((newPoints[newPointsLength - 1] - newPoints[0]) / newPoints[0]) * 100;
       const prettyNewPriceChange = prettyPriceChange(newPriceChange.toString());
       setPriceChange(+prettyNewPriceChange);
-      // console.log('PageMarketsContent getPoints:', newPriceChange, prettyNewPriceChange);
     } catch (e) {
       console.error(e);
     }
@@ -975,26 +797,6 @@ export const PageMarketsContent: React.FC = React.memo(() => {
       console.error(e);
     }
   }, [userAddress, web3Provider, tokenReceive]);
-
-  // const validateTradeErrors = React.useCallback(
-  //   (error) => {
-  //     const { code } = error.validationErrors[0];
-  //     let text: string | React.ReactElement = 'Something gone wrong';
-  //     if (code === 1001) {
-  //       text = 'Please, enter amount to pay or select token to receive';
-  //     } else if (code === 1004) {
-  //       text = (
-  //         <div>
-  //           <p>Insufficicent liquidity.</p>
-  //           <p>Please, decrease amount.</p>
-  //         </div>
-  //       );
-  //     }
-  //     toggleModal({ open: true, text });
-  //     setWaiting(false);
-  //   },
-  //   [toggleModal],
-  // );
 
   const verifyForm = React.useCallback(() => {
     try {
@@ -1062,7 +864,6 @@ export const PageMarketsContent: React.FC = React.memo(() => {
 
   const getAllowance = React.useCallback(async () => {
     try {
-      // console.log('PageMarketsContent getAllowance:', symbolPay, symbolReceive, amountPay);
       if (!addressPay || !addressReceive || !amountPay || !userAddress) return;
       const { netType, addresses } = config as { [index: string]: any };
       const { allowanceTarget, allowanceTargetLimit } = addresses[netType];
@@ -1153,9 +954,6 @@ export const PageMarketsContent: React.FC = React.memo(() => {
     addressReceive,
     amountPay,
     amountReceive,
-    // validateTradeErrors,
-    // web3Provider,
-    // userAddress,
     exchangesExcluded,
     customAddress,
   ]);
@@ -1276,10 +1074,6 @@ export const PageMarketsContent: React.FC = React.memo(() => {
     setOpenSelect(!openSelect);
   };
 
-  // const handleOpenSelectSlippage = () => {
-  //   setOpenSelectSlippage(!openSelectSlippage);
-  // };
-
   const handleFocusAmountPay = async () => {
     if (amountPay === '0') setAmountPay('');
   };
@@ -1354,7 +1148,6 @@ export const PageMarketsContent: React.FC = React.memo(() => {
         if (includesInSymbol || includesInName) return true;
         return false;
       });
-      // console.log('matchSearch:', result);
       setSearchTokensResultPay(result);
     } catch (e) {
       console.error(e);
@@ -1370,7 +1163,6 @@ export const PageMarketsContent: React.FC = React.memo(() => {
         if (includesInSymbol || includesInName) return true;
         return false;
       });
-      // console.log('matchSearch:', result);
       setSearchTokensResultReceive(result);
     } catch (e) {
       console.error(e);
@@ -1388,11 +1180,6 @@ export const PageMarketsContent: React.FC = React.memo(() => {
     setWalletType('metamask');
     toggleModal({ open: false });
   }, [setWalletType, toggleModal]);
-
-  // const handleSetPeriod = (newPeriod: number) => {
-  //   setPeriod(newPeriod);
-  //   setToStorage('chartPeriod', newPeriod);
-  // };
 
   const handleSetMode = (newMode: string) => {
     if (addressPay === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee') {
@@ -1447,15 +1234,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
       const amountInWei = new BigNumber(amountPay)
         .multipliedBy(new BigNumber(10).pow(decimals))
         .toString(10);
-      if (isAddressPayETH) {
-        // propsApprove.amount = new BigNumber(amountPay)
-        //   .multipliedBy(new BigNumber(10).pow(decimals))
-        //   .toString(10);
-        // const resultApprove = await web3Provider.approve(propsApprove);
-        // console.log('handleApprove resultApprove:', resultApprove);
-        // setWaiting(false);
-        // setApproved(true);
-      } else if (!isCustomAllowance) {
+      if (!isCustomAllowance) {
         const propsApprove: any = {
           amount: amountInWei,
           userAddress,
@@ -1467,12 +1246,6 @@ export const PageMarketsContent: React.FC = React.memo(() => {
         console.log('handleApprove resultApprove:', resultApprove);
         setWaiting(false);
       } else {
-        // const totalSupply = await web3Provider.totalSupply({
-        //   contractAddress,
-        //   contractAbi: erc20Abi,
-        // });
-        // console.log('handleApprove totalSupply:', totalSupply);
-        // propsApprove.amount = totalSupply;
         const propsApprove: any = {
           amount: amountInWei,
           userAddress,
@@ -1507,25 +1280,19 @@ export const PageMarketsContent: React.FC = React.memo(() => {
 
   const handleSelectSymbolPay = async (address: string) => {
     console.log('handleSelectSymbolPay:', { address, addressReceive });
-    // setAmountPay(0);
-    // setAmountReceive(0);
     setAddressPay(address);
     setOpenDropdownPay(false);
-    // const tokensSymbolsReceive = await getTokensSymbolsReceive();
     let newAddressReceive = addressReceive;
     if (address === newAddressReceive) {
       newAddressReceive = '';
       setAddressReceive('');
       setAmountReceive('0');
     }
-    // if (!tokensSymbolsReceive.includes(addressReceive)) newAddressReceive = '';
     history.push(`/markets/${address}/${newAddressReceive}`);
   };
 
   const handleSelectSymbolReceive = (address: string) => {
     console.log('handleSelectSymbolReceive:', address);
-    // setAmountPay('0');
-    // setAmountReceive('0');
     setAddressReceive(address);
     setOpenDropdownReceive(false);
     history.push(`/markets/${addressPay}/${address}`);
@@ -1534,7 +1301,6 @@ export const PageMarketsContent: React.FC = React.memo(() => {
   const handleSelectSlippage = (value: string | number, slippageArr: slippageItem[]) => {
     setSlippageItems(slippageArr);
     setSlippage(+value);
-    // setOpenSelect(false);
   };
 
   const handleSelectExpiration = (minutes: number) => {
@@ -1568,10 +1334,6 @@ export const PageMarketsContent: React.FC = React.memo(() => {
     history.push(`/markets/${addressReceive}/${addressPay}`);
     setRotateDivider(dividerRotate === 1 ? -1 : 1);
   };
-
-  // const handleHoverChart = (value: string | null) => {
-  //   setPriceChart(value);
-  // };
 
   const handleClickOutsideDropdownPay = (e: any) => {
     if (
@@ -1657,7 +1419,6 @@ export const PageMarketsContent: React.FC = React.memo(() => {
 
   React.useEffect(() => {
     if (!addressPay) return;
-    // getTokenPay();
     getPrices();
     if (!addressOne) return;
     switch (period) {
@@ -1826,20 +1587,6 @@ export const PageMarketsContent: React.FC = React.memo(() => {
       </div>
     </div>
   );
-
-  // const SelectLabelSlippage = (
-  //   <div
-  //     ref={refSelectLabelSlippage}
-  //     className={s.containerSettingsSelectLabel}
-  //     role="button"
-  //     tabIndex={0}
-  //     onKeyDown={() => {}}
-  //     onClick={handleOpenSelectSlippage}
-  //   >
-  //     <div>{slippage} %</div>
-  //     <IconArrowDownWhite />
-  //   </div>
-  // );
 
   const SelectLabelExpiration = (
     <div
@@ -2207,7 +1954,6 @@ export const PageMarketsContent: React.FC = React.memo(() => {
                                   onChangeSearch={handleChangeSearchPay}
                                 >
                                   {searchTokensResultPay.map((token: any) => {
-                                    // if (it > 50) return null;
                                     const {
                                       name: tokenName,
                                       symbol,

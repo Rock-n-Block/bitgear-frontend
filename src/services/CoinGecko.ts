@@ -19,7 +19,6 @@ export class CoinGeckoService {
     try {
       const url = `/coins/list`;
       const result = await this.axios.get(url);
-      // console.log('CoinGeckoService getAllCoins:', result);
       if (result.data.Response === 'Error') {
         return { status: 'ERROR', data: undefined };
       }
@@ -45,7 +44,6 @@ export class CoinGeckoService {
       }
       const url = `/coins/${coinId}`;
       const result = await this.axios.get(url);
-      // console.log('CoinGeckoService getCoinInfo:', result);
       if (result.data.Response === 'Error') {
         return { status: 'ERROR', data: undefined };
       }

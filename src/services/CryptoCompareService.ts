@@ -74,13 +74,11 @@ export class CryptoCompareService {
       const url = `/data/v2/pair/mapping/fsym?${query}`;
       const result = await this.axios.get(url);
       if (result.data.Response === 'Error') {
-        // console.error('CryptoCompareService getPairMapping:', result);
         return { status: 'ERROR', data: undefined };
       }
       const mapping = result.data.Data.current;
       let exchanges = mapping.filter((item: any) => item.tsym === symbolTwo);
       exchanges = exchanges.map((item: any) => item.exchange);
-      // console.log('CryptoCompareService getPairMapping:', exchanges);
       return {
         status: 'SUCCESS',
         data: exchanges,

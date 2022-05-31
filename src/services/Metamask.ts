@@ -24,15 +24,12 @@ export default class MetamaskService {
 
   public web3Provider: any;
 
-  // public allowanceTarget: string;
-
   public addresses: any;
 
   constructor() {
     this.provider = window.ethereum;
     this.web3Provider = new Web3(this.provider);
     this.addresses = config.addresses;
-    // this.allowanceTarget = this.addresses[config.netType].allowanceTarget;
   }
 
   public checkNetwork = async () => {
@@ -159,7 +156,6 @@ export default class MetamaskService {
     contractAddress,
   }: TypeApprove) => {
     try {
-      // const totalSupply = await this.totalSupply({ contractAddress, contractAbi });
       const contract = new this.web3Provider.eth.Contract(contractAbi, contractAddress);
       return contract.methods.approve(allowanceTarget, amount).send({ from: userAddress });
     } catch (e) {
@@ -170,7 +166,6 @@ export default class MetamaskService {
 
   public getGasPrice = async () => {
     const price = await this.web3Provider.eth.getGasPrice();
-    // console.log('Web3Provider getGasPrice:', price);
     return +new BigNumber(price).dividedBy(new BigNumber(10).pow(9)).toFixed();
   };
 

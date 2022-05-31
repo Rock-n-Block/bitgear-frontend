@@ -7,32 +7,15 @@ import BigNumber from 'bignumber.js/bignumber';
 import imageTokenPay from './assets/images/token.png';
 import { useWalletConnectorContext } from './contexts/WalletConnect';
 import tokensListData from './data/coinlist.json';
-// import erc20Abi from './data/erc20Abi.json';
 import tokenGear from './data/gearToken';
-// import excludedSymbols from './data/excludedSymbols';
 import { statusActions, userActions, zxActions } from './redux/actions';
 import { Service0x } from './services/0x';
 import { AlchemyService } from './services/Alchemy';
-// import { CoinGeckoService } from './services/CoinGecko';
 import { CoinMarketCapService } from './services/CoinMarketCap';
 import { CryptoCompareService } from './services/CryptoCompareService';
-// import { EtherscanService } from './services/Etherscan';
 import * as Components from './components';
 import config from './config';
 import * as Pages from './pages';
-
-// const GET_TOKENS = gql`
-//   query Token($first: Int, $skip: Int) {
-//     tokens(first: $first, skip: $skip) {
-//       id
-//       symbol
-//       decimals
-//       swapVolume
-//       limitOrderVolume
-//       rfqOrderVolume
-//     }
-//   }
-// `;
 
 const GET_TOKENS = gql`
   query Token($first: Int, $skip: Int) {
@@ -45,16 +28,13 @@ const GET_TOKENS = gql`
 `;
 
 const Zx = new Service0x();
-// const CoinGecko = new CoinGeckoService();
 const CryptoCompare = new CryptoCompareService();
 const CoinMarketCap = new CoinMarketCapService();
-// const Etherscan = new EtherscanService();
 const Alchemy = new AlchemyService();
 
 export const App: React.FC = () => {
   const { web3Provider } = useWalletConnectorContext();
 
-  // const [getTokensFromGraphQuery, { data: dataGetTokensFromGraphQuery }] = useLazyQuery(GET_TOKENS);
   const { fetchMore: fetchMoreGetTokensFromGraphQuery } = useQuery(GET_TOKENS, {
     variables: { first: 1000, skip: 0 },
   });
@@ -82,7 +62,6 @@ export const App: React.FC = () => {
   const [tokensCMCByAddress, setTokensCMCByAddress] = React.useState<any>();
   const [symbolsCoinMarketCap, setSymbolsCoinMarketCap] = React.useState<any[]>([]);
   const [addressesCoinMarketCap, setAddressesCoinMarketCap] = React.useState<any[]>([]);
-  // const [tokensCoinGecko, setTokensCoinGecko] = React.useState<any[]>([]);
 
   const getTokensFromCryptoCompare = async () => {
     try {
@@ -156,9 +135,7 @@ export const App: React.FC = () => {
       let newTokens;
       if (result.status === 'SUCCESS') {
         newTokens = result.data;
-        // setTokensCoinMarketCap(newTokens);
       }
-      // console.log('App getTokensFromCoinMarketCap:', newTokens);
       const newTokensByAddress: any = {};
       const newSymbolsCMC = [];
       const newAddressesCMC = [];
@@ -182,17 +159,6 @@ export const App: React.FC = () => {
         newSymbolsCMC.push(symbol.toUpperCase());
         newAddressesCMC.push(address.toLowerCase());
       }
-      // todo get decimals from web3, theGraph or Alchemy/Etherscan
-      // web3 not working without infura/metamask
-      // const newTokensDecimals = await Promise.all(
-      //   newTokensFormatted.map((token) => {
-      //     const { address: contractAddress } = token;
-      //     return web3Provider.decimals({ contractAddress, contractAbi: erc20Abi });
-      //   }),
-      // );
-      // console.log('App getTokensFromCoinMarketCap:', await newTokensDecimals);
-      // console.log('App getTokensFromCoinMarketCap:', newTokens);
-      // console.log('App getTokensFromCoinMarketCap newAddressesCMC:', newAddressesCMC);
       setTokensCMCByAddress(newTokensByAddress);
       setSymbolsCoinMarketCap(newSymbolsCMC);
       setAddressesCoinMarketCap(newAddressesCMC);
@@ -200,32 +166,6 @@ export const App: React.FC = () => {
       console.error('App getTokensFromCoinMarketCap:', e);
     }
   };
-
-  // const getTokensFromCoinGecko = async () => {
-  //   try {
-  //     const result = await CoinGecko.getAllCoins();
-  //     console.log('App getTokensFromCoinGecko:', result.data);
-  //     if (result.status === 'SUCCESS') {
-  //       const newTokens = result.data;
-  //       setTokensCoinGecko(newTokens);
-  //     }
-  //     console.log('App getTokensFromCoinGecko:', tokensCoinGecko);
-  //   } catch (e) {
-  //     console.error(e);
-  //   }
-  // };
-
-  // const repeatGetCoinInfoWhenError = async ({ symbol }: { symbol: string }) => {
-  //   try {
-  //     const resultGetCoinInfo = await CoinMarketCap.getCoinInfo({ symbol });
-  //     console.log('App repeatGetCoinInfoWhenError:', resultGetCoinInfo);
-  //     // if (resultGetCoinInfo.status === 'ERROR') {
-  //     //   const excludedSymbols = resultGetCoinInfo.data;
-  //     // }
-  //   } catch (e) {
-  //     console.error('App repeatGetCoinInfoWhenError:', e);
-  //   }
-  // };
 
   const changeTokensInfo = React.useCallback(
     async (data) => {
@@ -284,7 +224,6 @@ export const App: React.FC = () => {
       // eslint-disable-next-line no-confusing-arrow
       newTokens0x.sort((a: any, b: any) => (a.name !== b.name ? (a.name < b.name ? -1 : 1) : 0));
       console.log('App getTokens tokenGear:', tokenGear);
-      // newTokens0x = [tokenGear].concat(newTokens0x);
       const tokensAll = newTokens0x
         .concat(tokensCryptoCompareFormatted)
         .concat(tokensFromGraphFormatted);
@@ -376,62 +315,7 @@ export const App: React.FC = () => {
     }
   }, [userAddress, tokenAddresses, setUserData, setStatus, web3Provider]);
 
-  // const getTokensBalances = React.useCallback(async () => {
-  //   try {
-  //     return; // todo
-  //     setStatus({ loadingBalances: 'loading' });
-  //     const balances = {};
-  //     // eslint-disable-next-line no-plusplus
-  //     for (let i = 0; i < tokens0x.length; i++) {
-  //       const token = tokens0x[i];
-  //       const { symbol, address }: { symbol: string; address: string } = token;
-  //       let balance = 0;
-  //       if (symbol === 'ETH') {
-  //         // eslint-disable-next-line no-await-in-loop
-  //         balance = await web3Provider.getBalance(userAddress);
-  //       } else {
-  //         try {
-  //           // eslint-disable-next-line no-await-in-loop
-  //           balance = await web3Provider.balanceOf({
-  //             address: userAddress,
-  //             contractAddress: address,
-  //             contractAbi: erc20Abi,
-  //           });
-  //         } catch (e) {
-  //           try {
-  //             // console.error(`App getTokensBalances (${symbol}):`, e);
-  //             // eslint-disable-next-line no-await-in-loop
-  //             const resultGetAbi = await Etherscan.getAbi(address); // todo after adding excludedCoins it can be removed
-  //             // console.log('App getTokensBalances resultGetAbi:', resultGetAbi);
-  //             if (resultGetAbi.status === 'SUCCESS') {
-  //               // eslint-disable-next-line no-await-in-loop
-  //               balance = await web3Provider.balanceOf({
-  //                 address: userAddress,
-  //                 contractAddress: address,
-  //                 contractAbi: resultGetAbi.data,
-  //               });
-  //             } else {
-  //               balance = 0;
-  //             }
-  //           } catch {
-  //             balance = 0;
-  //           }
-  //         }
-  //       }
-  //       (balances as any)[symbol] = new BigNumber(balance).toString(10);
-  //     }
-  //     // console.log('App getTokensBalances balances:', balances);
-  //     setUserData({ balances });
-  //     setStatus({ loadingBalances: 'done' });
-  //   } catch (e) {
-  //     console.error('App getTokensBalances:', e);
-  //     setStatus({ loadingBalances: 'error' });
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [tokens0x, setTokens, setUserData, userAddress, web3Provider]);
-
   React.useEffect(() => {
-    // getTokensFromCoinGecko();
     getTokensFromCryptoCompare();
     getTokensFromGraph();
     getTokensFromCoinMarketCap();
@@ -445,16 +329,6 @@ export const App: React.FC = () => {
     getTokens();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tokensCryptoCompare, tokensCryptoCompareFormatted, tokensFromGraphFormatted]);
-
-  // React.useEffect(() => {
-  //   if (!tokens0x || tokens0x?.length === 0) return;
-  //   if (!userAddress) return;
-  //   getTokensBalances();
-  //   const interval = setInterval(() => getTokensBalances(), 10000);
-  //   // eslint-disable-next-line consistent-return
-  //   return () => clearInterval(interval);
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [tokens0x, userAddress]);
 
   React.useEffect(() => {
     if (!tokens0x || tokens0x?.length === 0) return;
