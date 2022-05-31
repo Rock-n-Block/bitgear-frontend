@@ -4,6 +4,7 @@ import cn from 'classnames';
 import { arrowSquareOutIcon, plusCircleIcon } from '../../../../assets/icons';
 import { bigGear } from '../../../../assets/images';
 import { Button } from '../../../../components';
+import gearEthLPToken from '../../../../data/gearEthLPToken';
 import gearToken from '../../../../data/gearToken';
 import { useShallowSelector } from '../../../../hooks';
 import { userSelectors } from '../../../../redux/selectors';
@@ -43,6 +44,15 @@ export const Banner: React.FC<BannerProps> = ({ apy, className }) => {
               rel="noreferrer noopener"
             >
               Buy {gearToken.symbol}
+            </a>
+          </Button>
+          <Button variant="outlined" icon={arrowSquareOutIcon} uppercase={false}>
+            <a
+              href={constructSwapUrl(gearEthLPToken.address, network)}
+              target="_blank"
+              rel="noreferrer noopener"
+            >
+              Get LP Token
             </a>
           </Button>
           {window.ethereum && (
