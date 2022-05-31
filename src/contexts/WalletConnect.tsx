@@ -6,12 +6,6 @@ import MetamaskProvider from '../services/Metamask';
 import Web3Provider from '../services/Web3Provider';
 import { getFromStorage, setToStorage } from '../utils/localStorage';
 
-declare global {
-  interface Window {
-    ethereum: any;
-  }
-}
-
 const walletConnectorContext = createContext<any>({
   web3Provider: {},
 });

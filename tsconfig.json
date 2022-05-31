@@ -9,6 +9,9 @@
     "**/dist/**/*",
     "src/types/contracts"
   ],
+  "files": [
+    "src/types/globals.d.ts"
+  ],
   "compilerOptions": {
     "strict": true,
     "noImplicitAny": true,

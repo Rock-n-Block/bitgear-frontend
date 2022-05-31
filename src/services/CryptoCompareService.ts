@@ -27,7 +27,6 @@ export class CryptoCompareService {
 
   getAllCoins = async () => {
     try {
-      // const url = `/data/all/coinlist&api_key=${config.keys.cryptoCompare}`;
       const url = `/data/all/coinlist`;
       const result = await this.axios.get(url);
       console.log('CryptoCompareService getAllCoins:', result);
@@ -49,11 +48,10 @@ export class CryptoCompareService {
       const query = qs.stringify({
         fsyms: symbolOne.toUpperCase(),
         tsyms: symbolTwo.toUpperCase(),
-        api_key: config.keys.cryptoCompare,
+        api_key: process.env.REACT_APP_CRYPTOCOMPARE_KEY,
       });
       const url = `/data/pricemultifull?${query}`;
       const result = await this.axios.get(url);
-      // console.log('CryptoCompareService getMarketData:', result);
       if (result.data.Response === 'Error') {
         return { status: 'ERROR', data: undefined };
       }
@@ -71,7 +69,7 @@ export class CryptoCompareService {
     try {
       const query = qs.stringify({
         fsym: symbolOne.toUpperCase(),
-        api_key: config.keys.cryptoCompare,
+        api_key: process.env.REACT_APP_CRYPTOCOMPARE_KEY,
       });
       const url = `/data/v2/pair/mapping/fsym?${query}`;
       const result = await this.axios.get(url);
@@ -112,7 +110,7 @@ export class CryptoCompareService {
         limit,
         aggregate,
         e,
-        api_key: config.keys.cryptoCompare,
+        api_key: process.env.REACT_APP_CRYPTOCOMPARE_KEY,
       });
       const result = await this.axios.get(`/data/v2/histoday?${query}`);
       if (result.data.Response === 'Error') {
@@ -145,7 +143,7 @@ export class CryptoCompareService {
         limit,
         aggregate,
         e,
-        api_key: config.keys.cryptoCompare,
+        api_key: process.env.REACT_APP_CRYPTOCOMPARE_KEY,
       });
       const result = await this.axios.get(`/data/v2/histominute?${query}`);
       if (result.data.Response === 'Error') {
@@ -178,7 +176,7 @@ export class CryptoCompareService {
         limit,
         aggregate,
         e,
-        api_key: config.keys.cryptoCompare,
+        api_key: process.env.REACT_APP_CRYPTOCOMPARE_KEY,
       });
       const result = await this.axios.get(`/data/v2/histohour?${query}`);
       if (result.data.Response === 'Error') {

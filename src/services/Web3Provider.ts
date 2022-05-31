@@ -32,7 +32,7 @@ export default class Web3Provider {
 
   constructor() {
     this.provider = new WalletConnectProvider({
-      infuraId: config.keys.infura,
+      infuraId: process.env.REACT_APP_INFURA_KEY,
     });
     this.web3Provider = new Web3(this.provider);
     this.addresses = config.addresses;

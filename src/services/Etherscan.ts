@@ -17,7 +17,7 @@ export class EtherscanService {
       const props = {
         module: 'contract',
         action: 'getabi',
-        apikey: config.keys.etherscan,
+        apikey: process.env.REACT_APP_ETHERSCAN_KEY,
         address,
       };
       const url = `?${qs.stringify(props)}`;
@@ -43,7 +43,7 @@ export class EtherscanService {
       const props = {
         module: 'gastracker',
         action: 'gasoracle',
-        apikey: config.keys.etherscan,
+        apikey: process.env.REACT_APP_ETHERSCAN_KEY,
       };
       const url = `?${qs.stringify(props)}`;
       const result = await this.axios.get(url);

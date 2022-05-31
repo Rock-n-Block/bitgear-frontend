@@ -4,18 +4,6 @@ const IS_PRODUCTION = false;
 const TESTING_NET = 'rinkeby' as SupportedTestnets;
 const SHOW_CONSOLE_LOGS = true;
 
-const keys = {
-  infura: '1964ef9a752c4405b7631cb49ab373fa', // ok
-  // ok. if limit for getGasPrice reaches, web3.getGasPrice works
-  etherscan: 'ANN5EICH9J3Y2VFXHEQV898DBPS9KT71BD',
-  // cryptoCompare: '64003a2defe5d1cd62c11cae1ed06c7248a0a985e63ce30fdd280c3855ae4dc3', // todo
-  cryptoCompare: '', // todo check if works
-  coinMarketCap: '', // ok
-  alchemy: '9e37toZE9l2XRTjIUsWUD3gAyiRPWYCQ', // ok
-  // covalent: 'ckey_d3c7bc2ea7be4f5691de44dfbfa', // todo
-  covalent: '',
-};
-
 export default {
   IS_PRODUCTION,
   TESTING_NET,
@@ -71,7 +59,6 @@ export default {
       return 'https://api-rinkeby.etherscan.io/api';
     })(),
   },
-  keys,
   chainIds: {
     mainnet: {
       [Chains.eth]: {
@@ -140,10 +127,10 @@ export default {
 };
 
 export const mapChainIdToRpc: Record<number, string> = {
-  1: `https://mainnet.infura.io/v3/${keys.infura}`,
-  3: `https://ropsten.infura.io/v3/${keys.infura}`,
-  4: `https://rinkeby.infura.io/v3/${keys.infura}`,
-  42: `https://kovan.infura.io/v3/${keys.infura}`,
+  1: `https://mainnet.infura.io/v3/${process.env.REACT_APP_INFURA_KEY}`,
+  3: `https://ropsten.infura.io/v3/${process.env.REACT_APP_INFURA_KEY}`,
+  4: `https://rinkeby.infura.io/v3/${process.env.REACT_APP_INFURA_KEY}`,
+  42: `https://kovan.infura.io/v3/${process.env.REACT_APP_INFURA_KEY}`,
   56: 'https://bsc-dataseed.binance.org/',
   97: 'https://data-seed-prebsc-1-s1.binance.org:8545/',
   // TODO: fill another chain ids
