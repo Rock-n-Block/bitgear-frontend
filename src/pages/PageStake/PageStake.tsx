@@ -192,6 +192,7 @@ export const PageStake: FC = () => {
             stakeTokenAllowance={stakingCompounder.stakeTokenAllowance}
             stakeAmount={stakingCompounder.userData.stakeAmount}
             tokenBalance={stakingCompounder.userData.balance}
+            earnToken={gearToken.symbol}
             earnTokenAddress={gearToken.address}
             earnedToDate={stakingCompounder.userData.earned}
             isUserDataLoading={stakingCompounder.userData.fetchStatus === RequestStatus.REQUEST}

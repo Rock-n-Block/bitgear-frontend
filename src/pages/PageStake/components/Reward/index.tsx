@@ -1,13 +1,15 @@
 import { FC, useMemo, useState } from 'react';
 import cn from 'classnames';
 
-import { bitGearTokenIcon, triangleArrow } from '../../../../assets/icons';
+import {
+  // bitGearTokenIcon,
+  triangleArrow,
+} from '../../../../assets/icons';
 import { Button, SkeletonLoader } from '../../../../components';
 import { getDollarAmount } from '../../../../utils';
 import { numberTransform } from '../../../../utils/numberTransform';
 import { NoConnectWalletPlaceholder } from '../NoConnectWalletPlaceholder';
-import { TooltipCollectRewardsCompounding } from '../TooltipCollectRewardsCompounding';
-import { TooltipCollectRewardsWhatsThis } from '../TooltipCollectRewardsWhatsThis';
+// import { TooltipCollectRewardsCompounding } from '../TooltipCollectRewardsCompounding';
 import { TooltipValue } from '../TooltipValue';
 
 import styles from './Reward.module.scss';
@@ -17,9 +19,7 @@ interface RewardProps {
   stakeToken: string;
   earnToken: string;
   earnTokenAddress: string;
-  // ethReward: string | number;
   lastCollectedTimestamp: string | number;
-  // collectedToDate: string | number;
   earnedToDate: string | number;
   onCollectRewardClick: () => void;
   isUserDataLoading: boolean;
@@ -61,7 +61,7 @@ export const Reward: FC<RewardProps> = ({
         styles.stakeContainer,
         {
           [styles.isContainerExpanded]: isExpanded,
-          // [styles.stakeContainer_noDataPlaceholder]: !!noDataPlaceholder,
+          [styles.stakeContainer_notConnectedWallet]: !isConnectedWallet,
         },
         className,
       )}
@@ -87,19 +87,19 @@ export const Reward: FC<RewardProps> = ({
 
       <div className={styles.ethRewardsBlock}>
         <p className={cn(styles.text, styles.grayText, styles.smallText)}>
-          {earnToken} rewards from the pool are distributed every block.
+          {earnToken} rewards from the pool are calculated every second.
         </p>
-        <span className="flexCenter">
+        {/* <span className="flexCenter">
           <p className={cn(styles.text, styles.grayText)}>What`s this?</p>
           <div className={styles.tooltipIcon}>
             <TooltipCollectRewardsWhatsThis tokenSymbol="GEAR" />
           </div>
-        </span>
+        </span> */}
       </div>
       {/* <div className={styles.ethRewardAmountBlock}>
-            <img src={ethTokenIcon} alt="eth icon" />
-            <p>{`${ethReward} ETH`}</p>
-          </div> */}
+        <img src={bitGearTokenIcon} alt="eth icon" />
+        <p className={styles.text}>{`${0} ETH`}</p>
+      </div> */}
       <div className={styles.stakeUnstakeBlock}>
         <div className={styles.textFlex}>
           <p className={cn(styles.text, styles.grayText)}>Last collected:</p>
@@ -147,7 +147,7 @@ export const Reward: FC<RewardProps> = ({
           </div>
         )}
       </div>
-      <div className={cn(styles.compoundGearBlock)}>
+      {/* <div className={cn(styles.compoundGearBlock)}>
         <p className={cn(styles.text, styles.grayText, styles.smallText)}>
           GEARS rewards are automatically compounded - no need to collect!
         </p>
@@ -166,7 +166,7 @@ export const Reward: FC<RewardProps> = ({
             </div>
           </span>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };
