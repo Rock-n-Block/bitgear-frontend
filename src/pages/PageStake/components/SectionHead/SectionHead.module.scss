@@ -53,6 +53,7 @@
     &Performance {
       @include flexbox(flex-start);
       margin-top: spacing(2);
+      word-break: break-all;
 
       font-weight: 600;
       font-size: 30px;
