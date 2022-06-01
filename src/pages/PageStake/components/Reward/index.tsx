@@ -1,15 +1,11 @@
 import { FC, useMemo, useState } from 'react';
 import cn from 'classnames';
 
-import {
-  // bitGearTokenIcon,
-  triangleArrow,
-} from '../../../../assets/icons';
+import { bitGearTokenIcon, triangleArrow } from '../../../../assets/icons';
 import { Button, SkeletonLoader } from '../../../../components';
 import { getDollarAmount } from '../../../../utils';
 import { numberTransform } from '../../../../utils/numberTransform';
 import { NoConnectWalletPlaceholder } from '../NoConnectWalletPlaceholder';
-// import { TooltipCollectRewardsCompounding } from '../TooltipCollectRewardsCompounding';
 import { TooltipValue } from '../TooltipValue';
 
 import styles from './Reward.module.scss';
@@ -89,17 +85,17 @@ export const Reward: FC<RewardProps> = ({
         <p className={cn(styles.text, styles.grayText, styles.smallText)}>
           {earnToken} rewards from the pool are calculated every second.
         </p>
-        {/* <span className="flexCenter">
-          <p className={cn(styles.text, styles.grayText)}>What`s this?</p>
-          <div className={styles.tooltipIcon}>
-            <TooltipCollectRewardsWhatsThis tokenSymbol="GEAR" />
-          </div>
-        </span> */}
       </div>
-      {/* <div className={styles.ethRewardAmountBlock}>
-        <img src={bitGearTokenIcon} alt="eth icon" />
-        <p className={styles.text}>{`${0} ETH`}</p>
-      </div> */}
+      {isConnectedWallet && (
+        <div className={styles.ethRewardAmountBlock}>
+          <img src={bitGearTokenIcon} alt="token icon" />
+
+          <p className={styles.text}>
+            {stakeAmount} {stakeToken}
+          </p>
+        </div>
+      )}
+
       <div className={styles.stakeUnstakeBlock}>
         <div className={styles.textFlex}>
           <p className={cn(styles.text, styles.grayText)}>Last collected:</p>
@@ -108,6 +104,29 @@ export const Reward: FC<RewardProps> = ({
           ) : (
             <p className={styles.text}>{lastCollectedTimestamp}</p>
           )}
+        </div>
+
+        {isConnectedWallet ? (
+          <Button
+            classNameCustom={styles.stakeUnstakeButton}
+            variant="blue"
+            disabled={isPendingTx}
+            onClick={submitButtonState.handler}
+          >
+            {submitButtonState.text}
+          </Button>
+        ) : (
+          <div className={styles.noConnectWalletBlock}>
+            <NoConnectWalletPlaceholder />
+          </div>
+        )}
+      </div>
+      <div className={cn(styles.compoundGearBlock)}>
+        <div className={styles.textFlex}>
+          <span className="flexCenter">
+            <img className={styles.bitGearIcon} src={bitGearTokenIcon} alt="gear token icon" />
+            <p className={styles.text}>BITGEAR</p>
+          </span>
         </div>
         {isConnectedWallet && (
           <div className={styles.textFlex}>
@@ -131,42 +150,7 @@ export const Reward: FC<RewardProps> = ({
             )}
           </div>
         )}
-
-        {isConnectedWallet ? (
-          <Button
-            classNameCustom={styles.stakeUnstakeButton}
-            variant="blue"
-            disabled={isPendingTx}
-            onClick={submitButtonState.handler}
-          >
-            {submitButtonState.text}
-          </Button>
-        ) : (
-          <div className={styles.noConnectWalletBlock}>
-            <NoConnectWalletPlaceholder />
-          </div>
-        )}
       </div>
-      {/* <div className={cn(styles.compoundGearBlock)}>
-        <p className={cn(styles.text, styles.grayText, styles.smallText)}>
-          GEARS rewards are automatically compounded - no need to collect!
-        </p>
-        <div className={styles.textFlex}>
-          <span className="flexCenter">
-            <img className={styles.bitGearIcon} src={bitGearTokenIcon} alt="gear token icon" />
-            <p className={styles.text}>BITGEAR</p>
-          </span>
-          <span className="flexCenter">
-            <p className={cn(styles.text, styles.grayText)}>Compounding</p>
-            <div className={styles.tooltipIcon}>
-              <TooltipCollectRewardsCompounding
-                stakeTokenSymbol={stakeToken}
-                earnTokenSymbol={earnToken}
-              />
-            </div>
-          </span>
-        </div>
-      </div> */}
     </div>
   );
 };
