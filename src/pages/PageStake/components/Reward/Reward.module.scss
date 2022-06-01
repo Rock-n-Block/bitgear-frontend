@@ -3,7 +3,7 @@
 
 .stakeContainer {
   max-width: 800px;
-  height: 600px;
+  height: 380px;
   background: $color-dark-blue;
   border-radius: 16px;
   border: 1px solid $color-blue;
@@ -19,8 +19,8 @@
     overflow: hidden;
   }
 
-  &_noDataPlaceholder {
-    height: 170px;
+  &_notConnectedWallet{
+    height: 300px;
   }
 }
 
@@ -105,7 +105,6 @@
 
 .stakeUnstakeBlock {
   padding: 24px 0;
-  border-bottom: 1px solid $color-blue;
 
   & > p:not(:last-child) {
     margin-bottom: 8px;
@@ -148,6 +147,8 @@
 
 .compoundGearBlock {
   padding-top: 24px;
+  border-top: 1px solid $color-blue;
+
   & > *:not(:last-child) {
     margin-bottom: 16px;
   }
@@ -157,13 +158,23 @@
   margin-right: 16px;
 }
 
+@include b('tablet') {
+  .stakeContainer {
+    height: 420px;
+    &_notConnectedWallet {
+      height: 320px;
+    }
+  }
+}
+
+
 @include b('mobile') {
   .stakeContainer {
-    height: 510px;
+    height: 330px;
     padding: 20px;
 
-    &_noDataPlaceholder {
-      height: 160px;
+    &_notConnectedWallet {
+      height: 250px;
     }
   }
 

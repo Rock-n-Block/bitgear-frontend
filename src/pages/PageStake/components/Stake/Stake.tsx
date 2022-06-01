@@ -27,6 +27,7 @@ interface StakeProps {
     handleApprove: (amount: string) => void;
     approveStatus: RequestStatus;
   };
+  earnToken?: string;
   earnTokenAddress?: string;
   earnedToDate?: string | number;
   onStakeClick: (value: string) => void;
@@ -46,6 +47,7 @@ export const Stake: FC<StakeProps> = ({
   stakeTokenAddress,
   maxDecimals,
   stakeTokenAllowance,
+  earnToken = '',
   earnTokenAddress = '',
   earnedToDate = '',
   onStakeClick,
@@ -160,6 +162,8 @@ export const Stake: FC<StakeProps> = ({
     isStakeSelected,
   ]);
 
+  const prettyToken = (token: string) => `${token.includes('-') ? 'LP ' : ''}${token}`;
+
   return (
     <div
       className={cn(
@@ -167,7 +171,7 @@ export const Stake: FC<StakeProps> = ({
         {
           [styles.isContainerExpanded]: isExpanded,
           [styles.stakeContainer_compounder]: isCompounder,
-          // [styles.stakeContainer_noDataPlaceholder]: !!noDataPlaceholder,
+          [styles.stakeContainer_notConnectedWallet]: !isConnectedWallet,
         },
         className,
       )}
@@ -182,7 +186,10 @@ export const Stake: FC<StakeProps> = ({
               return (
                 <TooltipValue
                   target={
-                    <p className={styles.text}>{`${numberTransform(stakeAmount)} ${stakeToken}`}</p>
+                    // eslint-disable-next-line react/jsx-wrap-multilines
+                    <p className={styles.text}>{`${numberTransform(stakeAmount)} ${prettyToken(
+                      stakeToken,
+                    )}`}</p>
                   }
                   value={stakeAmount}
                 />
@@ -228,7 +235,9 @@ export const Stake: FC<StakeProps> = ({
         {isConnectedWallet && (
           <>
             <div className={styles.textFlex}>
-              <p className={cn(styles.text, styles.grayText)}>{`${stakeToken} in wallet:`}</p>
+              <p className={cn(styles.text, styles.grayText)}>{`${prettyToken(
+                stakeToken,
+              )} in wallet:`}</p>
               {isUserDataLoading ? (
                 <SkeletonLoader width="100px" height="30px" borderRadius="4px" />
               ) : (
@@ -239,7 +248,9 @@ export const Stake: FC<StakeProps> = ({
               )}
             </div>
             <div className={styles.textFlex}>
-              <p className={cn(styles.text, styles.grayText)}>Your Stake (Compounding):</p>
+              <p className={cn(styles.text, styles.grayText)}>
+                Your Stake{isCompounder && ' (Compounding)'}:
+              </p>
               {isUserDataLoading ? (
                 <SkeletonLoader width="150px" height="30px" borderRadius="4px" />
               ) : (
@@ -300,10 +311,7 @@ export const Stake: FC<StakeProps> = ({
       {isCompounder && (
         <div className={cn(styles.collectEthRewardsBlock, styles.textFlex)}>
           <span className={styles.compounderText}>
-            <div>
-              WETH you earn is automatically converted to BITGEAR, which is received over time.
-            </div>
-            <div>BITGEAR rewards are automatically compounded - no need to collect!</div>
+            <div>{earnToken} rewards are automatically compounded.</div>
           </span>
         </div>
       )}
