@@ -3,7 +3,7 @@
 
 .stakeContainer {
   max-width: 800px;
-  height: 380px;
+  height: 600px;
   background: $color-dark-blue;
   border-radius: 16px;
   border: 1px solid $color-blue;
@@ -20,7 +20,7 @@
   }
 
   &_notConnectedWallet{
-    height: 300px;
+    height: 400px;
   }
 }
 
@@ -160,21 +160,18 @@
 
 @include b('tablet') {
   .stakeContainer {
-    height: 420px;
-    &_notConnectedWallet {
-      height: 320px;
-    }
+    height: 600px;
   }
 }
 
 
 @include b('mobile') {
   .stakeContainer {
-    height: 330px;
+    height: 540px;
     padding: 20px;
 
     &_notConnectedWallet {
-      height: 250px;
+      height: 360px;
     }
   }
 
