@@ -29,6 +29,7 @@ export const SectionHead: FC<SectionHeadProps> = ({
   performance,
   isLoading,
 }) => {
+  const isStakeLpToken = stakeToken.includes('-');
   return (
     <div className={styles.sectionHead}>
       <div className={styles.sectionHeadLogo}>
@@ -44,21 +45,28 @@ export const SectionHead: FC<SectionHeadProps> = ({
       <div className={styles.sectionHeadInfo}>
         <div className={styles.sectionHeadInfoTitle}>{title}</div>
         <div className={styles.sectionHeadInfoSubtitle}>
-          Stake <span>{stakeToken}</span> <div>|</div> Earn{' '}
-          {(() => {
-            if (isCompounder) return earnToken;
-            if (stakeToken.includes('-')) return stakeToken.split('-').join(' & ');
-            return `${stakeToken} & ${earnToken}`;
-          })()}
+          Stake{' '}
+          <span>
+            {isStakeLpToken && 'Uniswap v2'} {stakeToken}
+          </span>{' '}
+          <div>|</div> Earn {earnToken}
         </div>
         <div className={styles.sectionHeadInfoDescription}>
-          {earnToken} rewards auto compound into more {stakeToken}!
+          {earnToken} rewards auto compound into more{' '}
+          {isStakeLpToken ? stakeToken.split('-')[0] : stakeToken}!
         </div>
         <TooltipValue
           // eslint-disable-next-line prettier/prettier
           target={(
             <div className={styles.sectionHeadInfoAdditional}>
-              Total {stakeToken} staked:{' '}
+              Total{' '}
+              {(() => {
+                if (isStakeLpToken) {
+                  return `LP ${stakeToken.split('-')[0]}`;
+                }
+                return stakeToken;
+              })()}{' '}
+              staked:{' '}
               {isLoading ? (
                 <SkeletonLoader width="150px" height="18px" borderRadius="4px" />
               ) : (

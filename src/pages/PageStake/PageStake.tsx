@@ -1,7 +1,6 @@
 import { FC } from 'react';
 import { useSelector } from 'react-redux';
 
-import ethToken from '../../data/ethToken';
 import gearEthLPToken from '../../data/gearEthLPToken';
 import gearToken from '../../data/gearToken';
 import {
@@ -40,7 +39,7 @@ export const PageStake: FC = () => {
         <SectionHead
           title="LP Token Staking"
           stakeToken={gearEthLPToken.symbol}
-          earnToken={ethToken.symbol}
+          earnToken={gearToken.symbol}
           totalStaked={{
             token: stakingLp.totalStaked,
             usd: getDollarAmount(stakingLp.totalStaked, gearEthLPToken.address),
@@ -100,7 +99,7 @@ export const PageStake: FC = () => {
         <SectionHead
           title={`${gearToken.symbol} Staking`}
           stakeToken={gearToken.symbol}
-          earnToken={ethToken.symbol}
+          earnToken={gearToken.symbol}
           totalStaked={{
             token: stakingRegular.totalStaked,
             usd: getDollarAmount(stakingRegular.totalStaked, gearToken.address),
