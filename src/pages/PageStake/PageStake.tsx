@@ -51,9 +51,8 @@ export const PageStake: FC = () => {
               <div className={styles.infoIcon}>
                 <TooltipApr
                   tokenSymbol1={gearToken.symbol}
-                  tokenSymbol2="ETH"
-                  tokenApr1="21,92"
-                  tokenApr2="46,01"
+                  tokenSymbol2={gearToken.symbol}
+                  isLpToken
                 />
               </div>
             </>
@@ -109,12 +108,7 @@ export const PageStake: FC = () => {
             <>
               {stakingRegular.apr}% APR
               <div className={styles.infoIcon}>
-                <TooltipApr
-                  tokenSymbol1={gearToken.symbol}
-                  tokenSymbol2="ETH"
-                  tokenApr1="21,92"
-                  tokenApr2="46,01"
-                />
+                <TooltipApr tokenSymbol1={gearToken.symbol} tokenSymbol2={gearToken.symbol} />
               </div>
             </>
             // eslint-disable-next-line prettier/prettier
