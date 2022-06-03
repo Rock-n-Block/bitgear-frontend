@@ -1,6 +1,6 @@
 import { Chains, SupportedTestnets, TChainIds } from '../types';
 
-type NetType = 'mainnet' | SupportedTestnets;
+export type NetType = 'mainnet' | SupportedTestnets;
 type ConfigAddressesContractNames =
   | 'allowanceTarget'
   | 'allowanceTargetLimit'

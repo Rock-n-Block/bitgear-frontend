@@ -4,11 +4,12 @@ import cn from 'classnames';
 import { arrowSquareOutIcon, plusCircleIcon } from '../../../../assets/icons';
 import { bigGear } from '../../../../assets/images';
 import { Button } from '../../../../components';
-import gearEthLPToken from '../../../../data/gearEthLPToken';
+import config from '../../../../config';
 import gearToken from '../../../../data/gearToken';
+import wethToken from '../../../../data/wethToken';
 import { useShallowSelector } from '../../../../hooks';
 import { userSelectors } from '../../../../redux/selectors';
-import { addTokenToWallet, constructSwapUrl } from '../../../../utils';
+import { addTokenToWallet, constructAddLiquidityUrl, constructSwapUrl } from '../../../../utils';
 
 import styles from './Banner.module.scss';
 
@@ -48,7 +49,9 @@ export const Banner: React.FC<BannerProps> = ({ apy, className }) => {
           </Button>
           <Button variant="outlined" icon={arrowSquareOutIcon} uppercase={false}>
             <a
-              href={constructSwapUrl(gearEthLPToken.address, network)}
+              href={constructAddLiquidityUrl(gearToken.address, wethToken.address, network, {
+                chain: config.netType,
+              })}
               target="_blank"
               rel="noreferrer noopener"
             >
