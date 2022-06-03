@@ -22,6 +22,7 @@ import config from '../../config';
 import { useWalletConnectorContext } from '../../contexts/WalletConnect';
 import { useUserTier } from '../../hooks/useUserTier';
 import { userActions, walletActions } from '../../redux/actions';
+import Web3Provider from '../../services/Web3Provider';
 import addressWithDots from '../../utils/addressWithDots';
 import { getFromStorage, setToStorage } from '../../utils/localStorage';
 import { prettyAmount } from '../../utils/prettifiers';
@@ -198,7 +199,9 @@ export const Header: React.FC = () => {
 
   const handleDisconnect = () => {
     setToStorage('walletType', '');
-    if (walletType === 'walletConnect' && web3Provider) web3Provider.disconnect();
+    if (walletType === 'walletConnect' && web3Provider) {
+      (web3Provider as Web3Provider).disconnect();
+    }
     setUserData({ address: undefined, balance: 0 });
     dispatch(walletActions.setWalletType(''));
   };
