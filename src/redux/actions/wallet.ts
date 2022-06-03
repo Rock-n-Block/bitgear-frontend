@@ -1,13 +1,15 @@
+import { walletActionTypes } from '../actionTypes';
+
 export default {
   walletInit: () => ({
-    type: 'WALLET:INIT',
+    type: walletActionTypes.INIT,
   }),
   setWalletType: (payload: string) => ({
-    type: 'WALLET:SET_TYPE',
+    type: walletActionTypes.SET_TYPE,
     payload,
   }),
   setChainId: (payload: string) => ({
-    type: 'WALLET:SET_CHAIN_ID',
+    type: walletActionTypes.SET_CHAIN_ID,
     payload,
   }),
 };

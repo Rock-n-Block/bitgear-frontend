@@ -42,6 +42,7 @@ import { Service0x, TypeGetQuoteProps } from '../../../services/0x';
 import { CoinMarketCapService } from '../../../services/CoinMarketCap';
 import { CryptoCompareService } from '../../../services/CryptoCompareService';
 import { EtherscanService } from '../../../services/Etherscan';
+import MetamaskService from '../../../services/Metamask';
 import { getService0xBuyQuoteTokenFees } from '../../../utils';
 import { getFromStorage, setToStorage } from '../../../utils/localStorage';
 import {
@@ -342,7 +343,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
   const isValidCustomAddress = React.useMemo(() => {
     try {
       if (customAddress) {
-        return web3Provider.isAddress(customAddress);
+        return (web3Provider as MetamaskService).isAddress(customAddress);
       }
       return true;
     } catch (error) {
@@ -536,7 +537,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
     if (resultGetGasPrice.status === 'SUCCESS') {
       setGasPriceFromNet(resultGetGasPrice.data);
     } else {
-      const resultGetGasPriceFromWeb3 = await web3Provider.getGasPrice();
+      const resultGetGasPriceFromWeb3 = await (web3Provider as MetamaskService).getGasPrice();
       setGasPriceFromNet(resultGetGasPriceFromWeb3);
     }
   }, [web3Provider]);
