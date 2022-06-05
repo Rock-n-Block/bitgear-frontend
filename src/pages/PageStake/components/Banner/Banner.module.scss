@@ -9,8 +9,6 @@
 }
 
 .bannerLogicContainer {
-  max-width: initial;
-
   & > *:not(:last-child) {
     margin-bottom: 24px;
   }
@@ -54,6 +52,10 @@
 }
 
 @include b(mobile) {
+  .container {
+    flex-direction: column;
+  }
+
   .h1 {
     font-size: 48px;
   }
