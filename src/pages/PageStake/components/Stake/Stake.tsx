@@ -108,6 +108,11 @@ export const Stake: FC<StakeProps> = ({
   const isEnoughAllowance = new BigNumber(stakeTokenAllowance.allowance).isGreaterThanOrEqualTo(
     serialize(inputValue || '0', maxDecimals),
   );
+  const hasInputValue = +inputValue > 0;
+  const isEnoughStakeAmount =
+    hasInputValue && new BigNumber(inputValue).isLessThanOrEqualTo(tokenBalance);
+  const isEnoughUnstakeAmount =
+    hasInputValue && new BigNumber(inputValue).isLessThanOrEqualTo(stakeAmount);
   const isLoadingSubmitButton = useMemo(() => {
     if (stakeTokenAllowance.isAllowanceLoading) return true;
     if (stakeTokenAllowance.approveStatus === RequestStatus.REQUEST) return true;
@@ -117,14 +122,21 @@ export const Stake: FC<StakeProps> = ({
   const isDisabledSubmitButton = useMemo(() => {
     if (isLoadingSubmitButton) return true;
 
-    if (!isStakeSelected && new BigNumber(inputValue).gt(stakeAmount)) return true;
+    if (!isStakeSelected && !isEnoughUnstakeAmount) return true;
+    if (isStakeSelected && !isEnoughStakeAmount) return true;
     if (isStakeSelected && !isEnoughAllowance) return false;
 
-    const hasInputValue = +inputValue > 0;
     if (!hasInputValue) return true;
 
     return false;
-  }, [inputValue, isEnoughAllowance, isLoadingSubmitButton, isStakeSelected, stakeAmount]);
+  }, [
+    hasInputValue,
+    isEnoughAllowance,
+    isEnoughStakeAmount,
+    isEnoughUnstakeAmount,
+    isLoadingSubmitButton,
+    isStakeSelected,
+  ]);
 
   const submitButtonState = useMemo(() => {
     if (isLoadingSubmitButton) {
