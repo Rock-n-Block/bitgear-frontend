@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
 import gearEthLPToken from '../../data/gearEthLPToken';
@@ -13,7 +13,7 @@ import {
 } from '../../hooks';
 import { userSelectors } from '../../redux/selectors';
 import { RequestStatus } from '../../types';
-import { getDollarAmount } from '../../utils';
+import { addTokenToWallet, getDollarAmount } from '../../utils';
 import { prettyPrice } from '../../utils/prettifiers';
 
 import { Banner, Reward, SectionHead, Stake, TooltipApr, TooltipApy } from './components';
@@ -32,9 +32,25 @@ export const PageStake: FC = () => {
   usePollCompounder();
   const stakingCompounder = useStakingCompounder();
 
+  const handleGetFreeTokens = useCallback(() => {
+    stakingCompounder.handleHarvest();
+  }, [stakingCompounder]);
+  const handleAddTokenToWallet = useCallback(() => {
+    addTokenToWallet({
+      address: gearToken.address,
+      symbol: gearToken.symbol,
+      decimals: gearToken.decimals,
+      image: gearToken.image,
+    });
+  }, []);
+
   return (
     <div className={styles.container}>
-      <Banner apy={prettyPrice(stakingCompounder.apy)} />
+      <Banner
+        apy={prettyPrice(stakingCompounder.apy)}
+        onGetFreeTokens={handleGetFreeTokens}
+        onAddToWallet={handleAddTokenToWallet}
+      />
       <div className={styles.section}>
         <SectionHead
           title="LP Token Staking"

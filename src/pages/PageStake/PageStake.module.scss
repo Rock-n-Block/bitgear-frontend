@@ -5,6 +5,7 @@
   width: 100%;
   max-width: 1270px;
   padding: 120px 20px;
+  overflow: hidden;
 }
 
 .section {
@@ -27,7 +28,7 @@
 
 @include b('mobile') {
   .container {
-    padding: 60px 0 120px;
+    padding: 120px 0 120px;
   }
 
   .section {

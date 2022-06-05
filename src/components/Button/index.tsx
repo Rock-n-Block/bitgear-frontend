@@ -1,12 +1,12 @@
 /* eslint-disable react/require-default-props */
 
-import React from 'react';
+import { FC, memo, ReactNode } from 'react';
 import cn from 'classnames';
 
 import s from './style.module.scss';
 
 type TypeButtonProps = {
-  children?: React.ReactElement | string;
+  children?: ReactNode;
   onClick?: () => void;
   variant?: 'normal' | 'primary' | 'secondary' | 'blue' | 'outlined' | 'iconButton' | 'text';
   uppercase?: boolean;
@@ -15,7 +15,7 @@ type TypeButtonProps = {
   disabled?: boolean;
 };
 
-const Button: React.FC<TypeButtonProps> = ({
+const Button: FC<TypeButtonProps> = ({
   children,
   onClick,
   variant = 'primary',
@@ -53,4 +53,4 @@ const Button: React.FC<TypeButtonProps> = ({
   );
 };
 
-export default React.memo(Button);
+export default memo(Button);

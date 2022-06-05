@@ -74,6 +74,12 @@ export const useStakingCompounder = () => {
     },
     [pricePerShare, stakedAmount, userWalletAddress, web3Provider],
   );
+  const handleHarvest = useCallback(() => {
+    compounderStaking.harvest({
+      provider: web3Provider,
+      userWalletAddress: userWalletAddress || '',
+    });
+  }, [userWalletAddress, web3Provider]);
 
   const fetchUserDataRequestStatus = useShallowSelector(
     uiSelectors.getProp(stakingActionTypes.SET_COMPOUNDER_USER_DATA),
@@ -83,6 +89,9 @@ export const useStakingCompounder = () => {
   );
   const unstakeRequestStatus = useShallowSelector(
     uiSelectors.getProp(stakingActionTypes.COMPOUNDER_UNSTAKE),
+  );
+  const harvestRequestStatus = useShallowSelector(
+    uiSelectors.getProp(stakingActionTypes.COMPOUNDER_HARVEST),
   );
   const publicDataRequestStatus = useShallowSelector(
     uiSelectors.getProp(stakingActionTypes.SET_COMPOUNDER_PUBLIC_DATA),
@@ -124,6 +133,7 @@ export const useStakingCompounder = () => {
   const ret = {
     handleStake,
     handleUnstake,
+    handleHarvest,
     userData,
     totalStaked: deserialize(totalStaked, STAKE_TOKEN.decimals),
     apy,
@@ -138,6 +148,7 @@ export const useStakingCompounder = () => {
 
     stakeRequestStatus,
     unstakeRequestStatus,
+    harvestRequestStatus,
 
     publicDataRequestStatus,
   };
