@@ -1,6 +1,4 @@
-// import { Web3Provider } from '../../../types';
 import { CoinMarketCapService } from '../../../services/CoinMarketCap';
-// import { contractsHelper } from '../../../utils';
 import { tokensActions } from '../../actions';
 import store from '../../store';
 

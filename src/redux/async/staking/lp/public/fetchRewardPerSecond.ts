@@ -25,7 +25,7 @@ export const fetchRewardPerSecond = async ({ provider }: FetchRewardPerSecond) =
     ]);
 
     store.dispatch(
-      stakingActions.setRegularPublicData({
+      stakingActions.setLpPublicData({
         rewardPerSecond: new BigNumber(rewardPerSecond)
           .multipliedBy(allocPoint)
           .dividedBy(totalAllocPoint)
@@ -33,6 +33,6 @@ export const fetchRewardPerSecond = async ({ provider }: FetchRewardPerSecond) =
       }),
     );
   } catch (err) {
-    console.log('Redux/Staking/Regular/fetchRewardPerSecond', err);
+    console.log('Redux/Staking/LP/fetchRewardPerSecond', err);
   }
 };
