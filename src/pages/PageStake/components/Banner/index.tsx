@@ -5,20 +5,21 @@ import { arrowSquareOutIcon, plusCircleIcon } from '../../../../assets/icons';
 import { bigGear } from '../../../../assets/images';
 import { Button } from '../../../../components';
 import config from '../../../../config';
+import gearEthLPToken from '../../../../data/gearEthLPToken';
 import gearToken from '../../../../data/gearToken';
 import wethToken from '../../../../data/wethToken';
 import { useShallowSelector } from '../../../../hooks';
 import { stakingActionTypes } from '../../../../redux/actionTypes';
 import { uiSelectors, userSelectors } from '../../../../redux/selectors';
 import { RequestStatus } from '../../../../types';
-import { constructAddLiquidityUrl, constructSwapUrl } from '../../../../utils';
+import { constructAddLiquidityUrl, constructSwapUrl, Token } from '../../../../utils';
 
 import styles from './Banner.module.scss';
 
 interface BannerProps {
   apy: string | number;
   onGetFreeTokens: () => void;
-  onAddToWallet: () => void;
+  onAddToWallet: (token: Token) => void;
   className?: string;
 }
 
@@ -97,9 +98,22 @@ export const Banner: React.FC<BannerProps> = ({
                 variant="blue"
                 icon={plusCircleIcon}
                 uppercase={false}
-                onClick={onAddToWallet}
+                onClick={() => onAddToWallet(gearToken)}
               >
-                Add to Wallet
+                Add {gearToken.symbol} to Wallet
+              </Button>
+            )}
+          </div>
+
+          <div className={styles.buttonContainer}>
+            {window.ethereum && (
+              <Button
+                classNameCustom={styles.buttonContainerItem}
+                variant="outlined"
+                uppercase={false}
+                onClick={() => onAddToWallet(gearEthLPToken)}
+              >
+                Add LP {gearEthLPToken.symbol} to Wallet
               </Button>
             )}
           </div>
