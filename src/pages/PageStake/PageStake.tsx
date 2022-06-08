@@ -14,11 +14,19 @@ import {
 import { userSelectors } from '../../redux/selectors';
 import { RequestStatus } from '../../types';
 import { addTokenToWallet, getDollarAmount, Token } from '../../utils';
-import { prettyPrice } from '../../utils/prettifiers';
+import { numberTransform } from '../../utils/numberTransform';
 
 import { Banner, Reward, SectionHead, Stake, TooltipApr, TooltipApy } from './components';
 
 import styles from './PageStake.module.scss';
+
+// performance = apr, apy
+const getFormattedPerformance = (value: string) => {
+  const valueAsNumber = Number(value);
+  if (Number.isNaN(valueAsNumber)) return '';
+  if (valueAsNumber > 1000000) return '>1000000';
+  return numberTransform(value);
+};
 
 export const PageStake: FC = () => {
   const { address: userWalletAddress } = useSelector(userSelectors.getUser);
@@ -47,7 +55,7 @@ export const PageStake: FC = () => {
   return (
     <div className={styles.container}>
       <Banner
-        apy={prettyPrice(stakingCompounder.apy)}
+        apy={getFormattedPerformance(stakingCompounder.apy)}
         onGetFreeTokens={handleGetFreeTokens}
         onAddToWallet={handleAddTokenToWallet}
       />
@@ -63,7 +71,7 @@ export const PageStake: FC = () => {
           // eslint-disable-next-line prettier/prettier
           performance={(
             <>
-              {stakingLp.apr}% APR
+              {getFormattedPerformance(stakingLp.apr)}% APR
               <div className={styles.infoIcon}>
                 <TooltipApr
                   tokenSymbol1={gearToken.symbol}
@@ -122,7 +130,7 @@ export const PageStake: FC = () => {
           // eslint-disable-next-line prettier/prettier
           performance={(
             <>
-              {stakingRegular.apr}% APR
+              {getFormattedPerformance(stakingRegular.apr)}% APR
               <div className={styles.infoIcon}>
                 <TooltipApr tokenSymbol1={gearToken.symbol} tokenSymbol2={gearToken.symbol} />
               </div>
@@ -177,7 +185,7 @@ export const PageStake: FC = () => {
           // eslint-disable-next-line prettier/prettier
           performance={(
             <>
-              {Number.isNaN(stakingCompounder.apy) ? '' : stakingCompounder.apy}% APY
+              {getFormattedPerformance(stakingCompounder.apy)}% APY
               <div className={styles.infoIcon}>
                 <TooltipApy
                   token1={{
