@@ -13,7 +13,7 @@ import {
 } from '../../hooks';
 import { userSelectors } from '../../redux/selectors';
 import { RequestStatus } from '../../types';
-import { addTokenToWallet, getDollarAmount } from '../../utils';
+import { addTokenToWallet, getDollarAmount, Token } from '../../utils';
 import { prettyPrice } from '../../utils/prettifiers';
 
 import { Banner, Reward, SectionHead, Stake, TooltipApr, TooltipApy } from './components';
@@ -35,12 +35,12 @@ export const PageStake: FC = () => {
   const handleGetFreeTokens = useCallback(() => {
     stakingCompounder.handleHarvest();
   }, [stakingCompounder]);
-  const handleAddTokenToWallet = useCallback(() => {
+  const handleAddTokenToWallet = useCallback((token: Token) => {
     addTokenToWallet({
-      address: gearToken.address,
-      symbol: gearToken.symbol,
-      decimals: gearToken.decimals,
-      image: gearToken.image,
+      address: token.address,
+      symbol: token.symbol,
+      decimals: token.decimals,
+      image: token.image,
     });
   }, []);
 
