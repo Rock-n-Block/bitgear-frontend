@@ -108,11 +108,12 @@ export const useStakingCompounder = () => {
 
   const refetchData = useCallback(() => {
     compounderStaking.fetchPublicData({ provider: web3Provider });
-    if (!userWalletAddress) return;
-    compounderStaking.fetchUserData({
-      provider: web3Provider,
-      userWalletAddress,
-    });
+    if (userWalletAddress) {
+      compounderStaking.fetchUserData({
+        provider: web3Provider,
+        userWalletAddress,
+      });
+    }
   }, [userWalletAddress, web3Provider]);
 
   useEffect(() => {
