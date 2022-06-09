@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import cn from 'classnames';
 
 import { arrowSquareOutIcon, plusCircleIcon } from '../../../../assets/icons';
@@ -9,9 +9,7 @@ import gearEthLPToken from '../../../../data/gearEthLPToken';
 import gearToken from '../../../../data/gearToken';
 import wethToken from '../../../../data/wethToken';
 import { useShallowSelector } from '../../../../hooks';
-import { stakingActionTypes } from '../../../../redux/actionTypes';
-import { uiSelectors, userSelectors } from '../../../../redux/selectors';
-import { RequestStatus } from '../../../../types';
+import { userSelectors } from '../../../../redux/selectors';
 import { constructAddLiquidityUrl, constructSwapUrl, Token } from '../../../../utils';
 
 import styles from './Banner.module.scss';
@@ -30,12 +28,6 @@ export const Banner: React.FC<BannerProps> = ({
   className,
 }) => {
   const { network } = useShallowSelector(userSelectors.getUser);
-  const harvestRequestStatus = useShallowSelector(
-    uiSelectors.getProp(stakingActionTypes.COMPOUNDER_HARVEST),
-  );
-  const isGetFreeTokensLoading = useMemo(() => {
-    return harvestRequestStatus === RequestStatus.REQUEST;
-  }, [harvestRequestStatus]);
 
   return (
     <div className={cn(styles.container, className)}>
@@ -87,10 +79,9 @@ export const Banner: React.FC<BannerProps> = ({
               classNameCustom={styles.buttonContainerItem}
               variant="blue"
               uppercase={false}
-              disabled={isGetFreeTokensLoading}
-              onClick={isGetFreeTokensLoading ? undefined : onGetFreeTokens}
+              onClick={onGetFreeTokens}
             >
-              {isGetFreeTokensLoading ? 'Loading...' : 'Get free tokens'}
+              Get free tokens
             </Button>
             {window.ethereum && (
               <Button

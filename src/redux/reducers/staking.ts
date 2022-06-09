@@ -18,6 +18,7 @@ const initialState: StakingState = {
     public: {
       pricePerShare: '',
       totalShares: '',
+      harvestRewards: '',
     },
     user: {
       stakedShares: '',

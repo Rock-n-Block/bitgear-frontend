@@ -8,7 +8,7 @@ import store from '../../../store';
 import { fetchAllowance, fetchBalance } from '../../erc20';
 import { fetchUsdPrice } from '../../tokens';
 
-import { fetchPricePerShare, fetchTotalShares } from './public';
+import { fetchHarvestRewards, fetchPricePerShare, fetchTotalShares } from './public';
 import { fetchEarned, fetchStakedShares } from './user';
 
 type FetchPublicData = Web3Provider;
@@ -22,6 +22,7 @@ export const fetchPublicData = async ({ provider }: FetchPublicData): Promise<vo
       fetchTotalShares({ provider }),
       fetchPricePerShare({ provider }),
       fetchUsdPrice({ symbol: gearToken.symbol, tokenAddress: gearToken.address }),
+      fetchHarvestRewards({ provider }),
     ]);
 
     store.dispatch(apiActions.success(type));
