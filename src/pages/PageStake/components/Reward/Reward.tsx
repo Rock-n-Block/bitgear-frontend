@@ -3,7 +3,7 @@ import cn from 'classnames';
 
 import { bitGearTokenIcon, triangleArrow } from '../../../../assets/icons';
 import { Button, SkeletonLoader } from '../../../../components';
-import { getDollarAmount } from '../../../../utils';
+import { getDollarAmount, getFormattedValue } from '../../../../utils';
 import { numberTransform } from '../../../../utils/numberTransform';
 import { NoConnectWalletPlaceholder } from '../NoConnectWalletPlaceholder';
 import { TooltipValue } from '../TooltipValue';
@@ -50,6 +50,13 @@ export const Reward: FC<RewardProps> = ({
       handler: onCollectRewardClick,
     };
   }, [isPendingTx, onCollectRewardClick]);
+
+  // const formattedStakeAmountAsUsd = getFormattedValue(
+  //   getDollarAmount(stakeAmount, stakeTokenAddress),
+  // );
+  const formattedEarnedToDateAsUsd = getFormattedValue(
+    getDollarAmount(earnedToDate, earnTokenAddress),
+  );
 
   return (
     <div
@@ -140,12 +147,12 @@ export const Reward: FC<RewardProps> = ({
                   <p className={styles.text}>
                     {numberTransform(earnedToDate)}
                     <span className={cn(styles.grayText)}>
-                      {`($${numberTransform(getDollarAmount(earnedToDate, earnTokenAddress))})`}
+                      {`($${formattedEarnedToDateAsUsd})`}
                     </span>
                   </p>
                   // eslint-disable-next-line prettier/prettier
               )}
-                value={`${earnedToDate}($${getDollarAmount(earnedToDate, earnTokenAddress)})`}
+                value={`${earnedToDate} ($${formattedEarnedToDateAsUsd})`}
               />
             )}
           </div>
