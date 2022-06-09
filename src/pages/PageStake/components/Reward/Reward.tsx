@@ -24,6 +24,22 @@ interface RewardProps {
   className?: string;
 }
 
+type CollapseHeaderTextProps = {
+  isLoading: boolean;
+  isConnectedWallet: boolean;
+  text: string;
+};
+
+const CollapseHeaderText: FC<CollapseHeaderTextProps> = ({
+  isLoading,
+  isConnectedWallet,
+  text,
+}) => {
+  if (isLoading) return <SkeletonLoader width="200px" height="30px" borderRadius="4px" />;
+  if (isConnectedWallet) return <p className={styles.text}>{text}</p>;
+  return null;
+};
+
 export const Reward: FC<RewardProps> = ({
   stakeAmount,
   stakeToken,
@@ -51,9 +67,6 @@ export const Reward: FC<RewardProps> = ({
     };
   }, [isPendingTx, onCollectRewardClick]);
 
-  // const formattedStakeAmountAsUsd = getFormattedValue(
-  //   getDollarAmount(stakeAmount, stakeTokenAddress),
-  // );
   const formattedEarnedToDateAsUsd = getFormattedValue(
     getDollarAmount(earnedToDate, earnTokenAddress),
   );
@@ -72,13 +85,11 @@ export const Reward: FC<RewardProps> = ({
       <div className={styles.titleBlock}>
         <p className={styles.text}>Rewards to collect</p>
         <div className={styles.collapseBtnContainer}>
-          {(() => {
-            if (isUserDataLoading)
-              return <SkeletonLoader width="200px" height="30px" borderRadius="4px" />;
-            if (isConnectedWallet)
-              return <p className={styles.text}>{`${stakeAmount} ${stakeToken}`}</p>;
-            return null;
-          })()}
+          <CollapseHeaderText
+            isLoading={isUserDataLoading}
+            isConnectedWallet={isConnectedWallet}
+            text={`${stakeAmount} ${stakeToken}`}
+          />
           <Button
             variant="iconButton"
             icon={triangleArrow}
