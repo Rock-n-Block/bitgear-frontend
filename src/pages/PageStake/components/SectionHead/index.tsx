@@ -2,7 +2,7 @@ import { FC, ReactNode } from 'react';
 
 import { bitGearTokenIcon, compounderIcon } from '../../../../assets/icons';
 import { SkeletonLoader } from '../../../../components';
-import { numberTransform } from '../../../../utils/numberTransform';
+import { getFormattedValue, numberTransform } from '../../../../utils';
 import { TooltipValue } from '../TooltipValue';
 
 import styles from './SectionHead.module.scss';
@@ -71,7 +71,7 @@ export const SectionHead: FC<SectionHeadProps> = ({
                 <SkeletonLoader width="150px" height="18px" borderRadius="4px" />
               ) : (
                 <>
-                  {numberTransform(totalStaked.token)} (${numberTransform(totalStaked.usd)})
+                  {numberTransform(totalStaked.token)} (${getFormattedValue(totalStaked.usd)})
                 </>
               )}
             </div>
@@ -81,7 +81,7 @@ export const SectionHead: FC<SectionHeadProps> = ({
           value={(
             <div className={styles.sectionHeadInfoAdditional}>
               Total {stakeToken} staked: {totalStaked.token} ($
-              {totalStaked.usd})
+              {getFormattedValue(totalStaked.usd)})
             </div>
             // eslint-disable-next-line prettier/prettier
           )}

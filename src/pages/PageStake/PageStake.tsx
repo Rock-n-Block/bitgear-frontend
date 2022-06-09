@@ -14,7 +14,7 @@ import {
 import { modalActions } from '../../redux/actions';
 import { userSelectors } from '../../redux/selectors';
 import { RequestStatus } from '../../types';
-import { addTokenToWallet, getDollarAmount, numberTransform, Token } from '../../utils';
+import { addTokenToWallet, getDollarAmount, getFormattedValue, Token } from '../../utils';
 
 import {
   Banner,
@@ -27,14 +27,6 @@ import {
 } from './components';
 
 import styles from './PageStake.module.scss';
-
-// performance = apr, apy
-const getFormattedPerformance = (value: string) => {
-  const valueAsNumber = Number(value);
-  if (Number.isNaN(valueAsNumber)) return '';
-  if (valueAsNumber > 1000000) return '>1000000';
-  return numberTransform(value);
-};
 
 export const PageStake: FC = () => {
   const { address: userWalletAddress } = useSelector(userSelectors.getUser);
@@ -83,7 +75,7 @@ export const PageStake: FC = () => {
   return (
     <div className={styles.container}>
       <Banner
-        apy={getFormattedPerformance(stakingCompounder.apy)}
+        apy={getFormattedValue(stakingCompounder.apy)}
         onGetFreeTokens={handleGetFreeTokensModal}
         onAddToWallet={handleAddTokenToWallet}
       />
@@ -99,7 +91,7 @@ export const PageStake: FC = () => {
           // eslint-disable-next-line prettier/prettier
           performance={(
             <>
-              {getFormattedPerformance(stakingLp.apr)}% APR
+              {getFormattedValue(stakingLp.apr)}% APR
               <div className={styles.infoIcon}>
                 <TooltipApr
                   tokenSymbol1={gearToken.symbol}
@@ -159,7 +151,7 @@ export const PageStake: FC = () => {
           // eslint-disable-next-line prettier/prettier
           performance={(
             <>
-              {getFormattedPerformance(stakingRegular.apr)}% APR
+              {getFormattedValue(stakingRegular.apr)}% APR
               <div className={styles.infoIcon}>
                 <TooltipApr tokenSymbol1={gearToken.symbol} tokenSymbol2={gearToken.symbol} />
               </div>
@@ -215,7 +207,7 @@ export const PageStake: FC = () => {
           // eslint-disable-next-line prettier/prettier
           performance={(
             <>
-              {getFormattedPerformance(stakingCompounder.apy)}% APY
+              {getFormattedValue(stakingCompounder.apy)}% APY
               <div className={styles.infoIcon}>
                 <TooltipApy
                   token1={{

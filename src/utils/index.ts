@@ -7,3 +7,4 @@ export * from './bigNumberSerializers';
 export * from './constructSwapUrls';
 export * from './trade';
 export * from './numberTransform';
+export * from './prettifiers';

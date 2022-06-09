@@ -6,8 +6,14 @@ import { triangleArrow } from '../../../../assets/icons';
 import { Button, Input, SkeletonLoader } from '../../../../components';
 import useDebounce from '../../../../hooks/useDebounce';
 import { RequestStatus } from '../../../../types';
-import { getDollarAmount, serialize, validateOnlyNumbers } from '../../../../utils';
-import { numberTransform } from '../../../../utils/numberTransform';
+import {
+  getDollarAmount,
+  getFormattedValue,
+  numberTransform,
+  prettyToken,
+  serialize,
+  validateOnlyNumbers,
+} from '../../../../utils';
 import { NoConnectWalletPlaceholder } from '../NoConnectWalletPlaceholder';
 import { TooltipValue } from '../TooltipValue';
 
@@ -39,8 +45,6 @@ interface StakeProps {
   isConnectedWallet: boolean;
   className?: number;
 }
-
-const prettyToken = (token: string) => `${token.includes('-') ? 'LP ' : ''}${token}`;
 
 export const Stake: FC<StakeProps> = ({
   isCompounder = false,
@@ -188,6 +192,13 @@ export const Stake: FC<StakeProps> = ({
     isStakeSelected,
   ]);
 
+  const formattedStakeAmountAsUsd = getFormattedValue(
+    getDollarAmount(stakeAmount, stakeTokenAddress),
+  );
+  const formattedEarnedToDateAsUsd = getFormattedValue(
+    getDollarAmount(earnedToDate, earnTokenAddress),
+  );
+
   return (
     <div
       className={cn(
@@ -211,7 +222,7 @@ export const Stake: FC<StakeProps> = ({
                 <TooltipValue
                   target={
                     // eslint-disable-next-line react/jsx-wrap-multilines
-                    <p className={styles.text}>{`${numberTransform(stakeAmount)} ${prettyToken(
+                    <p className={styles.text}>{`${getFormattedValue(stakeAmount)} ${prettyToken(
                       stakeToken,
                     )}`}</p>
                   }
@@ -282,14 +293,14 @@ export const Stake: FC<StakeProps> = ({
                   // eslint-disable-next-line prettier/prettier
                   target={(
                     <p className={styles.text}>
-                      {numberTransform(stakeAmount)}
-                      <span className={cn(styles.grayText)}>{`($${numberTransform(
-                        getDollarAmount(stakeAmount, stakeTokenAddress),
-                      )})`}</span>
+                      {getFormattedValue(stakeAmount)}
+                      <span
+                        className={cn(styles.grayText)}
+                      >{`($${formattedStakeAmountAsUsd})`}</span>
                     </p>
                     // eslint-disable-next-line prettier/prettier
                   )}
-                  value={`${stakeAmount}($${getDollarAmount(stakeAmount, stakeTokenAddress)})`}
+                  value={`${stakeAmount}($${formattedStakeAmountAsUsd})`}
                 />
               )}
             </div>
@@ -304,14 +315,14 @@ export const Stake: FC<StakeProps> = ({
                     // eslint-disable-next-line prettier/prettier
                     target={(
                       <p className={styles.text}>
-                        {numberTransform(earnedToDate)}
+                        {getFormattedValue(earnedToDate)}
                         <span className={cn(styles.grayText)}>
-                          {`($${numberTransform(getDollarAmount(earnedToDate, earnTokenAddress))})`}
+                          {`($${formattedEarnedToDateAsUsd})`}
                         </span>
                       </p>
                       // eslint-disable-next-line prettier/prettier
                     )}
-                    value={`${earnedToDate}($${getDollarAmount(earnedToDate, earnTokenAddress)})`}
+                    value={`${earnedToDate}($${formattedEarnedToDateAsUsd})`}
                   />
                 )}
               </div>

@@ -1,3 +1,5 @@
+import { numberTransform } from './numberTransform';
+
 export const prettyAmount = (value: string) => {
   let newValue = value;
   if (+newValue <= 0) return '0';
@@ -95,4 +97,24 @@ export const prettyExpiration = (expiration: number) => {
     period = 'days';
   }
   return `${time} ${period}`;
+};
+
+/**
+ * @example 'GEAR-ETH' -> 'LP GEAR-ETH'
+ * @example 'GEAR' -> 'GEAR'
+ * @example 'GEAR/ETH' -> 'GEAR/ETH'
+ */
+export const prettyToken = (token: string) => `${token.includes('-') ? 'LP ' : ''}${token}`;
+
+/**
+ * @example 'NaN' -> '0'
+ * @example 'Infinity' -> '>1000000'
+ * @example '100000001' -> '>1000000'
+ * @example '13231.12321321' -> numberTransform() probably return '13231.12'
+ */
+export const getFormattedValue = (value: string | number) => {
+  const valueAsNumber = Number(value);
+  if (Number.isNaN(valueAsNumber)) return '0';
+  if (valueAsNumber > 1000000) return '>1000000';
+  return numberTransform(value);
 };
