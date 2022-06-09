@@ -43,7 +43,7 @@ export const useStakingLp = () => {
   );
 
   const handleStake = useCallback(
-    (amount) => {
+    (amount: string) => {
       lpStaking.stake({
         provider: web3Provider,
         userWalletAddress: userWalletAddress || '',
@@ -53,7 +53,7 @@ export const useStakingLp = () => {
     [userWalletAddress, web3Provider],
   );
   const handleUnstake = useCallback(
-    (amount) => {
+    (amount: string) => {
       lpStaking.unstake({
         provider: web3Provider,
         userWalletAddress: userWalletAddress || '',
@@ -130,7 +130,7 @@ export const useStakingLp = () => {
     [earned, fetchUserDataRequestStatus, pendingReward, stakeTokenUserBalance, stakedAmount],
   );
 
-  const ret = {
+  return {
     handleStake,
     handleUnstake,
     handleCollectReward,
@@ -153,5 +153,4 @@ export const useStakingLp = () => {
 
     publicDataRequestStatus,
   };
-  return ret;
 };
