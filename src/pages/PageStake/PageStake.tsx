@@ -117,6 +117,7 @@ export const PageStake: FC = () => {
             onStakeClick={stakingLp.handleStake}
             onUnstakeClick={stakingLp.handleUnstake}
             onMaxClick={() => stakingLp.userData.balance}
+            stakeTokenRequestStatus={stakingLp.stakeRequestStatus}
             stakeToken={gearEthLPToken.symbol}
             stakeTokenAddress={gearEthLPToken.address}
             maxDecimals={gearEthLPToken.decimals}
@@ -172,6 +173,7 @@ export const PageStake: FC = () => {
             onStakeClick={stakingRegular.handleStake}
             onUnstakeClick={stakingRegular.handleUnstake}
             onMaxClick={() => stakingRegular.userData.balance}
+            stakeTokenRequestStatus={stakingRegular.stakeRequestStatus}
             stakeToken={gearToken.symbol}
             stakeTokenAddress={gearToken.address}
             maxDecimals={gearToken.decimals}
@@ -232,6 +234,7 @@ export const PageStake: FC = () => {
             onStakeClick={stakingCompounder.handleStake}
             onUnstakeClick={stakingCompounder.handleUnstake}
             onMaxClick={() => stakingCompounder.userData.balance}
+            stakeTokenRequestStatus={stakingCompounder.stakeRequestStatus}
             stakeToken={gearToken.symbol}
             stakeTokenAddress={gearToken.address}
             maxDecimals={gearToken.decimals}

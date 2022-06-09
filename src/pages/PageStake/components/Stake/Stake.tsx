@@ -30,6 +30,7 @@ interface StakeProps {
   earnToken?: string;
   earnTokenAddress?: string;
   earnedToDate?: string | number;
+  stakeTokenRequestStatus: RequestStatus;
   onStakeClick: (value: string) => void;
   onUnstakeClick: (value: string) => void;
   onMaxClick: () => string | void;
@@ -38,6 +39,8 @@ interface StakeProps {
   isConnectedWallet: boolean;
   className?: number;
 }
+
+const prettyToken = (token: string) => `${token.includes('-') ? 'LP ' : ''}${token}`;
 
 export const Stake: FC<StakeProps> = ({
   isCompounder = false,
@@ -50,6 +53,7 @@ export const Stake: FC<StakeProps> = ({
   earnToken = '',
   earnTokenAddress = '',
   earnedToDate = '',
+  stakeTokenRequestStatus,
   onStakeClick,
   onUnstakeClick,
   onMaxClick,
@@ -61,6 +65,10 @@ export const Stake: FC<StakeProps> = ({
   const [isExpanded, setExpanded] = useState(false);
   const [isStakeSelected, setStakeSelected] = useState(true);
   const [inputValue, setInputValue] = useState('');
+
+  const handleClearInput = useCallback(() => {
+    setInputValue('');
+  }, []);
 
   const validateAndChangeInputValue = useCallback(
     (value: string) => {
@@ -78,6 +86,12 @@ export const Stake: FC<StakeProps> = ({
   const handleStake = useCallback(() => {
     onStakeClick(inputValue);
   }, [inputValue, onStakeClick]);
+
+  useEffect(() => {
+    if (stakeTokenRequestStatus === RequestStatus.SUCCESS) {
+      handleClearInput();
+    }
+  }, [handleClearInput, stakeTokenRequestStatus]);
 
   const handleUnstake = useCallback(() => {
     onUnstakeClick(inputValue);
@@ -173,8 +187,6 @@ export const Stake: FC<StakeProps> = ({
     isLoadingSubmitButton,
     isStakeSelected,
   ]);
-
-  const prettyToken = (token: string) => `${token.includes('-') ? 'LP ' : ''}${token}`;
 
   return (
     <div
