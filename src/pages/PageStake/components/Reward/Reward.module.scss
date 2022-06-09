@@ -3,7 +3,7 @@
 
 .stakeContainer {
   max-width: 800px;
-  height: 710px;
+  height: 600px;
   background: $color-dark-blue;
   border-radius: 16px;
   border: 1px solid $color-blue;
@@ -155,7 +155,7 @@
 
 @include b('mobile') {
   .stakeContainer {
-    height: 580px;
+    height: 510px;
     padding: 20px;
 
     &_noDataPlaceholder {

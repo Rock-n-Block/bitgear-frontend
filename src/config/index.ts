@@ -119,6 +119,7 @@ export default {
   },
   staking: {
     regularPid: 0, // CoinStaking contract === Pancake's Master contract
+    lpPid: 1, // CoinStaking contract LP
   },
 };
 

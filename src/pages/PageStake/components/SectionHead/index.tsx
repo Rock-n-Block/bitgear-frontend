@@ -45,7 +45,11 @@ export const SectionHead: FC<SectionHeadProps> = ({
         <div className={styles.sectionHeadInfoTitle}>{title}</div>
         <div className={styles.sectionHeadInfoSubtitle}>
           Stake <span>{stakeToken}</span> <div>|</div> Earn{' '}
-          {isCompounder ? earnToken : `${stakeToken} & ${earnToken}`}
+          {(() => {
+            if (isCompounder) return earnToken;
+            if (stakeToken.includes('-')) return stakeToken.split('-').join(' & ');
+            return `${stakeToken} & ${earnToken}`;
+          })()}
         </div>
         <div className={styles.sectionHeadInfoDescription}>
           {earnToken} rewards auto compound into more {stakeToken}!

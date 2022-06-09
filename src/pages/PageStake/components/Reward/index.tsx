@@ -1,8 +1,12 @@
 import React, { ReactNode, useMemo, useState } from 'react';
 import cn from 'classnames';
 
-import { bitGearTokenIcon, ethTokenIcon, triangleArrow } from '../../../../assets/icons';
-import { Button } from '../../../../components';
+import {
+  bitGearTokenIcon,
+  // ethTokenIcon,
+  triangleArrow,
+} from '../../../../assets/icons';
+import { Button, SkeletonLoader } from '../../../../components';
 import { getDollarAmount } from '../../../../utils';
 import { numberTransform } from '../../../../utils/numberTransform';
 import { TooltipCollectRewardsCompounding } from '../TooltipCollectRewardsCompounding';
@@ -16,11 +20,12 @@ interface RewardProps {
   stakeAmount: string | number;
   stakeToken: string;
   earnToken: string;
-  ethReward: string | number;
+  // ethReward: string | number;
   lastCollectedTimestamp: string | number;
-  collectedToDate: string | number;
+  // collectedToDate: string | number;
   earnedToDate: string | number;
   onCollectRewardClick: () => void;
+  isUserDataLoading: boolean;
   isPendingTx: boolean;
   className?: string;
 }
@@ -31,11 +36,12 @@ export const Reward: React.FC<RewardProps> = ({
   stakeToken,
   earnToken,
   className,
-  ethReward,
+  // ethReward,
   lastCollectedTimestamp,
-  collectedToDate,
+  // collectedToDate,
   onCollectRewardClick,
   earnedToDate,
+  isUserDataLoading,
   isPendingTx,
 }) => {
   const [isExpanded, setExpanded] = useState(false);
@@ -66,7 +72,14 @@ export const Reward: React.FC<RewardProps> = ({
       <div className={styles.titleBlock}>
         <p className={styles.text}>Rewards to collect</p>
         <div className={styles.collapseBtnContainer}>
-          {!noDataPlaceholder && <p className={styles.text}>{`${stakeAmount} ${stakeToken}`}</p>}
+          {(() => {
+            if (!noDataPlaceholder)
+              return <p className={styles.text}>{`${stakeAmount} ${stakeToken}`}</p>;
+            if (isUserDataLoading)
+              return <SkeletonLoader width="200px" height="30px" borderRadius="4px" />;
+            return null;
+          })()}
+          {/* {!noDataPlaceholder && <p className={styles.text}>{`${stakeAmount} ${stakeToken}`}</p>} */}
           <Button
             variant="iconButton"
             icon={triangleArrow}
@@ -79,7 +92,7 @@ export const Reward: React.FC<RewardProps> = ({
         <>
           <div className={styles.ethRewardsBlock}>
             <p className={cn(styles.text, styles.grayText, styles.smallText)}>
-              ETH rewards from the pool are distributed every block.
+              {earnToken} rewards from the pool are distributed every block.
             </p>
             <span className="flexCenter">
               <p className={cn(styles.text, styles.grayText)}>What`s this?</p>
@@ -88,31 +101,39 @@ export const Reward: React.FC<RewardProps> = ({
               </div>
             </span>
           </div>
-          <div className={styles.ethRewardAmountBlock}>
+          {/* <div className={styles.ethRewardAmountBlock}>
             <img src={ethTokenIcon} alt="eth icon" />
             <p>{`${ethReward} ETH`}</p>
-          </div>
+          </div> */}
           <div className={styles.stakeUnstakeBlock}>
             <div className={styles.textFlex}>
               <p className={cn(styles.text, styles.grayText)}>Last collected:</p>
-              <p className={styles.text}>{lastCollectedTimestamp}</p>
+              {isUserDataLoading ? (
+                <SkeletonLoader width="200px" height="30px" borderRadius="4px" />
+              ) : (
+                <p className={styles.text}>{lastCollectedTimestamp}</p>
+              )}
             </div>
             <div className={styles.textFlex}>
-              <p className={cn(styles.text, styles.grayText)}>Collected to date:</p>
-              <TooltipValue
-                // eslint-disable-next-line prettier/prettier
-                target={(
-                  <p className={styles.text}>
-                    {numberTransform(collectedToDate)}
-                    <span className={cn(styles.grayText)}>
-                      {/* TODO: check if collecting earnToken */}
-                      {`($${numberTransform(getDollarAmount(collectedToDate, earnToken))})`}
-                    </span>
-                  </p>
+              <p className={cn(styles.text, styles.grayText)}>Earned to date:</p>
+              {isUserDataLoading ? (
+                <SkeletonLoader width="120px" height="30px" borderRadius="4px" />
+              ) : (
+                <TooltipValue
                   // eslint-disable-next-line prettier/prettier
-                )}
-                value={`${collectedToDate}($${getDollarAmount(collectedToDate, earnToken)})`}
-              />
+                  target={(
+                    <p className={styles.text}>
+                      {numberTransform(earnedToDate)}
+                      <span className={cn(styles.grayText)}>
+                        {/* TODO: check if collecting earnToken */}
+                        {`($${numberTransform(getDollarAmount(earnedToDate, earnToken))})`}
+                      </span>
+                    </p>
+                    // eslint-disable-next-line prettier/prettier
+                  )}
+                  value={`${earnedToDate}($${getDollarAmount(earnedToDate, earnToken)})`}
+                />
+              )}
             </div>
             <Button
               classNameCustom={styles.stakeUnstakeButton}
@@ -135,20 +156,27 @@ export const Reward: React.FC<RewardProps> = ({
               <span className="flexCenter">
                 <p className={cn(styles.text, styles.grayText)}>Compounding</p>
                 <div className={styles.tooltipIcon}>
-                  <TooltipCollectRewardsCompounding tokenSymbol="GEAR" />
+                  <TooltipCollectRewardsCompounding
+                    stakeTokenSymbol={stakeToken}
+                    earnTokenSymbol={earnToken}
+                  />
                 </div>
               </span>
             </div>
-            <div className={styles.textFlex}>
+            {/* <div className={styles.textFlex}>
               <p className={cn(styles.text, styles.grayText)}>Earned to date:</p>
-              <p className={styles.text}>
-                {earnedToDate}
-                <span className={cn(styles.grayText)}>{`($${getDollarAmount(
-                  earnedToDate,
-                  earnToken,
-                )})`}</span>
-              </p>
-            </div>
+              {isUserDataLoading ? (
+                <SkeletonLoader width="120px" height="30px" borderRadius="4px" />
+              ) : (
+                <p className={styles.text}>
+                  {earnedToDate}
+                  <span className={cn(styles.grayText)}>{`($${getDollarAmount(
+                    earnedToDate,
+                    earnToken,
+                  )})`}</span>
+                </p>
+              )}
+            </div> */}
           </div>
         </>
       )}

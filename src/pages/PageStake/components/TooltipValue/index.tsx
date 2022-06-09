@@ -9,7 +9,7 @@ export const TooltipValue: FC<TooltipValueProps> = ({ value, target }) => {
     <Tooltip
       name={uuid()}
       target={target}
-      content={<p style={{ fontSize: 18 }}>{value}</p>}
+      content={<div style={{ fontSize: 18 }}>{value}</div>}
       event="click"
     />
   );
