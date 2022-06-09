@@ -59,14 +59,7 @@ export const SectionHead: FC<SectionHeadProps> = ({
           // eslint-disable-next-line prettier/prettier
           target={(
             <div className={styles.sectionHeadInfoAdditional}>
-              Total{' '}
-              {(() => {
-                if (isStakeLpToken) {
-                  return `LP ${stakeToken.split('-')[0]}`;
-                }
-                return stakeToken;
-              })()}{' '}
-              staked:{' '}
+              {`Total ${isStakeLpToken ? `LP ${stakeToken.split('-')[0]}` : stakeToken} staked: `}
               {isLoading ? (
                 <SkeletonLoader width="150px" height="18px" borderRadius="4px" />
               ) : (
