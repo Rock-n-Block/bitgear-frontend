@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo } from 'react';
 
-import gearToken from '../../../../data/gearToken';
+import gearEthLPToken from '../../../../data/gearEthLPToken';
 import { stakingActionTypes } from '../../../../redux/actionTypes';
-import { regularStaking } from '../../../../redux/async';
+import { lpStaking } from '../../../../redux/async';
 import { stakingSelectors, uiSelectors, userSelectors } from '../../../../redux/selectors';
 import { ContractsNames, RequestStatus } from '../../../../types';
 import { contractsHelper, deserialize, serialize } from '../../../../utils';
@@ -10,9 +10,9 @@ import { useShallowSelector } from '../../../useShallowSelector';
 import { useWeb3Provider } from '../../../useWeb3Provider';
 import { useAllowance, useApprove } from '../../erc20';
 
-const STAKE_TOKEN = gearToken;
+const STAKE_TOKEN = gearEthLPToken;
 
-export const useStakingRegular = () => {
+export const useStakingLp = () => {
   const { web3Provider } = useWeb3Provider();
   const { address: userWalletAddress, network } = useShallowSelector(userSelectors.getUser);
   const coinStakingAddress = useMemo(
@@ -39,7 +39,7 @@ export const useStakingRegular = () => {
 
   const handleStake = useCallback(
     (amount) => {
-      regularStaking.stake({
+      lpStaking.stake({
         provider: web3Provider,
         userWalletAddress: userWalletAddress || '',
         amount: serialize(amount, STAKE_TOKEN.decimals),
@@ -49,7 +49,7 @@ export const useStakingRegular = () => {
   );
   const handleUnstake = useCallback(
     (amount) => {
-      regularStaking.unstake({
+      lpStaking.unstake({
         provider: web3Provider,
         userWalletAddress: userWalletAddress || '',
         amount: serialize(amount, STAKE_TOKEN.decimals),
@@ -58,7 +58,7 @@ export const useStakingRegular = () => {
     [userWalletAddress, web3Provider],
   );
   const handleCollectReward = useCallback(() => {
-    regularStaking.collectReward({
+    lpStaking.collectReward({
       provider: web3Provider,
       userWalletAddress: userWalletAddress || '',
     });
@@ -70,22 +70,20 @@ export const useStakingRegular = () => {
   const {
     user: { stakedAmount, pendingReward, earned },
     public: { lastRewardTime, totalStaked },
-  } = useShallowSelector(stakingSelectors.selectRegularStaking);
+  } = useShallowSelector(stakingSelectors.selectLpStaking);
 
   const fetchUserDataRequestStatus = useShallowSelector(
-    uiSelectors.getProp(stakingActionTypes.SET_REGULAR_USER_DATA),
+    uiSelectors.getProp(stakingActionTypes.SET_LP_USER_DATA),
   );
-  const stakeRequestStatus = useShallowSelector(
-    uiSelectors.getProp(stakingActionTypes.REGULAR_STAKE),
-  );
+  const stakeRequestStatus = useShallowSelector(uiSelectors.getProp(stakingActionTypes.LP_STAKE));
   const unstakeRequestStatus = useShallowSelector(
-    uiSelectors.getProp(stakingActionTypes.REGULAR_UNSTAKE),
+    uiSelectors.getProp(stakingActionTypes.LP_UNSTAKE),
   );
   const collectRewardRequestStatus = useShallowSelector(
-    uiSelectors.getProp(stakingActionTypes.REGULAR_COLLECT_REWARD),
+    uiSelectors.getProp(stakingActionTypes.LP_COLLECT_REWARD),
   );
   const publicDataRequestStatus = useShallowSelector(
-    uiSelectors.getProp(stakingActionTypes.SET_REGULAR_PUBLIC_DATA),
+    uiSelectors.getProp(stakingActionTypes.SET_LP_PUBLIC_DATA),
   );
 
   useEffect(() => {
@@ -94,9 +92,9 @@ export const useStakingRegular = () => {
   }, [approveStatus, handleCheckAllowance]);
 
   const refetchData = useCallback(() => {
-    regularStaking.fetchPublicData({ provider: web3Provider });
+    lpStaking.fetchPublicData({ provider: web3Provider });
     if (!userWalletAddress) return;
-    regularStaking.fetchUserData({
+    lpStaking.fetchUserData({
       provider: web3Provider,
       userWalletAddress,
     });
@@ -126,7 +124,7 @@ export const useStakingRegular = () => {
     [earned, fetchUserDataRequestStatus, pendingReward, stakeTokenUserBalance, stakedAmount],
   );
 
-  return {
+  const ret = {
     handleStake,
     handleUnstake,
     handleCollectReward,
@@ -148,4 +146,5 @@ export const useStakingRegular = () => {
 
     publicDataRequestStatus,
   };
+  return ret;
 };

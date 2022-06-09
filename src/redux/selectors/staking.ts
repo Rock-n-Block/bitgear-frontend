@@ -2,6 +2,7 @@ import { StakingState, State } from '../../types';
 
 const selectStaking = (state: State): StakingState => state.staking;
 const selectRegularStaking = (state: State) => selectStaking(state).regular;
+const selectLpStaking = (state: State) => selectStaking(state).liquidityPools;
 const selectBalances = (state: State) => selectStaking(state).balances;
 const selectBalance =
   (tokenAddress: string) =>
@@ -14,4 +15,5 @@ export const stakingSelectors = {
   selectBalances,
   selectBalance,
   selectRegularStaking,
+  selectLpStaking,
 };
