@@ -11,15 +11,6 @@ export default {
     payload,
   }),
 
-  setLpPublicData: (payload: Partial<StakingState['liquidityPools']['public']>) => ({
-    type: stakingActionTypes.SET_LP_PUBLIC_DATA,
-    payload,
-  }),
-  setLpUserData: (payload: Partial<StakingState['liquidityPools']['user']>) => ({
-    type: stakingActionTypes.SET_LP_USER_DATA,
-    payload,
-  }),
-
   setBalance: (payload: StakingState['balances']) => ({
     type: stakingActionTypes.SET_BALANCES,
     payload,

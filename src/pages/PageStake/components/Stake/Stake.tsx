@@ -3,17 +3,12 @@ import BigNumber from 'bignumber.js/bignumber';
 import cn from 'classnames';
 
 import { triangleArrow } from '../../../../assets/icons';
-import {
-  Button,
-  Input,
-  SkeletonLoader,
-  // Switch
-} from '../../../../components';
+import { Button, Input, SkeletonLoader, Switch } from '../../../../components';
 import useDebounce from '../../../../hooks/useDebounce';
 import { RequestStatus } from '../../../../types';
 import { getDollarAmount, serialize, validateOnlyNumbers } from '../../../../utils';
 import { numberTransform } from '../../../../utils/numberTransform';
-// import { TooltipStakeCollectRewards } from '../TooltipStakeCollectRewards';
+import { TooltipStakeCollectRewards } from '../TooltipStakeCollectRewards';
 import { TooltipValue } from '../TooltipValue';
 
 import styles from './Stake.module.scss';
@@ -62,7 +57,7 @@ export const Stake: React.FC<StakeProps> = ({
   const [isExpanded, setExpanded] = useState(false);
   const [isStakeSelected, setStakeSelected] = useState(true);
   const [inputValue, setInputValue] = useState('');
-  // const [shouldCollectEthRewards, setCollectEthRewards] = useState(false);
+  const [shouldCollectEthRewards, setCollectEthRewards] = useState(false);
 
   const validateAndChangeInputValue = useCallback(
     (value: string) => {
@@ -282,31 +277,27 @@ export const Stake: React.FC<StakeProps> = ({
             </Button>
           </div>
           <div className={cn(styles.collectEthRewardsBlock, styles.textFlex)}>
-            {
-              isCompounder && (
-                <span className={styles.compounderText}>
-                  <div>
-                    WETH you earn is automatically converted to BITGEAR, which is received over
-                    time.
+            {isCompounder ? (
+              <span className={styles.compounderText}>
+                <div>
+                  WETH you earn is automatically converted to BITGEAR, which is received over time.
+                </div>
+                <div>BITGEAR rewards are automatically compounded - no need to collect!</div>
+              </span>
+            ) : (
+              <>
+                <span className="flexCenter">
+                  <p className={cn(styles.text, styles.grayText)}>Collect 0 ETH rewards?</p>
+                  <div className={styles.tooltipIcon}>
+                    <TooltipStakeCollectRewards />
                   </div>
-                  <div>BITGEAR rewards are automatically compounded - no need to collect!</div>
                 </span>
-              )
-              // : (
-              //   <>
-              //     <span className="flexCenter">
-              //       <p className={cn(styles.text, styles.grayText)}>Collect 0 ETH rewards?</p>
-              //       <div className={styles.tooltipIcon}>
-              //         <TooltipStakeCollectRewards />
-              //       </div>
-              //     </span>
-              //     <Switch
-              //       checked={shouldCollectEthRewards}
-              //       onChange={() => setCollectEthRewards(!shouldCollectEthRewards)}
-              //     />
-              //   </>
-              // )
-            }
+                <Switch
+                  checked={shouldCollectEthRewards}
+                  onChange={() => setCollectEthRewards(!shouldCollectEthRewards)}
+                />
+              </>
+            )}
           </div>
         </>
       )}

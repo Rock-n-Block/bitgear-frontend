@@ -8,7 +8,7 @@ import store from '../../../store';
 import { fetchAllowance, fetchBalance } from '../../erc20';
 
 import { fetchLastRewardTime, fetchTotalStaked } from './public';
-import { fetchEarned, fetchPendingReward, fetchStakedAmount } from './user';
+import { fetchPendingReward, fetchStakedAmount } from './user';
 
 type FetchPublicData = Web3Provider;
 
@@ -55,7 +55,6 @@ export const fetchUserData = async ({
       }),
       fetchStakedAmount({ provider, userWalletAddress }),
       fetchPendingReward({ provider, userWalletAddress }),
-      fetchEarned({ provider, userWalletAddress }),
     ]);
 
     store.dispatch(apiActions.success(type));

@@ -4,7 +4,6 @@ export type TChainType = 'mainnet' | 'testnet';
 
 export enum ContractsNames {
   erc20 = 'erc20',
-  uniswapV2Pair = 'uniswapV2Pair',
   coinStaking = 'coinStaking',
 }
 

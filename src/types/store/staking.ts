@@ -1,14 +1,8 @@
+// TODO: StakingState
 export type StakingState = {
   liquidityPools: {
-    public: {
-      totalStaked: string;
-      lastRewardTime: string;
-    };
-    user: {
-      stakedAmount: string;
-      pendingReward: string;
-      earned: string;
-    };
+    public: {}; // publicData
+    user: {}; // userData
   };
   compounder: {
     public: {}; // publicData
@@ -18,12 +12,11 @@ export type StakingState = {
     public: {
       totalStaked: string;
       lastRewardTime: string;
-    };
+    }; // publicData
     user: {
       stakedAmount: string;
       pendingReward: string;
-      earned: string;
-    };
+    }; // userData
   };
   balances: Record<string, string>;
 };

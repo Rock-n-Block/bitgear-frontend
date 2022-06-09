@@ -2,9 +2,8 @@ import { FC } from 'react';
 import { useSelector } from 'react-redux';
 
 import ethToken from '../../data/ethToken';
-import gearEthLPToken from '../../data/gearEthLPToken';
 import gearToken from '../../data/gearToken';
-import { usePollLp, usePollRegular, useStakingLp, useStakingRegular } from '../../hooks';
+import { usePollRegular, useStakingRegular } from '../../hooks';
 import { userSelectors } from '../../redux/selectors';
 import { RequestStatus } from '../../types';
 import { getDollarAmount } from '../../utils';
@@ -27,20 +26,17 @@ export const PageStake: FC = () => {
   usePollRegular();
   const stakingRegular = useStakingRegular();
 
-  usePollLp();
-  const stakingLp = useStakingLp();
-
   return (
     <div className={styles.container}>
       <Banner apy={160.41} />
-      <div className={styles.section}>
+      {/* <div className={styles.section}>
         <SectionHead
           title="LP Token Staking"
-          stakeToken={gearEthLPToken.symbol}
+          stakeToken={gearToken.symbol}
           earnToken={ethToken.symbol}
           totalStaked={{
-            token: stakingLp.totalStaked,
-            usd: getDollarAmount(stakingLp.totalStaked, gearEthLPToken.symbol),
+            token: '164,869,690',
+            usd: '265,876,000',
           }}
           // eslint-disable-next-line prettier/prettier
           performance={(
@@ -57,38 +53,29 @@ export const PageStake: FC = () => {
             </>
             // eslint-disable-next-line prettier/prettier
           )}
-          isLoading={stakingLp.publicDataRequestStatus === RequestStatus.REQUEST}
         />
         <div className={styles.sectionBody}>
           <Stake
             noDataPlaceholder={!userWalletAddress ? <NoConnectWalletPlaceholder /> : null}
-            onStakeClick={stakingLp.handleStake}
-            onUnstakeClick={stakingLp.handleUnstake}
-            onMaxClick={() => stakingLp.userData.balance}
-            stakeToken={gearEthLPToken.symbol}
-            maxDecimals={gearEthLPToken.decimals}
-            stakeTokenAllowance={stakingLp.stakeTokenAllowance}
-            stakeAmount={stakingLp.userData.stakeAmount}
-            tokenBalance={stakingLp.userData.balance}
-            isUserDataLoading={stakingLp.userData.fetchStatus === RequestStatus.REQUEST}
-            isPendingTx={
-              stakingLp.stakeRequestStatus === RequestStatus.REQUEST ||
-              stakingLp.unstakeRequestStatus === RequestStatus.REQUEST
-            }
+            onStakeClick={noop}
+            onUnstakeClick={noop}
+            stakeToken={gearToken.symbol}
+            stakeAmount={0}
+            tokenBalance={25}
           />
           <Reward
             noDataPlaceholder={!userWalletAddress ? <NoConnectWalletPlaceholder /> : null}
             stakeToken={gearToken.symbol}
             earnToken={gearToken.symbol}
-            stakeAmount={stakingLp.userData.pendingReward}
-            lastCollectedTimestamp={stakingLp.lastRewardTime}
-            earnedToDate={stakingLp.userData.earned}
-            onCollectRewardClick={stakingLp.handleCollectReward}
-            isUserDataLoading={stakingLp.userData.fetchStatus === RequestStatus.REQUEST}
-            isPendingTx={stakingLp.collectRewardRequestStatus === RequestStatus.REQUEST}
+            stakeAmount={0}
+            ethReward={75}
+            lastCollectedTimestamp={1652703791}
+            collectedToDate={40}
+            earnedToDate={30}
+            onCollectRewardClick={noop}
           />
         </div>
-      </div>
+      </div> */}
 
       <div className={styles.section}>
         <SectionHead
@@ -138,10 +125,11 @@ export const PageStake: FC = () => {
             stakeToken={gearToken.symbol}
             earnToken={gearToken.symbol}
             stakeAmount={stakingRegular.userData.pendingReward}
+            ethReward={75}
             lastCollectedTimestamp={stakingRegular.lastRewardTime}
-            earnedToDate={stakingRegular.userData.earned}
+            collectedToDate={stakingRegular.userData.pendingReward}
+            earnedToDate="?"
             onCollectRewardClick={stakingRegular.handleCollectReward}
-            isUserDataLoading={stakingRegular.userData.fetchStatus === RequestStatus.REQUEST}
             isPendingTx={stakingRegular.collectRewardRequestStatus === RequestStatus.REQUEST}
           />
         </div>

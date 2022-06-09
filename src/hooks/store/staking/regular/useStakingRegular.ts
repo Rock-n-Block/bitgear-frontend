@@ -68,7 +68,7 @@ export const useStakingRegular = () => {
     stakingSelectors.selectBalance(STAKE_TOKEN.address),
   );
   const {
-    user: { stakedAmount, pendingReward, earned },
+    user: { stakedAmount, pendingReward },
     public: { lastRewardTime, totalStaked },
   } = useShallowSelector(stakingSelectors.selectRegularStaking);
 
@@ -121,9 +121,8 @@ export const useStakingRegular = () => {
       balance: deserialize(stakeTokenUserBalance, STAKE_TOKEN.decimals),
       stakeAmount: deserialize(stakedAmount, STAKE_TOKEN.decimals),
       pendingReward: deserialize(pendingReward, STAKE_TOKEN.decimals),
-      earned: deserialize(earned, STAKE_TOKEN.decimals),
     }),
-    [earned, fetchUserDataRequestStatus, pendingReward, stakeTokenUserBalance, stakedAmount],
+    [fetchUserDataRequestStatus, pendingReward, stakeTokenUserBalance, stakedAmount],
   );
 
   return {
