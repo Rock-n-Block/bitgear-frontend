@@ -99,11 +99,12 @@ export const useStakingLp = () => {
 
   const refetchData = useCallback(() => {
     lpStaking.fetchPublicData({ provider: web3Provider });
-    if (!userWalletAddress) return;
-    lpStaking.fetchUserData({
-      provider: web3Provider,
-      userWalletAddress,
-    });
+    if (userWalletAddress) {
+      lpStaking.fetchUserData({
+        provider: web3Provider,
+        userWalletAddress,
+      });
+    }
   }, [userWalletAddress, web3Provider]);
 
   useEffect(() => {
