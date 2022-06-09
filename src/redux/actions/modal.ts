@@ -3,4 +3,7 @@ export default {
     type: 'MODAL:TOGGLE',
     payload,
   }),
+  closeModal: () => ({
+    type: 'MODAL:CLOSE',
+  }),
 };

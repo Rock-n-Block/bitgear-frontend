@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useMemo } from 'react';
+import { useDispatch } from 'react-redux';
 import BigNumber from 'bignumber.js/bignumber';
 
 import gearToken from '../../../../data/gearToken';
+import { modalActions, uiActions } from '../../../../redux/actions';
 import { stakingActionTypes } from '../../../../redux/actionTypes';
 import { compounderStaking } from '../../../../redux/async';
 import {
@@ -27,7 +29,7 @@ export const useStakingCompounder = () => {
   );
 
   const {
-    public: { pricePerShare },
+    public: { pricePerShare, harvestRewards },
     user: { earned },
   } = useShallowSelector(stakingSelectors.selectCompounderStaking);
   const stakeAllowance = useShallowSelector(
@@ -122,6 +124,14 @@ export const useStakingCompounder = () => {
     refetchData();
   }, [refetchData, unstakeRequestStatus]);
 
+  const dispatch = useDispatch();
+  useEffect(() => {
+    if (harvestRequestStatus === RequestStatus.SUCCESS) {
+      dispatch(modalActions.closeModal());
+      dispatch(uiActions.reset(stakingActionTypes.COMPOUNDER_HARVEST));
+    }
+  }, [dispatch, harvestRequestStatus]);
+
   const userData = useMemo(
     () => ({
       fetchStatus: fetchUserDataRequestStatus,
@@ -140,6 +150,7 @@ export const useStakingCompounder = () => {
     handleUnstake,
     handleHarvest,
     userData,
+    harvestRewards: deserialize(harvestRewards, STAKE_TOKEN.decimals),
     totalStaked: deserialize(totalStaked, STAKE_TOKEN.decimals),
     apy,
 

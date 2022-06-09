@@ -10,3 +10,4 @@ export { TooltipStakeCollectRewards } from './TooltipStakeCollectRewards';
 export { TooltipValue } from './TooltipValue';
 export { SectionHead } from './SectionHead';
 export { NoConnectWalletPlaceholder } from './NoConnectWalletPlaceholder';
+export { ClaimModal } from './ClaimModal';

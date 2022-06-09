@@ -15,6 +15,7 @@ export type StakingState = {
     public: {
       pricePerShare: string;
       totalShares: string;
+      harvestRewards: string;
     };
     user: {
       stakedShares: string;

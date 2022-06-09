@@ -1,5 +1,5 @@
 import { FC, useCallback } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import gearEthLPToken from '../../data/gearEthLPToken';
 import gearToken from '../../data/gearToken';
@@ -11,12 +11,20 @@ import {
   useStakingLp,
   useStakingRegular,
 } from '../../hooks';
+import { modalActions } from '../../redux/actions';
 import { userSelectors } from '../../redux/selectors';
 import { RequestStatus } from '../../types';
-import { addTokenToWallet, getDollarAmount, Token } from '../../utils';
-import { numberTransform } from '../../utils/numberTransform';
+import { addTokenToWallet, getDollarAmount, numberTransform, Token } from '../../utils';
 
-import { Banner, Reward, SectionHead, Stake, TooltipApr, TooltipApy } from './components';
+import {
+  Banner,
+  ClaimModal,
+  Reward,
+  SectionHead,
+  Stake,
+  TooltipApr,
+  TooltipApy,
+} from './components';
 
 import styles from './PageStake.module.scss';
 
@@ -40,9 +48,29 @@ export const PageStake: FC = () => {
   usePollCompounder();
   const stakingCompounder = useStakingCompounder();
 
+  const dispatch = useDispatch();
   const handleGetFreeTokens = useCallback(() => {
-    stakingCompounder.handleHarvest();
+    // this is needed to make sure that user address is set due to Components.Modal is not reactive and will not re-render if prop is changed
+    setTimeout(() => {
+      stakingCompounder.handleHarvest();
+    }, 1000);
   }, [stakingCompounder]);
+  const handleGetFreeTokensModal = useCallback(() => {
+    dispatch(
+      modalActions.toggleModal({
+        classes: {
+          root: styles.getFreeTokensModal,
+          modalContainer: styles.getFreeTokensModalContainer,
+          closeBtn: styles.getFreeTokensModalCloseBtn,
+        },
+        open: true,
+        text: (
+          <ClaimModal amount={stakingCompounder.harvestRewards} onSubmit={handleGetFreeTokens} />
+        ),
+      }),
+    );
+  }, [dispatch, handleGetFreeTokens, stakingCompounder.harvestRewards]);
+
   const handleAddTokenToWallet = useCallback((token: Token) => {
     addTokenToWallet({
       address: token.address,
@@ -56,7 +84,7 @@ export const PageStake: FC = () => {
     <div className={styles.container}>
       <Banner
         apy={getFormattedPerformance(stakingCompounder.apy)}
-        onGetFreeTokens={handleGetFreeTokens}
+        onGetFreeTokens={handleGetFreeTokensModal}
         onAddToWallet={handleAddTokenToWallet}
       />
       <div className={styles.section}>

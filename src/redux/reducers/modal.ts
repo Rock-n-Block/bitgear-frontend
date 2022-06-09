@@ -1,8 +1,9 @@
 const initialState = {
-  open: '',
+  open: false,
   text: '',
   header: '',
   delay: null,
+  classes: null, // to customize Modal's appearance
 };
 
 export default (state = initialState, { type, payload }: any) => {
@@ -11,6 +12,10 @@ export default (state = initialState, { type, payload }: any) => {
       return {
         ...state,
         ...payload,
+      };
+    case 'MODAL:CLOSE':
+      return {
+        ...initialState,
       };
     default:
       return state;
