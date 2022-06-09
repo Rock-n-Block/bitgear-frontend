@@ -34,10 +34,11 @@ export const fetchLpUsdPrice = async ({ provider, lpTokenAddress }: FetchLpUsdPr
     const state = store.getState();
     const gearTokenUsdPrice = tokensSelectors.selectUsdPrice(gearToken.address)(state);
 
-    const lpTokenUsdPrice = new BigNumber(1)
-      .dividedBy(totalSupply)
-      .multipliedBy(token0BalanceInPair)
+    // 2 means that price of half of LP token is equal to another part in common USD/Token
+    const lpTokenUsdPrice = new BigNumber(token0BalanceInPair)
       .multipliedBy(gearTokenUsdPrice)
+      .multipliedBy(2)
+      .dividedBy(totalSupply)
       .toFixed();
 
     store.dispatch(
