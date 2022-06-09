@@ -9,6 +9,7 @@ import store from './redux/store';
 import { stylizeConsole } from './utils/console';
 import { App } from './App';
 import config from './config';
+import { RefreshContextProvider } from './hooks';
 
 import './index.scss';
 
@@ -24,7 +25,9 @@ ReactDOM.render(
     <ApolloProvider client={client}>
       <Provider store={store}>
         <Connector>
-          <App />
+          <RefreshContextProvider>
+            <App />
+          </RefreshContextProvider>
         </Connector>
       </Provider>
     </ApolloProvider>

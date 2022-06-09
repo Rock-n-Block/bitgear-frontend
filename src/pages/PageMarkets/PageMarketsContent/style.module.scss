@@ -200,34 +200,6 @@
     font-weight: 400;
     line-height: 78px;
   }
-
-  //&PriceChange {
-  //  margin: 10px 0 0;
-  //
-  //  font-size: 20px;
-  //  font-weight: 400;
-  //  line-height: 31px;
-  //
-  //  &[data-positive='true'] {
-  //    margin: -13px 0 0 0;
-  //
-  //    font-size: 20px;
-  //    font-weight: 400;
-  //    line-height: 31px;
-  //
-  //    color: $color-text-green;
-  //  }
-  //
-  //  &[data-negative='true'] {
-  //    margin: -13px 0 0 0;
-  //
-  //    font-size: 20px;
-  //    font-weight: 400;
-  //    line-height: 31px;
-  //
-  //    color: $color-text-red;
-  //  }
-  //}
 }
 
 .containerTrading {
@@ -619,10 +591,6 @@
     margin: 11px 0 4px;
     @include flex(row, center, center);
 
-    //@include b('870') {
-    //  @include flex(row, center, flex-end);
-    //  margin: -12px 0;
-    //}
     &Inner {
       @include flex(row, center, center);
       width: 44px;
@@ -801,20 +769,8 @@
 }
 
 .containerSettings {
-  //margin: 21px 0 0 0;
-  //padding: 20px;
-
-  //background: $color-bg-section;
-  //border-radius: 10px;
   width: 100%;
 
-  //h1 {
-  //  margin: 0;
-  //
-  //  font-size: 24px;
-  //  font-weight: 400;
-  //  line-height: 37px;
-  //}
   h2 {
     font-size: 16px;
     font-weight: 900;
@@ -830,15 +786,6 @@
   }
 
   &Inner {
-    //@include grid(1fr 2fr 260px, 260px 180px, 50px);
-    //
-    //@include b('1000') {
-    //  @include grid(150px 2fr 260px, 480px 180px, 50px);
-    //}
-    //
-    //@include b('850') {
-    //  @include grid(1fr, 100px 660px 200px 100px, 10px);
-    //}
     @include flex(column, center, center, nowrap);
   }
 
@@ -849,10 +796,6 @@
   &Exchanges {
     width: 100%;
 
-    //@include b('850') {
-    //  grid-column: 1;
-    //  grid-row: 2;
-    //}
     &Top {
       @include flex(row, center, space-between, nowrap);
 

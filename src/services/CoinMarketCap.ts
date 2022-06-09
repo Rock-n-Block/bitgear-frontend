@@ -26,7 +26,6 @@ export class CoinMarketCapService {
     try {
       const url = `/v1/cryptocurrency/map?aux=platform,is_active`;
       const result = await this.axios.get(url);
-      // console.log('CoinMarketCapService getTwoCoinsCoins:', result);
       if (result.data.Response === 'Error') {
         return { status: 'ERROR', data: undefined };
       }
@@ -68,7 +67,6 @@ export class CoinMarketCapService {
         url = `/v1/cryptocurrency/quotes/latest?symbol=${symbolOne.toUpperCase()}`;
       }
       const result = await this.axios.get(url);
-      // console.log('CoinMarketCapService getTwoCoinsCoins:', result);
       if (result.data.Response === 'Error') {
         return { status: 'ERROR', data: undefined };
       }
@@ -86,7 +84,6 @@ export class CoinMarketCapService {
     try {
       const url = `/v1/cryptocurrency/quotes/latest?symbol=${symbolsList}&skip_invalid=true`;
       const result = await this.axios.get(url);
-      // console.log('CoinMarketCapService getTwoCoinsCoins:', result);
       if (result.data.Response === 'Error') {
         return { status: 'ERROR', data: undefined };
       }
@@ -104,7 +101,6 @@ export class CoinMarketCapService {
     try {
       const url = `/v1/cryptocurrency/quotes/latest?id=${ids}&skip_invalid=true`;
       const result = await this.axios.get(url);
-      // console.log('CoinMarketCapService getTwoCoinsCoins:', result);
       if (result.data.Response === 'Error') {
         return { status: 'ERROR', data: undefined };
       }
@@ -122,7 +118,6 @@ export class CoinMarketCapService {
     try {
       const url = `/v1/cryptocurrency/ohlcv/historical?symbol=${symbolsList}&time_period=hourly&count=10&interval=2h&skip_invalid=true`;
       const result = await this.axios.get(url);
-      // console.log('CoinMarketCapService getTwoCoinsCoins:', result);
       if (result.data.Response === 'Error') {
         return { status: 'ERROR', data: undefined };
       }

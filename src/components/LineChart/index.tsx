@@ -31,10 +31,7 @@ export const LineChart: React.FC<TypeLineChartProps> = React.memo(
     const [points, setPoints] = React.useState<string>();
     const [width, setWidth] = React.useState<number>(0);
     const [height, setHeight] = React.useState<number>(0);
-    // const [hover, setHover] = React.useState<boolean>(false);
     const [verticalLines, setVerticalLines] = React.useState<any[]>([]);
-    // const [positionMouseX, setPositionMouseX] = React.useState<number>(0);
-    // const [pointsVerticalLine, setPointsVerticalLine] = React.useState<string>();
 
     const refContainer = React.useRef<HTMLDivElement>(null);
 
@@ -58,7 +55,6 @@ export const LineChart: React.FC<TypeLineChartProps> = React.memo(
     }, []);
 
     const drawVerticalLines = React.useCallback(() => {
-      // console.log('drawVerticalLines:', data);
       const h = chartHeight || height;
       const array = resizePath(data, h);
       const lines: any[] = [];
@@ -98,7 +94,6 @@ export const LineChart: React.FC<TypeLineChartProps> = React.memo(
     }, [dateTime, chartHeight, height, resizePath, data, width, padding, handleHoverGroup]);
 
     const drawPath = React.useCallback(() => {
-      // console.log('drawPath:', data);
       const h = chartHeight || height;
       const array = resizePath(data, h);
       const path = d3.path();
@@ -124,7 +119,6 @@ export const LineChart: React.FC<TypeLineChartProps> = React.memo(
       return () => {
         window.removeEventListener('resize', handleResize);
       };
-      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     React.useEffect(() => {
@@ -134,20 +128,10 @@ export const LineChart: React.FC<TypeLineChartProps> = React.memo(
     }, [interactive, drawPath, drawVerticalLines, height, width]);
 
     return (
-      <div
-        ref={refContainer}
-        className={cns(s.chartContainer, containerStyle)}
-        // onFocus={() => setHover(true)}
-        // onMouseEnter={() => setHover(true)}
-        // onMouseLeave={() => setHover(false)}
-        // onMouseMove={handleMoveVerticalLine}
-        // onMouseLeave={() => onHover(null)}
-      >
+      <div ref={refContainer} className={cns(s.chartContainer, containerStyle)}>
         <svg
           className={cns(s.chart, svgStyle)}
           xmlns="http://www.w3.org/2000/svg"
-          // onMouseEnter={() => setHover(true)}
-          // onMouseLeave={() => setHover(false)}
           onMouseLeave={() => onHover(null)}
         >
           <path className={s.path} d={points} />

@@ -6,7 +6,7 @@ import cn from 'classnames';
 
 import { ReactComponent as IconArrowDown } from '../../assets/icons/arrow-dropdown.svg';
 
-import styles from './style.module.scss';
+import styles from './DropDownCurrent.module.scss';
 
 interface IDropdownProps {
   className?: string;

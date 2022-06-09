@@ -1,43 +1,30 @@
-import React from 'react';
+import { FC, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
-import BNB from '../../assets/icons/icon-bnb.svg';
-import ETH from '../../assets/icons/icon-eth.svg';
-import MATIC from '../../assets/icons/icon-matic.svg';
-import MON from '../../assets/icons/icon-mon.svg';
+import { networks } from '../../appConstants';
+import { userActions } from '../../redux/actions';
 import { DropDownCurrent } from '../DropDownCurrent';
 
-export const NetworkDropDown: React.FC = () => {
-  const [choosesNet, setChoosesNet] = React.useState('Ethereum');
-  const networks = [
-    {
-      text: 'Ethereum',
-      icon: ETH,
-      color: 'blue',
-      disable: false,
-    },
-    {
-      text: 'Polygon (coming soon)',
-      icon: MATIC,
-      color: 'purple',
-      disable: true,
-    },
-    {
-      text: 'BSC (coming soon)',
-      icon: BNB,
-      color: 'yellow',
-      disable: true,
-    },
-    {
-      text: 'Moonriver (coming soon)',
-      icon: MON,
-      color: 'gray',
-      disable: true,
-    },
-  ];
+export const NetworkDropDown: FC = () => {
+  const [choosesNet, setChoosesNet] = useState('Ethereum');
+  const dispatch = useDispatch();
+
+  const handleChainChange = (newChain: string) => {
+    setChoosesNet(newChain);
+
+    const foundChain = networks.find(({ text }) => text === newChain);
+    if (foundChain) {
+      dispatch(
+        userActions.setUserData({
+          network: foundChain.type,
+        }),
+      );
+    }
+  };
 
   return (
     <div>
-      <DropDownCurrent options={networks} setValue={setChoosesNet} value={choosesNet} />
+      <DropDownCurrent options={networks} setValue={handleChainChange} value={choosesNet} />
     </div>
   );
 };

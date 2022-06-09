@@ -13,7 +13,7 @@ export class AlchemyService {
 
   constructor() {
     this.axios = axios.create({
-      baseURL: config.apis.alchemy + config.keys.alchemy,
+      baseURL: config.apis.alchemy + process.env.REACT_APP_ALCHEMY_KEY,
     });
   }
 
@@ -22,7 +22,6 @@ export class AlchemyService {
       const url = `/`;
       const { chainIds }: any = config;
       const chainId: any = chainIds[config.isMainnetOrTestnet];
-      // console.log('AlchemyService getBalances:', chainIds, chainId);
       const options = {
         jsonrpc: '2.0',
         method: 'alchemy_getTokenBalances',

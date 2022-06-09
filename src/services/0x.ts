@@ -81,20 +81,18 @@ export class Service0x {
 
   getTokens = async () => {
     try {
-      if (!config.IS_PRODUCTION && config.IS_TESTING_ON_ROPSTEN)
+      if (!config.IS_PRODUCTION && config.TESTING_NET === 'ropsten')
         return {
           status: 'SUCCESS',
           data: tokensRopsten,
         };
       const url = `/swap/v1/tokens`;
       const result = await this.axios.get(url);
-      // console.log('Service0x getTokens:', result);
       return {
         status: 'SUCCESS',
         data: result.data.records,
       };
     } catch (e: any) {
-      // console.error(e);
       return { status: 'ERROR', data: undefined, error: e.response.data };
     }
   };
@@ -107,16 +105,13 @@ export class Service0x {
       newProps.sellAmount = new BigNumber(sellAmount)
         .multipliedBy(new BigNumber(10).pow(decimals))
         .toFixed(0);
-      // console.log('Service0x getQuote:', props);
       const url = `/swap/v1/quote?${qs.stringify(newProps)}`;
       const result = await this.axios.get(url);
-      // console.log('Service0x getQuote:', result);
       return {
         status: 'SUCCESS',
         data: result.data,
       };
     } catch (e: any) {
-      // console.error(e);
       return { status: 'ERROR', data: undefined, error: e.response.data };
     }
   };
@@ -128,21 +123,18 @@ export class Service0x {
       newProps.sellAmount = new BigNumber(sellAmount)
         .multipliedBy(new BigNumber(10).pow(decimals))
         .toFixed(0);
-      // console.log('Service0x getPrice:', props);
       const url = `/swap/v1/price?${qs.stringify(newProps)}`;
       let result;
-      if (!config.IS_PRODUCTION && config.IS_TESTING_ON_ROPSTEN) {
+      if (!config.IS_PRODUCTION && config.TESTING_NET === 'ropsten') {
         result = await this.axiosMainnet.get(url);
       } else {
         result = await this.axios.get(url);
       }
-      // console.log('Service0x getPrice:', result);
       return {
         status: 'SUCCESS',
         data: result.data,
       };
     } catch (e: any) {
-      // console.error(e);
       return { status: 'ERROR', data: undefined, error: e.response.data };
     }
   };
@@ -151,18 +143,16 @@ export class Service0x {
     try {
       const url = `/swap/v1/prices?${qs.stringify(props)}`;
       let result;
-      if (!config.IS_PRODUCTION && config.IS_TESTING_ON_ROPSTEN) {
+      if (!config.IS_PRODUCTION && config.TESTING_NET === 'ropsten') {
         result = await this.axiosMainnet.get(url);
       } else {
         result = await this.axios.get(url);
       }
-      // console.log('Service0x getQuote:', result);
       return {
         status: 'SUCCESS',
         data: result.data,
       };
     } catch (e: any) {
-      // console.error(e);
       return { status: 'ERROR', data: undefined, error: e.response.data };
     }
   };
@@ -171,13 +161,11 @@ export class Service0x {
     try {
       const url = `/sra/v4/orders?${qs.stringify(props)}`;
       const result = await this.axios.get(url);
-      // console.log('Service0x getOrders:', result);
       return {
         status: 'SUCCESS',
         data: result.data,
       };
     } catch (e: any) {
-      // console.error(e);
       return { status: 'ERROR', data: undefined, error: e.response.data };
     }
     // link below works properly
@@ -213,13 +201,6 @@ export class Service0x {
         new BigNumber(10).pow(decimalsReceive),
       );
       const expiry = new BigNumber(expires);
-      // const array = new Uint32Array(4);
-      // let saltString: string;
-      // if ((window as any).crypto && (window as any).crypto.getRandomValues) {
-      //   saltString = (window as any).crypto.getRandomValues(array).join('');
-      // } else {
-      //   saltString = `${Math.random() * 10000000000000000}${Math.random() * 10000000000000000}`;
-      // }
       const salt = new BigNumber(Math.random() * 100000000000000000); // todo
       const order: any = new utils.LimitOrder({
         chainId,
@@ -250,16 +231,13 @@ export class Service0x {
 
   sendOrder = async (props: TypeSendOrderProps) => {
     try {
-      // const url = `https://api.0x.org/sra/v4/order`;
       const url = `/sra/v4/order`;
       const result = await this.axios.post(url, props);
-      // console.log('Service0x sendOrder:', result);
       return {
         status: 'SUCCESS',
         data: result.data,
       };
     } catch (e: any) {
-      // console.error(e);
       return { status: 'ERROR', data: undefined, error: e.response.data };
     }
   };

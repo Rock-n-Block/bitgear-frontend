@@ -18,7 +18,8 @@
     "lint:ts": "eslint \"{src,types}/**/*.ts{,x}\"",
     "lint-fix:ts": "eslint \"{src,types}/**/*.ts{,x}\" --fix",
     "lint:scss": "stylelint \"src/**/*.scss\"",
-    "lint-fix:scss": "stylelint \"src/**/*.scss\" --fix"
+    "lint-fix:scss": "stylelint \"src/**/*.scss\" --fix",
+    "generate-chain-types": "typechain --target=web3-v1 '**/abi/*.json' --out-dir='./src/types/contracts'"
   },
   "dependencies": {
     "@0x/protocol-utils": "^1.5.0",
@@ -88,6 +89,7 @@
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
+    "@typechain/web3-v1": "^6.0.0",
     "@types/axios": "^0.14.0",
     "@types/classnames": "^2.2.11",
     "@types/d3-path": "^2.0.0",
@@ -102,7 +104,9 @@
     "jest-junit": "^12.0.0",
     "lint-staged": "^10.5.4",
     "remark-preset-lint-recommended": "^5.0.0",
-    "ts-jest": "^26.5.3"
+    "ts-jest": "^26.5.3",
+    "typechain": "^8.0.0",
+    "web3-utils": "^1.7.3"
   },
   "browserslist": {
     "production": [

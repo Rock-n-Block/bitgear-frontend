@@ -4,7 +4,7 @@ import { isEqual } from 'lodash';
 import Web3 from 'web3';
 
 import config from '../config';
-import customSwapAbi from '../data/customSwapAbi.json';
+import { customSwapAbi } from '../config/abi';
 
 type TypeAllowance = {
   userAddress: string;
@@ -26,17 +26,14 @@ export default class Web3Provider {
 
   public web3Provider: any;
 
-  // public allowanceTarget: string;
-
   public addresses: any;
 
   constructor() {
     this.provider = new WalletConnectProvider({
-      infuraId: config.keys.infura,
+      infuraId: process.env.REACT_APP_INFURA_KEY,
     });
     this.web3Provider = new Web3(this.provider);
     this.addresses = config.addresses;
-    // this.allowanceTarget = this.addresses[config.netType].allowanceTarget;
 
     this.provider.on('accountsChanged', (accounts: string[]) => {
       const fromStorage = localStorage.getItem('accountsWalletConnect') || '{}';
@@ -185,7 +182,6 @@ export default class Web3Provider {
   };
 
   public approve = async ({
-    // amount,
     userAddress,
     allowanceTarget,
     contractAbi,

@@ -65,7 +65,6 @@ export const PageAccount: React.FC = () => {
   const location = useLocation();
   const { pathname } = location;
   const { userCurrentTier } = useUserTier();
-  // console.log('PageAccount match, location:', match, location);
 
   const [data, setData] = React.useState<any[]>([] as any);
   const [dataForTable, setDataForTable] = React.useState<any[]>([] as any);
@@ -88,8 +87,6 @@ export const PageAccount: React.FC = () => {
   const [isArrowUp, setIsArrowUp] = React.useState<boolean>(true);
   const [activeColumn, setActiveColumn] = React.useState<string>('');
   const [userBalancesFiltered, setUserBalancesFiltered] = React.useState<any>({});
-
-  // const [gearBalance, setGearBalance] = React.useState<number | string>(0);
 
   const userBalancesAsArray = React.useMemo(
     () => Object.entries(userBalancesFiltered),
@@ -179,25 +176,6 @@ export const PageAccount: React.FC = () => {
     [tokensBySymbol],
   );
 
-  // const getHistory = React.useCallback(
-  //   async ({ symbolOne, symbolTwo, limit, aggregate, exchange }: any): Promise<any> => {
-  //     try {
-  //       const resultGetHistory = await CryptoCompare.getHistory({
-  //         symbolOne,
-  //         symbolTwo,
-  //         limit,
-  //         aggregate,
-  //         exchange,
-  //       });
-  //       return resultGetHistory.data;
-  //     } catch (e) {
-  //       console.error('getHistory', e);
-  //       return { status: 'ERROR', data: undefined };
-  //     }
-  //   },
-  //   [],
-  // );
-
   const getOrders = React.useCallback(async (props: any) => {
     try {
       const resultGetOrdersMaker = await Zx.getOrders({
@@ -249,16 +227,7 @@ export const PageAccount: React.FC = () => {
         if (resultGetExchangeOfPair.status === 'SUCCESS') {
           [exchange] = resultGetExchangeOfPair.data;
         }
-        // eslint-disable-next-line no-await-in-loop
-        // const resultOfGetHistory = await getHistory({
-        //   symbolOne: symbolMaker,
-        //   symbolTwo: symbolTaker,
-        //   limit: '1',
-        //   aggregate: '1',
-        //   exchange,
-        // });
 
-        // const price = resultOfGetHistory[0]?.close;
         const amount = new BigNumber(item.order.makerAmount)
           .dividedBy(10 ** findToken(item.order.makerToken).decimals)
           .toString();

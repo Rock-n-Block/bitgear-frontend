@@ -18,6 +18,10 @@
     height: 80px;
     overflow: hidden;
   }
+
+  &_noDataPlaceholder {
+    height: 170px;
+  }
 }
 
 .titleBlock {
@@ -153,6 +157,10 @@
   .stakeContainer {
     height: 580px;
     padding: 20px;
+
+    &_noDataPlaceholder {
+      height: 160px;
+    }
   }
 
   .text {

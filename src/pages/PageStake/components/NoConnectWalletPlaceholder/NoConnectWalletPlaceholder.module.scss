@@ -1,0 +1,32 @@
+@import '../../../../scss/theme';
+@import '../../../../scss/mixins';
+
+.connectWalletBtn {
+  @include flex(row, center, center, nowrap);
+  margin: 0 spacing(3);
+  margin-top: spacing(3);
+  padding: 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+
+  font-size: 14px;
+  font-weight: 500;
+
+  cursor: pointer;
+
+  color: $color-text-primary;
+  background: $color-text-wc;
+  border-radius: 10px;
+
+  transition: all 250ms ease-in-out;
+
+  a {
+    color: $color-text-primary;
+  }
+
+  &:hover {
+    font-weight: 700;
+
+    box-shadow: 0 0 7px 3px rgba(1, 151, 226, 0.6);
+  }
+}

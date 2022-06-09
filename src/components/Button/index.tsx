@@ -10,7 +10,6 @@ type TypeButtonProps = {
   onClick?: () => void;
   variant?: 'normal' | 'primary' | 'secondary' | 'blue' | 'outlined' | 'iconButton' | 'text';
   uppercase?: boolean;
-  // eslint-disable-next-line react/no-unused-prop-types
   icon?: any;
   classNameCustom?: any;
   disabled?: boolean;
@@ -46,6 +45,7 @@ const Button: React.FC<TypeButtonProps> = ({
         { [s.uppercase]: uppercase },
         classNameDisabled,
       )}
+      disabled={disabled}
     >
       {children}
       {icon && <img className={icon && variant !== 'iconButton' ? s.icon : ''} src={icon} alt="" />}

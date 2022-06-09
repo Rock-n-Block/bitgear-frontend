@@ -7,8 +7,6 @@ import { useMedia } from 'use-media';
 import HotNew from '../../assets/icons/hot-new.svg';
 import TopPerf from '../../assets/icons/top-perf.svg';
 import { MainTable, Pagination, Search } from '../../components';
-// import excludedCoins from '../../data/excludedCoins';
-// import excludedSymbols from '../../data/excludedSymbols';
 import { tableActions } from '../../redux/actions';
 import { CoinMarketCapService } from '../../services/CoinMarketCap';
 import { sortColumn } from '../../utils/sortColumn';
@@ -138,20 +136,10 @@ export const PageExplore: React.FC = () => {
   };
 
   React.useEffect(() => {
-    // const arrayExcluded = excludedCoins.map((item: any) => {
-    //   return item.symbol.toUpperCase();
-    // });
-
-    const arrayOfSymbolsFiltered = tokens
-      // .filter((token: any) => {
-      //   return !arrayExcluded.includes(token.symbol.toUpperCase());
-      // })
-      .filter((token: any) => {
-        // if (!token.image) return false;
-        if (token.symbol.match(/[^A-Za-z0-9]+/gi)) return false;
-        // if (excludedSymbols.includes(token.symbol)) return false;
-        return true;
-      });
+    const arrayOfSymbolsFiltered = tokens.filter((token: any) => {
+      if (token.symbol.match(/[^A-Za-z0-9]+/gi)) return false;
+      return true;
+    });
 
     const listOfSymbols = arrayOfSymbolsFiltered.map((token: any) => {
       return token.idCMC;

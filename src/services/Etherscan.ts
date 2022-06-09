@@ -17,12 +17,11 @@ export class EtherscanService {
       const props = {
         module: 'contract',
         action: 'getabi',
-        apikey: config.keys.etherscan,
+        apikey: process.env.REACT_APP_ETHERSCAN_KEY,
         address,
       };
       const url = `?${qs.stringify(props)}`;
       const result = await this.axios.get(url);
-      // console.log('EtherscanService getAbi:', result);
       if (result.data.status === '0')
         return {
           status: 'ERROR',
@@ -33,7 +32,6 @@ export class EtherscanService {
         data: JSON.parse(result.data.result),
       };
     } catch (e: any) {
-      // console.error(e);
       return { status: 'ERROR', data: undefined, error: e.response.data };
     }
   };
@@ -43,7 +41,7 @@ export class EtherscanService {
       const props = {
         module: 'gastracker',
         action: 'gasoracle',
-        apikey: config.keys.etherscan,
+        apikey: process.env.REACT_APP_ETHERSCAN_KEY,
       };
       const url = `?${qs.stringify(props)}`;
       const result = await this.axios.get(url);
@@ -58,7 +56,6 @@ export class EtherscanService {
         data: +result.data.result.ProposeGasPrice,
       };
     } catch (e: any) {
-      // console.error(e);
       if (e.response) {
         return { status: 'ERROR', data: undefined, error: e.response.data };
       }

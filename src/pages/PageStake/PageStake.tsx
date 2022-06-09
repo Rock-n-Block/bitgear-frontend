@@ -1,18 +1,35 @@
 import { FC } from 'react';
-import { noop } from 'lodash';
+import { useSelector } from 'react-redux';
 
 import ethToken from '../../data/ethToken';
 import gearToken from '../../data/gearToken';
+import { usePollRegular, useStakingRegular } from '../../hooks';
+import { userSelectors } from '../../redux/selectors';
+import { RequestStatus } from '../../types';
+import { getDollarAmount } from '../../utils';
 
-import { Banner, Reward, SectionHead, Stake, TooltipApr, TooltipApy } from './components';
+import {
+  Banner,
+  NoConnectWalletPlaceholder,
+  Reward,
+  SectionHead,
+  Stake,
+  TooltipApr,
+  TooltipApy,
+} from './components';
 
 import styles from './PageStake.module.scss';
 
 export const PageStake: FC = () => {
+  const { address: userWalletAddress } = useSelector(userSelectors.getUser);
+
+  usePollRegular();
+  const stakingRegular = useStakingRegular();
+
   return (
     <div className={styles.container}>
       <Banner apy={160.41} />
-      <div className={styles.section}>
+      {/* <div className={styles.section}>
         <SectionHead
           title="LP Token Staking"
           stakeToken={gearToken.symbol}
@@ -39,6 +56,7 @@ export const PageStake: FC = () => {
         />
         <div className={styles.sectionBody}>
           <Stake
+            noDataPlaceholder={!userWalletAddress ? <NoConnectWalletPlaceholder /> : null}
             onStakeClick={noop}
             onUnstakeClick={noop}
             stakeToken={gearToken.symbol}
@@ -46,6 +64,7 @@ export const PageStake: FC = () => {
             tokenBalance={25}
           />
           <Reward
+            noDataPlaceholder={!userWalletAddress ? <NoConnectWalletPlaceholder /> : null}
             stakeToken={gearToken.symbol}
             earnToken={gearToken.symbol}
             stakeAmount={0}
@@ -56,7 +75,7 @@ export const PageStake: FC = () => {
             onCollectRewardClick={noop}
           />
         </div>
-      </div>
+      </div> */}
 
       <div className={styles.section}>
         <SectionHead
@@ -64,8 +83,8 @@ export const PageStake: FC = () => {
           stakeToken={gearToken.symbol}
           earnToken={ethToken.symbol}
           totalStaked={{
-            token: '164,869,690',
-            usd: '265,876,000',
+            token: stakingRegular.totalStaked,
+            usd: getDollarAmount(stakingRegular.totalStaked, gearToken.symbol),
           }}
           // eslint-disable-next-line prettier/prettier
           performance={(
@@ -82,24 +101,36 @@ export const PageStake: FC = () => {
             </>
             // eslint-disable-next-line prettier/prettier
           )}
+          isLoading={stakingRegular.publicDataRequestStatus === RequestStatus.REQUEST}
         />
         <div className={styles.sectionBody}>
           <Stake
-            onStakeClick={noop}
-            onUnstakeClick={noop}
+            noDataPlaceholder={!userWalletAddress ? <NoConnectWalletPlaceholder /> : null}
+            onStakeClick={stakingRegular.handleStake}
+            onUnstakeClick={stakingRegular.handleUnstake}
+            onMaxClick={() => stakingRegular.userData.balance}
             stakeToken={gearToken.symbol}
-            stakeAmount={0}
-            tokenBalance={25}
+            maxDecimals={gearToken.decimals}
+            stakeTokenAllowance={stakingRegular.stakeTokenAllowance}
+            stakeAmount={stakingRegular.userData.stakeAmount}
+            tokenBalance={stakingRegular.userData.balance}
+            isUserDataLoading={stakingRegular.userData.fetchStatus === RequestStatus.REQUEST}
+            isPendingTx={
+              stakingRegular.stakeRequestStatus === RequestStatus.REQUEST ||
+              stakingRegular.unstakeRequestStatus === RequestStatus.REQUEST
+            }
           />
           <Reward
+            noDataPlaceholder={!userWalletAddress ? <NoConnectWalletPlaceholder /> : null}
             stakeToken={gearToken.symbol}
             earnToken={gearToken.symbol}
-            stakeAmount={0}
+            stakeAmount={stakingRegular.userData.pendingReward}
             ethReward={75}
-            lastCollectedTimestamp={1652703791}
-            collectedToDate={40}
-            earnedToDate={30}
-            onCollectRewardClick={noop}
+            lastCollectedTimestamp={stakingRegular.lastRewardTime}
+            collectedToDate={stakingRegular.userData.pendingReward}
+            earnedToDate="?"
+            onCollectRewardClick={stakingRegular.handleCollectReward}
+            isPendingTx={stakingRegular.collectRewardRequestStatus === RequestStatus.REQUEST}
           />
         </div>
       </div>
@@ -135,9 +166,11 @@ export const PageStake: FC = () => {
             </>
             // eslint-disable-next-line prettier/prettier
           )}
+          isLoading
         />
-        <div className={styles.sectionBody}>
+        {/* <div className={styles.sectionBody}>
           <Stake
+            noDataPlaceholder={!userWalletAddress ? <NoConnectWalletPlaceholder /> : null}
             isCompounder
             onStakeClick={noop}
             onUnstakeClick={noop}
@@ -147,7 +180,7 @@ export const PageStake: FC = () => {
             stakeAmount={0}
             tokenBalance={25}
           />
-        </div>
+        </div> */}
       </div>
     </div>
   );
