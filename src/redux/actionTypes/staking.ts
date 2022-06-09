@@ -9,8 +9,6 @@ const REGULAR_UNSTAKE = `${SLICE_NAME}:REGULAR_UNSTAKE` as const;
 const REGULAR_COLLECT_REWARD = `${SLICE_NAME}:REGULAR_COLLECT_REWARD` as const;
 
 const regularActionTypes = {
-  SET_BALANCES,
-
   SET_REGULAR_PUBLIC_DATA,
   SET_REGULAR_USER_DATA,
 
@@ -26,8 +24,6 @@ const LP_UNSTAKE = `${SLICE_NAME}:LP_UNSTAKE` as const;
 const LP_COLLECT_REWARD = `${SLICE_NAME}:LP_COLLECT_REWARD` as const;
 
 const lpActionTypes = {
-  SET_BALANCES,
-
   SET_LP_PUBLIC_DATA,
   SET_LP_USER_DATA,
 
@@ -36,7 +32,24 @@ const lpActionTypes = {
   LP_COLLECT_REWARD,
 };
 
+const SET_COMPOUNDER_PUBLIC_DATA = `${SLICE_NAME}:SET_COMPOUNDER_PUBLIC_DATA` as const;
+const SET_COMPOUNDER_USER_DATA = `${SLICE_NAME}:SET_COMPOUNDER_USER_DATA` as const;
+const COMPOUNDER_STAKE = `${SLICE_NAME}:COMPOUNDER_STAKE` as const;
+const COMPOUNDER_UNSTAKE = `${SLICE_NAME}:COMPOUNDER_UNSTAKE` as const;
+
+const compounderActionTypes = {
+  SET_COMPOUNDER_PUBLIC_DATA,
+  SET_COMPOUNDER_USER_DATA,
+
+  COMPOUNDER_STAKE,
+  COMPOUNDER_UNSTAKE,
+};
+
 export default {
+  ...{
+    SET_BALANCES,
+  },
   ...regularActionTypes,
   ...lpActionTypes,
+  ...compounderActionTypes,
 };

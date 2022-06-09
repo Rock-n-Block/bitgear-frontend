@@ -20,6 +20,15 @@ export default {
     payload,
   }),
 
+  setCompounderPublicData: (payload: Partial<StakingState['compounder']['public']>) => ({
+    type: stakingActionTypes.SET_COMPOUNDER_PUBLIC_DATA,
+    payload,
+  }),
+  setCompounderUserData: (payload: Partial<StakingState['compounder']['user']>) => ({
+    type: stakingActionTypes.SET_COMPOUNDER_USER_DATA,
+    payload,
+  }),
+
   setBalance: (payload: StakingState['balances']) => ({
     type: stakingActionTypes.SET_BALANCES,
     payload,

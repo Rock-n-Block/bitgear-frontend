@@ -11,8 +11,14 @@ export type StakingState = {
     };
   };
   compounder: {
-    public: {}; // publicData
-    user: {}; // userData
+    public: {
+      pricePerShare: string;
+      totalShares: string;
+    };
+    user: {
+      stakedShares: string;
+      earned: string;
+    };
   };
   regular: {
     public: {
