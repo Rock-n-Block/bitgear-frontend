@@ -46,6 +46,27 @@ interface StakeProps {
   className?: number;
 }
 
+type CollapseHeaderTextProps = {
+  isLoading: boolean;
+  isConnectedWallet: boolean;
+  tooltipRawText: string;
+  tooltipText: string;
+};
+
+const CollapseHeaderText: FC<CollapseHeaderTextProps> = ({
+  isLoading,
+  isConnectedWallet,
+  tooltipRawText,
+  tooltipText,
+}) => {
+  if (isLoading) return <SkeletonLoader width="120px" height="30px" borderRadius="4px" />;
+  if (isConnectedWallet)
+    return (
+      <TooltipValue target={<p className={styles.text}>{tooltipText}</p>} value={tooltipRawText} />
+    );
+  return null;
+};
+
 export const Stake: FC<StakeProps> = ({
   isCompounder = false,
   stakeAmount,
@@ -214,23 +235,12 @@ export const Stake: FC<StakeProps> = ({
       <div className={styles.titleBlock}>
         <p className={styles.text}>Your stake</p>
         <div className={styles.collapseBtnContainer}>
-          {(() => {
-            if (isUserDataLoading)
-              return <SkeletonLoader width="120px" height="30px" borderRadius="4px" />;
-            if (isConnectedWallet)
-              return (
-                <TooltipValue
-                  target={
-                    // eslint-disable-next-line react/jsx-wrap-multilines
-                    <p className={styles.text}>{`${getFormattedValue(stakeAmount)} ${prettyToken(
-                      stakeToken,
-                    )}`}</p>
-                  }
-                  value={stakeAmount}
-                />
-              );
-            return null;
-          })()}
+          <CollapseHeaderText
+            isLoading={isUserDataLoading}
+            isConnectedWallet={isConnectedWallet}
+            tooltipRawText={stakeAmount.toString()}
+            tooltipText={`${getFormattedValue(stakeAmount)} ${prettyToken(stakeToken)}`}
+          />
           <Button
             variant="iconButton"
             icon={triangleArrow}
