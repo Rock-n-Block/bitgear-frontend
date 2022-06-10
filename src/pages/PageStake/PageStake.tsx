@@ -16,6 +16,7 @@ import { userSelectors } from '../../redux/selectors';
 import { RequestStatus } from '../../types';
 import { addTokenToWallet, getDollarAmount, getFormattedValue, Token } from '../../utils';
 
+import { Welcome } from './components/Welcome';
 import {
   Banner,
   ClaimModal,
@@ -72,6 +73,10 @@ export const PageStake: FC = () => {
     });
   }, []);
 
+  const isConnectedWallet = !!userWalletAddress;
+
+  if (!isConnectedWallet) return <Welcome />;
+
   return (
     <div className={styles.container}>
       <Banner
@@ -121,7 +126,7 @@ export const PageStake: FC = () => {
               stakingLp.stakeRequestStatus === RequestStatus.REQUEST ||
               stakingLp.unstakeRequestStatus === RequestStatus.REQUEST
             }
-            isConnectedWallet={!!userWalletAddress}
+            isConnectedWallet={isConnectedWallet}
           />
           <Reward
             // noDataPlaceholder={!userWalletAddress ? <NoConnectWalletPlaceholder /> : null}
@@ -134,7 +139,7 @@ export const PageStake: FC = () => {
             onCollectRewardClick={stakingLp.handleCollectReward}
             isUserDataLoading={stakingLp.userData.fetchStatus === RequestStatus.REQUEST}
             isPendingTx={stakingLp.collectRewardRequestStatus === RequestStatus.REQUEST}
-            isConnectedWallet={!!userWalletAddress}
+            isConnectedWallet={isConnectedWallet}
           />
         </div>
       </div>
@@ -177,7 +182,7 @@ export const PageStake: FC = () => {
               stakingRegular.stakeRequestStatus === RequestStatus.REQUEST ||
               stakingRegular.unstakeRequestStatus === RequestStatus.REQUEST
             }
-            isConnectedWallet={!!userWalletAddress}
+            isConnectedWallet={isConnectedWallet}
           />
           <Reward
             stakeToken={gearToken.symbol}
@@ -189,7 +194,7 @@ export const PageStake: FC = () => {
             onCollectRewardClick={stakingRegular.handleCollectReward}
             isUserDataLoading={stakingRegular.userData.fetchStatus === RequestStatus.REQUEST}
             isPendingTx={stakingRegular.collectRewardRequestStatus === RequestStatus.REQUEST}
-            isConnectedWallet={!!userWalletAddress}
+            isConnectedWallet={isConnectedWallet}
           />
         </div>
       </div>
@@ -241,7 +246,7 @@ export const PageStake: FC = () => {
               stakingCompounder.stakeRequestStatus === RequestStatus.REQUEST ||
               stakingCompounder.unstakeRequestStatus === RequestStatus.REQUEST
             }
-            isConnectedWallet={!!userWalletAddress}
+            isConnectedWallet={isConnectedWallet}
           />
         </div>
       </div>
