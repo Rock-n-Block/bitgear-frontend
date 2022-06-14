@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { FC } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Redirect, Route, Switch, useLocation } from 'react-router-dom';
 import { gql, useQuery } from '@apollo/client';
 import BigNumber from 'bignumber.js/bignumber';
 
@@ -9,6 +9,7 @@ import { useWalletConnectorContext } from './contexts/WalletConnect';
 import tokensListData from './data/coinlist.json';
 import tokenGear from './data/gearToken';
 import { statusActions, userActions, zxActions } from './redux/actions';
+import { userSelectors } from './redux/selectors';
 import { Service0x } from './services/0x';
 import { AlchemyService } from './services/Alchemy';
 import { CoinMarketCapService } from './services/CoinMarketCap';
@@ -32,7 +33,7 @@ const CryptoCompare = new CryptoCompareService();
 const CoinMarketCap = new CoinMarketCapService();
 const Alchemy = new AlchemyService();
 
-export const App: React.FC = () => {
+const AppComponent: FC = () => {
   const { web3Provider } = useWalletConnectorContext();
 
   const { fetchMore: fetchMoreGetTokensFromGraphQuery } = useQuery(GET_TOKENS, {
@@ -52,7 +53,7 @@ export const App: React.FC = () => {
     (props: any) => dispatch(statusActions.setStatus(props)),
     [dispatch],
   );
-  const { address: userAddress = '' } = useSelector(({ user }: any) => user);
+  const { address: userAddress = '' } = useSelector(userSelectors.getUser);
 
   const [tokenAddresses, setTokenAddresses] = React.useState<string[]>([]);
   const [tokens0x, setTokens0x] = React.useState<any[]>([]);
@@ -62,6 +63,8 @@ export const App: React.FC = () => {
   const [tokensCMCByAddress, setTokensCMCByAddress] = React.useState<any>();
   const [symbolsCoinMarketCap, setSymbolsCoinMarketCap] = React.useState<any[]>([]);
   const [addressesCoinMarketCap, setAddressesCoinMarketCap] = React.useState<any[]>([]);
+
+  const location = useLocation();
 
   const getTokensFromCryptoCompare = async () => {
     try {
@@ -288,7 +291,7 @@ export const App: React.FC = () => {
     try {
       setStatus({ loadingBalances: 'loading' });
       const resultGetBalances = await Alchemy.getBalances({
-        userAddress,
+        userAddress: userAddress as string,
         contractAddresses: tokenAddresses,
       });
       console.log('App getTokenBalancesFromAlchemy resultGetBalances:', resultGetBalances);
@@ -296,7 +299,7 @@ export const App: React.FC = () => {
         const newBalances = resultGetBalances.data;
         console.log('App getTokenBalancesFromAlchemy newBalances:', newBalances);
         try {
-          const resultGetBalance = await web3Provider.getBalance(userAddress);
+          const resultGetBalance = await web3Provider.getBalance(userAddress as string);
           if (resultGetBalance) {
             const newResultGetBalance = new BigNumber(resultGetBalance)
               .multipliedBy(new BigNumber(10).pow(18))
@@ -339,52 +342,56 @@ export const App: React.FC = () => {
   }, [tokens0x, userAddress, tokenAddresses]);
 
   return (
+    <div className="App">
+      <Components.Header />
+      <main className="container-App">
+        <div className="app-version">
+          <div className="app-version-text">{config.version}</div>
+        </div>
+        <Switch>
+          <Route path="/" exact>
+            <Pages.PageMain />
+          </Route>
+          <Route path="/explore">
+            <Pages.PageExplore />
+          </Route>
+          <Route path="/lists" exact>
+            <Redirect to="/explore" />
+          </Route>
+          <Route path="/lists/recently-added">
+            <Pages.PageListsRecentlyAdded />
+          </Route>
+          <Route path="/lists/top-gainers">
+            <Pages.PageListsTopGainers />
+          </Route>
+          <Route path="/markets">
+            <Pages.PageMarkets />
+          </Route>
+          <Route path="/farm">
+            <Pages.PageStake />
+          </Route>
+          <Route path="/settings">
+            <Pages.PageSettings />
+          </Route>
+          <Route path="/login">
+            <Pages.PageLogin />
+          </Route>
+          <Route path="/account">{userAddress ? <Pages.PageAccount /> : <Pages.PageLogin />}</Route>
+          <Route path="*">
+            <Pages.Page404 />
+          </Route>
+        </Switch>
+      </main>
+      {location.pathname === '/farm' && !userAddress ? null : <Components.Footer />}
+      <Components.Modal />
+    </div>
+  );
+};
+
+export const App: FC = () => {
+  return (
     <Router>
-      <div className="App">
-        <Components.Header />
-        <main className="container-App">
-          <div className="app-version">
-            <div className="app-version-text">{config.version}</div>
-          </div>
-          <Switch>
-            <Route path="/" exact>
-              <Pages.PageMain />
-            </Route>
-            <Route path="/explore">
-              <Pages.PageExplore />
-            </Route>
-            <Route path="/lists" exact>
-              <Redirect to="/explore" />
-            </Route>
-            <Route path="/lists/recently-added">
-              <Pages.PageListsRecentlyAdded />
-            </Route>
-            <Route path="/lists/top-gainers">
-              <Pages.PageListsTopGainers />
-            </Route>
-            <Route path="/markets">
-              <Pages.PageMarkets />
-            </Route>
-            <Route path="/farm">
-              <Pages.PageStake />
-            </Route>
-            <Route path="/settings">
-              <Pages.PageSettings />
-            </Route>
-            <Route path="/login">
-              <Pages.PageLogin />
-            </Route>
-            <Route path="/account">
-              {userAddress ? <Pages.PageAccount /> : <Pages.PageLogin />}
-            </Route>
-            <Route path="*">
-              <Pages.Page404 />
-            </Route>
-          </Switch>
-        </main>
-        <Components.Footer />
-        <Components.Modal />
-      </div>
+      <AppComponent />
     </Router>
   );
 };
