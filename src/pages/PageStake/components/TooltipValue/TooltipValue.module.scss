@@ -1,0 +1,14 @@
+@import '../../../../scss/theme';
+@import '../../../../scss/mixins';
+
+.tooltipValue {
+  font-size: 18px;
+  max-width: 250px;
+  overflow-wrap: anywhere;
+}
+
+@include b('mobile') {
+  .tooltipValue {
+    max-width: 200px;
+  }
+}
