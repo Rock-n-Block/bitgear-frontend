@@ -1,6 +1,6 @@
 import { FC, ReactNode } from 'react';
 
-import { bitGearTokenIcon, compounderIcon } from '../../../../assets/icons';
+import { bitGearTokenIcon, compounderBlueVariantIcon } from '../../../../assets/icons';
 import { SkeletonLoader } from '../../../../components';
 import { getFormattedValue, numberTransform } from '../../../../utils';
 import { TooltipValue } from '../TooltipValue';
@@ -35,7 +35,7 @@ export const SectionHead: FC<SectionHeadProps> = ({
       <div className={styles.sectionHeadLogo}>
         {isCompounder ? (
           <>
-            <img src={compounderIcon} alt="compounder icon" />
+            <img src={compounderBlueVariantIcon} alt="compounder icon" />
             <img className={styles.pairedToken} src={bitGearTokenIcon} alt="gear token icon" />
           </>
         ) : (

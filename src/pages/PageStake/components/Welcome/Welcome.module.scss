@@ -29,6 +29,8 @@
   &Icons {
     position: relative;
     display: flex;
+    width: 54px;
+    height: 54px;
   }
 
   &Icon {
@@ -54,25 +56,15 @@
   }
 }
 
-.ethIconSvg {
-  border: 2px solid $color-dark-blue;
-  border-radius: 50%;
-
-  &> :first-child {
-    fill: $color-blue;
-  }
-}
-
 .pairedToken {
   position: absolute;
-  left: spacing(5);
+  left: spacing(4.75);
 }
 
 .compounderToken {
   position: absolute;
-  left: spacing(1);
-  bottom: -#{spacing(1)};
-
+  bottom: -20%;
+  right: -15%;
   width: 50%;
   height: 50%;
 }
