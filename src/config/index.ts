@@ -30,7 +30,7 @@ export default {
   })() as NetType,
   links: {
     twitter: 'https://twitter.com/bitgeario',
-    telegram: 'https://t.me/bitgear',
+    telegram: 'https://t.me/bitgeario',
     medium: 'https://medium.com/bitgear',
     github: 'https://github.com/',
     reddit: 'https://www.reddit.com/',
