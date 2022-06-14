@@ -12,9 +12,7 @@ const mock = [
   {
     icons: [
       bitGearTokenIcon,
-      <EthIconSvg
-        className={cn(styles.ethIconSvg, styles.infoContainerIcon, styles.pairedToken)}
-      />,
+      <EthIconSvg className={cn(styles.infoContainerIcon, styles.pairedToken)} />,
     ],
     header: 'LP Staking',
     body: `LP Staking is our top tier rewards program.
