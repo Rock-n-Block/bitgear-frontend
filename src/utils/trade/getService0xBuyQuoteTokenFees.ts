@@ -25,12 +25,18 @@ const minTokenAmountToApplyLowerFeesSerialized = serialize(
 export const getService0xBuyQuoteTokenFees = (isDeviatingAddress = false): number => {
   const state = store.getState();
   const { balances } = userSelectors.getUser(state);
+  console.log('balances', balances);
   // lower case balances map keys
   const balancesWithLowerCasedKeys = Object.entries(balances).reduce((acc, [key, value]) => {
     acc[key.toLowerCase()] = value;
     return acc;
   }, {} as typeof balances);
   const gearTokenUserBalance = balancesWithLowerCasedKeys[gearToken.address.toLowerCase()];
+  console.log(
+    'gearToken.address.toLowerCase()',
+    gearToken.address.toLowerCase(),
+    gearTokenUserBalance,
+  );
   const shouldApplyDecreasedFee = new BigNumber(gearTokenUserBalance).isGreaterThanOrEqualTo(
     minTokenAmountToApplyLowerFeesSerialized,
   );

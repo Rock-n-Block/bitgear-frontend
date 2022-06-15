@@ -268,7 +268,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
   const [mode, setMode] = React.useState<string>('market');
   const { userCurrentTier } = useUserTier();
   const [searchTokensResultPay, setSearchTokensResultPay] = React.useState<TypeToken[]>(tokens);
-  const [isLoaded, setLoaded] = React.useState(false);
+  const [isLoaded, setLoaded] = React.useState(true);
   const [tokensReceive, setTokensReceive] = React.useState<TypeToken[]>([]);
   const [searchTokensResultReceive, setSearchTokensResultReceive] =
     React.useState<TypeToken[]>(tokensReceive);
@@ -549,6 +549,11 @@ export const PageMarketsContent: React.FC = React.memo(() => {
   }, [gasPrice, gasPriceCustom, isGasPriceTypeCustom]);
 
   const getPriceMarket = React.useCallback(async () => {
+    console.log('getPriceMarket', {
+      addressPay,
+      tokenPay,
+      tokensBySymbol,
+    });
     try {
       if (!addressPay) return;
       if (!tokenPay) return;
@@ -759,6 +764,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
   }, [marketHistory]);
 
   const getBalanceOfTokensPay = React.useCallback(async () => {
+    console.log('JOPA');
     try {
       if (!userAddress) return;
       if (!tokenPay) return;

@@ -263,6 +263,13 @@ const AppComponent: FC = () => {
       const newTokensByAddress: any = {};
       const newTokensBySymbol: any = {};
       const newTokenAddresses = tokensAllFormatted.map((token: any) => {
+        if (token.symbol === 'GEAR') {
+          // eslint-disable-next-line no-param-reassign
+          token = {
+            ...token,
+            address: tokenGear.address.toLowerCase(),
+          };
+        }
         const { address, symbol } = token;
         newTokensByAddress[address] = token;
         newTokensBySymbol[symbol] = token;
@@ -290,6 +297,11 @@ const AppComponent: FC = () => {
   const getTokensBalancesFromAlchemy = React.useCallback(async () => {
     try {
       setStatus({ loadingBalances: 'loading' });
+      // const originalGearIndex = tokenAddresses.findIndex(
+      //   (item) => item.toLowerCase() === '0x1b980e05943dE3dB3a459C72325338d327B6F5a9'.toLowerCase(),
+      // );
+      // tokenAddresses.splice(originalGearIndex, 1, tokenGear.address);
+      // // console.log('tokenAddresses', originalGear);
       const resultGetBalances = await Alchemy.getBalances({
         userAddress: userAddress as string,
         contractAddresses: tokenAddresses,
