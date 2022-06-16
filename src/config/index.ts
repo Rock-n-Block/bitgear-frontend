@@ -1,5 +1,12 @@
 import { Chains, SupportedTestnets, TChainIds } from '../types';
 
+type NetType = 'mainnet' | SupportedTestnets;
+type ConfigAddressesContractNames =
+  | 'allowanceTarget'
+  | 'allowanceTargetLimit'
+  | 'tradeFeeRecipient';
+type ConfigMapContractToAddress = Record<ConfigAddressesContractNames, string>;
+
 const IS_PRODUCTION = false;
 const TESTING_NET = 'rinkeby' as SupportedTestnets;
 const SHOW_CONSOLE_LOGS = true;
@@ -20,7 +27,7 @@ export default {
     if (TESTING_NET === 'ropsten') return 'ropsten';
     if (TESTING_NET === 'kovan') return 'kovan';
     return 'rinkeby';
-  })(),
+  })() as NetType,
   links: {
     twitter: 'https://twitter.com/bitgeario',
     telegram: 'https://t.me/bitgear',
@@ -103,23 +110,51 @@ export default {
     mainnet: {
       allowanceTarget: '0xf740b67da229f2f10bcbd38a7979992fcc71b8eb',
       allowanceTargetLimit: '0xdef1c0ded9bec7f1a1670819833240f027b25eff',
+      tradeFeeRecipient: '0x0dE943AA3BB47e407c2747A8CE6Ae026272C3549', // target where fees from Trades are sent
     },
     kovan: {
       allowanceTarget: '0xf740b67da229f2f10bcbd38a7979992fcc71b8eb',
       allowanceTargetLimit: '0xdef1c0ded9bec7f1a1670819833240f027b25eff',
+      tradeFeeRecipient: '0x0dE943AA3BB47e407c2747A8CE6Ae026272C3549', // target where fees from Trades are sent
     },
     ropsten: {
       allowanceTarget: '0xf740b67da229f2f10bcbd38a7979992fcc71b8eb',
       allowanceTargetLimit: '0xdef1c0ded9bec7f1a1670819833240f027b25eff',
+      tradeFeeRecipient: '0x0dE943AA3BB47e407c2747A8CE6Ae026272C3549', // target where fees from Trades are sent
     },
     rinkeby: {
       allowanceTarget: '0xf740b67da229f2f10bcbd38a7979992fcc71b8eb',
       allowanceTargetLimit: '0xdef1c0ded9bec7f1a1670819833240f027b25eff',
+      tradeFeeRecipient: '0x0dE943AA3BB47e407c2747A8CE6Ae026272C3549', // target where fees from Trades are sent
     },
-  },
+  } as Record<NetType, ConfigMapContractToAddress>,
   staking: {
     regularPid: 0, // CoinStaking contract === Pancake's Master contract
     lpPid: 1, // CoinStaking contract LP
+  },
+  tradeFees: {
+    // GEARS if balance of user is greater than this, then apply another fees
+    minTokenAmountToApplyLowerFees: 100000,
+
+    /* Applied if: minTokenAmountToApplyLowerFees isn't reached */
+    regularFee: 0.0015, // 0.15%
+
+    /* Applied if: minTokenAmountToApplyLowerFees is reached */
+    reducedFee: 0.003, // 0.3%
+
+    /**
+     * Applied if:
+     * 1) minTokenAmountToApplyLowerFees isn't reached
+     * 2) if address to sent MUST BE different from user wallet address
+     */
+    deviatingAddressRegularFee: 0.005, // 0.5%
+
+    /**
+     * Applied if:
+     * 1) minTokenAmountToApplyLowerFees is reached
+     * 2) if address to sent MUST BE different from user wallet address
+     */
+    deviatingAddressReducedFee: 0.0025, // 0.25%
   },
 };
 
