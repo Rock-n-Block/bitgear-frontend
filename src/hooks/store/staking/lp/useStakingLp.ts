@@ -43,7 +43,7 @@ export const useStakingLp = () => {
   );
 
   const handleStake = useCallback(
-    (amount) => {
+    (amount: string) => {
       lpStaking.stake({
         provider: web3Provider,
         userWalletAddress: userWalletAddress || '',
@@ -53,7 +53,7 @@ export const useStakingLp = () => {
     [userWalletAddress, web3Provider],
   );
   const handleUnstake = useCallback(
-    (amount) => {
+    (amount: string) => {
       lpStaking.unstake({
         provider: web3Provider,
         userWalletAddress: userWalletAddress || '',
@@ -99,11 +99,12 @@ export const useStakingLp = () => {
 
   const refetchData = useCallback(() => {
     lpStaking.fetchPublicData({ provider: web3Provider });
-    if (!userWalletAddress) return;
-    lpStaking.fetchUserData({
-      provider: web3Provider,
-      userWalletAddress,
-    });
+    if (userWalletAddress) {
+      lpStaking.fetchUserData({
+        provider: web3Provider,
+        userWalletAddress,
+      });
+    }
   }, [userWalletAddress, web3Provider]);
 
   useEffect(() => {
@@ -130,7 +131,7 @@ export const useStakingLp = () => {
     [earned, fetchUserDataRequestStatus, pendingReward, stakeTokenUserBalance, stakedAmount],
   );
 
-  const ret = {
+  return {
     handleStake,
     handleUnstake,
     handleCollectReward,
@@ -153,5 +154,4 @@ export const useStakingLp = () => {
 
     publicDataRequestStatus,
   };
-  return ret;
 };

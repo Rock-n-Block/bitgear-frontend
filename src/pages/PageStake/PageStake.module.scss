@@ -5,6 +5,7 @@
   width: 100%;
   max-width: 1270px;
   padding: 120px 20px;
+  overflow: hidden;
 }
 
 .section {
@@ -25,9 +26,30 @@
   margin-left: spacing(1.5);
 }
 
+.getFreeTokensModal {
+  & {
+    backdrop-filter: blur(8px);
+    background: unset;
+  }
+
+  &Container {
+    padding: spacing(4);
+    background: $color-dark-blue;
+  }
+
+  &CloseBtn {
+    margin: spacing(1) spacing(1);
+    border: 1px solid $color-blue;
+    border-radius: 50%;
+    & > * {
+      stroke: $color-green;
+    }
+  }
+}
+
 @include b('mobile') {
   .container {
-    padding: 60px 0 120px;
+    padding: 120px 0 120px;
   }
 
   .section {

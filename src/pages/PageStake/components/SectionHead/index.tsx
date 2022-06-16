@@ -2,7 +2,7 @@ import { FC, ReactNode } from 'react';
 
 import { bitGearTokenIcon, compounderIcon } from '../../../../assets/icons';
 import { SkeletonLoader } from '../../../../components';
-import { numberTransform } from '../../../../utils/numberTransform';
+import { getFormattedValue, numberTransform } from '../../../../utils';
 import { TooltipValue } from '../TooltipValue';
 
 import styles from './SectionHead.module.scss';
@@ -29,6 +29,7 @@ export const SectionHead: FC<SectionHeadProps> = ({
   performance,
   isLoading,
 }) => {
+  const isStakeLpToken = stakeToken.includes('-');
   return (
     <div className={styles.sectionHead}>
       <div className={styles.sectionHeadLogo}>
@@ -44,26 +45,26 @@ export const SectionHead: FC<SectionHeadProps> = ({
       <div className={styles.sectionHeadInfo}>
         <div className={styles.sectionHeadInfoTitle}>{title}</div>
         <div className={styles.sectionHeadInfoSubtitle}>
-          Stake <span>{stakeToken}</span> <div>|</div> Earn{' '}
-          {(() => {
-            if (isCompounder) return earnToken;
-            if (stakeToken.includes('-')) return stakeToken.split('-').join(' & ');
-            return `${stakeToken} & ${earnToken}`;
-          })()}
+          Stake{' '}
+          <span>
+            {isStakeLpToken && 'Uniswap v2'} {stakeToken}
+          </span>{' '}
+          <div>|</div> Earn {earnToken}
         </div>
         <div className={styles.sectionHeadInfoDescription}>
-          {earnToken} rewards auto compound into more {stakeToken}!
+          {earnToken} rewards auto compound into more{' '}
+          {isStakeLpToken ? stakeToken.split('-')[0] : stakeToken}!
         </div>
         <TooltipValue
           // eslint-disable-next-line prettier/prettier
           target={(
             <div className={styles.sectionHeadInfoAdditional}>
-              Total {stakeToken} staked:{' '}
+              {`Total ${isStakeLpToken ? `LP ${stakeToken.split('-')[0]}` : stakeToken} staked: `}
               {isLoading ? (
                 <SkeletonLoader width="150px" height="18px" borderRadius="4px" />
               ) : (
                 <>
-                  {numberTransform(totalStaked.token)} (${numberTransform(totalStaked.usd)})
+                  {numberTransform(totalStaked.token)} (${getFormattedValue(totalStaked.usd)})
                 </>
               )}
             </div>
@@ -73,7 +74,7 @@ export const SectionHead: FC<SectionHeadProps> = ({
           value={(
             <div className={styles.sectionHeadInfoAdditional}>
               Total {stakeToken} staked: {totalStaked.token} ($
-              {totalStaked.usd})
+              {getFormattedValue(totalStaked.usd)})
             </div>
             // eslint-disable-next-line prettier/prettier
           )}

@@ -1,6 +1,9 @@
 import { useCallback, useEffect, useMemo } from 'react';
+import { useDispatch } from 'react-redux';
+import BigNumber from 'bignumber.js/bignumber';
 
 import gearToken from '../../../../data/gearToken';
+import { modalActions, uiActions } from '../../../../redux/actions';
 import { stakingActionTypes } from '../../../../redux/actionTypes';
 import { compounderStaking } from '../../../../redux/async';
 import {
@@ -10,7 +13,7 @@ import {
   userSelectors,
 } from '../../../../redux/selectors';
 import { ContractsNames, RequestStatus } from '../../../../types';
-import { contractsHelper, deserialize, serialize } from '../../../../utils';
+import { contractsHelper, deserialize, deserializeBN, serialize } from '../../../../utils';
 import { useShallowSelector } from '../../../useShallowSelector';
 import { useWeb3Provider } from '../../../useWeb3Provider';
 import { useAllowance, useApprove } from '../../erc20';
@@ -26,7 +29,7 @@ export const useStakingCompounder = () => {
   );
 
   const {
-    public: { pricePerShare },
+    public: { pricePerShare, harvestRewards },
     user: { earned },
   } = useShallowSelector(stakingSelectors.selectCompounderStaking);
   const stakeAllowance = useShallowSelector(
@@ -35,6 +38,7 @@ export const useStakingCompounder = () => {
   const stakeTokenUserBalance = useShallowSelector(
     stakingSelectors.selectBalance(STAKE_TOKEN.address),
   );
+
   const totalStaked = useShallowSelector(stakingCompounderSelectors.selectTotalStaked);
   const stakedAmount = useShallowSelector(stakingCompounderSelectors.selectStakedAmount);
   const apy = useShallowSelector(stakingCompounderSelectors.selectApy);
@@ -74,6 +78,12 @@ export const useStakingCompounder = () => {
     },
     [pricePerShare, stakedAmount, userWalletAddress, web3Provider],
   );
+  const handleHarvest = useCallback(() => {
+    compounderStaking.harvest({
+      provider: web3Provider,
+      userWalletAddress: userWalletAddress || '',
+    });
+  }, [userWalletAddress, web3Provider]);
 
   const fetchUserDataRequestStatus = useShallowSelector(
     uiSelectors.getProp(stakingActionTypes.SET_COMPOUNDER_USER_DATA),
@@ -83,6 +93,9 @@ export const useStakingCompounder = () => {
   );
   const unstakeRequestStatus = useShallowSelector(
     uiSelectors.getProp(stakingActionTypes.COMPOUNDER_UNSTAKE),
+  );
+  const harvestRequestStatus = useShallowSelector(
+    uiSelectors.getProp(stakingActionTypes.COMPOUNDER_HARVEST),
   );
   const publicDataRequestStatus = useShallowSelector(
     uiSelectors.getProp(stakingActionTypes.SET_COMPOUNDER_PUBLIC_DATA),
@@ -95,11 +108,12 @@ export const useStakingCompounder = () => {
 
   const refetchData = useCallback(() => {
     compounderStaking.fetchPublicData({ provider: web3Provider });
-    if (!userWalletAddress) return;
-    compounderStaking.fetchUserData({
-      provider: web3Provider,
-      userWalletAddress,
-    });
+    if (userWalletAddress) {
+      compounderStaking.fetchUserData({
+        provider: web3Provider,
+        userWalletAddress,
+      });
+    }
   }, [userWalletAddress, web3Provider]);
 
   useEffect(() => {
@@ -111,20 +125,33 @@ export const useStakingCompounder = () => {
     refetchData();
   }, [refetchData, unstakeRequestStatus]);
 
+  const dispatch = useDispatch();
+  useEffect(() => {
+    if (harvestRequestStatus === RequestStatus.SUCCESS) {
+      dispatch(modalActions.closeModal());
+      dispatch(uiActions.reset(stakingActionTypes.COMPOUNDER_HARVEST));
+    }
+  }, [dispatch, harvestRequestStatus]);
+
   const userData = useMemo(
     () => ({
       fetchStatus: fetchUserDataRequestStatus,
       balance: deserialize(stakeTokenUserBalance, STAKE_TOKEN.decimals),
-      stakeAmount: deserialize(stakedAmount, STAKE_TOKEN.decimals),
+      // need to cut decimals more than 18, due to shares are unlimited with decimals
+      stakeAmount: deserializeBN(stakedAmount, STAKE_TOKEN.decimals)
+        .decimalPlaces(STAKE_TOKEN.decimals, BigNumber.ROUND_DOWN)
+        .toFixed(),
       earned: deserialize(earned, STAKE_TOKEN.decimals),
     }),
     [earned, fetchUserDataRequestStatus, stakeTokenUserBalance, stakedAmount],
   );
 
-  const ret = {
+  return {
     handleStake,
     handleUnstake,
+    handleHarvest,
     userData,
+    harvestRewards: deserialize(harvestRewards, STAKE_TOKEN.decimals),
     totalStaked: deserialize(totalStaked, STAKE_TOKEN.decimals),
     apy,
 
@@ -138,8 +165,8 @@ export const useStakingCompounder = () => {
 
     stakeRequestStatus,
     unstakeRequestStatus,
+    harvestRequestStatus,
 
     publicDataRequestStatus,
   };
-  return ret;
 };

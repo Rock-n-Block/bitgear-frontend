@@ -1,7 +1,6 @@
-import { FC } from 'react';
-import { useSelector } from 'react-redux';
+import { FC, useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
-import ethToken from '../../data/ethToken';
 import gearEthLPToken from '../../data/gearEthLPToken';
 import gearToken from '../../data/gearToken';
 import {
@@ -12,14 +11,14 @@ import {
   useStakingLp,
   useStakingRegular,
 } from '../../hooks';
+import { modalActions } from '../../redux/actions';
 import { userSelectors } from '../../redux/selectors';
 import { RequestStatus } from '../../types';
-import { getDollarAmount } from '../../utils';
-import { prettyPrice } from '../../utils/prettifiers';
+import { addTokenToWallet, getDollarAmount, getFormattedValue, Token } from '../../utils';
 
 import {
   Banner,
-  NoConnectWalletPlaceholder,
+  ClaimModal,
   Reward,
   SectionHead,
   Stake,
@@ -41,14 +40,50 @@ export const PageStake: FC = () => {
   usePollCompounder();
   const stakingCompounder = useStakingCompounder();
 
+  const dispatch = useDispatch();
+  const handleGetFreeTokens = useCallback(() => {
+    // this is needed to make sure that user address is set due to Components.Modal is not reactive and will not re-render if prop is changed
+    setTimeout(() => {
+      stakingCompounder.handleHarvest();
+    }, 1000);
+  }, [stakingCompounder]);
+  const handleGetFreeTokensModal = useCallback(() => {
+    dispatch(
+      modalActions.toggleModal({
+        classes: {
+          root: styles.getFreeTokensModal,
+          modalContainer: styles.getFreeTokensModalContainer,
+          closeBtn: styles.getFreeTokensModalCloseBtn,
+        },
+        open: true,
+        text: (
+          <ClaimModal amount={stakingCompounder.harvestRewards} onSubmit={handleGetFreeTokens} />
+        ),
+      }),
+    );
+  }, [dispatch, handleGetFreeTokens, stakingCompounder.harvestRewards]);
+
+  const handleAddTokenToWallet = useCallback((token: Token) => {
+    addTokenToWallet({
+      address: token.address,
+      symbol: token.symbol,
+      decimals: token.decimals,
+      image: token.image,
+    });
+  }, []);
+
   return (
     <div className={styles.container}>
-      <Banner apy={prettyPrice(stakingCompounder.apy)} />
+      <Banner
+        apy={getFormattedValue(stakingCompounder.apy)}
+        onGetFreeTokens={handleGetFreeTokensModal}
+        onAddToWallet={handleAddTokenToWallet}
+      />
       <div className={styles.section}>
         <SectionHead
           title="LP Token Staking"
           stakeToken={gearEthLPToken.symbol}
-          earnToken={ethToken.symbol}
+          earnToken={gearToken.symbol}
           totalStaked={{
             token: stakingLp.totalStaked,
             usd: getDollarAmount(stakingLp.totalStaked, gearEthLPToken.address),
@@ -56,13 +91,12 @@ export const PageStake: FC = () => {
           // eslint-disable-next-line prettier/prettier
           performance={(
             <>
-              {stakingLp.apr}% APR
+              {getFormattedValue(stakingLp.apr)}% APR
               <div className={styles.infoIcon}>
                 <TooltipApr
                   tokenSymbol1={gearToken.symbol}
-                  tokenSymbol2="ETH"
-                  tokenApr1="21,92"
-                  tokenApr2="46,01"
+                  tokenSymbol2={gearToken.symbol}
+                  isLpToken
                 />
               </div>
             </>
@@ -72,10 +106,10 @@ export const PageStake: FC = () => {
         />
         <div className={styles.sectionBody}>
           <Stake
-            noDataPlaceholder={!userWalletAddress ? <NoConnectWalletPlaceholder /> : null}
             onStakeClick={stakingLp.handleStake}
             onUnstakeClick={stakingLp.handleUnstake}
             onMaxClick={() => stakingLp.userData.balance}
+            stakeTokenRequestStatus={stakingLp.stakeRequestStatus}
             stakeToken={gearEthLPToken.symbol}
             stakeTokenAddress={gearEthLPToken.address}
             maxDecimals={gearEthLPToken.decimals}
@@ -87,9 +121,10 @@ export const PageStake: FC = () => {
               stakingLp.stakeRequestStatus === RequestStatus.REQUEST ||
               stakingLp.unstakeRequestStatus === RequestStatus.REQUEST
             }
+            isConnectedWallet={!!userWalletAddress}
           />
           <Reward
-            noDataPlaceholder={!userWalletAddress ? <NoConnectWalletPlaceholder /> : null}
+            // noDataPlaceholder={!userWalletAddress ? <NoConnectWalletPlaceholder /> : null}
             stakeToken={gearToken.symbol}
             earnToken={gearToken.symbol}
             earnTokenAddress={gearToken.address}
@@ -99,6 +134,7 @@ export const PageStake: FC = () => {
             onCollectRewardClick={stakingLp.handleCollectReward}
             isUserDataLoading={stakingLp.userData.fetchStatus === RequestStatus.REQUEST}
             isPendingTx={stakingLp.collectRewardRequestStatus === RequestStatus.REQUEST}
+            isConnectedWallet={!!userWalletAddress}
           />
         </div>
       </div>
@@ -107,7 +143,7 @@ export const PageStake: FC = () => {
         <SectionHead
           title={`${gearToken.symbol} Staking`}
           stakeToken={gearToken.symbol}
-          earnToken={ethToken.symbol}
+          earnToken={gearToken.symbol}
           totalStaked={{
             token: stakingRegular.totalStaked,
             usd: getDollarAmount(stakingRegular.totalStaked, gearToken.address),
@@ -115,14 +151,9 @@ export const PageStake: FC = () => {
           // eslint-disable-next-line prettier/prettier
           performance={(
             <>
-              {stakingRegular.apr}% APR
+              {getFormattedValue(stakingRegular.apr)}% APR
               <div className={styles.infoIcon}>
-                <TooltipApr
-                  tokenSymbol1={gearToken.symbol}
-                  tokenSymbol2="ETH"
-                  tokenApr1="21,92"
-                  tokenApr2="46,01"
-                />
+                <TooltipApr tokenSymbol1={gearToken.symbol} tokenSymbol2={gearToken.symbol} />
               </div>
             </>
             // eslint-disable-next-line prettier/prettier
@@ -131,10 +162,10 @@ export const PageStake: FC = () => {
         />
         <div className={styles.sectionBody}>
           <Stake
-            noDataPlaceholder={!userWalletAddress ? <NoConnectWalletPlaceholder /> : null}
             onStakeClick={stakingRegular.handleStake}
             onUnstakeClick={stakingRegular.handleUnstake}
             onMaxClick={() => stakingRegular.userData.balance}
+            stakeTokenRequestStatus={stakingRegular.stakeRequestStatus}
             stakeToken={gearToken.symbol}
             stakeTokenAddress={gearToken.address}
             maxDecimals={gearToken.decimals}
@@ -146,9 +177,9 @@ export const PageStake: FC = () => {
               stakingRegular.stakeRequestStatus === RequestStatus.REQUEST ||
               stakingRegular.unstakeRequestStatus === RequestStatus.REQUEST
             }
+            isConnectedWallet={!!userWalletAddress}
           />
           <Reward
-            noDataPlaceholder={!userWalletAddress ? <NoConnectWalletPlaceholder /> : null}
             stakeToken={gearToken.symbol}
             earnToken={gearToken.symbol}
             earnTokenAddress={gearToken.address}
@@ -158,6 +189,7 @@ export const PageStake: FC = () => {
             onCollectRewardClick={stakingRegular.handleCollectReward}
             isUserDataLoading={stakingRegular.userData.fetchStatus === RequestStatus.REQUEST}
             isPendingTx={stakingRegular.collectRewardRequestStatus === RequestStatus.REQUEST}
+            isConnectedWallet={!!userWalletAddress}
           />
         </div>
       </div>
@@ -175,19 +207,12 @@ export const PageStake: FC = () => {
           // eslint-disable-next-line prettier/prettier
           performance={(
             <>
-              {Number.isNaN(stakingCompounder.apy) ? '' : stakingCompounder.apy}% APY
+              {getFormattedValue(stakingCompounder.apy)}% APY
               <div className={styles.infoIcon}>
                 <TooltipApy
                   token1={{
                     symbol: gearToken.symbol,
-                    apr: '21,60',
                   }}
-                  token2={{
-                    symbol: 'WETH',
-                    apr: '40,79',
-                    apy: '50,37',
-                  }}
-                  dailyEstimatedCompounds={446}
                 />
               </div>
             </>
@@ -197,17 +222,18 @@ export const PageStake: FC = () => {
         />
         <div className={styles.sectionBody}>
           <Stake
-            noDataPlaceholder={!userWalletAddress ? <NoConnectWalletPlaceholder /> : null}
             isCompounder
             onStakeClick={stakingCompounder.handleStake}
             onUnstakeClick={stakingCompounder.handleUnstake}
             onMaxClick={() => stakingCompounder.userData.balance}
+            stakeTokenRequestStatus={stakingCompounder.stakeRequestStatus}
             stakeToken={gearToken.symbol}
             stakeTokenAddress={gearToken.address}
             maxDecimals={gearToken.decimals}
             stakeTokenAllowance={stakingCompounder.stakeTokenAllowance}
             stakeAmount={stakingCompounder.userData.stakeAmount}
             tokenBalance={stakingCompounder.userData.balance}
+            earnToken={gearToken.symbol}
             earnTokenAddress={gearToken.address}
             earnedToDate={stakingCompounder.userData.earned}
             isUserDataLoading={stakingCompounder.userData.fetchStatus === RequestStatus.REQUEST}
@@ -215,6 +241,7 @@ export const PageStake: FC = () => {
               stakingCompounder.stakeRequestStatus === RequestStatus.REQUEST ||
               stakingCompounder.unstakeRequestStatus === RequestStatus.REQUEST
             }
+            isConnectedWallet={!!userWalletAddress}
           />
         </div>
       </div>

@@ -3,7 +3,7 @@
 
 .stakeContainer {
   max-width: 800px;
-  height: 535px;
+  height: 450px;
   background: $color-dark-blue;
   border-radius: 16px;
   border: 1px solid $color-blue;
@@ -11,7 +11,7 @@
   transition: 200ms;
 
   &_compounder {
-    height: 630px;
+    height: 550px;
   }
 
   p {
@@ -23,8 +23,8 @@
     overflow: hidden;
   }
 
-  &_noDataPlaceholder {
-    height: 170px;
+  &_notConnectedWallet {
+    height: 400px;
   }
 }
 
@@ -110,7 +110,6 @@
 
 .stakeUnstakeBlock {
   padding: 24px 0;
-  border-bottom: 1px solid $color-blue;
 
   & > p:not(:last-child) {
     margin-bottom: 8px;
@@ -124,6 +123,7 @@
 
 .collectEthRewardsBlock {
   padding: 24px 0;
+  border-top: 1px solid $color-blue;
 }
 
 .tooltipIcon {
@@ -141,22 +141,22 @@
 @include b('tablet') {
   .stakeContainer {
     &_compounder {
-      height: 750px;
+      height: 600px;
     }
   }
 }
 
 @include b('mobile') {
   .stakeContainer {
-    height: 480px;
+    height: 430px;
     padding: 20px;
 
     &_compounder {
-      height: 600px;
+      height: 570px;
     }
 
-    &_noDataPlaceholder {
-      height: 160px;
+    &_notConnectedWallet {
+      height: 380px;
     }
   }
 

@@ -1,13 +1,14 @@
-const initialState = {
+import { WalletState } from '../../types';
+
+const initialState: WalletState = {
   counter: 0,
   type: '',
   chainId: null,
 };
 
-export default (state = initialState, params: any) => {
+export default (state = initialState, params: any): WalletState => {
   switch (params.type) {
-    case 'WALLET:INIT':
-      // eslint-disable-next-line no-case-declarations
+    case 'WALLET:INIT': {
       const newState = JSON.parse(
         JSON.stringify({
           ...state,
@@ -15,6 +16,7 @@ export default (state = initialState, params: any) => {
         }),
       );
       return newState;
+    }
     case 'WALLET:SET_TYPE':
       return {
         ...state,

@@ -101,11 +101,12 @@ export const useStakingRegular = () => {
 
   const refetchData = useCallback(() => {
     regularStaking.fetchPublicData({ provider: web3Provider });
-    if (!userWalletAddress) return;
-    regularStaking.fetchUserData({
-      provider: web3Provider,
-      userWalletAddress,
-    });
+    if (userWalletAddress) {
+      regularStaking.fetchUserData({
+        provider: web3Provider,
+        userWalletAddress,
+      });
+    }
   }, [userWalletAddress, web3Provider]);
 
   useEffect(() => {

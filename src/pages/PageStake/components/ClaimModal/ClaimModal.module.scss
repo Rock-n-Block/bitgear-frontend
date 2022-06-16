@@ -1,0 +1,49 @@
+@import '../../../../scss/theme';
+@import '../../../../scss/mixins';
+
+.contentRow {
+  &:not(:last-child) {
+    margin-bottom: spacing(3),
+  }
+}
+
+.infoText {
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 38px;
+  text-align: center;
+
+  color: $color-text-primary;
+}
+
+.amountRow {
+  padding: spacing(2, 0);
+}
+
+.amount {
+  color: $color-green;
+  font-weight: 600;
+  font-size: 60px;
+  line-height: 72px;
+}
+
+.submitBtn {
+  padding: 0;
+  min-width: 232px;
+  width: 100%;
+
+  height: 44px;
+  font-size: 16px;
+
+  &:not(:last-child) {
+    margin-right: spacing(2);
+  }
+}
+
+@include b(mobile) {
+  .submitBtn {
+    min-width: 130px;
+    height: 40px;
+    font-size: 14px;
+  }
+}

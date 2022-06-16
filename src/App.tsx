@@ -365,7 +365,7 @@ export const App: React.FC = () => {
             <Route path="/markets">
               <Pages.PageMarkets />
             </Route>
-            <Route path="/stake">
+            <Route path="/farm">
               <Pages.PageStake />
             </Route>
             <Route path="/settings">

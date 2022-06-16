@@ -2,16 +2,13 @@
 @import '../../../../scss/mixins';
 
 .container {
-  overflow: hidden;
   padding: 10px 10px 0;
   @include flexbox(space-between);
   border-bottom: 1px solid $color-gray;
 }
 
 .bannerLogicContainer {
-  max-width: 350px;
-
-  & > *:not(:last-child) {
+  &>*:not(:last-child) {
     margin-bottom: 24px;
   }
 }
@@ -36,16 +33,23 @@
 }
 
 .buttonContainer {
-  @include flexbox(space-between);
-  & > * {
-    padding: 0;
-    width: 156px;
-    height: 44px;
-    font-size: 16px;
+  @include flexbox(flex-start);
 
-    &:not(:last-child) {
-      margin-right: spacing(1);
-    }
+  &:not(:last-child) {
+    margin-bottom: spacing(2);
+  }
+}
+
+.buttonContainerItem {
+  padding: 0;
+  min-width: 232px;
+  width: 100%;
+
+  min-height: 44px;
+  font-size: 16px;
+
+  &:not(:last-child) {
+    margin-right: spacing(2);
   }
 }
 
@@ -54,6 +58,10 @@
 }
 
 @include b(mobile) {
+  .container {
+    flex-direction: column;
+  }
+
   .h1 {
     font-size: 48px;
   }
@@ -67,10 +75,12 @@
   }
 
   .buttonContainer {
-    & > * {
-      width: 130px;
-      height: 40px;
-      font-size: 14px;
-    }
+    @include flexbox(center);
+  }
+
+  .buttonContainerItem {
+    min-width: 130px;
+    min-height: 40px;
+    font-size: 14px;
   }
 }

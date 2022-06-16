@@ -100,7 +100,7 @@ export const contracts: IContracts = {
     },
     testnet: {
       [Chains.eth]: {
-        address: '0xbe5ef7839132CEc790bEC588aEB74478DdAc7990', // rinkeby
+        address: '0x52Ec8c87FC09C1eF75fAe44139cE8A0A425f9B40', // rinkeby
         abi: coinStakingAbi,
       },
       [Chains.bsc]: {
@@ -138,7 +138,7 @@ export const contracts: IContracts = {
     },
     testnet: {
       [Chains.eth]: {
-        address: '0xc8FD81056C4fe7689443D9a973A23B650B42313C', // rinkeby
+        address: '0xdf0E7F1df4BCA344e006428B59321653bC0b5daF', // rinkeby
         abi: tokenVaultAbi,
       },
       [Chains.bsc]: {

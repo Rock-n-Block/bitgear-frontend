@@ -1,50 +1,66 @@
-import React, { createContext, useContext } from 'react';
+import {
+  createContext,
+  FC,
+  ReactElement,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { modalActions, userActions, walletActions } from '../redux/actions';
+import { walletSelectors } from '../redux/selectors';
 import MetamaskProvider from '../services/Metamask';
 import Web3Provider from '../services/Web3Provider';
+import { UserState } from '../types';
 import { getFromStorage, setToStorage } from '../utils/localStorage';
 
-const walletConnectorContext = createContext<any>({
-  web3Provider: {},
+type WalletConnectorContext = {
+  web3Provider: Web3Provider | MetamaskProvider;
+};
+
+const walletConnectorContext = createContext<WalletConnectorContext>({
+  web3Provider: new Web3Provider(),
 });
 
 type TypeModalParams = {
   open: boolean;
-  text?: string | React.ReactElement;
-  header?: string | React.ReactElement;
+  text?: string | ReactElement;
+  header?: string | ReactElement;
   delay?: number;
 };
 
-const Connector: React.FC = ({ children }) => {
-  const [web3Provider, setWeb3Provider] = React.useState<any>(null);
+const Connector: FC = ({ children }) => {
+  const [web3Provider, setWeb3Provider] = useState<WalletConnectorContext['web3Provider']>(
+    new Web3Provider(),
+  );
 
   const walletType = getFromStorage('walletType');
   // eslint-disable-next-line react-hooks/exhaustive-deps
 
-  const { counter: initCounter, type } = useSelector(({ wallet }: any) => wallet);
+  const { counter: initCounter, type } = useSelector(walletSelectors.selectWallet);
   const dispatch = useDispatch();
-  const setUserData = React.useCallback(
-    (props: any) => dispatch(userActions.setUserData(props)),
+  const setUserData = useCallback(
+    (props: Partial<UserState>) => dispatch(userActions.setUserData(props)),
     [dispatch],
   );
-  const toggleModal = React.useCallback(
+  const toggleModal = useCallback(
     (props: TypeModalParams) => dispatch(modalActions.toggleModal(props)),
     [dispatch],
   );
-  const setChainId = React.useCallback(
+  const setChainId = useCallback(
     (props: string) => dispatch(walletActions.setChainId(props)),
     [dispatch],
   );
 
-  const login = React.useCallback(
-    async (web3: any) => {
+  const login = useCallback(
+    async (web3: Web3Provider | MetamaskProvider) => {
       try {
         if (!web3) return;
-        const addresses = await web3.connect();
-        console.log('login addresses:', addresses);
-        const balance = await web3.getBalance(addresses[0]);
+        const [connectedWalletAddress] = await web3.connect();
+        console.log('login address:', connectedWalletAddress);
+        const balance = await web3.getBalance(connectedWalletAddress);
         const resultCheckNetwork = await web3.checkNetwork();
         if (resultCheckNetwork.status === 'ERROR') {
           toggleModal({
@@ -66,7 +82,7 @@ const Connector: React.FC = ({ children }) => {
           console.log('login chainId:', resultCheckNetwork.data);
           setChainId(resultCheckNetwork.data);
           console.log('login balance:', balance);
-          setUserData({ address: addresses[0], balance });
+          setUserData({ address: connectedWalletAddress, balance });
         }
       } catch (e) {
         console.error('login:', e);
@@ -77,7 +93,7 @@ const Connector: React.FC = ({ children }) => {
     [setUserData, toggleModal, setChainId],
   );
 
-  const init: any = React.useCallback(() => {
+  const init = useCallback(() => {
     try {
       let web3;
       if (walletType === 'walletConnect') {
@@ -110,7 +126,7 @@ const Connector: React.FC = ({ children }) => {
     }
   }, [walletType, login]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     init();
   }, [initCounter, type, init]);
 
@@ -123,6 +139,6 @@ const Connector: React.FC = ({ children }) => {
 
 export default Connector;
 
-export function useWalletConnectorContext() {
+export function useWalletConnectorContext(): WalletConnectorContext {
   return useContext(walletConnectorContext);
 }

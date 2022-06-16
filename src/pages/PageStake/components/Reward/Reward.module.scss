@@ -19,8 +19,8 @@
     overflow: hidden;
   }
 
-  &_noDataPlaceholder {
-    height: 170px;
+  &_notConnectedWallet{
+    height: 400px;
   }
 }
 
@@ -105,7 +105,6 @@
 
 .stakeUnstakeBlock {
   padding: 24px 0;
-  border-bottom: 1px solid $color-blue;
 
   & > p:not(:last-child) {
     margin-bottom: 8px;
@@ -115,6 +114,10 @@
 .stakeUnstakeButton {
   margin-top: 24px;
   width: 270px;
+}
+
+.noConnectWalletBlock {
+  margin-top: 12px;
 }
 
 .collectEthRewardsBlock {
@@ -144,6 +147,8 @@
 
 .compoundGearBlock {
   padding-top: 24px;
+  border-top: 1px solid $color-blue;
+
   & > *:not(:last-child) {
     margin-bottom: 16px;
   }
@@ -153,13 +158,20 @@
   margin-right: 16px;
 }
 
+@include b('tablet') {
+  .stakeContainer {
+    height: 600px;
+  }
+}
+
+
 @include b('mobile') {
   .stakeContainer {
-    height: 510px;
+    height: 610px;
     padding: 20px;
 
-    &_noDataPlaceholder {
-      height: 160px;
+    &_notConnectedWallet {
+      height: 360px;
     }
   }
 

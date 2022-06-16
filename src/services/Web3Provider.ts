@@ -59,14 +59,14 @@ export default class Web3Provider {
   }
 
   public checkNetwork = async () => {
-    const { chainIds } = config;
-    const chainIdsByType = chainIds[config.IS_PRODUCTION ? 'mainnet' : 'testnet'];
+    const { chainIds, IS_PRODUCTION } = config;
+    const chainIdsByType = chainIds[IS_PRODUCTION ? 'mainnet' : 'testnet'];
     const usedNet = chainIdsByType.Ethereum.id;
-    const netVersion =
+    const currentChainId =
       (await this.provider.request({ method: 'eth_chainId' })) || this.provider.chainId;
     const neededNetName = chainIdsByType.Ethereum.name;
-    console.log('Web3Provider checkNetwork:', usedNet, netVersion, neededNetName);
-    if (usedNet.includes(netVersion)) return { status: 'SUCCESS', data: netVersion };
+    console.log('Web3Provider checkNetwork:', { usedNet, currentChainId, neededNetName });
+    if (usedNet.includes(currentChainId)) return { status: 'SUCCESS', data: currentChainId };
     return {
       status: 'ERROR',
       message: `Please, change network to ${neededNetName} in your WalletConnect wallet`,
