@@ -211,9 +211,7 @@ const ModalContentQuotes: React.FC<TypeModalContentQuotesProps> = ({
     try {
       setTimeToNextBlock(undefined);
       setIsNeedToRefresh(false);
-      console.log('ModalContentQuotes getQuote tradeProps:', tradeProps);
       const resultGetQuote = await Zx.getQuote(tradeProps as TypeGetQuoteProps);
-      console.log('ModalContentQuotes getQuote:', resultGetQuote);
       if (resultGetQuote.status === 'SUCCESS') {
         const newQuote = { ...resultGetQuote.data };
         const exchanges = chooseExchangesWithBestPrice(newQuote.priceComparisons);
@@ -223,7 +221,6 @@ const ModalContentQuotes: React.FC<TypeModalContentQuotesProps> = ({
             newTradeProps.excludedSources = '';
             newTradeProps.includedSources = exchanges[i].name;
             const resultGetQuoteNew = await Zx.getQuote(newTradeProps);
-            console.log('ModalContentQuotes getQuote resultGetQuoteNew:', resultGetQuoteNew);
             if (resultGetQuoteNew.status === 'SUCCESS') {
               const newNewQuote = { ...resultGetQuoteNew.data };
               getBlockInterval();
