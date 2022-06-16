@@ -8,6 +8,10 @@ type TypeGetCoinInfoProps = {
   symbol?: string;
 };
 
+type GetAllCoinsInfoParams = {
+  convert?: 'USD';
+};
+
 type getTwoCoinsProps = {
   symbolOne: string;
   symbolTwo: string;
@@ -80,9 +84,11 @@ export class CoinMarketCapService {
     }
   };
 
-  getAllCoinsInfo = async (symbolsList: string[]) => {
+  getAllCoinsInfo = async (symbolsList: string[], params: GetAllCoinsInfoParams = {}) => {
     try {
-      const url = `/v1/cryptocurrency/quotes/latest?symbol=${symbolsList}&skip_invalid=true`;
+      const url = `/v1/cryptocurrency/quotes/latest?symbol=${symbolsList}&skip_invalid=true${
+        Object.keys(params).length ? `&${qs.stringify(params)}` : ''
+      }`;
       const result = await this.axios.get(url);
       if (result.data.Response === 'Error') {
         return { status: 'ERROR', data: undefined };
@@ -92,7 +98,7 @@ export class CoinMarketCapService {
         data: result.data.data,
       };
     } catch (e) {
-      console.error('CoinMarketCapService getTwoCoinsInfo:', e);
+      console.error('CoinMarketCapService getAllCoinsInfo:', e);
       return { status: 'ERROR', data: undefined };
     }
   };
@@ -109,7 +115,7 @@ export class CoinMarketCapService {
         data: result.data.data,
       };
     } catch (e) {
-      console.error('CoinMarketCapService getTwoCoinsInfo:', e);
+      console.error('CoinMarketCapService getAllCoinsInfoByIds:', e);
       return { status: 'ERROR', data: undefined };
     }
   };

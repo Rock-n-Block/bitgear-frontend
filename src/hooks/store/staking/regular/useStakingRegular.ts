@@ -3,7 +3,12 @@ import { useCallback, useEffect, useMemo } from 'react';
 import gearToken from '../../../../data/gearToken';
 import { stakingActionTypes } from '../../../../redux/actionTypes';
 import { regularStaking } from '../../../../redux/async';
-import { stakingSelectors, uiSelectors, userSelectors } from '../../../../redux/selectors';
+import {
+  stakingRegularSelectors,
+  stakingSelectors,
+  uiSelectors,
+  userSelectors,
+} from '../../../../redux/selectors';
 import { ContractsNames, RequestStatus } from '../../../../types';
 import { contractsHelper, deserialize, serialize } from '../../../../utils';
 import { useShallowSelector } from '../../../useShallowSelector';
@@ -71,6 +76,7 @@ export const useStakingRegular = () => {
     user: { stakedAmount, pendingReward, earned },
     public: { lastRewardTime, totalStaked },
   } = useShallowSelector(stakingSelectors.selectRegularStaking);
+  const apr = useShallowSelector(stakingRegularSelectors.selectRegularStakingApr);
 
   const fetchUserDataRequestStatus = useShallowSelector(
     uiSelectors.getProp(stakingActionTypes.SET_REGULAR_USER_DATA),
@@ -133,6 +139,7 @@ export const useStakingRegular = () => {
     userData,
     totalStaked: deserialize(totalStaked, STAKE_TOKEN.decimals),
     lastRewardTime: new Date(+lastRewardTime * 1000).toLocaleString(),
+    apr,
 
     stakeTokenAllowance: {
       isAllowanceLoading,

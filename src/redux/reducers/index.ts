@@ -5,6 +5,7 @@ import modal from './modal';
 import staking from './staking';
 import status from './status';
 import table from './table';
+import tokens from './tokens';
 import ui from './ui';
 import user from './user';
 import wallet from './wallet';
@@ -18,4 +19,5 @@ export default combineReducers({
   table,
   ui,
   staking,
+  tokens,
 });

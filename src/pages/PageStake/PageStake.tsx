@@ -15,6 +15,7 @@ import {
 import { userSelectors } from '../../redux/selectors';
 import { RequestStatus } from '../../types';
 import { getDollarAmount } from '../../utils';
+import { prettyPrice } from '../../utils/prettifiers';
 
 import {
   Banner,
@@ -42,7 +43,7 @@ export const PageStake: FC = () => {
 
   return (
     <div className={styles.container}>
-      <Banner apy={160.41} />
+      <Banner apy={prettyPrice(stakingCompounder.apy)} />
       <div className={styles.section}>
         <SectionHead
           title="LP Token Staking"
@@ -50,12 +51,12 @@ export const PageStake: FC = () => {
           earnToken={ethToken.symbol}
           totalStaked={{
             token: stakingLp.totalStaked,
-            usd: getDollarAmount(stakingLp.totalStaked, gearEthLPToken.symbol),
+            usd: getDollarAmount(stakingLp.totalStaked, gearEthLPToken.address),
           }}
           // eslint-disable-next-line prettier/prettier
           performance={(
             <>
-              166,01% APR
+              {stakingLp.apr}% APR
               <div className={styles.infoIcon}>
                 <TooltipApr
                   tokenSymbol1={gearToken.symbol}
@@ -76,6 +77,7 @@ export const PageStake: FC = () => {
             onUnstakeClick={stakingLp.handleUnstake}
             onMaxClick={() => stakingLp.userData.balance}
             stakeToken={gearEthLPToken.symbol}
+            stakeTokenAddress={gearEthLPToken.address}
             maxDecimals={gearEthLPToken.decimals}
             stakeTokenAllowance={stakingLp.stakeTokenAllowance}
             stakeAmount={stakingLp.userData.stakeAmount}
@@ -90,6 +92,7 @@ export const PageStake: FC = () => {
             noDataPlaceholder={!userWalletAddress ? <NoConnectWalletPlaceholder /> : null}
             stakeToken={gearToken.symbol}
             earnToken={gearToken.symbol}
+            earnTokenAddress={gearToken.address}
             stakeAmount={stakingLp.userData.pendingReward}
             lastCollectedTimestamp={stakingLp.lastRewardTime}
             earnedToDate={stakingLp.userData.earned}
@@ -107,12 +110,12 @@ export const PageStake: FC = () => {
           earnToken={ethToken.symbol}
           totalStaked={{
             token: stakingRegular.totalStaked,
-            usd: getDollarAmount(stakingRegular.totalStaked, gearToken.symbol),
+            usd: getDollarAmount(stakingRegular.totalStaked, gearToken.address),
           }}
           // eslint-disable-next-line prettier/prettier
           performance={(
             <>
-              166,01% APR
+              {stakingRegular.apr}% APR
               <div className={styles.infoIcon}>
                 <TooltipApr
                   tokenSymbol1={gearToken.symbol}
@@ -133,6 +136,7 @@ export const PageStake: FC = () => {
             onUnstakeClick={stakingRegular.handleUnstake}
             onMaxClick={() => stakingRegular.userData.balance}
             stakeToken={gearToken.symbol}
+            stakeTokenAddress={gearToken.address}
             maxDecimals={gearToken.decimals}
             stakeTokenAllowance={stakingRegular.stakeTokenAllowance}
             stakeAmount={stakingRegular.userData.stakeAmount}
@@ -147,6 +151,7 @@ export const PageStake: FC = () => {
             noDataPlaceholder={!userWalletAddress ? <NoConnectWalletPlaceholder /> : null}
             stakeToken={gearToken.symbol}
             earnToken={gearToken.symbol}
+            earnTokenAddress={gearToken.address}
             stakeAmount={stakingRegular.userData.pendingReward}
             lastCollectedTimestamp={stakingRegular.lastRewardTime}
             earnedToDate={stakingRegular.userData.earned}
@@ -165,12 +170,12 @@ export const PageStake: FC = () => {
           earnToken={gearToken.symbol}
           totalStaked={{
             token: stakingCompounder.totalStaked,
-            usd: getDollarAmount(stakingCompounder.totalStaked, gearToken.symbol),
+            usd: getDollarAmount(stakingCompounder.totalStaked, gearToken.address),
           }}
           // eslint-disable-next-line prettier/prettier
           performance={(
             <>
-              166,01% APY
+              {Number.isNaN(stakingCompounder.apy) ? '' : stakingCompounder.apy}% APY
               <div className={styles.infoIcon}>
                 <TooltipApy
                   token1={{
@@ -198,11 +203,12 @@ export const PageStake: FC = () => {
             onUnstakeClick={stakingCompounder.handleUnstake}
             onMaxClick={() => stakingCompounder.userData.balance}
             stakeToken={gearToken.symbol}
+            stakeTokenAddress={gearToken.address}
             maxDecimals={gearToken.decimals}
             stakeTokenAllowance={stakingCompounder.stakeTokenAllowance}
             stakeAmount={stakingCompounder.userData.stakeAmount}
             tokenBalance={stakingCompounder.userData.balance}
-            earnToken={gearToken.symbol}
+            earnTokenAddress={gearToken.address}
             earnedToDate={stakingCompounder.userData.earned}
             isUserDataLoading={stakingCompounder.userData.fetchStatus === RequestStatus.REQUEST}
             isPendingTx={

@@ -3,7 +3,12 @@ import { useCallback, useEffect, useMemo } from 'react';
 import gearEthLPToken from '../../../../data/gearEthLPToken';
 import { stakingActionTypes } from '../../../../redux/actionTypes';
 import { lpStaking } from '../../../../redux/async';
-import { stakingSelectors, uiSelectors, userSelectors } from '../../../../redux/selectors';
+import {
+  stakingLpSelectors,
+  stakingSelectors,
+  uiSelectors,
+  userSelectors,
+} from '../../../../redux/selectors';
 import { ContractsNames, RequestStatus } from '../../../../types';
 import { contractsHelper, deserialize, serialize } from '../../../../utils';
 import { useShallowSelector } from '../../../useShallowSelector';
@@ -71,6 +76,7 @@ export const useStakingLp = () => {
     user: { stakedAmount, pendingReward, earned },
     public: { lastRewardTime, totalStaked },
   } = useShallowSelector(stakingSelectors.selectLpStaking);
+  const apr = useShallowSelector(stakingLpSelectors.selectLpStakingApr);
 
   const fetchUserDataRequestStatus = useShallowSelector(
     uiSelectors.getProp(stakingActionTypes.SET_LP_USER_DATA),
@@ -131,6 +137,7 @@ export const useStakingLp = () => {
     userData,
     totalStaked: deserialize(totalStaked, STAKE_TOKEN.decimals),
     lastRewardTime: new Date(+lastRewardTime * 1000).toLocaleString(),
+    apr,
 
     stakeTokenAllowance: {
       isAllowanceLoading,

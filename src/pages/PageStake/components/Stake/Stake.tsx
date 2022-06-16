@@ -24,6 +24,7 @@ interface StakeProps {
   stakeAmount: string | number;
   tokenBalance: string | number;
   stakeToken: string;
+  stakeTokenAddress: string;
   maxDecimals: number;
   stakeTokenAllowance: {
     isAllowanceLoading: boolean;
@@ -32,7 +33,7 @@ interface StakeProps {
     handleApprove: (amount: string) => void;
     approveStatus: RequestStatus;
   };
-  earnToken?: string;
+  earnTokenAddress?: string;
   earnedToDate?: string | number;
   onStakeClick: (value: string) => void;
   onUnstakeClick: (value: string) => void;
@@ -48,9 +49,10 @@ export const Stake: React.FC<StakeProps> = ({
   stakeAmount,
   tokenBalance,
   stakeToken,
+  stakeTokenAddress,
   maxDecimals,
   stakeTokenAllowance,
-  earnToken = '',
+  earnTokenAddress = '',
   earnedToDate = '',
   onStakeClick,
   onUnstakeClick,
@@ -249,12 +251,12 @@ export const Stake: React.FC<StakeProps> = ({
                     <p className={styles.text}>
                       {numberTransform(stakeAmount)}
                       <span className={cn(styles.grayText)}>{`($${numberTransform(
-                        getDollarAmount(stakeAmount, stakeToken),
+                        getDollarAmount(stakeAmount, stakeTokenAddress),
                       )})`}</span>
                     </p>
                     // eslint-disable-next-line prettier/prettier
                   )}
-                  value={`${stakeAmount}($${getDollarAmount(stakeAmount, stakeToken)})`}
+                  value={`${stakeAmount}($${getDollarAmount(stakeAmount, stakeTokenAddress)})`}
                 />
               )}
             </div>
@@ -271,12 +273,12 @@ export const Stake: React.FC<StakeProps> = ({
                       <p className={styles.text}>
                         {numberTransform(earnedToDate)}
                         <span className={cn(styles.grayText)}>
-                          {`($${numberTransform(getDollarAmount(earnedToDate, earnToken))})`}
+                          {`($${numberTransform(getDollarAmount(earnedToDate, earnTokenAddress))})`}
                         </span>
                       </p>
                       // eslint-disable-next-line prettier/prettier
                     )}
-                    value={`${earnedToDate}($${getDollarAmount(earnedToDate, earnToken)})`}
+                    value={`${earnedToDate}($${getDollarAmount(earnedToDate, earnTokenAddress)})`}
                   />
                 )}
               </div>

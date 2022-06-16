@@ -1,12 +1,17 @@
 import BigNumber from 'bignumber.js/bignumber';
 
-// TODO: logic getting the token USD prices
-const prices: Record<string, string> = {
-  'GEAR': '0.23',
-  'GEAR-ETH': '5.2',
-};
+import { tokensSelectors } from '../redux/selectors';
+import store from '../redux/store';
 
-export const getDollarAmount = (amount: string | number, token: keyof typeof prices | string) => {
-  const price = prices[token];
+// // TODO: logic getting the token USD prices
+// const prices: Record<string, string> = {
+//   'GEAR': '0.23',
+//   'GEAR-ETH': '5.2',
+// };
+
+export const getDollarAmount = (amount: string | number, tokenAddress: string) => {
+  const state = store.getState();
+  const price = tokensSelectors.selectUsdPrice(tokenAddress)(state);
+
   return new BigNumber(amount).multipliedBy(price).toFixed();
 };
