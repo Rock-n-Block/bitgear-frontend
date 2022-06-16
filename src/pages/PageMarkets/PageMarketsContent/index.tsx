@@ -920,7 +920,6 @@ export const PageMarketsContent: React.FC = React.memo(() => {
       if (slippagePercentage) tradeProps.slippagePercentage = slippagePercentage;
       if (excludedSources) tradeProps.excludedSources = excludedSources;
       tradeProps.includePriceComparisons = true;
-      console.log('trade props:', tradeProps);
       setWaiting(false);
       setOpenQuotes(true);
       return toggleModal({
