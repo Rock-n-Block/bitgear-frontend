@@ -3,6 +3,7 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import BigNumber from 'bignumber.js/bignumber';
+import { noop } from 'lodash';
 
 import { ReactComponent as IconArrowFilledRight } from '../../assets/icons/arrow-filled-right.svg';
 import { ReactComponent as IconArrowLeft } from '../../assets/icons/arrow-left-blue.svg';
@@ -51,7 +52,7 @@ type TypeModalParams = {
 };
 
 const ModalContentQuotes: React.FC<TypeModalContentQuotesProps> = ({
-  onClose = () => {},
+  onClose = noop,
   tokenPay,
   tokenReceive,
   amountPay = '',
@@ -404,7 +405,7 @@ const ModalContentQuotes: React.FC<TypeModalContentQuotesProps> = ({
         role="button"
         tabIndex={0}
         onClick={handleClose}
-        onKeyDown={() => {}}
+        onKeyDown={noop}
       >
         <IconArrowLeft />
         Back
