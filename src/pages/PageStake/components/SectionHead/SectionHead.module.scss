@@ -9,6 +9,10 @@
     position: relative;
     width: 54px;
     height: 54px;
+
+    &Lp {
+      min-width: 90px;
+    }
   }
 
   &Info {
@@ -65,8 +69,11 @@
 .pairedToken {
   position: absolute;
   right: -#{spacing(1)};
-  bottom: -#{spacing(1.5)};
 
-  width: 50%;
-  height: 50%;
+  &Stake {
+    right: -#{spacing(1)};
+    bottom: -#{spacing(1.5)};
+    width: 50%;
+    height: 50%;
+  }
 }
