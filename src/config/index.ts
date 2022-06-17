@@ -8,7 +8,7 @@ type ConfigAddressesContractNames =
 type ConfigMapContractToAddress = Record<ConfigAddressesContractNames, string>;
 
 const IS_PRODUCTION = false;
-const TESTING_NET = 'rinkeby' as SupportedTestnets;
+const TESTING_NET = 'ropsten' as SupportedTestnets;
 const SHOW_CONSOLE_LOGS = true;
 
 export default {
