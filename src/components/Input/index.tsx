@@ -1,6 +1,6 @@
 /* eslint-disable react/require-default-props */
 
-import React from 'react';
+import { ChangeEvent, FC, ReactElement, useCallback } from 'react';
 import cns from 'classnames';
 import { v1 as uuid } from 'uuid';
 
@@ -10,14 +10,14 @@ type TypeInputProps = {
   autoFocus?: boolean;
   value: string;
   placeholder?: string;
-  label?: React.ReactElement | string;
+  label?: ReactElement | string;
   type?: string;
-  onChange?: (e: any) => void;
+  onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
   inline?: boolean;
   className?: string;
 };
 
-export const Input: React.FC<TypeInputProps> = ({
+export const Input: FC<TypeInputProps> = ({
   autoFocus = false,
   value = '',
   placeholder = '',
@@ -29,7 +29,7 @@ export const Input: React.FC<TypeInputProps> = ({
 }) => {
   const id = uuid();
 
-  const refInput = React.useCallback(
+  const refInput = useCallback(
     (e) => {
       if (e && autoFocus) {
         setTimeout(() => e.focus(), 10);
