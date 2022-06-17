@@ -37,6 +37,7 @@ export default {
     discord: 'https://discord.gg/',
     email: 'support@mail.com',
     policy: '',
+    contact: 'hello@bitgear.io',
   },
   apis: {
     // 'theGraph': 'https://api.thegraph.com/subgraphs/name/gundamdweeb/bifrost',
