@@ -93,11 +93,7 @@ export interface TokenVault extends BaseContract {
 
     deposit(_amount: number | string | BN): NonPayableTransactionObject<void>;
 
-    emergencyBalance(): NonPayableTransactionObject<string>;
-
     emergencyUserWithdraw(): NonPayableTransactionObject<void>;
-
-    emergencyWithdraw(): NonPayableTransactionObject<void>;
 
     getPricePerFullShare(): NonPayableTransactionObject<string>;
 
@@ -106,8 +102,6 @@ export interface TokenVault extends BaseContract {
     harvest(): NonPayableTransactionObject<void>;
 
     inCaseTokensGetStuck(_token: string): NonPayableTransactionObject<void>;
-
-    masterchef(): NonPayableTransactionObject<string>;
 
     owner(): NonPayableTransactionObject<string>;
 
@@ -121,19 +115,23 @@ export interface TokenVault extends BaseContract {
       _callFee: number | string | BN
     ): NonPayableTransactionObject<void>;
 
+    staking(): NonPayableTransactionObject<string>;
+
     token(): NonPayableTransactionObject<string>;
 
     totalShares(): NonPayableTransactionObject<string>;
 
     transferOwnership(newOwner: string): NonPayableTransactionObject<void>;
 
-    unpause(): NonPayableTransactionObject<void>;
-
     userInfo(arg0: string): NonPayableTransactionObject<{
       shares: string;
       lastUserActionTime: string;
+      deposit: string;
+      earned: string;
       0: string;
       1: string;
+      2: string;
+      3: string;
     }>;
 
     withdrawAll(): NonPayableTransactionObject<void>;
