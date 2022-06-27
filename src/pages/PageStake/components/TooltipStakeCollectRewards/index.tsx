@@ -17,7 +17,6 @@ export const TooltipStakeCollectRewards: FC<TooltipStakeCollectRewardsProps> = (
       name="tooltipStakeCollectRewards"
       target={<Button icon={infoRound} variant="iconButton" />}
       content={<p className={styles.tooltipText}>{COLLECT_REWARDS_TOOLTIP}</p>}
-      event="click"
     />
   );
 };
