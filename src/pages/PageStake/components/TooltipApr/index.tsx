@@ -50,7 +50,6 @@ export const TooltipApr: FC<TooltipAprProps> = ({
         </div>
         // eslint-disable-next-line prettier/prettier
         )}
-      event="click"
     />
   );
 };

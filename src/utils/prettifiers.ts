@@ -109,12 +109,14 @@ export const prettyToken = (token: string) => `${token.includes('-') ? 'LP ' : '
 /**
  * @example 'NaN' -> '0'
  * @example 'Infinity' -> '>1000000'
- * @example '100000001' -> '>1000000'
+ * @example isMaybeExtraBigValue = true ===> '100000001' -> '>1000000'
+ * @example isMaybeExtraBigValue = false ===> '100000001' -> numberTransform()
  * @example '13231.12321321' -> numberTransform() probably return '13231.12'
  */
-export const getFormattedValue = (value: string | number) => {
+export const getFormattedValue = (value: string | number, isMaybeExtraBigValue = false) => {
   const valueAsNumber = Number(value);
   if (Number.isNaN(valueAsNumber)) return '0';
-  if (valueAsNumber > 1000000) return '>1000000';
+  if (!Number.isFinite(valueAsNumber)) return '>1000000';
+  if (isMaybeExtraBigValue && valueAsNumber > 1000000) return '>1000000';
   return numberTransform(value);
 };
