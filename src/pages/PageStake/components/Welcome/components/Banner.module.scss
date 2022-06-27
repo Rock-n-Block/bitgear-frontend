@@ -1,0 +1,76 @@
+@import '../../../../../scss/theme';
+@import '../../../../../scss/mixins';
+
+
+.container {
+  padding: 10px 10px 0;
+  @include flexbox(space-between);
+}
+
+.bannerLogicContainer {
+  min-width: 410px;
+  max-width: 500px;
+
+  &>*:not(:last-child) {
+    margin-bottom: spacing(2.5);
+  }
+}
+
+.h1 {
+  font-size: 60px;
+  font-weight: 600;
+  line-height: 72px;
+  padding: 0;
+  margin: 0;
+  color: $color-green;
+}
+
+.h2 {
+  font-weight: 600;
+  font-size: 40px;
+  line-height: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+.text {
+  margin: 0;
+  padding: 0;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 26px;
+}
+
+.buttonContainer {
+  @include flexbox(flex-start);
+
+  & a {
+    margin: 0;
+  }
+}
+
+.gear {
+  width: 60%;
+}
+
+@include b(mobile) {
+  .container {
+    flex-direction: column;
+  }
+
+  .bannerLogicContainer {
+    min-width: 200px;
+  }
+
+  .h1 {
+    font-size: 48px;
+  }
+
+  .h2 {
+    font-size: 32px;
+  }
+
+  .gear {
+    width: 100%;
+  }
+}
