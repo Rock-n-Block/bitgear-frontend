@@ -80,7 +80,7 @@ export const PageStake: FC = () => {
   return (
     <div className={styles.container}>
       <Banner
-        apy={getFormattedValue(stakingCompounder.apy)}
+        apy={getFormattedValue(stakingCompounder.apy, true)}
         onGetFreeTokens={handleGetFreeTokensModal}
         onAddToWallet={handleAddTokenToWallet}
       />
@@ -96,7 +96,7 @@ export const PageStake: FC = () => {
           // eslint-disable-next-line prettier/prettier
           performance={(
             <>
-              {getFormattedValue(stakingLp.apr)}% APR
+              {getFormattedValue(stakingLp.apr, true)}% APR
               <div className={styles.infoIcon}>
                 <TooltipApr
                   tokenSymbol1={gearToken.symbol}
@@ -156,7 +156,7 @@ export const PageStake: FC = () => {
           // eslint-disable-next-line prettier/prettier
           performance={(
             <>
-              {getFormattedValue(stakingRegular.apr)}% APR
+              {getFormattedValue(stakingRegular.apr, true)}% APR
               <div className={styles.infoIcon}>
                 <TooltipApr tokenSymbol1={gearToken.symbol} tokenSymbol2={gearToken.symbol} />
               </div>
@@ -212,7 +212,7 @@ export const PageStake: FC = () => {
           // eslint-disable-next-line prettier/prettier
           performance={(
             <>
-              {getFormattedValue(stakingCompounder.apy)}% APY
+              {getFormattedValue(stakingCompounder.apy, true)}% APY
               <div className={styles.infoIcon}>
                 <TooltipApy
                   token1={{
