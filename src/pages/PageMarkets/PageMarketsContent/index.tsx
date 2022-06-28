@@ -1,4 +1,4 @@
-import React, { LegacyRef, useRef } from 'react';
+import React, { ChangeEvent, LegacyRef, useCallback, useRef } from 'react';
 import { Helmet } from 'react-helmet';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
@@ -174,6 +174,13 @@ export const DropdownItems: React.FC<TypeDropdownItemsParams> = React.memo(
       if (isBottomReached) setPage(page + 1);
     }, [page]);
 
+    const handleChangeSearch = useCallback(
+      (e: ChangeEvent<HTMLInputElement>) => {
+        onChangeSearch(e.target.value);
+      },
+      [onChangeSearch],
+    );
+
     React.useEffect(() => {
       setChildrenShown(children.slice(0, countChildrenInPage * (page + 1)));
       // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -190,7 +197,7 @@ export const DropdownItems: React.FC<TypeDropdownItemsParams> = React.memo(
           placeholder="Search"
           label={label}
           value={searchValue}
-          onChange={onChangeSearch}
+          onChange={handleChangeSearch}
           className={s.containerTradingCardSearchInput}
         />
         <div
@@ -920,7 +927,6 @@ export const PageMarketsContent: React.FC = React.memo(() => {
       if (slippagePercentage) tradeProps.slippagePercentage = slippagePercentage;
       if (excludedSources) tradeProps.excludedSources = excludedSources;
       tradeProps.includePriceComparisons = true;
-      console.log('trade props:', tradeProps);
       setWaiting(false);
       setOpenQuotes(true);
       return toggleModal({

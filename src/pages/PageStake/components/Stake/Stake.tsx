@@ -310,7 +310,7 @@ export const Stake: FC<StakeProps> = ({
                     </p>
                     // eslint-disable-next-line prettier/prettier
                   )}
-                  value={`${stakeAmount}($${formattedStakeAmountAsUsd})`}
+                  value={`${stakeAmount} ($${formattedStakeAmountAsUsd})`}
                 />
               )}
             </div>
@@ -332,7 +332,9 @@ export const Stake: FC<StakeProps> = ({
                       </p>
                       // eslint-disable-next-line prettier/prettier
                     )}
-                    value={`${earnedToDate}($${formattedEarnedToDateAsUsd})`}
+                    value={`${
+                      earnedToDate === 'NaN' ? '0' : earnedToDate
+                    } ($${formattedEarnedToDateAsUsd})`}
                   />
                 )}
               </div>

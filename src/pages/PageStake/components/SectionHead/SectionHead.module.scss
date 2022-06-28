@@ -9,6 +9,10 @@
     position: relative;
     width: 54px;
     height: 54px;
+
+    &Lp {
+      min-width: 90px;
+    }
   }
 
   &Info {
@@ -53,7 +57,7 @@
     &Performance {
       @include flexbox(flex-start);
       margin-top: spacing(2);
-      word-break: break-all;
+      word-break: break-word;
 
       font-weight: 600;
       font-size: 30px;
@@ -65,8 +69,11 @@
 .pairedToken {
   position: absolute;
   right: -#{spacing(1)};
-  bottom: -#{spacing(1.5)};
 
-  width: 50%;
-  height: 50%;
+  &Stake {
+    right: -#{spacing(1)};
+    bottom: -#{spacing(1.5)};
+    width: 50%;
+    height: 50%;
+  }
 }

@@ -4,7 +4,7 @@ import cn from 'classnames';
 import { bitGearTokenIcon, compounderBlueVariantIcon } from '../../../../assets/icons';
 import { ReactComponent as EthIconSvg } from '../../../../assets/icons/tokens/eth.svg';
 
-import { Banner } from './components';
+import { Banner, WelcomeFooter } from './components';
 
 import styles from './Welcome.module.scss';
 
@@ -12,9 +12,7 @@ const mock = [
   {
     icons: [
       bitGearTokenIcon,
-      <EthIconSvg
-        className={cn(styles.ethIconSvg, styles.infoContainerIcon, styles.pairedToken)}
-      />,
+      <EthIconSvg className={cn(styles.infoContainerIcon, styles.pairedToken)} />,
     ],
     header: 'LP Staking',
     body: `LP Staking is our top tier rewards program.
@@ -41,52 +39,55 @@ const mock = [
 
 export const Welcome: FC = () => {
   return (
-    <div className={styles.container}>
-      <Banner />
+    <>
+      <div className={styles.container}>
+        <Banner />
 
-      <div className={styles.section}>
-        {mock.map(({ type, header, body, icons = [], icon }) => {
-          return (
-            <div key={header} className={styles.infoContainer}>
-              {type === 'LP' && (
-                <div className={styles.infoContainerIcons}>
-                  {typeof icons[0] === 'string' ? (
-                    <img className={styles.infoContainerIcon} src={icons[0]} alt="token 1" />
-                  ) : (
-                    icons[0]
-                  )}
-                  {typeof icons[1] === 'string' ? (
-                    <img className={styles.infoContainerIcon} src={icons[1]} alt="token 2" />
-                  ) : (
-                    icons[1]
-                  )}
-                </div>
-              )}
-              {type === 'compounder' && (
-                <div className={styles.infoContainerIcons}>
-                  <img
-                    className={styles.infoContainerIcon}
-                    src={compounderBlueVariantIcon}
-                    alt="compounder icon"
-                  />
-                  <img
-                    className={cn(styles.infoContainerIcon, styles.compounderToken)}
-                    src={icon}
-                    alt="token"
-                  />
-                </div>
-              )}
-              {type === 'regular' && (
-                <div className={styles.infoContainerIcons}>
-                  <img className={styles.infoContainerIcon} src={icon} alt="token icon" />
-                </div>
-              )}
-              <div className={styles.infoContainerHeader}>{header}</div>
-              <div className={styles.infoContainerBody}>{body}</div>
-            </div>
-          );
-        })}
+        <div className={styles.section}>
+          {mock.map(({ type, header, body, icons = [], icon }) => {
+            return (
+              <div key={header} className={styles.infoContainer}>
+                {type === 'LP' && (
+                  <div className={styles.infoContainerIcons}>
+                    {typeof icons[0] === 'string' ? (
+                      <img className={styles.infoContainerIcon} src={icons[0]} alt="token 1" />
+                    ) : (
+                      icons[0]
+                    )}
+                    {typeof icons[1] === 'string' ? (
+                      <img className={styles.infoContainerIcon} src={icons[1]} alt="token 2" />
+                    ) : (
+                      icons[1]
+                    )}
+                  </div>
+                )}
+                {type === 'compounder' && (
+                  <div className={styles.infoContainerIcons}>
+                    <img
+                      className={styles.infoContainerIcon}
+                      src={compounderBlueVariantIcon}
+                      alt="compounder icon"
+                    />
+                    <img
+                      className={cn(styles.infoContainerIcon, styles.compounderToken)}
+                      src={icon}
+                      alt="token"
+                    />
+                  </div>
+                )}
+                {type === 'regular' && (
+                  <div className={styles.infoContainerIcons}>
+                    <img className={styles.infoContainerIcon} src={icon} alt="token icon" />
+                  </div>
+                )}
+                <div className={styles.infoContainerHeader}>{header}</div>
+                <div className={styles.infoContainerBody}>{body}</div>
+              </div>
+            );
+          })}
+        </div>
       </div>
-    </div>
+      <WelcomeFooter />
+    </>
   );
 };

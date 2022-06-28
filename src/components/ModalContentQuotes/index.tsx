@@ -3,6 +3,7 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import BigNumber from 'bignumber.js/bignumber';
+import { noop } from 'lodash';
 
 import { ReactComponent as IconArrowFilledRight } from '../../assets/icons/arrow-filled-right.svg';
 import { ReactComponent as IconArrowLeft } from '../../assets/icons/arrow-left-blue.svg';
@@ -51,7 +52,7 @@ type TypeModalParams = {
 };
 
 const ModalContentQuotes: React.FC<TypeModalContentQuotesProps> = ({
-  onClose = () => {},
+  onClose = noop,
   tokenPay,
   tokenReceive,
   amountPay = '',
@@ -210,9 +211,7 @@ const ModalContentQuotes: React.FC<TypeModalContentQuotesProps> = ({
     try {
       setTimeToNextBlock(undefined);
       setIsNeedToRefresh(false);
-      console.log('ModalContentQuotes getQuote tradeProps:', tradeProps);
       const resultGetQuote = await Zx.getQuote(tradeProps as TypeGetQuoteProps);
-      console.log('ModalContentQuotes getQuote:', resultGetQuote);
       if (resultGetQuote.status === 'SUCCESS') {
         const newQuote = { ...resultGetQuote.data };
         const exchanges = chooseExchangesWithBestPrice(newQuote.priceComparisons);
@@ -222,7 +221,6 @@ const ModalContentQuotes: React.FC<TypeModalContentQuotesProps> = ({
             newTradeProps.excludedSources = '';
             newTradeProps.includedSources = exchanges[i].name;
             const resultGetQuoteNew = await Zx.getQuote(newTradeProps);
-            console.log('ModalContentQuotes getQuote resultGetQuoteNew:', resultGetQuoteNew);
             if (resultGetQuoteNew.status === 'SUCCESS') {
               const newNewQuote = { ...resultGetQuoteNew.data };
               getBlockInterval();
@@ -404,7 +402,7 @@ const ModalContentQuotes: React.FC<TypeModalContentQuotesProps> = ({
         role="button"
         tabIndex={0}
         onClick={handleClose}
-        onKeyDown={() => {}}
+        onKeyDown={noop}
       >
         <IconArrowLeft />
         Back

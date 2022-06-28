@@ -30,7 +30,7 @@ export default {
   })() as NetType,
   links: {
     twitter: 'https://twitter.com/bitgeario',
-    telegram: 'https://t.me/bitgear',
+    telegram: 'https://t.me/bitgeario',
     medium: 'https://medium.com/bitgear',
     github: 'https://github.com/',
     reddit: 'https://www.reddit.com/',
@@ -138,10 +138,10 @@ export default {
     minTokenAmountToApplyLowerFees: 100000,
 
     /* Applied if: minTokenAmountToApplyLowerFees isn't reached */
-    regularFee: 0.0015, // 0.15%
+    regularFee: 0.003, // 0.3%
 
     /* Applied if: minTokenAmountToApplyLowerFees is reached */
-    reducedFee: 0.003, // 0.3%
+    reducedFee: 0.0015, // 0.15%
 
     /**
      * Applied if:
