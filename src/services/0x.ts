@@ -107,6 +107,9 @@ export class Service0x {
     }
   };
 
+  /**
+   * @see https://docs.0x.org/0x-api-swap/api-references/get-swap-v1-quote#request
+   */
   getQuote = async (props: TypeGetQuoteProps) => {
     try {
       const newProps = { ...props };
