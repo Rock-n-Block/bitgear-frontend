@@ -21,7 +21,7 @@ export const Footer: React.FC = () => {
           <IconTelegram className={s.footerLogo} />
         </a>
       </div>
-      <div className={s.footerCopyright}>© 2021 Bitgear. All Rights Reserved</div>
+      <div className={s.footerCopyright}>© 2022 Bitgear. All Rights Reserved</div>
     </footer>
   );
 };
