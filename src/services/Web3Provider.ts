@@ -2,6 +2,7 @@ import WalletConnectProvider from '@walletconnect/web3-provider';
 import BigNumber from 'bignumber.js/bignumber';
 import { isEqual } from 'lodash';
 import Web3 from 'web3';
+import type { TransactionConfig } from 'web3-core';
 
 import config from '../config';
 import { customSwapAbi } from '../config/abi';
@@ -24,7 +25,7 @@ type TypeApprove = {
 export default class Web3Provider {
   public provider: any;
 
-  public web3Provider: any;
+  public web3Provider: Web3;
 
   public addresses: any;
 
@@ -125,7 +126,7 @@ export default class Web3Provider {
     return +new BigNumber(balance).dividedBy(new BigNumber(10).pow(18)).toFixed();
   };
 
-  public sendTx = async (data: any) => {
+  public sendTx = async (data: TransactionConfig) => {
     try {
       const result = await this.web3Provider.eth.sendTransaction(data);
       return { status: 'SUCCESS', data: result };
@@ -202,8 +203,8 @@ export default class Web3Provider {
       const latestBlock = await this.web3Provider.eth.getBlock('latest');
       const prevBlock = await this.web3Provider.eth.getBlock(latestBlock.number - 1);
       const prevPrevBlock = await this.web3Provider.eth.getBlock(latestBlock.number - 2);
-      const interval1 = latestBlock.timestamp - prevBlock.timestamp;
-      const interval2 = prevBlock.timestamp - prevPrevBlock.timestamp;
+      const interval1 = Number(latestBlock.timestamp) - Number(prevBlock.timestamp);
+      const interval2 = Number(prevBlock.timestamp) - Number(prevPrevBlock.timestamp);
       console.log('MetamaskService getLastBlockInverval:', latestBlock, prevBlock);
       return { status: 'SUCCESS', data: ((interval1 + interval2) / 2) * 1000 };
     } catch (e) {
