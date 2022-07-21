@@ -17,11 +17,11 @@ export const fetchEarned = async ({ provider, userWalletAddress }: FetchEarned) 
       network,
     ).address;
     const contract = contractsHelper.getTokenVaultContract(provider, tokenVaultAddress);
-    const earnedToDate = await contract.methods.getTotalStakeOf(userWalletAddress).call();
+    const { earned } = await contract.methods.userInfo(userWalletAddress).call();
 
     store.dispatch(
       stakingActions.setCompounderUserData({
-        earned: earnedToDate,
+        earned,
       }),
     );
   } catch (err) {

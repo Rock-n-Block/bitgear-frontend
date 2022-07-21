@@ -40,7 +40,6 @@ export const TooltipApy: FC<TooltipApyProps> = ({ token1 }) => {
         </div>
         // eslint-disable-next-line prettier/prettier
         )}
-      event="click"
     />
   );
 };

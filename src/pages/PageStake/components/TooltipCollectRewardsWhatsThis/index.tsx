@@ -26,7 +26,6 @@ export const TooltipCollectRewardsWhatsThis: FC<TooltipCollectRewardsWhatsThisPr
         </p>
         // eslint-disable-next-line prettier/prettier
       )}
-      event="click"
     />
   );
 };

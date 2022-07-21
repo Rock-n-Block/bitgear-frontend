@@ -18,13 +18,13 @@ export const fetchEarned = async ({ provider, userWalletAddress }: FetchEarned) 
       network,
     ).address;
     const contract = contractsHelper.getCoinStakingContract(provider, coinStakingAddress);
-    const { rewardDebt } = await contract.methods
+    const { earned } = await contract.methods
       .userInfo(config.staking.lpPid, userWalletAddress)
       .call();
 
     store.dispatch(
       stakingActions.setLpUserData({
-        earned: rewardDebt,
+        earned,
       }),
     );
   } catch (err) {

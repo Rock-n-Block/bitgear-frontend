@@ -12,7 +12,6 @@ export const TooltipValue: FC<TooltipValueProps> = ({ value, target }) => {
       name={uuid()}
       target={target}
       content={<div className={classes.tooltipValue}>{value}</div>}
-      event="click"
     />
   );
 };

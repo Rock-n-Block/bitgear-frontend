@@ -59,6 +59,8 @@ export interface CoinStaking extends BaseContract {
   ): CoinStaking;
   clone(): CoinStaking;
   methods: {
+    PRECISION(): NonPayableTransactionObject<string>;
+
     deposit(
       _pid: number | string | BN,
       _amount: number | string | BN
@@ -112,7 +114,7 @@ export interface CoinStaking extends BaseContract {
       _withUpdate: boolean
     ): NonPayableTransactionObject<void>;
 
-    setrewardPerSecond(
+    setRewardPerSecond(
       _rewardPerSecond: number | string | BN,
       _withUpdate: boolean
     ): NonPayableTransactionObject<void>;
@@ -131,8 +133,10 @@ export interface CoinStaking extends BaseContract {
     ): NonPayableTransactionObject<{
       amount: string;
       rewardDebt: string;
+      earned: string;
       0: string;
       1: string;
+      2: string;
     }>;
 
     withdraw(

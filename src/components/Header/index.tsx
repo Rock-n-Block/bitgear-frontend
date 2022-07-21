@@ -515,7 +515,7 @@ export const Header: React.FC = () => {
                   <IconTelegram className={s.headerMenuFooterLogo} />
                 </a>
               </div>
-              <div className={s.headerMenuFooterCopyright}>© 2021 Bitgear. All Rights Reserved</div>
+              <div className={s.headerMenuFooterCopyright}>© 2022 Bitgear. All Rights Reserved</div>
             </div>
           )}
         </nav>
