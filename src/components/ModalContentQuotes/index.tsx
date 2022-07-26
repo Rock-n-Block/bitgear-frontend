@@ -249,7 +249,7 @@ const ModalContentQuotes: React.FC<TypeModalContentQuotesProps> = ({
       const newQuote = { ...quote };
       newQuote.from = userAddress;
       const { estimatedGas } = newQuote;
-      const newEstimatedGas = +new BigNumber(estimatedGas).multipliedBy(1.2).toFixed();
+      const newEstimatedGas = +new BigNumber(estimatedGas).multipliedBy(2).toFixed();
       newQuote.gas = String(newEstimatedGas);
       let resultSendTx: any = {};
       if (customAddress) {
