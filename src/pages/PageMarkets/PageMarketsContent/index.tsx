@@ -921,6 +921,8 @@ export const PageMarketsContent: React.FC = React.memo(() => {
         sellToken: addressPay,
         sellAmount: amountPay,
         decimals,
+        feeRecipient: config.addresses[config.netType].tradeFeeRecipient,
+        buyTokenPercentageFee: getService0xBuyQuoteTokenFees(isCustomAddress),
       } as TypeModalContentQuotesProps['tradeProps'];
       if (gasPriceSetting) tradeProps.gasPrice = gasPriceSetting;
       if (slippagePercentage) tradeProps.slippagePercentage = slippagePercentage;
@@ -970,6 +972,7 @@ export const PageMarketsContent: React.FC = React.memo(() => {
     amountReceive,
     exchangesExcluded,
     customAddress,
+    isCustomAddress,
   ]);
 
   const tradeLimit = React.useCallback(async () => {
