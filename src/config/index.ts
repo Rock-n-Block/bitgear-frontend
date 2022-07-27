@@ -121,7 +121,7 @@ export default {
     ropsten: {
       allowanceTarget: '0xf740b67da229f2f10bcbd38a7979992fcc71b8eb',
       allowanceTargetLimit: '0xdef1c0ded9bec7f1a1670819833240f027b25eff',
-      tradeFeeRecipient: '0x0dE943AA3BB47e407c2747A8CE6Ae026272C3549', // target where fees from Trades are sent
+      tradeFeeRecipient: '0x5D426babCACa0c55Ecb6A682c11060B9b3683014', // target where fees from Trades are sent
     },
     rinkeby: {
       allowanceTarget: '0xf740b67da229f2f10bcbd38a7979992fcc71b8eb',
